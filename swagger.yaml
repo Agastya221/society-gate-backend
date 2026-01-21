@@ -1,0 +1,2780 @@
+openapi: 3.0.3
+info:
+  title: Society Gate Management API
+  description: |
+    Comprehensive API for managing society entry systems, visitor management, domestic staff, amenities, and more.
+    Similar to MyGate application functionality.
+
+    ## Authentication
+    Most endpoints require JWT authentication. Include the token in the Authorization header:
+    ```
+    Authorization: Bearer <your-jwt-token>
+    ```
+
+    ## User Roles
+    - `SUPER_ADMIN`: Full system access
+    - `ADMIN`: Society-level administration
+    - `GUARD`: Gate security operations
+    - `RESIDENT`: Society resident access
+
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@societygate.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:4000/api
+    description: Development server
+  - url: https://api.societygate.com/api
+    description: Production server
+
+tags:
+  - name: Auth
+    description: Authentication and user management
+  - name: Entry
+    description: Visitor entry management
+  - name: Pre-Approval
+    description: Pre-approved visitor management
+  - name: Delivery
+    description: Delivery and courier management
+  - name: Domestic Staff
+    description: Maid, nanny, cook and other staff management
+  - name: Gate Pass
+    description: Gate pass generation and verification
+  - name: Notice
+    description: Society notices and announcements
+  - name: Amenity
+    description: Amenity booking and management
+  - name: Complaint
+    description: Complaint tracking system
+  - name: Emergency
+    description: Emergency SOS alerts
+  - name: Vendor
+    description: Vendor directory management
+  - name: Reports
+    description: Analytics and reporting
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Error message"
+        statusCode:
+          type: integer
+          example: 400
+
+    Success:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation successful"
+        data:
+          type: object
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [SUPER_ADMIN, ADMIN, GUARD, RESIDENT]
+        societyId:
+          type: string
+          format: uuid
+        flatId:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    Entry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        entryType:
+          type: string
+          enum: [VISITOR, DELIVERY, DOMESTIC_STAFF, CAB, GUEST, SERVICE]
+        visitorName:
+          type: string
+        visitorPhone:
+          type: string
+        vehicleNumber:
+          type: string
+        purpose:
+          type: string
+        photoUrl:
+          type: string
+        checkInTime:
+          type: string
+          format: date-time
+        checkOutTime:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [IN, OUT]
+        approvalStatus:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED]
+        flatId:
+          type: string
+          format: uuid
+        societyId:
+          type: string
+          format: uuid
+
+    DomesticStaff:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        photoUrl:
+          type: string
+        staffType:
+          type: string
+          enum: [MAID, COOK, NANNY, DRIVER, CLEANER, GARDENER, LAUNDRY, CARETAKER, SECURITY_GUARD, OTHER]
+        experienceYears:
+          type: integer
+        description:
+          type: string
+        languages:
+          type: array
+          items:
+            type: string
+        isFullTime:
+          type: boolean
+        workingDays:
+          type: array
+          items:
+            type: string
+        workStartTime:
+          type: string
+        workEndTime:
+          type: string
+        availabilityStatus:
+          type: string
+          enum: [AVAILABLE, BUSY, ON_LEAVE, INACTIVE]
+        hourlyRate:
+          type: number
+        dailyRate:
+          type: number
+        monthlyRate:
+          type: number
+        rating:
+          type: number
+          format: float
+        totalReviews:
+          type: integer
+        isActive:
+          type: boolean
+        isCurrentlyWorking:
+          type: boolean
+        currentFlatId:
+          type: string
+          format: uuid
+
+    GatePass:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        visitorName:
+          type: string
+        visitorPhone:
+          type: string
+        vehicleNumber:
+          type: string
+        purpose:
+          type: string
+        validFrom:
+          type: string
+          format: date-time
+        validUntil:
+          type: string
+          format: date-time
+        qrData:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED, USED, EXPIRED]
+        flatId:
+          type: string
+          format: uuid
+        createdById:
+          type: string
+          format: uuid
+
+    Notice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum: [GENERAL, MAINTENANCE, EMERGENCY, EVENT, MEETING, POLICY]
+        priority:
+          type: string
+          enum: [LOW, MEDIUM, HIGH, URGENT]
+        attachmentUrl:
+          type: string
+        publishDate:
+          type: string
+          format: date-time
+        expiryDate:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+        societyId:
+          type: string
+          format: uuid
+
+    Amenity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        amenityType:
+          type: string
+          enum: [CLUBHOUSE, SWIMMING_POOL, GYM, SPORTS_COURT, PARTY_HALL, GARDEN, PARKING, OTHER]
+        capacity:
+          type: integer
+        bookingFee:
+          type: number
+        advanceBookingDays:
+          type: integer
+        minBookingHours:
+          type: integer
+        maxBookingHours:
+          type: integer
+        availableFrom:
+          type: string
+        availableUntil:
+          type: string
+        isActive:
+          type: boolean
+        societyId:
+          type: string
+          format: uuid
+
+    Complaint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum: [MAINTENANCE, CLEANLINESS, SECURITY, NOISE, PARKING, WATER, ELECTRICITY, OTHER]
+        priority:
+          type: string
+          enum: [LOW, MEDIUM, HIGH, URGENT]
+        status:
+          type: string
+          enum: [OPEN, IN_PROGRESS, RESOLVED, CLOSED, REJECTED]
+        attachmentUrl:
+          type: string
+        flatId:
+          type: string
+          format: uuid
+        societyId:
+          type: string
+          format: uuid
+        createdById:
+          type: string
+          format: uuid
+
+    Emergency:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        alertType:
+          type: string
+          enum: [SOS, FIRE, MEDICAL, THEFT, ACCIDENT, OTHER]
+        description:
+          type: string
+        location:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        status:
+          type: string
+          enum: [ACTIVE, ACKNOWLEDGED, RESOLVED]
+        flatId:
+          type: string
+          format: uuid
+        societyId:
+          type: string
+          format: uuid
+
+    Vendor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        vendorType:
+          type: string
+          enum: [PLUMBER, ELECTRICIAN, CARPENTER, PAINTER, PEST_CONTROL, APPLIANCE_REPAIR, CLEANING, MOVING, OTHER]
+        description:
+          type: string
+        rating:
+          type: number
+          format: float
+        totalReviews:
+          type: integer
+        isVerified:
+          type: boolean
+        isActive:
+          type: boolean
+        societyId:
+          type: string
+          format: uuid
+
+paths:
+  # ==================== AUTH ENDPOINTS ====================
+  /auth/resident-app/login:
+    post:
+      tags: [Auth]
+      summary: Resident app login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, password]
+              properties:
+                phone:
+                  type: string
+                  example: "+919876543210"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      user:
+                        $ref: '#/components/schemas/User'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/resident-app/register:
+    post:
+      tags: [Auth]
+      summary: Resident app registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone, email, password]
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                flatNumber:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Registration successful
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/guard-app/login:
+    post:
+      tags: [Auth]
+      summary: Guard app login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, password]
+              properties:
+                phone:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Login successful
+        401:
+          description: Invalid credentials
+
+  /auth/resident-app/profile:
+    get:
+      tags: [Auth]
+      summary: Get resident profile
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: User profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/User'
+        401:
+          description: Unauthorized
+    patch:
+      tags: [Auth]
+      summary: Update resident profile
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        200:
+          description: Profile updated
+
+  /auth/guard-app/profile:
+    get:
+      tags: [Auth]
+      summary: Get guard profile
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: User profile
+
+  /auth/resident-app/create-guard:
+    post:
+      tags: [Auth]
+      summary: Admin creates guard account
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone, password]
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                password:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Guard created
+
+  /auth/resident-app/guards:
+    get:
+      tags: [Auth]
+      summary: Admin gets all guards
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of guards
+
+  /auth/resident-app/users/{id}/status:
+    patch:
+      tags: [Auth]
+      summary: Admin toggles user status
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Status toggled
+
+  # ==================== ENTRY ENDPOINTS ====================
+  /entries:
+    get:
+      tags: [Entry]
+      summary: Get all entries
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: flatId
+          in: query
+          schema:
+            type: string
+        - name: entryType
+          in: query
+          schema:
+            type: string
+            enum: [VISITOR, DELIVERY, DOMESTIC_STAFF, CAB, GUEST, SERVICE]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [IN, OUT]
+      responses:
+        200:
+          description: List of entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Entry'
+    post:
+      tags: [Entry]
+      summary: Guard creates entry
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [entryType, visitorName, visitorPhone, flatId, societyId]
+              properties:
+                entryType:
+                  type: string
+                  enum: [VISITOR, DELIVERY, DOMESTIC_STAFF, CAB, GUEST, SERVICE]
+                visitorName:
+                  type: string
+                visitorPhone:
+                  type: string
+                vehicleNumber:
+                  type: string
+                purpose:
+                  type: string
+                photoUrl:
+                  type: string
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+                preApprovalId:
+                  type: string
+      responses:
+        201:
+          description: Entry created successfully
+
+  /entries/{id}/approve:
+    patch:
+      tags: [Entry]
+      summary: Approve entry
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Entry approved
+
+  /entries/{id}/reject:
+    patch:
+      tags: [Entry]
+      summary: Reject entry
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        200:
+          description: Entry rejected
+
+  /entries/{id}/checkout:
+    patch:
+      tags: [Entry]
+      summary: Guard checks out visitor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Visitor checked out
+
+  /entries/pending:
+    get:
+      tags: [Entry]
+      summary: Get pending approvals
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of pending entries
+
+  /entries/today:
+    get:
+      tags: [Entry]
+      summary: Get today's entries (Guard dashboard)
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Today's entries
+
+  # ==================== DELIVERY ENDPOINTS ====================
+  /deliveries/expected:
+    post:
+      tags: [Delivery]
+      summary: Create expected delivery
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company:
+                  type: string
+                trackingNumber:
+                  type: string
+                expectedDate:
+                  type: string
+                  format: date
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Expected delivery created
+    get:
+      tags: [Delivery]
+      summary: Get expected deliveries
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: flatId
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of expected deliveries
+
+  /deliveries/auto-approve:
+    post:
+      tags: [Delivery]
+      summary: Create auto-approve rule
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [flatId, societyId, companies]
+              properties:
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+                companies:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Amazon", "Flipkart", "Swiggy"]
+                isActive:
+                  type: boolean
+                  default: true
+      responses:
+        201:
+          description: Auto-approve rule created
+    get:
+      tags: [Delivery]
+      summary: Get auto-approve rules
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: flatId
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of auto-approve rules
+
+  /deliveries/auto-approve/{id}:
+    patch:
+      tags: [Delivery]
+      summary: Toggle auto-approve rule
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Rule toggled
+    delete:
+      tags: [Delivery]
+      summary: Delete auto-approve rule
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Rule deleted
+
+  /deliveries/companies:
+    get:
+      tags: [Delivery]
+      summary: Get popular delivery companies
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of popular companies
+
+  # ==================== DOMESTIC STAFF ENDPOINTS ====================
+  /domestic-staff:
+    get:
+      tags: [Domestic Staff]
+      summary: Get all domestic staff
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: staffType
+          in: query
+          schema:
+            type: string
+            enum: [MAID, COOK, NANNY, DRIVER, CLEANER, GARDENER, LAUNDRY, CARETAKER, SECURITY_GUARD, OTHER]
+        - name: availabilityStatus
+          in: query
+          schema:
+            type: string
+            enum: [AVAILABLE, BUSY, ON_LEAVE, INACTIVE]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of domestic staff
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DomesticStaff'
+    post:
+      tags: [Domestic Staff]
+      summary: Create domestic staff profile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone, staffType]
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                photoUrl:
+                  type: string
+                staffType:
+                  type: string
+                  enum: [MAID, COOK, NANNY, DRIVER, CLEANER, GARDENER, LAUNDRY, CARETAKER, SECURITY_GUARD, OTHER]
+                experienceYears:
+                  type: integer
+                description:
+                  type: string
+                languages:
+                  type: array
+                  items:
+                    type: string
+                isFullTime:
+                  type: boolean
+                workingDays:
+                  type: array
+                  items:
+                    type: string
+                workStartTime:
+                  type: string
+                workEndTime:
+                  type: string
+                hourlyRate:
+                  type: number
+                dailyRate:
+                  type: number
+                monthlyRate:
+                  type: number
+      responses:
+        201:
+          description: Staff created successfully
+
+  /domestic-staff/available:
+    get:
+      tags: [Domestic Staff]
+      summary: Get available staff for booking
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: staffType
+          in: query
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: startTime
+          in: query
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Available staff list
+
+  /domestic-staff/assignments:
+    post:
+      tags: [Domestic Staff]
+      summary: Assign staff to flat
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [domesticStaffId, flatId]
+              properties:
+                domesticStaffId:
+                  type: string
+                flatId:
+                  type: string
+                isPrimary:
+                  type: boolean
+                workingDays:
+                  type: array
+                  items:
+                    type: string
+                workStartTime:
+                  type: string
+                workEndTime:
+                  type: string
+                agreedRate:
+                  type: number
+                rateType:
+                  type: string
+                  enum: [HOURLY, DAILY, MONTHLY]
+      responses:
+        201:
+          description: Staff assigned to flat
+
+  /domestic-staff/assignments/{id}:
+    patch:
+      tags: [Domestic Staff]
+      summary: Update staff assignment
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Assignment updated
+    delete:
+      tags: [Domestic Staff]
+      summary: Remove staff assignment
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Assignment removed
+
+  /domestic-staff/check-in:
+    post:
+      tags: [Domestic Staff]
+      summary: Check in staff
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [domesticStaffId, flatId, societyId]
+              properties:
+                domesticStaffId:
+                  type: string
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        200:
+          description: Staff checked in
+
+  /domestic-staff/scan:
+    post:
+      tags: [Domestic Staff]
+      summary: Scan QR code for attendance
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [qrToken, flatId, societyId]
+              properties:
+                qrToken:
+                  type: string
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        200:
+          description: QR scanned successfully
+
+  /domestic-staff/attendance/records:
+    get:
+      tags: [Domestic Staff]
+      summary: Get attendance records
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: domesticStaffId
+          in: query
+          schema:
+            type: string
+        - name: flatId
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Attendance records
+
+  /domestic-staff/bookings:
+    post:
+      tags: [Domestic Staff]
+      summary: Create staff booking
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [domesticStaffId, flatId, societyId, bookingDate, startTime, endTime, durationHours, workType]
+              properties:
+                domesticStaffId:
+                  type: string
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+                bookingDate:
+                  type: string
+                  format: date
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                durationHours:
+                  type: number
+                workType:
+                  type: string
+                requirements:
+                  type: string
+                estimatedCost:
+                  type: number
+      responses:
+        201:
+          description: Booking created
+
+  /domestic-staff/bookings/list:
+    get:
+      tags: [Domestic Staff]
+      summary: Get bookings
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: domesticStaffId
+          in: query
+          schema:
+            type: string
+        - name: flatId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED]
+      responses:
+        200:
+          description: List of bookings
+
+  /domestic-staff/bookings/{id}/accept:
+    patch:
+      tags: [Domestic Staff]
+      summary: Accept booking
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Booking accepted
+
+  /domestic-staff/bookings/{id}/reject:
+    patch:
+      tags: [Domestic Staff]
+      summary: Reject booking
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rejectionReason:
+                  type: string
+      responses:
+        200:
+          description: Booking rejected
+
+  /domestic-staff/bookings/{id}/complete:
+    patch:
+      tags: [Domestic Staff]
+      summary: Complete booking
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                actualDuration:
+                  type: number
+                finalCost:
+                  type: number
+      responses:
+        200:
+          description: Booking completed
+
+  /domestic-staff/reviews:
+    post:
+      tags: [Domestic Staff]
+      summary: Add staff review
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [domesticStaffId, flatId, rating]
+              properties:
+                domesticStaffId:
+                  type: string
+                flatId:
+                  type: string
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                review:
+                  type: string
+                workQuality:
+                  type: integer
+                punctuality:
+                  type: integer
+                behavior:
+                  type: integer
+                workType:
+                  type: string
+      responses:
+        201:
+          description: Review added
+
+  /domestic-staff/{id}:
+    get:
+      tags: [Domestic Staff]
+      summary: Get staff by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Staff details
+    patch:
+      tags: [Domestic Staff]
+      summary: Update staff profile
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                availabilityStatus:
+                  type: string
+                hourlyRate:
+                  type: number
+      responses:
+        200:
+          description: Staff updated
+    delete:
+      tags: [Domestic Staff]
+      summary: Delete staff
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Staff deleted
+
+  /domestic-staff/{id}/qr:
+    get:
+      tags: [Domestic Staff]
+      summary: Get staff QR code
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: QR code image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+
+  /domestic-staff/{id}/verify:
+    patch:
+      tags: [Domestic Staff]
+      summary: Verify staff (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Staff verification toggled
+
+  /domestic-staff/{id}/availability:
+    patch:
+      tags: [Domestic Staff]
+      summary: Update staff availability status
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                availabilityStatus:
+                  type: string
+                  enum: [AVAILABLE, BUSY, ON_LEAVE, INACTIVE]
+      responses:
+        200:
+          description: Availability updated
+
+  /domestic-staff/{staffId}/assignments:
+    get:
+      tags: [Domestic Staff]
+      summary: Get staff assignments
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: staffId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of assignments
+
+  /domestic-staff/{staffId}/reviews:
+    get:
+      tags: [Domestic Staff]
+      summary: Get staff reviews
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: staffId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of reviews
+
+  /domestic-staff/{staffId}/check-out:
+    post:
+      tags: [Domestic Staff]
+      summary: Check out staff
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: staffId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workCompleted:
+                  type: string
+      responses:
+        200:
+          description: Staff checked out
+
+  # ==================== PREAPPROVAL ENDPOINTS ====================
+  /preapprovals:
+    post:
+      tags: [Pre-Approval]
+      summary: Create pre-approval
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [visitorName, visitorPhone, validFrom, validUntil, flatId, societyId]
+              properties:
+                visitorName:
+                  type: string
+                visitorPhone:
+                  type: string
+                vehicleNumber:
+                  type: string
+                purpose:
+                  type: string
+                validFrom:
+                  type: string
+                  format: date-time
+                validUntil:
+                  type: string
+                  format: date-time
+                maxUses:
+                  type: integer
+                  default: 1
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Pre-approval created
+    get:
+      tags: [Pre-Approval]
+      summary: Get all pre-approvals
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: flatId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [ACTIVE, USED, EXPIRED]
+      responses:
+        200:
+          description: List of pre-approvals
+
+  /preapprovals/{id}/qr:
+    get:
+      tags: [Pre-Approval]
+      summary: Get QR code for pre-approval
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: QR code image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+
+  /preapprovals/{id}:
+    delete:
+      tags: [Pre-Approval]
+      summary: Cancel pre-approval
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Pre-approval cancelled
+
+  /preapprovals/scan:
+    post:
+      tags: [Pre-Approval]
+      summary: Scan pre-approval QR code (Guard app)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [qrData]
+              properties:
+                qrData:
+                  type: string
+      responses:
+        200:
+          description: Pre-approval verified
+
+  # ==================== GATE PASS ENDPOINTS ====================
+  /gatepasses:
+    post:
+      tags: [Gate Pass]
+      summary: Create gate pass
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [visitorName, visitorPhone, validFrom, validUntil, flatId, societyId]
+              properties:
+                visitorName:
+                  type: string
+                visitorPhone:
+                  type: string
+                vehicleNumber:
+                  type: string
+                purpose:
+                  type: string
+                validFrom:
+                  type: string
+                  format: date-time
+                validUntil:
+                  type: string
+                  format: date-time
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Gate pass created
+    get:
+      tags: [Gate Pass]
+      summary: Get all gate passes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: flatId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, APPROVED, REJECTED, USED, EXPIRED]
+      responses:
+        200:
+          description: List of gate passes
+
+  /gatepasses/scan:
+    post:
+      tags: [Gate Pass]
+      summary: Scan and verify gate pass (Guard)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [qrData]
+              properties:
+                qrData:
+                  type: string
+      responses:
+        200:
+          description: Gate pass verified
+
+  /gatepasses/{id}:
+    get:
+      tags: [Gate Pass]
+      summary: Get gate pass by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Gate pass details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/GatePass'
+    delete:
+      tags: [Gate Pass]
+      summary: Cancel gate pass
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Gate pass cancelled
+
+  /gatepasses/{id}/qr:
+    get:
+      tags: [Gate Pass]
+      summary: Get gate pass QR code
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: QR code image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+
+  /gatepasses/{id}/approve:
+    patch:
+      tags: [Gate Pass]
+      summary: Approve gate pass (Admin)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Gate pass approved
+
+  /gatepasses/{id}/reject:
+    patch:
+      tags: [Gate Pass]
+      summary: Reject gate pass (Admin)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        200:
+          description: Gate pass rejected
+
+  # ==================== NOTICE ENDPOINTS ====================
+  /notices:
+    get:
+      tags: [Notice]
+      summary: Get all notices
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [GENERAL, MAINTENANCE, EMERGENCY, EVENT, MEETING, POLICY]
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [LOW, MEDIUM, HIGH, URGENT]
+      responses:
+        200:
+          description: List of notices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notice'
+    post:
+      tags: [Notice]
+      summary: Create notice (Admin only)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, description, societyId, category]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                category:
+                  type: string
+                  enum: [GENERAL, MAINTENANCE, EMERGENCY, EVENT, MEETING, POLICY]
+                priority:
+                  type: string
+                  enum: [LOW, MEDIUM, HIGH, URGENT]
+                  default: MEDIUM
+                attachmentUrl:
+                  type: string
+                publishDate:
+                  type: string
+                  format: date-time
+                expiryDate:
+                  type: string
+                  format: date-time
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Notice created
+
+  /notices/{id}:
+    get:
+      tags: [Notice]
+      summary: Get notice by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Notice details
+    patch:
+      tags: [Notice]
+      summary: Update notice (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                priority:
+                  type: string
+      responses:
+        200:
+          description: Notice updated
+    delete:
+      tags: [Notice]
+      summary: Delete notice (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Notice deleted
+
+  /notices/{id}/toggle-pin:
+    patch:
+      tags: [Notice]
+      summary: Toggle pin notice (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Notice pin toggled
+
+  # ==================== AMENITY ENDPOINTS ====================
+  /amenities/amenities:
+    get:
+      tags: [Amenity]
+      summary: Get all amenities
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: amenityType
+          in: query
+          schema:
+            type: string
+            enum: [CLUBHOUSE, SWIMMING_POOL, GYM, SPORTS_COURT, PARTY_HALL, GARDEN, PARKING, OTHER]
+      responses:
+        200:
+          description: List of amenities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Amenity'
+    post:
+      tags: [Amenity]
+      summary: Create amenity (Admin only)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, amenityType, societyId]
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                amenityType:
+                  type: string
+                  enum: [CLUBHOUSE, SWIMMING_POOL, GYM, SPORTS_COURT, PARTY_HALL, GARDEN, PARKING, OTHER]
+                capacity:
+                  type: integer
+                bookingFee:
+                  type: number
+                advanceBookingDays:
+                  type: integer
+                minBookingHours:
+                  type: integer
+                maxBookingHours:
+                  type: integer
+                availableFrom:
+                  type: string
+                availableUntil:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Amenity created
+
+  /amenities/amenities/{id}:
+    get:
+      tags: [Amenity]
+      summary: Get amenity by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Amenity details
+    patch:
+      tags: [Amenity]
+      summary: Update amenity (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                bookingFee:
+                  type: number
+      responses:
+        200:
+          description: Amenity updated
+    delete:
+      tags: [Amenity]
+      summary: Delete amenity (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Amenity deleted
+
+  /amenities/bookings:
+    get:
+      tags: [Amenity]
+      summary: Get amenity bookings
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: amenityId
+          in: query
+          schema:
+            type: string
+        - name: flatId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, CONFIRMED, COMPLETED, CANCELLED]
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: List of bookings
+    post:
+      tags: [Amenity]
+      summary: Create amenity booking
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amenityId, flatId, societyId, bookingDate, startTime, endTime]
+              properties:
+                amenityId:
+                  type: string
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+                bookingDate:
+                  type: string
+                  format: date
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                purpose:
+                  type: string
+                guestCount:
+                  type: integer
+      responses:
+        201:
+          description: Booking created
+
+  /amenities/bookings/{id}/approve:
+    patch:
+      tags: [Amenity]
+      summary: Approve booking (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Booking approved
+
+  /amenities/bookings/{id}/cancel:
+    patch:
+      tags: [Amenity]
+      summary: Cancel booking
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Booking cancelled
+
+  # ==================== COMPLAINT ENDPOINTS ====================
+  /complaints:
+    post:
+      tags: [Complaint]
+      summary: Create complaint
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, description, category, flatId, societyId]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                category:
+                  type: string
+                  enum: [MAINTENANCE, CLEANLINESS, SECURITY, NOISE, PARKING, WATER, ELECTRICITY, OTHER]
+                priority:
+                  type: string
+                  enum: [LOW, MEDIUM, HIGH, URGENT]
+                  default: MEDIUM
+                attachmentUrl:
+                  type: string
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Complaint created
+    get:
+      tags: [Complaint]
+      summary: Get all complaints
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: flatId
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [MAINTENANCE, CLEANLINESS, SECURITY, NOISE, PARKING, WATER, ELECTRICITY, OTHER]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [OPEN, IN_PROGRESS, RESOLVED, CLOSED, REJECTED]
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [LOW, MEDIUM, HIGH, URGENT]
+      responses:
+        200:
+          description: List of complaints
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Complaint'
+
+  /complaints/{id}:
+    get:
+      tags: [Complaint]
+      summary: Get complaint by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Complaint details
+    delete:
+      tags: [Complaint]
+      summary: Delete complaint
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Complaint deleted
+
+  /complaints/{id}/status:
+    patch:
+      tags: [Complaint]
+      summary: Update complaint status (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [OPEN, IN_PROGRESS, RESOLVED, CLOSED, REJECTED]
+      responses:
+        200:
+          description: Status updated
+
+  /complaints/{id}/assign:
+    patch:
+      tags: [Complaint]
+      summary: Assign complaint (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [assignedToId]
+              properties:
+                assignedToId:
+                  type: string
+      responses:
+        200:
+          description: Complaint assigned
+
+  /complaints/{id}/resolve:
+    patch:
+      tags: [Complaint]
+      summary: Resolve complaint (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resolution:
+                  type: string
+      responses:
+        200:
+          description: Complaint resolved
+
+  # ==================== EMERGENCY ENDPOINTS ====================
+  /emergencies:
+    post:
+      tags: [Emergency]
+      summary: Create emergency alert
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [alertType, flatId, societyId]
+              properties:
+                alertType:
+                  type: string
+                  enum: [SOS, FIRE, MEDICAL, THEFT, ACCIDENT, OTHER]
+                description:
+                  type: string
+                location:
+                  type: string
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                flatId:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Emergency alert created
+    get:
+      tags: [Emergency]
+      summary: Get all emergency alerts (Admin/Guard)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [ACTIVE, ACKNOWLEDGED, RESOLVED]
+        - name: alertType
+          in: query
+          schema:
+            type: string
+            enum: [SOS, FIRE, MEDICAL, THEFT, ACCIDENT, OTHER]
+      responses:
+        200:
+          description: List of emergency alerts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Emergency'
+
+  /emergencies/active:
+    get:
+      tags: [Emergency]
+      summary: Get active emergencies (Admin/Guard)
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Active emergencies
+
+  /emergencies/{id}:
+    get:
+      tags: [Emergency]
+      summary: Get emergency alert by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Emergency alert details
+
+  /emergencies/{id}/respond:
+    patch:
+      tags: [Emergency]
+      summary: Respond to emergency alert (Admin/Guard)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Alert acknowledged
+
+  /emergencies/{id}/resolve:
+    patch:
+      tags: [Emergency]
+      summary: Resolve emergency alert (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notes:
+                  type: string
+      responses:
+        200:
+          description: Alert resolved
+
+  /emergencies/{id}/false-alarm:
+    patch:
+      tags: [Emergency]
+      summary: Mark as false alarm (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Marked as false alarm
+
+  # ==================== VENDOR ENDPOINTS ====================
+  /vendors:
+    get:
+      tags: [Vendor]
+      summary: Get all vendors
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: vendorType
+          in: query
+          schema:
+            type: string
+            enum: [PLUMBER, ELECTRICIAN, CARPENTER, PAINTER, PEST_CONTROL, APPLIANCE_REPAIR, CLEANING, MOVING, OTHER]
+        - name: isVerified
+          in: query
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: List of vendors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Vendor'
+    post:
+      tags: [Vendor]
+      summary: Add vendor (Admin only)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone, vendorType, societyId]
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                vendorType:
+                  type: string
+                  enum: [PLUMBER, ELECTRICIAN, CARPENTER, PAINTER, PEST_CONTROL, APPLIANCE_REPAIR, CLEANING, MOVING, OTHER]
+                description:
+                  type: string
+                societyId:
+                  type: string
+      responses:
+        201:
+          description: Vendor added
+
+  /vendors/by-category:
+    get:
+      tags: [Vendor]
+      summary: Get vendors by category
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: vendorType
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Vendors by category
+
+  /vendors/{id}:
+    get:
+      tags: [Vendor]
+      summary: Get vendor by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Vendor details
+    patch:
+      tags: [Vendor]
+      summary: Update vendor (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        200:
+          description: Vendor updated
+    delete:
+      tags: [Vendor]
+      summary: Delete vendor (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Vendor deleted
+
+  /vendors/{id}/verify:
+    patch:
+      tags: [Vendor]
+      summary: Verify vendor (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Vendor verification toggled
+
+  /vendors/{id}/rate:
+    post:
+      tags: [Vendor]
+      summary: Rate vendor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rating, flatId]
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                review:
+                  type: string
+                flatId:
+                  type: string
+      responses:
+        201:
+          description: Review added
+
+  # ==================== REPORTS ENDPOINTS ====================
+  /reports/dashboard:
+    get:
+      tags: [Reports]
+      summary: Get dashboard statistics (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Dashboard statistics
+
+  /reports/entries:
+    get:
+      tags: [Reports]
+      summary: Get entry statistics (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Entry statistics
+
+  /reports/peak-hours:
+    get:
+      tags: [Reports]
+      summary: Get peak hours analysis (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Peak hours analysis
+
+  /reports/delivery-patterns:
+    get:
+      tags: [Reports]
+      summary: Get delivery patterns (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Delivery patterns
+
+  /reports/complaints:
+    get:
+      tags: [Reports]
+      summary: Get complaint statistics (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Complaint statistics
+
+  /reports/visitor-frequency:
+    get:
+      tags: [Reports]
+      summary: Get visitor frequency report (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Visitor frequency report
+
+  /reports/health-score:
+    get:
+      tags: [Reports]
+      summary: Get society health score (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Society health score

@@ -1,0 +1,178 @@
+import type { Response, Request } from 'express';
+import { EntryRequestService } from './entry-request.service';
+import { UploadService } from '../upload/upload.service';
+
+const entryRequestService = new EntryRequestService();
+const uploadService = new UploadService();
+
+/**
+ * Create a new entry request (Guard)
+ */
+export const createEntryRequest = async (req: Request, res: Response) => {
+  try {
+    const guardId = (req as any).user.id;
+    const { type, flatId, visitorName, visitorPhone, providerTag, photoKey } = req.body;
+
+    if (!type || !flatId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: type, flatId',
+      });
+    }
+
+    const entryRequest = await entryRequestService.createEntryRequest(
+      { type, flatId, visitorName, visitorPhone, providerTag, photoKey },
+      guardId
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Entry request created. Notification sent to residents.',
+      data: entryRequest,
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to create entry request',
+    });
+  }
+};
+
+/**
+ * Get entry requests
+ */
+export const getEntryRequests = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { status, flatId, page, limit } = req.query;
+
+    const result = await entryRequestService.getEntryRequests(userId, {
+      status: status as any,
+      flatId: flatId as string,
+      page: page ? parseInt(page as string, 10) : undefined,
+      limit: limit ? parseInt(limit as string, 10) : undefined,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to fetch entry requests',
+    });
+  }
+};
+
+/**
+ * Get a single entry request
+ */
+export const getEntryRequestById = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { id } = req.params;
+
+    const entryRequest = await entryRequestService.getEntryRequestById(id, userId);
+
+    res.status(200).json({
+      success: true,
+      data: entryRequest,
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to fetch entry request',
+    });
+  }
+};
+
+/**
+ * Get entry request photo view URL
+ */
+export const getEntryRequestPhoto = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { id } = req.params;
+
+    const viewUrl = await uploadService.getEntryPhotoViewUrl(id, userId);
+
+    res.status(200).json({
+      success: true,
+      data: { viewUrl },
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to get photo URL',
+    });
+  }
+};
+
+/**
+ * Approve an entry request (Resident)
+ */
+export const approveEntryRequest = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { id } = req.params;
+
+    const entryRequest = await entryRequestService.approveEntryRequest(id, userId);
+
+    res.status(200).json({
+      success: true,
+      message: 'Entry request approved. Visitor can enter.',
+      data: entryRequest,
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to approve entry request',
+    });
+  }
+};
+
+/**
+ * Reject an entry request (Resident)
+ */
+export const rejectEntryRequest = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    const entryRequest = await entryRequestService.rejectEntryRequest(id, userId, reason);
+
+    res.status(200).json({
+      success: true,
+      message: 'Entry request rejected.',
+      data: entryRequest,
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to reject entry request',
+    });
+  }
+};
+
+/**
+ * Get pending count for guard
+ */
+export const getPendingCount = async (req: Request, res: Response) => {
+  try {
+    const guardId = (req as any).user.id;
+
+    const count = await entryRequestService.getPendingCountForGuard(guardId);
+
+    res.status(200).json({
+      success: true,
+      data: { pendingCount: count },
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to get pending count',
+    });
+  }
+};

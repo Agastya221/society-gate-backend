@@ -1,0 +1,1598 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../prisma/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --------------------
+// ENUMS
+// --------------------
+
+enum Role {
+  SUPER_ADMIN // Platform admin (you)
+  ADMIN // Society secretary / management
+  GUARD // Gate security
+  RESIDENT // Flat owner / tenant
+}
+
+enum EntryType {
+  VISITOR
+  DELIVERY
+  DOMESTIC_STAFF
+  CAB
+  VENDOR
+}
+
+enum EntryStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CHECKED_IN
+  CHECKED_OUT
+}
+
+enum VisitorType {
+  GUEST
+  DELIVERY_PERSON
+  CAB_DRIVER
+  SERVICE_PROVIDER
+  OTHER
+  FAMILY_MEMBER
+  FRIEND
+}
+
+enum PreApprovalStatus {
+  ACTIVE
+  EXPIRED
+  USED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+}
+
+enum FamilyRole {
+  SPOUSE
+  CHILD
+  PARENT
+  SIBLING
+  OTHER
+}
+
+enum GatePassType {
+  MATERIAL // Furniture, appliances moving in/out
+  VEHICLE // Vehicle gate pass (painting, repair)
+  MOVE_IN // New resident moving in
+  MOVE_OUT // Resident moving out
+  MAINTENANCE // Contractor/worker access
+}
+
+enum GatePassStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTIVE
+  USED
+  EXPIRED
+}
+
+enum NoticeType {
+  GENERAL
+  URGENT
+  EVENT
+  MAINTENANCE
+  MEETING
+  EMERGENCY
+}
+
+enum NoticePriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AmenityType {
+  CLUBHOUSE
+  GYM
+  SWIMMING_POOL
+  PARTY_HALL
+  SPORTS_COURT
+  BANQUET_HALL
+  GARDEN
+  OTHER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum ComplaintCategory {
+  MAINTENANCE
+  SECURITY
+  CLEANLINESS
+  WATER
+  ELECTRICITY
+  PARKING
+  NOISE
+  PETS
+  OTHER
+}
+
+enum ComplaintStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  REJECTED
+}
+
+enum ComplaintPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum EmergencyType {
+  MEDICAL
+  FIRE
+  THEFT
+  VIOLENCE
+  ACCIDENT
+  OTHER
+}
+
+enum EmergencyStatus {
+  ACTIVE
+  RESOLVED
+  FALSE_ALARM
+}
+
+enum VendorCategory {
+  PLUMBER
+  ELECTRICIAN
+  CARPENTER
+  PAINTER
+  CLEANER
+  GARDENER
+  PEST_CONTROL
+  APPLIANCE_REPAIR
+  OTHER
+}
+
+enum OnboardingStatus {
+  DRAFT              // User created profile, not submitted yet
+  PENDING_DOCS       // Awaiting document upload
+  PENDING_APPROVAL   // Documents uploaded, awaiting admin review
+  RESUBMIT_REQUESTED // Admin requested document resubmission
+  APPROVED           // Admin approved, full access granted
+  REJECTED           // Admin rejected the request
+}
+
+enum ResidentType {
+  OWNER
+  TENANT
+}
+
+enum DocumentType {
+  OWNERSHIP_PROOF    // Property deed, sale agreement
+  TENANT_AGREEMENT   // Rental agreement
+  AADHAR_CARD
+  PAN_CARD
+  PASSPORT
+  DRIVING_LICENSE
+  VOTER_ID
+  OTHER
+}
+
+enum OnboardingAction {
+  CREATED
+  SOCIETY_SELECTED
+  FLAT_SELECTED
+  DOCUMENTS_UPLOADED
+  SUBMITTED_FOR_REVIEW
+  APPROVED
+  REJECTED
+  RESUBMIT_REQUESTED
+  DOCUMENTS_RESUBMITTED
+}
+
+// --------------------
+// NOTIFICATION SYSTEM
+// --------------------
+
+enum NotificationType {
+  ONBOARDING_STATUS
+  ENTRY_REQUEST
+  DELIVERY_REQUEST
+  EMERGENCY_ALERT
+  STAFF_CHECKIN
+  STAFF_CHECKOUT
+  SYSTEM
+}
+
+// --------------------
+// ENTRY REQUEST SYSTEM (Guard Photo Approval)
+// --------------------
+
+enum EntryRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum ProviderTag {
+  BLINKIT
+  SWIGGY
+  ZOMATO
+  AMAZON
+  FLIPKART
+  BIGBASKET
+  DUNZO
+  OTHER
+}
+
+enum DomesticStaffType {
+  MAID
+  COOK
+  NANNY
+  DRIVER
+  CLEANER
+  GARDENER
+  LAUNDRY
+  CARETAKER
+  SECURITY_GUARD
+  OTHER
+}
+
+enum StaffAvailabilityStatus {
+  AVAILABLE
+  BUSY
+  ON_LEAVE
+  INACTIVE
+}
+
+enum StaffBookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// --------------------
+// SOCIETY (Multi-tenant)
+// --------------------
+
+model Society {
+  id      String @id @default(uuid())
+  name    String
+  address String
+  city    String
+  state   String
+  pincode String
+
+  // Contact details
+  contactName  String
+  contactPhone String
+  contactEmail String?
+
+  // Simple config
+  totalFlats Int @default(0)
+
+  // Status
+  isActive Boolean @default(true)
+
+  // Payment tracking
+  monthlyFee    Float         @default(500) // ₹500/month
+  lastPaidDate  DateTime?
+  nextDueDate   DateTime // When to remind
+  paymentStatus PaymentStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users                    User[]
+  blocks                   Block[]
+  flats                    Flat[]
+  entries                  Entry[]
+  domesticStaff            DomesticStaff[]
+  preApprovals             PreApproval[]
+  vehicles                 Vehicle[]
+  gatePoints               GatePoint[]
+  visitorFrequencies       VisitorFrequency[]
+  paymentReminders         PaymentReminder[]
+  expectedDeliveries       ExpectedDelivery[]
+  deliveryAutoApproveRules DeliveryAutoApproveRule[]
+  gatePasses               GatePass[]
+  notices                  Notice[]
+  amenities                Amenity[]
+  amenityBookings          AmenityBooking[]
+  complaints               Complaint[]
+  emergencies              Emergency[]
+  vendors                  Vendor[]
+  staffAttendance          StaffAttendance[]
+  staffBookings            StaffBooking[]
+  onboardingRequests       OnboardingRequest[]
+  notifications            Notification[]
+  entryRequests            EntryRequest[]
+
+  @@index([city, isActive])
+  @@index([paymentStatus, nextDueDate])
+}
+
+// --------------------
+// GATE POINTS (Multiple gates)
+// --------------------
+
+model GatePoint {
+  id       String  @id @default(uuid())
+  name     String // Main Gate, Back Gate
+  isActive Boolean @default(true)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  entries Entry[]
+
+  createdAt DateTime @default(now())
+
+  @@index([societyId, isActive])
+}
+
+// --------------------
+// BLOCKS/TOWERS
+// --------------------
+
+model Block {
+  id   String @id @default(uuid())
+  name String // "Tower A", "Block 1", "Building North"
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Optional metadata
+  totalFloors Int?
+  description String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  flats              Flat[]
+  onboardingRequests OnboardingRequest[]
+
+  @@unique([societyId, name])
+  @@index([societyId, isActive])
+}
+
+// --------------------
+// FLATS
+// --------------------
+
+model Flat {
+  id         String  @id @default(uuid())
+  flatNumber String
+  floor      String?
+
+  // Block relationship
+  blockId String?
+  block   Block?  @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Owner information (optional, can be filled by admin)
+  ownerName  String?
+  ownerPhone String?
+  ownerEmail String?
+
+  // Occupancy tracking
+  isOccupied      Boolean @default(false)
+  currentOwnerId  String? // User ID of current owner
+  currentTenantId String? // User ID of current tenant
+
+  // Status
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  residents                User[]
+  entries                  Entry[]
+  domesticStaff            DomesticStaff[]
+  vehicles                 Vehicle[]
+  preApprovals             PreApproval[]
+  visitorFrequencies       VisitorFrequency[]
+  expectedDeliveries       ExpectedDelivery[]
+  deliveryAutoApproveRules DeliveryAutoApproveRule[]
+  gatePasses               GatePass[]
+  amenityBookings          AmenityBooking[]
+  complaints               Complaint[]
+  emergencies              Emergency[]
+  staffFlatAssignments     StaffFlatAssignment[]
+  staffAttendance          StaffAttendance[]
+  staffBookings            StaffBooking[]
+  staffReviews             StaffReview[]
+  onboardingRequests       OnboardingRequest[]
+  entryRequests            EntryRequest[]
+
+  @@unique([societyId, flatNumber])
+  @@index([societyId])
+  @@index([blockId])
+  @@index([isOccupied])
+}
+
+
+// --------------------
+// USERS
+// --------------------
+
+model User {
+  id       String  @id @default(uuid())
+  name     String  @default("") // Empty initially for OTP signup
+  phone    String  @unique
+  email    String?
+  password String  @default("") // Empty for OTP-only users
+  role     Role
+
+  // Profile
+  photoUrl String?
+  isActive Boolean @default(false) // FALSE until approved by admin
+
+  // Resident specific
+  flatId  String?
+  flat    Flat?   @relation(fields: [flatId], references: [id])
+  isOwner Boolean @default(false)
+
+  societyId String? // Null until onboarding approved
+  society   Society? @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Family member fields
+  isPrimaryResident Boolean     @default(false) // One primary per flat (first approved resident)
+  familyRole        FamilyRole? // SPOUSE, CHILD, PARENT, SIBLING, OTHER
+  primaryResidentId String? // Reference to primary resident
+  primaryResident   User?       @relation("FamilyMembers", fields: [primaryResidentId], references: [id], onDelete: Cascade)
+  familyMembers     User[]      @relation("FamilyMembers")
+
+  // Relations
+  createdEntries           Entry[]                   @relation("EntryCreator")
+  approvedEntries          Entry[]                   @relation("EntryApprover")
+  vehicles                 Vehicle[]
+  preApprovals             PreApproval[]
+  expectedDeliveries       ExpectedDelivery[]
+  deliveryAutoApproveRules DeliveryAutoApproveRule[]
+
+  // New module relations
+  requestedGatePasses  GatePass[]       @relation("GatePassRequester")
+  approvedGatePasses   GatePass[]       @relation("GatePassApprover")
+  createdNotices       Notice[]
+  amenityBookings      AmenityBooking[]
+  reportedComplaints   Complaint[]      @relation("ComplaintReporter")
+  assignedComplaints   Complaint[]      @relation("ComplaintAssignee")
+  resolvedComplaints   Complaint[]      @relation("ComplaintResolver")
+  reportedEmergencies  Emergency[]      @relation("EmergencyReporter")
+  respondedEmergencies Emergency[]      @relation("EmergencyResponder")
+  addedVendors         Vendor[]
+
+  // Domestic Staff relations
+  addedDomesticStaff      DomesticStaff[]
+  verifiedStaffAttendance StaffAttendance[]
+  staffBookings           StaffBooking[]
+  staffReviews            StaffReview[]
+
+  // Onboarding relations
+  onboardingRequest    OnboardingRequest?  @relation("ResidentOnboarding")
+  reviewedOnboardings  OnboardingRequest[] @relation("OnboardingReviewer")
+  onboardingAuditLogs  OnboardingAuditLog[]
+
+  // Notification relations
+  notifications Notification[]
+
+  // Entry Request relations
+  createdEntryRequests  EntryRequest[] @relation("EntryRequestGuard")
+  approvedEntryRequests EntryRequest[] @relation("EntryRequestApprover")
+
+  // Auth
+  lastLogin DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, role])
+  @@index([phone])
+  @@index([email])
+}
+
+// --------------------
+// ENTRIES
+// --------------------
+
+model Entry {
+  id String @id @default(uuid())
+
+  type   EntryType
+  status EntryStatus @default(PENDING)
+
+  // Visitor/Delivery details
+  visitorName   String
+  visitorPhone  String? // Optional - often not available for delivery
+  visitorType   VisitorType @default(GUEST)
+  visitorPhoto  String? // Guard takes photo (optional)
+  purpose       String?
+  vehicleNumber String?
+
+  // Delivery specific
+  companyName  String? // "Amazon", "Zomato", "Flipkart"
+  packageCount Int?    @default(1)
+
+  // Auto-approval tracking
+  wasAutoApproved    Boolean @default(false)
+  autoApprovalReason String? // "Expected delivery" or "Standing rule"
+
+  // Flat reference
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  // Society reference
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Gate point
+  gatePointId String?
+  gatePoint   GatePoint? @relation(fields: [gatePointId], references: [id])
+
+  // Guard who created the entry
+  createdById String
+  createdBy   User   @relation("EntryCreator", fields: [createdById], references: [id])
+
+  // Resident/Admin who approved
+  approvedById String?
+  approvedBy   User?     @relation("EntryApprover", fields: [approvedById], references: [id])
+  approvedAt   DateTime?
+
+  // Time tracking
+  checkInTime  DateTime  @default(now())
+  checkOutTime DateTime?
+
+  // References
+  preApprovalId   String?
+  preApproval     PreApproval?   @relation(fields: [preApprovalId], references: [id])
+  domesticStaffId String?
+  domesticStaff   DomesticStaff? @relation(fields: [domesticStaffId], references: [id])
+
+  // Notes
+  remarks         String?
+  rejectionReason String?
+
+  // Entry Request reference (if created from EntryRequest approval)
+  entryRequest EntryRequest?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status, checkInTime(sort: Desc)])
+  @@index([flatId, checkInTime(sort: Desc)])
+  @@index([visitorPhone])
+  @@index([createdById])
+  @@index([type, companyName, checkInTime(sort: Desc)])
+}
+
+// --------------------
+// PRE-APPROVALS (QR INVITES for Family/Friends)
+// --------------------
+
+model PreApproval {
+  id String @id @default(uuid())
+
+  // Visitor details
+  visitorName   String
+  visitorPhone  String
+  visitorType   VisitorType
+  purpose       String?
+  vehicleNumber String?
+
+  // QR Code / Unique token
+  qrToken String @unique
+
+  // Validity
+  validFrom  DateTime
+  validUntil DateTime
+  status     PreApprovalStatus @default(ACTIVE)
+  maxUses    Int               @default(1)
+  usedCount  Int               @default(0)
+
+  // Flat reference
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  // Society reference
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Created by (resident)
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  // Used entries
+  entries Entry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([qrToken])
+  @@index([societyId, status])
+  @@index([flatId, validUntil])
+}
+
+// --------------------
+// EXPECTED DELIVERIES (Smart auto-approval)
+// --------------------
+
+model ExpectedDelivery {
+  id String @id @default(uuid())
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  // Delivery details
+  companyName String // "Amazon", "Flipkart", "Swiggy"
+  itemName    String? // "iPhone 15", "Food order"
+
+  // Time window
+  expectedDate DateTime // Today, Tomorrow, specific date
+  timeFrom     String? // "10:00"
+  timeUntil    String? // "20:00"
+
+  // Auto-approval
+  autoApprove Boolean @default(true)
+
+  // Status
+  isUsed Boolean   @default(false)
+  usedAt DateTime?
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime // Auto-delete after this date
+
+  @@index([flatId, expectedDate, isUsed])
+  @@index([societyId, expectedDate])
+}
+
+// --------------------
+// DELIVERY AUTO-APPROVE RULES (Standing approval)
+// --------------------
+
+model DeliveryAutoApproveRule {
+  id String @id @default(uuid())
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  // Rule details
+  companies String[] // ["Swiggy", "Zomato", "Amazon"]
+
+  // Time restrictions (optional)
+  allowedDays String[] // ["MON", "TUE", "WED"] - empty = all days
+  timeFrom    String? // "08:00"
+  timeUntil   String? // "23:00"
+
+  // Status
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([flatId, isActive])
+  @@index([societyId])
+}
+
+// --------------------
+// DOMESTIC STAFF (Comprehensive Staff Management)
+// --------------------
+
+model DomesticStaff {
+  id       String  @id @default(uuid())
+  name     String
+  phone    String  @unique
+  email    String?
+  photoUrl String?
+
+  // Staff details
+  staffType        DomesticStaffType
+  experienceYears  Int?
+  description      String? // Bio, skills, specialties
+  languages        String[] // Languages spoken
+  idProofType      String? // Aadhar, PAN, etc.
+  idProofNumber    String?
+  idProofUrl       String? // Document URL
+  address          String?
+  emergencyContact String?
+
+  // Employment & Availability
+  isFullTime         Boolean                 @default(false)
+  workingDays        String[] // ["MON", "TUE", "WED", "THU", "FRI"]
+  workStartTime      String? // "09:00"
+  workEndTime        String? // "18:00"
+  availabilityStatus StaffAvailabilityStatus @default(AVAILABLE)
+
+  // Pricing
+  hourlyRate  Float?
+  dailyRate   Float?
+  monthlyRate Float?
+
+  // Rating & Reviews
+  rating       Float? @default(0)
+  totalReviews Int    @default(0)
+
+  // Verification
+  isVerified Boolean   @default(false)
+  verifiedAt DateTime?
+  verifiedBy String? // Admin user ID
+
+  // Society & Flat (Staff can be shared across society or assigned to specific flats)
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  assignedFlats StaffFlatAssignment[] // Multiple flat assignments
+
+  // QR Code for attendance
+  qrToken String @unique
+
+  // Current status
+  isActive           Boolean @default(true)
+  isCurrentlyWorking Boolean @default(false)
+  currentFlatId      String? // Which flat they're currently at
+
+  // Last activity
+  lastCheckIn  DateTime?
+  lastCheckOut DateTime?
+
+  // Relations
+  entries           Entry[]
+  attendanceRecords StaffAttendance[]
+  bookings          StaffBooking[]
+  reviews           StaffReview[]
+
+  // Added by
+  addedById String
+  addedBy   User   @relation(fields: [addedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  flat      Flat?    @relation(fields: [flatId], references: [id])
+  flatId    String?
+
+  @@index([qrToken])
+  @@index([societyId, staffType])
+  @@index([societyId, availabilityStatus])
+  @@index([phone])
+}
+
+// --------------------
+// STAFF FLAT ASSIGNMENTS
+// --------------------
+
+model StaffFlatAssignment {
+  id String @id @default(uuid())
+
+  domesticStaffId String
+  domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  // Assignment details
+  isPrimary     Boolean  @default(false) // Main employer
+  workingDays   String[] // ["MON", "WED", "FRI"]
+  workStartTime String? // "09:00"
+  workEndTime   String? // "11:00"
+
+  // Payment for this specific flat
+  agreedRate Float?
+  rateType   String? // "hourly", "daily", "monthly"
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([domesticStaffId, flatId])
+  @@index([flatId])
+  @@index([domesticStaffId, isActive])
+}
+
+// --------------------
+// STAFF ATTENDANCE RECORDS
+// --------------------
+
+model StaffAttendance {
+  id String @id @default(uuid())
+
+  domesticStaffId String
+  domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Attendance details
+  checkInTime  DateTime
+  checkOutTime DateTime?
+  duration     Int? // Minutes worked
+
+  // Location
+  checkInMethod  String  @default("QR") // QR, MANUAL, AUTO
+  checkOutMethod String? // QR, MANUAL, AUTO
+
+  // Verification
+  verifiedByGuardId String?
+  verifiedByGuard   User?   @relation(fields: [verifiedByGuardId], references: [id])
+
+  // Notes
+  notes         String?
+  workCompleted String? // Tasks completed during this session
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([domesticStaffId, checkInTime(sort: Desc)])
+  @@index([flatId, checkInTime(sort: Desc)])
+  @@index([societyId, checkInTime(sort: Desc)])
+}
+
+// --------------------
+// STAFF BOOKINGS (On-demand/urgent bookings)
+// --------------------
+
+model StaffBooking {
+  id String @id @default(uuid())
+
+  domesticStaffId String
+  domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
+
+  // Booked by
+  bookedById String
+  bookedBy   User   @relation(fields: [bookedById], references: [id])
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Booking details
+  bookingDate   DateTime
+  startTime     String // "10:00"
+  endTime       String // "14:00"
+  durationHours Float // 1, 2, 4, etc.
+
+  // Purpose & requirements
+  workType      String // Cleaning, Cooking, Babysitting, etc.
+  requirements  String? // Special requirements
+  estimatedCost Float?
+
+  // Status
+  status StaffBookingStatus @default(PENDING)
+
+  // Acceptance
+  acceptedAt      DateTime?
+  rejectedAt      DateTime?
+  rejectionReason String?
+
+  // Completion
+  completedAt    DateTime?
+  actualDuration Float? // Actual hours worked
+  finalCost      Float?
+
+  // Payment
+  isPaid Boolean   @default(false)
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([domesticStaffId, bookingDate])
+  @@index([bookedById, status])
+  @@index([flatId, bookingDate])
+  @@index([societyId, bookingDate])
+}
+
+// --------------------
+// STAFF REVIEWS & RATINGS
+// --------------------
+
+model StaffReview {
+  id String @id @default(uuid())
+
+  domesticStaffId String
+  domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
+
+  // Reviewer
+  reviewerId String
+  reviewer   User   @relation(fields: [reviewerId], references: [id])
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  // Review details
+  rating      Int // 1-5 stars
+  review      String? // Written review
+  workQuality Int? // 1-5
+  punctuality Int? // 1-5
+  behavior    Int? // 1-5
+
+  // Context
+  workType String? // What work was done
+  workDate DateTime? // When was the work done
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([domesticStaffId, rating])
+  @@index([reviewerId])
+}
+
+// --------------------
+// VEHICLES
+// --------------------
+
+model Vehicle {
+  id            String  @id @default(uuid())
+  vehicleNumber String
+  vehicleType   String // Car, Bike, Bicycle
+  model         String?
+  color         String?
+
+  // Owner
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Flat
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([societyId, vehicleNumber])
+  @@index([userId])
+}
+
+// --------------------
+// VISITOR FREQUENCY (Smart insights)
+// --------------------
+
+model VisitorFrequency {
+  id String @id @default(uuid())
+
+  visitorPhone String
+  visitorName  String
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  visitCount Int      @default(1)
+  lastVisit  DateTime
+
+  // Flag frequent visitors for auto-approval suggestion
+  isFrequent Boolean @default(false) // 3+ visits in 30 days
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([societyId, flatId, visitorPhone])
+  @@index([societyId, isFrequent])
+}
+
+// --------------------
+// PAYMENT REMINDERS (Simple tracking)
+// --------------------
+
+model PaymentReminder {
+  id String @id @default(uuid())
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  dueDate DateTime
+  amount  Float
+
+  reminderSentAt DateTime?
+  paidAt         DateTime?
+
+  // Status
+  isPaid Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([societyId, isPaid, dueDate])
+}
+
+// --------------------
+// GATE PASSES (Material/Vehicle/Move-in passes)
+// --------------------
+
+model GatePass {
+  id String @id @default(uuid())
+
+  type   GatePassType
+  status GatePassStatus @default(PENDING)
+
+  // Pass details
+  title       String // "Moving furniture", "Plumber work"
+  description String?
+
+  // Requester
+  requestedById String
+  requestedBy   User   @relation("GatePassRequester", fields: [requestedById], references: [id])
+
+  // Flat reference
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Validity
+  validFrom  DateTime
+  validUntil DateTime
+
+  // For material/vehicle passes
+  vehicleNumber String?
+  driverName    String?
+  driverPhone   String?
+  itemsList     String[] // List of items being moved
+
+  // For workers/maintenance
+  workerName  String?
+  workerPhone String?
+  companyName String? // Contractor company
+
+  // Approval
+  approvedById String?
+  approvedBy   User?     @relation("GatePassApprover", fields: [approvedById], references: [id])
+  approvedAt   DateTime?
+
+  rejectionReason String?
+
+  // QR Code for guard verification
+  qrToken String @unique
+
+  // Usage tracking
+  isUsed        Boolean   @default(false)
+  usedAt        DateTime?
+  usedByGuardId String?
+
+  // Attachments (photos of items, etc.)
+  attachments String[] // URLs to images
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status])
+  @@index([flatId, validUntil])
+  @@index([qrToken])
+}
+
+// --------------------
+// NOTICES & ANNOUNCEMENTS
+// --------------------
+
+model Notice {
+  id String @id @default(uuid())
+
+  type     NoticeType
+  priority NoticePriority @default(MEDIUM)
+
+  // Notice content
+  title       String
+  description String // Rich text / HTML
+
+  // Media attachments
+  images    String[] // Image URLs
+  documents String[] // Document URLs
+
+  // Author
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Targeting
+  isUrgent Boolean @default(false)
+  isPinned Boolean @default(false)
+
+  // Scheduling
+  publishAt DateTime  @default(now())
+  expiresAt DateTime?
+
+  // Status
+  isActive Boolean @default(true)
+
+  // Analytics
+  viewCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, isActive, publishAt(sort: Desc)])
+  @@index([societyId, isPinned, publishAt(sort: Desc)])
+}
+
+// --------------------
+// AMENITIES (Clubhouse, Gym, Pool, etc.)
+// --------------------
+
+model Amenity {
+  id String @id @default(uuid())
+
+  name        String // "Clubhouse", "Swimming Pool"
+  type        AmenityType
+  description String?
+
+  // Capacity & timing
+  capacity  Int? // Max people allowed
+  openTime  String? // "06:00"
+  closeTime String? // "22:00"
+
+  // Booking rules
+  bookingDuration    Int @default(60) // Minutes per slot
+  advanceBookingDays Int @default(7) // How many days in advance
+  maxBookingsPerUser Int @default(2) // Active bookings limit
+
+  // Pricing
+  pricePerHour Float? @default(0)
+
+  // Status
+  isActive Boolean @default(true)
+
+  // Images
+  images String[] // Amenity photos
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  bookings AmenityBooking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, isActive])
+}
+
+// --------------------
+// AMENITY BOOKINGS
+// --------------------
+
+model AmenityBooking {
+  id String @id @default(uuid())
+
+  amenityId String
+  amenity   Amenity @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  // Booking details
+  bookingDate DateTime // Date of the booking
+  startTime   String // "10:00"
+  endTime     String // "12:00"
+
+  // User
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Status
+  status BookingStatus @default(PENDING)
+
+  // Payment
+  amount Float?  @default(0)
+  isPaid Boolean @default(false)
+
+  // Additional details
+  guestCount Int?    @default(1)
+  purpose    String? // "Birthday party", "Workout"
+
+  // Cancellation
+  cancelledAt        DateTime?
+  cancellationReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([amenityId, bookingDate, startTime]) // Prevent double booking
+  @@index([amenityId, bookingDate])
+  @@index([userId, status])
+  @@index([societyId, bookingDate])
+}
+
+// --------------------
+// COMPLAINTS
+// --------------------
+
+model Complaint {
+  id String @id @default(uuid())
+
+  category ComplaintCategory
+  priority ComplaintPriority @default(MEDIUM)
+  status   ComplaintStatus   @default(OPEN)
+
+  // Complaint details
+  title       String
+  description String
+
+  // Media
+  images String[] // Photo evidence
+
+  // Location
+  location String? // "Block A, 3rd floor" or "Main gate"
+
+  // Reporter
+  reportedById String
+  reportedBy   User   @relation("ComplaintReporter", fields: [reportedById], references: [id])
+
+  flatId String?
+  flat   Flat?   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Assignment
+  assignedToId String?
+  assignedTo   User?     @relation("ComplaintAssignee", fields: [assignedToId], references: [id])
+  assignedAt   DateTime?
+
+  // Resolution
+  resolvedById String?
+  resolvedBy   User?     @relation("ComplaintResolver", fields: [resolvedById], references: [id])
+  resolvedAt   DateTime?
+  resolution   String? // Admin's response
+
+  // Tracking
+  isAnonymous Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status, createdAt(sort: Desc)])
+  @@index([reportedById, status])
+  @@index([category, status])
+}
+
+// --------------------
+// EMERGENCY ALERTS (SOS / Panic Button)
+// --------------------
+
+model Emergency {
+  id String @id @default(uuid())
+
+  type   EmergencyType
+  status EmergencyStatus @default(ACTIVE)
+
+  // Details
+  description String?
+  location    String? // Where in the society
+
+  // Reporter
+  reportedById String
+  reportedBy   User   @relation("EmergencyReporter", fields: [reportedById], references: [id])
+
+  flatId String?
+  flat   Flat?   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Response tracking
+  respondedById String?
+  respondedBy   User?     @relation("EmergencyResponder", fields: [respondedById], references: [id])
+  respondedAt   DateTime?
+
+  resolvedAt DateTime?
+  notes      String? // Admin notes about the incident
+
+  // Alerts sent
+  alertsSent    Boolean  @default(false)
+  notifiedUsers String[] // User IDs who were notified
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status, createdAt(sort: Desc)])
+  @@index([reportedById])
+}
+
+// --------------------
+// VENDORS (Approved service providers)
+// --------------------
+
+model Vendor {
+  id String @id @default(uuid())
+
+  name     String
+  category VendorCategory
+
+  // Contact
+  phone          String
+  email          String?
+  alternatePhone String?
+
+  // Details
+  companyName String?
+  description String?
+  address     String?
+
+  // Verification
+  isVerified Boolean   @default(false)
+  verifiedAt DateTime?
+
+  // Rating
+  rating       Float? @default(0)
+  totalReviews Int    @default(0)
+
+  // Availability
+  isActive     Boolean  @default(true)
+  workingDays  String[] // ["MON", "TUE", "WED"]
+  workingHours String? // "9:00 AM - 6:00 PM"
+
+  // Pricing
+  hourlyRate Float?
+  minCharge  Float?
+
+  // Documents
+  idProof String? // URL to ID document
+  photos  String[] // Vendor photos
+
+  // Added by
+  addedById String
+  addedBy   User   @relation(fields: [addedById], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, category, isActive])
+  @@index([societyId, isVerified])
+}
+
+// --------------------
+// ONBOARDING SYSTEM
+// --------------------
+
+model OnboardingRequest {
+  id String @id @default(uuid())
+
+  // Resident
+  userId String @unique
+  user   User   @relation("ResidentOnboarding", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Target location
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  blockId String
+  block   Block  @relation(fields: [blockId], references: [id])
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  // Resident type
+  residentType ResidentType // OWNER or TENANT
+
+  // Status
+  status OnboardingStatus @default(DRAFT)
+
+  // Admin review
+  reviewedById String?
+  reviewedBy   User?     @relation("OnboardingReviewer", fields: [reviewedById], references: [id])
+  reviewedAt   DateTime?
+
+  // Rejection/Resubmission
+  rejectionReason   String?
+  resubmitReason    String?
+  resubmissionCount Int     @default(0)
+
+  // Documents
+  documents ResidentDocument[]
+
+  // Audit trail
+  auditLogs OnboardingAuditLog[]
+
+  // Timestamps
+  submittedAt DateTime?
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([societyId, status])
+  @@index([flatId, status])
+  @@index([status, createdAt(sort: Desc)])
+}
+
+model ResidentDocument {
+  id String @id @default(uuid())
+
+  // Linked to onboarding request
+  onboardingRequestId String
+  onboardingRequest   OnboardingRequest @relation(fields: [onboardingRequestId], references: [id], onDelete: Cascade)
+
+  // Document details
+  documentType DocumentType
+  documentUrl  String       // S3/Cloudinary URL
+  fileName     String
+  fileSize     Int          // Bytes
+  mimeType     String       // application/pdf, image/jpeg, etc.
+
+  // Metadata
+  uploadedAt DateTime @default(now())
+
+  // Verification
+  isVerified Boolean   @default(false)
+  verifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([onboardingRequestId])
+  @@index([documentType])
+}
+
+model OnboardingAuditLog {
+  id String @id @default(uuid())
+
+  onboardingRequestId String
+  onboardingRequest   OnboardingRequest @relation(fields: [onboardingRequestId], references: [id], onDelete: Cascade)
+
+  // Action details
+  action      OnboardingAction
+  performedBy String           // User ID
+  performer   User             @relation(fields: [performedBy], references: [id])
+
+  // Previous and new status
+  previousStatus OnboardingStatus?
+  newStatus      OnboardingStatus?
+
+  // Additional context
+  notes    String?
+  metadata Json? // Store additional data (e.g., rejection reason, documents uploaded)
+
+  createdAt DateTime @default(now())
+
+  @@index([onboardingRequestId, createdAt(sort: Desc)])
+  @@index([performedBy])
+}
+
+// --------------------
+// NOTIFICATIONS (In-App)
+// --------------------
+
+model Notification {
+  id   String           @id @default(uuid())
+  type NotificationType
+
+  title   String
+  message String
+  data    Json? // Additional payload (entry request ID, etc.)
+
+  // Recipient
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  societyId String?
+  society   Society? @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Status
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  // Reference to related entity
+  referenceId   String? // Entry request ID, onboarding ID, etc.
+  referenceType String? // "EntryRequest", "OnboardingRequest", etc.
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead, createdAt(sort: Desc)])
+  @@index([societyId, createdAt(sort: Desc)])
+}
+
+// --------------------
+// ENTRY REQUESTS (Guard Photo Approval)
+// --------------------
+
+model EntryRequest {
+  id     String             @id @default(uuid())
+  type   EntryType // DELIVERY, VISITOR, etc.
+  status EntryRequestStatus @default(PENDING)
+
+  // Visitor details
+  visitorName  String?
+  visitorPhone String?
+  providerTag  ProviderTag? // For deliveries (Swiggy, Blinkit, etc.)
+
+  // Photo (S3 key - optional)
+  photoKey String?
+
+  // Target flat
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Guard who created the request
+  guardId String
+  guard   User   @relation("EntryRequestGuard", fields: [guardId], references: [id])
+
+  // Approval
+  approvedById    String?
+  approvedBy      User?     @relation("EntryRequestApprover", fields: [approvedById], references: [id])
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  rejectionReason String?
+
+  // Auto-expiry (15 minutes)
+  expiresAt DateTime
+
+  // Converted to Entry after approval
+  entryId String? @unique
+  entry   Entry?  @relation(fields: [entryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([flatId, status, createdAt(sort: Desc)])
+  @@index([guardId, status])
+  @@index([societyId, status])
+  @@index([status, expiresAt])
+}
+
