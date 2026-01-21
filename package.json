@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev  src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
+     "build": "tsc && npm run copy:swagger",
+    "copy:swagger": "copy swagger.yaml dist\\swagger.yaml",
+    "start": "node dist/src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "ts-node prisma/seed.ts",
     "db:reset": "prisma migrate reset --force && npm run seed"
