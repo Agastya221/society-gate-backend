@@ -17,8 +17,8 @@ const userController = new UserController();
 router.post('/otp/send', userController.requestResidentOtp);
 router.post('/otp/verify', userController.verifyOtpAndCreateProfile);
 
-// Resident App - Login
-router.post('/resident-app/login', userController.residentAppLogin);
+// Admin App - Login
+router.post('/admin-app/login', userController.residentAppLogin);
 
 // Guard App - Login
 router.post('/guard-app/login', userController.guardAppLogin);
