@@ -1,8 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
-import path from 'path';
 import { errorHandler } from './middlewares/error.middleware';
 
 // Import v1 routes (New optimized structure)
@@ -30,19 +27,12 @@ import familyRoutes from './modules/family/family.routes';
 
 const app = express();
 
-// Load Swagger documentation
-const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Swagger API Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Society Gate API Documentation',
-}));
 
 // Health check
 app.get('/health', (req, res) => {
