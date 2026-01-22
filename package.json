@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev  src/server.ts",
      "build": "tsc && npx prisma generate && npm run copy:swagger",
-    "copy:swagger": "copy swagger.yaml dist/swagger.yaml",
+    "copy:swagger": "copy swagger.yaml dist\\swagger.yaml",
     "start": "node dist/src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "ts-node prisma/seed.ts",
