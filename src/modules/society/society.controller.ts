@@ -25,7 +25,7 @@ export class SocietyController {
   });
 
   getSociety = asyncHandler(async (req: Request, res: Response) => {
-    const society = await societyService.getSocietyById(req.params.id);
+    const society = await societyService.getSocietyById(String(req.params.id));
 
     res.json({
       success: true,
@@ -34,7 +34,7 @@ export class SocietyController {
   });
 
   updateSociety = asyncHandler(async (req: Request, res: Response) => {
-    const society = await societyService.updateSociety(req.params.id, req.body);
+    const society = await societyService.updateSociety(String(req.params.id), req.body);
 
     res.json({
       success: true,
@@ -44,7 +44,7 @@ export class SocietyController {
   });
 
   markPaymentPaid = asyncHandler(async (req: Request, res: Response) => {
-    const society = await societyService.markPaymentPaid(req.params.id);
+    const society = await societyService.markPaymentPaid(String(req.params.id));
 
     res.json({
       success: true,
@@ -54,7 +54,7 @@ export class SocietyController {
   });
 
   getSocietyStats = asyncHandler(async (req: Request, res: Response) => {
-    const stats = await societyService.getSocietyStats(req.params.id);
+    const stats = await societyService.getSocietyStats(String(req.params.id));
 
     res.json({
       success: true,

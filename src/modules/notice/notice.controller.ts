@@ -41,7 +41,7 @@ export const getNotices = async (req: Request, res: Response) => {
 export const getNoticeById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const notice = await noticeService.getNoticeById(id);
+    const notice = await noticeService.getNoticeById(String(id));
 
     res.status(200).json({
       success: true,
@@ -59,7 +59,7 @@ export const updateNotice = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = (req as any).user.id;
-    const notice = await noticeService.updateNotice(id, req.body, userId);
+    const notice = await noticeService.updateNotice(String(id), req.body, userId);
 
     res.status(200).json({
       success: true,
@@ -78,7 +78,7 @@ export const deleteNotice = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = (req as any).user.id;
-    const result = await noticeService.deleteNotice(id, userId);
+    const result = await noticeService.deleteNotice(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -95,7 +95,7 @@ export const deleteNotice = async (req: Request, res: Response) => {
 export const togglePinNotice = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const notice = await noticeService.togglePinNotice(id);
+    const notice = await noticeService.togglePinNotice(String(id));
 
     res.status(200).json({
       success: true,

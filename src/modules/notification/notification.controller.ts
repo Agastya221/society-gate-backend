@@ -58,7 +58,7 @@ export const markAsRead = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
 
-    const notification = await notificationService.markAsRead(id, userId);
+    const notification = await notificationService.markAsRead(String(id), userId);
 
     res.status(200).json({
       success: true,

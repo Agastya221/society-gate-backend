@@ -42,7 +42,7 @@ export class FamilyController {
     const { memberId } = req.params;
     const primaryResidentId = req.user!.id;
 
-    const result = await familyService.removeFamilyMember(memberId, primaryResidentId);
+    const result = await familyService.removeFamilyMember(String(memberId), primaryResidentId);
 
     res.status(200).json({
       success: true,
@@ -57,7 +57,7 @@ export class FamilyController {
     const primaryResidentId = req.user!.id;
 
     const updatedMember = await familyService.updateFamilyRole(
-      memberId,
+      String(memberId),
       familyRole,
       primaryResidentId
     );

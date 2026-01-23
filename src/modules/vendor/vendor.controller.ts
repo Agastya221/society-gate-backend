@@ -41,7 +41,7 @@ export const getVendors = async (req: Request, res: Response) => {
 export const getVendorById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const vendor = await vendorService.getVendorById(id);
+    const vendor = await vendorService.getVendorById(String(id));
 
     res.status(200).json({
       success: true,
@@ -58,7 +58,7 @@ export const getVendorById = async (req: Request, res: Response) => {
 export const updateVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const vendor = await vendorService.updateVendor(id, req.body);
+    const vendor = await vendorService.updateVendor(String(id), req.body);
 
     res.status(200).json({
       success: true,
@@ -76,7 +76,7 @@ export const updateVendor = async (req: Request, res: Response) => {
 export const verifyVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const vendor = await vendorService.verifyVendor(id);
+    const vendor = await vendorService.verifyVendor(String(id));
 
     res.status(200).json({
       success: true,
@@ -94,7 +94,7 @@ export const verifyVendor = async (req: Request, res: Response) => {
 export const deleteVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await vendorService.deleteVendor(id);
+    const result = await vendorService.deleteVendor(String(id));
 
     res.status(200).json({
       success: true,
@@ -120,7 +120,7 @@ export const rateVendor = async (req: Request, res: Response) => {
       });
     }
 
-    const vendor = await vendorService.updateVendorRating(id, rating);
+    const vendor = await vendorService.updateVendorRating(String(id), rating);
 
     res.status(200).json({
       success: true,

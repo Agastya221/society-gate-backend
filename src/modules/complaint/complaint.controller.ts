@@ -48,7 +48,7 @@ export const getComplaintById = asyncHandler(async (req: Request, res: Response)
   const userRole = req.user!.role;
   const userSocietyId = req.user!.societyId;
 
-  const complaint = await complaintService.getComplaintById(id, userId, userRole, userSocietyId);
+  const complaint = await complaintService.getComplaintById(String(id), userId, userRole, userSocietyId);
 
   res.status(200).json({
     success: true,
@@ -62,7 +62,7 @@ export const updateComplaintStatus = asyncHandler(async (req: Request, res: Resp
   const { status } = req.body;
   const adminSocietyId = req.user!.societyId;
 
-  const complaint = await complaintService.updateComplaintStatus(id, status, adminSocietyId);
+  const complaint = await complaintService.updateComplaintStatus(String(id), status, adminSocietyId);
 
   res.status(200).json({
     success: true,
@@ -77,7 +77,7 @@ export const assignComplaint = asyncHandler(async (req: Request, res: Response) 
   const { assignedToId } = req.body;
   const adminSocietyId = req.user!.societyId;
 
-  const complaint = await complaintService.assignComplaint(id, assignedToId, adminSocietyId);
+  const complaint = await complaintService.assignComplaint(String(id), assignedToId, adminSocietyId);
 
   res.status(200).json({
     success: true,
@@ -93,7 +93,7 @@ export const resolveComplaint = asyncHandler(async (req: Request, res: Response)
   const userId = req.user!.id;
   const adminSocietyId = req.user!.societyId;
 
-  const complaint = await complaintService.resolveComplaint(id, resolution, userId, adminSocietyId);
+  const complaint = await complaintService.resolveComplaint(String(id), resolution, userId, adminSocietyId);
 
   res.status(200).json({
     success: true,
@@ -107,7 +107,7 @@ export const deleteComplaint = asyncHandler(async (req: Request, res: Response) 
   const { id } = req.params;
   const userId = req.user!.id;
 
-  const result = await complaintService.deleteComplaint(id, userId);
+  const result = await complaintService.deleteComplaint(String(id), userId);
 
   res.status(200).json({
     success: true,

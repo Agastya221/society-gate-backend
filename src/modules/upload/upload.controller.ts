@@ -79,7 +79,7 @@ export const getViewUrl = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
 
-    const viewUrl = await uploadService.getViewUrl(id, userId);
+    const viewUrl = await uploadService.getViewUrl(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -101,7 +101,7 @@ export const deleteDocument = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
 
-    await uploadService.deleteDocument(id, userId);
+    await uploadService.deleteDocument(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -123,7 +123,7 @@ export const getEntryPhotoViewUrl = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
 
-    const viewUrl = await uploadService.getEntryPhotoViewUrl(id, userId);
+    const viewUrl = await uploadService.getEntryPhotoViewUrl(String(id), userId);
 
     res.status(200).json({
       success: true,

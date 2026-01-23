@@ -47,7 +47,7 @@ export class DeliveryController {
   toggleAutoApproveRule = asyncHandler(async (req: Request, res: Response) => {
     const { isActive } = req.body;
     const rule = await deliveryService.toggleAutoApproveRule(
-      req.params.id,
+      String(req.params.id),
       isActive
     );
 
@@ -60,7 +60,7 @@ export class DeliveryController {
 
   // Delete rule
   deleteAutoApproveRule = asyncHandler(async (req: Request, res: Response) => {
-    await deliveryService.deleteAutoApproveRule(req.params.id);
+    await deliveryService.deleteAutoApproveRule(String(req.params.id));
 
     res.json({
       success: true,

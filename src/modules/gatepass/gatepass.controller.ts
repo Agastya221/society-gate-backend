@@ -27,7 +27,7 @@ export const approveGatePass = async (req: Request, res: Response) => {
     const { id } = req.params;
     const userId = (req as any).user.id;
 
-    const gatePass = await gatePassService.approveGatePass(id, userId);
+    const gatePass = await gatePassService.approveGatePass(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -48,7 +48,7 @@ export const rejectGatePass = async (req: Request, res: Response) => {
     const { reason } = req.body;
     const userId = (req as any).user.id;
 
-    const gatePass = await gatePassService.rejectGatePass(id, reason, userId);
+    const gatePass = await gatePassService.rejectGatePass(String(id), reason, userId);
 
     res.status(200).json({
       success: true,
@@ -103,7 +103,7 @@ export const getGatePasses = async (req: Request, res: Response) => {
 export const getGatePassById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const gatePass = await gatePassService.getGatePassById(id);
+    const gatePass = await gatePassService.getGatePassById(String(id));
 
     res.status(200).json({
       success: true,
@@ -120,7 +120,7 @@ export const getGatePassById = async (req: Request, res: Response) => {
 export const getGatePassQR = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const gatePassData = await gatePassService.getGatePassQR(id);
+    const gatePassData = await gatePassService.getGatePassQR(String(id));
 
     // Generate QR code image
     const qrCodeImage = await generateQRImage(gatePassData.qrToken);
@@ -145,7 +145,7 @@ export const cancelGatePass = async (req: Request, res: Response) => {
     const { id } = req.params;
     const userId = (req as any).user.id;
 
-    const gatePass = await gatePassService.cancelGatePass(id, userId);
+    const gatePass = await gatePassService.cancelGatePass(String(id), userId);
 
     res.status(200).json({
       success: true,

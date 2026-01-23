@@ -46,7 +46,7 @@ export const getStaffList = async (req: Request, res: Response) => {
 export const getStaffById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.getStaffById(id);
+    const staff = await staffService.getStaffById(String(id));
 
     res.status(200).json({
       success: true,
@@ -63,7 +63,7 @@ export const getStaffById = async (req: Request, res: Response) => {
 export const updateStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.updateStaff(id, req.body);
+    const staff = await staffService.updateStaff(String(id), req.body);
 
     res.status(200).json({
       success: true,
@@ -81,7 +81,7 @@ export const updateStaff = async (req: Request, res: Response) => {
 export const deleteStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await staffService.deleteStaff(id);
+    const result = await staffService.deleteStaff(String(id));
 
     res.status(200).json({
       success: true,
@@ -99,7 +99,7 @@ export const verifyStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = (req as any).user.id;
-    const staff = await staffService.verifyStaff(id, userId);
+    const staff = await staffService.verifyStaff(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -117,7 +117,7 @@ export const verifyStaff = async (req: Request, res: Response) => {
 export const getStaffQRCode = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.getStaffById(id);
+    const staff = await staffService.getStaffById(String(id));
 
     const qrCodeImage = await generateQRImage(staff.qrToken);
 
@@ -163,7 +163,7 @@ export const assignStaffToFlat = async (req: Request, res: Response) => {
 export const updateAssignment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const assignment = await staffService.updateAssignment(id, req.body);
+    const assignment = await staffService.updateAssignment(String(id), req.body);
 
     res.status(200).json({
       success: true,
@@ -181,7 +181,7 @@ export const updateAssignment = async (req: Request, res: Response) => {
 export const removeAssignment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await staffService.removeAssignment(id);
+    const result = await staffService.removeAssignment(String(id));
 
     res.status(200).json({
       success: true,
@@ -198,7 +198,7 @@ export const removeAssignment = async (req: Request, res: Response) => {
 export const getStaffAssignments = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
-    const assignments = await staffService.getStaffAssignments(staffId);
+    const assignments = await staffService.getStaffAssignments(String(staffId));
 
     res.status(200).json({
       success: true,
@@ -241,7 +241,7 @@ export const checkOut = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
     const { workCompleted } = req.body;
-    const attendance = await staffService.checkOut(staffId, workCompleted);
+    const attendance = await staffService.checkOut(String(staffId), workCompleted);
 
     res.status(200).json({
       success: true,
@@ -337,7 +337,7 @@ export const getBookings = async (req: Request, res: Response) => {
 export const acceptBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const booking = await staffService.acceptBooking(id);
+    const booking = await staffService.acceptBooking(String(id));
 
     res.status(200).json({
       success: true,
@@ -356,7 +356,7 @@ export const rejectBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { rejectionReason } = req.body;
-    const booking = await staffService.rejectBooking(id, rejectionReason);
+    const booking = await staffService.rejectBooking(String(id), rejectionReason);
 
     res.status(200).json({
       success: true,
@@ -375,7 +375,7 @@ export const completeBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { actualDuration, finalCost } = req.body;
-    const booking = await staffService.completeBooking(id, actualDuration, finalCost);
+    const booking = await staffService.completeBooking(String(id), actualDuration, finalCost);
 
     res.status(200).json({
       success: true,
@@ -415,7 +415,7 @@ export const addReview = async (req: Request, res: Response) => {
 export const getStaffReviews = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
-    const reviews = await staffService.getStaffReviews(staffId);
+    const reviews = await staffService.getStaffReviews(String(staffId));
 
     res.status(200).json({
       success: true,
@@ -454,7 +454,7 @@ export const updateAvailabilityStatus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    const staff = await staffService.updateAvailabilityStatus(id, status);
+    const staff = await staffService.updateAvailabilityStatus(String(id), status);
 
     res.status(200).json({
       success: true,

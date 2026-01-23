@@ -73,7 +73,7 @@ export const getEntryRequestById = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
 
-    const entryRequest = await entryRequestService.getEntryRequestById(id, userId);
+    const entryRequest = await entryRequestService.getEntryRequestById(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -95,7 +95,7 @@ export const getEntryRequestPhoto = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
 
-    const viewUrl = await uploadService.getEntryPhotoViewUrl(id, userId);
+    const viewUrl = await uploadService.getEntryPhotoViewUrl(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -117,7 +117,7 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
 
-    const entryRequest = await entryRequestService.approveEntryRequest(id, userId);
+    const entryRequest = await entryRequestService.approveEntryRequest(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -141,7 +141,7 @@ export const rejectEntryRequest = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { reason } = req.body;
 
-    const entryRequest = await entryRequestService.rejectEntryRequest(id, userId, reason);
+    const entryRequest = await entryRequestService.rejectEntryRequest(String(id), userId, reason);
 
     res.status(200).json({
       success: true,

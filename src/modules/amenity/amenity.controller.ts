@@ -41,7 +41,7 @@ export const getAmenities = async (req: Request, res: Response) => {
 export const getAmenityById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const amenity = await amenityService.getAmenityById(id);
+    const amenity = await amenityService.getAmenityById(String(id));
 
     res.status(200).json({
       success: true,
@@ -58,7 +58,7 @@ export const getAmenityById = async (req: Request, res: Response) => {
 export const updateAmenity = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const amenity = await amenityService.updateAmenity(id, req.body);
+    const amenity = await amenityService.updateAmenity(String(id), req.body);
 
     res.status(200).json({
       success: true,
@@ -76,7 +76,7 @@ export const updateAmenity = async (req: Request, res: Response) => {
 export const deleteAmenity = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await amenityService.deleteAmenity(id);
+    const result = await amenityService.deleteAmenity(String(id));
 
     res.status(200).json({
       success: true,
@@ -129,7 +129,7 @@ export const getBookings = async (req: Request, res: Response) => {
 export const approveBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const booking = await amenityService.approveBooking(id);
+    const booking = await amenityService.approveBooking(String(id));
 
     res.status(200).json({
       success: true,
@@ -149,7 +149,7 @@ export const cancelBooking = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { reason } = req.body;
     const userId = (req as any).user.id;
-    const booking = await amenityService.cancelBooking(id, reason, userId);
+    const booking = await amenityService.cancelBooking(String(id), reason, userId);
 
     res.status(200).json({
       success: true,

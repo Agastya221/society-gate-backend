@@ -37,7 +37,7 @@ export class PreApprovalController {
   // Get QR code for specific pre-approval
   getPreApprovalQR = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result = await preApprovalService.getPreApprovalQR(id, req.user!.id);
+    const result = await preApprovalService.getPreApprovalQR(String(id), req.user!.id);
 
     res.json({
       success: true,
@@ -48,7 +48,7 @@ export class PreApprovalController {
   // Cancel pre-approval
   cancelPreApproval = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result = await preApprovalService.cancelPreApproval(id, req.user!.id);
+    const result = await preApprovalService.cancelPreApproval(String(id), req.user!.id);
 
     res.json({
       success: true,

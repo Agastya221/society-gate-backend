@@ -28,7 +28,7 @@ export class OnboardingController {
     listBlocks = asyncHandler(async (req: Request, res: Response) => {
         const { societyId } = req.params;
 
-        const blocks = await onboardingService.listBlocks(societyId);
+        const blocks = await onboardingService.listBlocks(String(societyId));
 
         res.json({
             success: true,
@@ -42,7 +42,7 @@ export class OnboardingController {
     listFlats = asyncHandler(async (req: Request, res: Response) => {
         const { societyId, blockId } = req.params;
 
-        const flats = await onboardingService.listFlats(societyId, blockId);
+        const flats = await onboardingService.listFlats(String(societyId), String(blockId));
 
         res.json({
             success: true,
@@ -134,7 +134,7 @@ export class OnboardingController {
             throw new AppError('Admin must be associated with a society', 403);
         }
 
-        const details = await onboardingService.getRequestDetails(requestId, adminSocietyId);
+        const details = await onboardingService.getRequestDetails(String(requestId), adminSocietyId);
 
         res.json({
             success: true,
@@ -156,7 +156,7 @@ export class OnboardingController {
         }
 
         const result = await onboardingService.approveRequest(
-            requestId,
+            String(requestId),
             adminId,
             adminSocietyId,
             notes
@@ -187,7 +187,7 @@ export class OnboardingController {
         }
 
         const result = await onboardingService.rejectRequest(
-            requestId,
+            String(requestId),
             adminId,
             adminSocietyId,
             reason
@@ -218,7 +218,7 @@ export class OnboardingController {
         }
 
         const result = await onboardingService.requestResubmission(
-            requestId,
+            String(requestId),
             adminId,
             adminSocietyId,
             reason,

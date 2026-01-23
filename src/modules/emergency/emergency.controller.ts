@@ -58,7 +58,7 @@ export const getMyEmergencies = async (req: Request, res: Response) => {
 export const getEmergencyById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const emergency = await emergencyService.getEmergencyById(id);
+    const emergency = await emergencyService.getEmergencyById(String(id));
 
     res.status(200).json({
       success: true,
@@ -76,7 +76,7 @@ export const respondToEmergency = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = (req as any).user.id;
-    const emergency = await emergencyService.respondToEmergency(id, userId);
+    const emergency = await emergencyService.respondToEmergency(String(id), userId);
 
     res.status(200).json({
       success: true,
@@ -96,7 +96,7 @@ export const resolveEmergency = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { notes } = req.body;
     const userId = (req as any).user.id;
-    const emergency = await emergencyService.resolveEmergency(id, notes, userId);
+    const emergency = await emergencyService.resolveEmergency(String(id), notes, userId);
 
     res.status(200).json({
       success: true,
@@ -115,7 +115,7 @@ export const markAsFalseAlarm = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { notes } = req.body;
-    const emergency = await emergencyService.markAsFalseAlarm(id, notes);
+    const emergency = await emergencyService.markAsFalseAlarm(String(id), notes);
 
     res.status(200).json({
       success: true,

@@ -131,7 +131,7 @@ export class UserController {
   // Toggle User Status (Admin only)
   toggleUserStatus = asyncHandler(async (req: Request, res: Response) => {
     const { isActive } = req.body;
-    const user = await userService.toggleUserStatus(req.params.id, isActive);
+    const user = await userService.toggleUserStatus(String(req.params.id), isActive);
 
     res.json({
       success: true,

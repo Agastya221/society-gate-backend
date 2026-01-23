@@ -21,7 +21,7 @@ export class EntryController {
   // Resident approves/rejects from app
   approveEntry = asyncHandler(async (req: Request, res: Response) => {
     const entry = await entryService.approveEntry(
-      req.params.id,
+      String(req.params.id),
       req.user!.id
     );
 
@@ -35,7 +35,7 @@ export class EntryController {
   rejectEntry = asyncHandler(async (req: Request, res: Response) => {
     const { reason } = req.body;
     const entry = await entryService.rejectEntry(
-      req.params.id,
+      String(req.params.id),
       reason,
       req.user!.id
     );
@@ -49,7 +49,7 @@ export class EntryController {
 
   // Guard does checkout when visitor leaves
   checkoutEntry = asyncHandler(async (req: Request, res: Response) => {
-    const entry = await entryService.checkoutEntry(req.params.id);
+    const entry = await entryService.checkoutEntry(String(req.params.id));
 
     res.json({
       success: true,
