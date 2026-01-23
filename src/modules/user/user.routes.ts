@@ -4,6 +4,7 @@ import {
   authenticateResidentApp,
   authenticateGuardApp,
   authorize,
+  authenticate,
 } from '../../middlewares/auth.middleware';
 
 const router = Router();
@@ -22,6 +23,13 @@ router.post('/admin-app/login', userController.residentAppLogin);
 
 // Guard App - Login
 router.post('/guard-app/login', userController.guardAppLogin);
+
+// Token Refresh
+router.post('/refresh-token', userController.refreshToken);
+
+// Logout
+router.post('/logout', authenticate, userController.logout);
+
 
 // ============================================
 // RESIDENT APP - PROTECTED ROUTES

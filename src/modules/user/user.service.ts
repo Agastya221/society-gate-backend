@@ -2,7 +2,14 @@ import bcrypt from 'bcryptjs';
 import axios from 'axios';
 import { prisma, TransactionClient } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import { generateToken } from '../../middlewares/auth.middleware';
+import {
+  generateToken,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+  blacklistToken,
+  isTokenBlacklisted
+} from '../../middlewares/auth.middleware';
 import { OtpService } from '../../utils/Otp';
 import {
   validatePhoneNumber,
@@ -10,10 +17,12 @@ import {
   validateRequiredFields,
   sanitizeString,
 } from '../../utils/validation';
+import jwt from 'jsonwebtoken';
 
 const OTP_TTL = 120; // 2 minutes
 const MAX_OTP_PHONE = 3; // per hour
 const MAX_OTP_IP = 5; // per hour
+
 
 export class UserService {
   private otpService = new OtpService();
@@ -96,7 +105,15 @@ export class UserService {
       }
 
       // User exists, just return login
-      const token = generateToken(
+      const accessToken = generateAccessToken(
+        user.id,
+        user.role,
+        user.societyId,
+        user.flatId,
+        'RESIDENT_APP'
+      );
+
+      const refreshToken = generateRefreshToken(
         user.id,
         user.role,
         user.societyId,
@@ -111,7 +128,8 @@ export class UserService {
       });
 
       return {
-        token,
+        accessToken,
+        refreshToken,
         user,
         requiresOnboarding: !user.isActive || !user.societyId,
         onboardingStatus: onboardingRequest?.status || 'NOT_STARTED',
@@ -130,7 +148,15 @@ export class UserService {
       },
     });
 
-    const token = generateToken(
+    const accessToken = generateAccessToken(
+      user.id,
+      user.role,
+      user.societyId,
+      user.flatId,
+      'RESIDENT_APP'
+    );
+
+    const refreshToken = generateRefreshToken(
       user.id,
       user.role,
       user.societyId,
@@ -139,7 +165,8 @@ export class UserService {
     );
 
     return {
-      token,
+      accessToken,
+      refreshToken,
       user,
       requiresOnboarding: true,
       onboardingStatus: 'DRAFT',
@@ -171,7 +198,15 @@ export class UserService {
       });
     }
 
-    const token = generateToken(
+    const accessToken = generateAccessToken(
+      user.id,
+      user.role,
+      user.societyId,
+      user.flatId,
+      'RESIDENT_APP'
+    );
+
+    const refreshToken = generateRefreshToken(
       user.id,
       user.role,
       user.societyId,
@@ -180,7 +215,8 @@ export class UserService {
     );
 
     return {
-      token,
+      accessToken,
+      refreshToken,
       user,
       requiresOnboarding: !user.societyId,
       appType: 'RESIDENT_APP',
@@ -216,7 +252,7 @@ export class UserService {
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) throw new AppError('Invalid credentials', 401);
 
-    const token = generateToken(
+    const accessToken = generateAccessToken(
       user.id,
       user.role,
       user.societyId,
@@ -224,7 +260,15 @@ export class UserService {
       'RESIDENT_APP'
     );
 
-    return { token, user, appType: 'RESIDENT_APP' };
+    const refreshToken = generateRefreshToken(
+      user.id,
+      user.role,
+      user.societyId,
+      user.flatId,
+      'RESIDENT_APP'
+    );
+
+    return { accessToken, refreshToken, user, appType: 'RESIDENT_APP' };
   }
 
 
@@ -258,7 +302,15 @@ export class UserService {
     if (!user.isActive) throw new AppError('Your account is inactive.', 403);
     if (!user.society?.isActive) throw new AppError('Society inactive.', 403);
 
-    const token = generateToken(
+    const accessToken = generateAccessToken(
+      user.id,
+      user.role,
+      user.societyId,
+      null,
+      'GUARD_APP'
+    );
+
+    const refreshToken = generateRefreshToken(
       user.id,
       user.role,
       user.societyId,
@@ -273,7 +325,7 @@ export class UserService {
 
     const { password: _, ...userWithoutPassword } = user;
 
-    return { token, user: userWithoutPassword, appType: 'GUARD_APP' };
+    return { accessToken, refreshToken, user: userWithoutPassword, appType: 'GUARD_APP' };
   }
 
   // ============================================
@@ -370,5 +422,69 @@ export class UserService {
       data: { isActive },
       select: { id: true, name: true, isActive: true },
     });
+  }
+
+  // ============================================
+  // REFRESH TOKEN
+  // ============================================
+  async refreshAccessToken(refreshToken: string) {
+    const decoded = verifyRefreshToken(refreshToken);
+
+    const blocked = await isTokenBlacklisted(decoded.jti);
+    if (blocked) throw new AppError("Token revoked", 401);
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      include: { flat: true, society: true },
+    });
+
+    if (!user || !user.isActive) {
+      throw new AppError('User not found or inactive', 401);
+    }
+
+    const newAccessToken = generateAccessToken(
+      user.id,
+      user.role,
+      user.societyId,
+      user.flatId,
+      decoded.appType
+    );
+
+    const { password: _, ...userWithoutPassword } = user;
+
+    return {
+      accessToken: newAccessToken,
+      user: userWithoutPassword,
+    };
+  }
+
+  // ============================================
+  // LOGOUT
+  // ============================================
+  async logout(accessToken: string, refreshToken?: string) {
+    try {
+      const accessDecoded = jwt.verify(accessToken, process.env.JWT_SECRET!) as any;
+      if (accessDecoded && accessDecoded.exp) {
+        const ttl = accessDecoded.exp - Math.floor(Date.now() / 1000);
+        if (ttl > 0) {
+          await blacklistToken(accessDecoded.jti, ttl);
+        }
+      }
+
+      if (refreshToken) {
+        const refreshDecoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!) as any;
+        if (refreshDecoded && refreshDecoded.exp) {
+          const ttl = refreshDecoded.exp - Math.floor(Date.now() / 1000);
+          if (ttl > 0) {
+            await blacklistToken(refreshDecoded.jti, ttl);
+          }
+        }
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error during logout:', error);
+      return { success: true };
+    }
   }
 }

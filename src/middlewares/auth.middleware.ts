@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/Client';
 import { AppError } from '../utils/ResponseHandler';
 import { Role } from '../../prisma/generated/prisma/enums';
+import { redis } from '../config/redis';
+import crypto from "crypto";
 
 interface JwtPayload {
   userId: string;
@@ -10,6 +12,8 @@ interface JwtPayload {
   societyId: string | null;
   flatId: string | null;
   appType: 'RESIDENT_APP' | 'GUARD_APP';
+  type?: 'access' | 'refresh';
+  jti: string;
 }
 
 declare global {
@@ -24,6 +28,51 @@ declare global {
 // JWT TOKEN GENERATION
 // ============================================
 
+export const generateAccessToken = (
+  userId: string,
+  role: Role,
+  societyId: string | null,
+  flatId: string | null,
+  appType: 'RESIDENT_APP' | 'GUARD_APP',
+): string => {
+  return jwt.sign(
+    {
+      userId,
+      role,
+      societyId,
+      flatId,
+      appType,
+      type: 'access',
+      jti: crypto.randomUUID(),
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: '15m' } // Access token expires in 15 minutes
+  );
+};
+
+export const generateRefreshToken = (
+  userId: string,
+  role: Role,
+  societyId: string | null,
+  flatId: string | null,
+  appType: 'RESIDENT_APP' | 'GUARD_APP',
+): string => {
+  return jwt.sign(
+    {
+      userId,
+      role,
+      societyId,
+      flatId,
+      appType,
+      type: 'refresh',
+      jti: crypto.randomUUID(),
+    },
+    process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!,
+    { expiresIn: appType === 'RESIDENT_APP' ? '30d' : '7d' } // Refresh token lasts longer
+  );
+};
+
+// Legacy token generation (for backward compatibility)
 export const generateToken = (
   userId: string,
   role: Role,
@@ -40,10 +89,35 @@ export const generateToken = (
       societyId,
       flatId,
       appType,
+      jti: crypto.randomUUID(),
     },
     process.env.JWT_SECRET!,
     { expiresIn }
   );
+};
+
+// ============================================
+// TOKEN BLACKLIST (LOGOUT SUPPORT)
+// ============================================
+
+export const blacklistToken = async (jti: string, expiresIn: number) => {
+  try {
+    const key = `blacklist:jti:${jti}`;
+    await redis.setex(key, expiresIn, '1');
+  } catch (error) {
+    console.error('Redis error while blacklisting token:', error);
+  }
+};
+
+export const isTokenBlacklisted = async (jti: string): Promise<boolean> => {
+  try {
+    const key = `blacklist:jti:${jti}`;
+    const result = await redis.get(key);
+    return result === '1';
+  } catch (error) {
+    console.error('Redis error while checking blacklist:', error);
+    return false;
+  }
 };
 
 // ============================================
@@ -62,7 +136,19 @@ export const authenticate = async (
       throw new AppError('No token provided. Please login.', 401);
     }
 
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    // Check if token is blacklisted (logged out)
+    if (decoded.jti) {
+      const isBlacklisted = await isTokenBlacklisted(decoded.jti);
+      if (isBlacklisted) {
+        throw new AppError('Token has been revoked. Please login again.', 401);
+      }
+    }
+    // Ensure this is an access token if using the new token system
+    if (decoded.type && decoded.type !== 'access') {
+      throw new AppError('Invalid token type', 401);
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -111,6 +197,14 @@ export const authenticateForOnboarding = async (
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    // Check if token is blacklisted (logged out)
+    if (decoded.jti) {
+      const isBlacklisted = await isTokenBlacklisted(decoded.jti);
+      if (isBlacklisted) {
+        throw new AppError('Token has been revoked. Please login again.', 401);
+      }
+    }
+
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -202,6 +296,33 @@ export const authenticateGuardApp = async (
 
     next();
   });
+};
+
+// ============================================
+// REFRESH TOKEN VERIFICATION
+// ============================================
+
+export const verifyRefreshToken = (refreshToken: string): JwtPayload => {
+  try {
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!
+    ) as JwtPayload;
+
+    if (decoded.type && decoded.type !== 'refresh') {
+      throw new AppError('Invalid refresh token', 401);
+    }
+
+    return decoded;
+  } catch (error: any) {
+    if (error.name === 'JsonWebTokenError') {
+      throw new AppError('Invalid refresh token', 401);
+    }
+    if (error.name === 'TokenExpiredError') {
+      throw new AppError('Refresh token expired. Please login again.', 401);
+    }
+    throw error;
+  }
 };
 
 // ============================================

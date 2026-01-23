@@ -139,4 +139,38 @@ export class UserController {
       data: user,
     });
   });
+
+  // Refresh Access Token
+  refreshToken = asyncHandler(async (req: Request, res: Response) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      throw new AppError('Refresh token is required', 400);
+    }
+
+    const result = await userService.refreshAccessToken(refreshToken);
+
+    res.json({
+      success: true,
+      message: 'Access token refreshed successfully',
+      data: result,
+    });
+  });
+
+  // Logout
+  logout = asyncHandler(async (req: Request, res: Response) => {
+    const accessToken = req.headers.authorization?.split(' ')[1];
+    const { refreshToken } = req.body;
+
+    if (!accessToken) {
+      throw new AppError('No access token provided', 400);
+    }
+
+    await userService.logout(accessToken, refreshToken);
+
+    res.json({
+      success: true,
+      message: 'Logged out successfully',
+    });
+  });
 }

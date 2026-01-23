@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev  src/server.ts",
-    "build": "tsc && npx prisma generate",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "ts-node prisma/seed.ts",
@@ -21,8 +21,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.967.0",
     "@aws-sdk/s3-request-presigner": "^3.967.0",
-    "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "^7.2.0",
+    "@prisma/adapter-pg": "7.3.0",
+    "@prisma/client": "7.3.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^5.2.1",
@@ -47,7 +47,7 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "ioredis": "^5.9.0",
-    "prisma": "^7.2.0",
+    "prisma": "7.3.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
