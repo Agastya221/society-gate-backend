@@ -133,21 +133,22 @@ export const authenticate = async (
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      throw new AppError('No token provided. Please login.', 401);
+      return next(new AppError('No token provided. Please login.', 401)); // ✅ return here
     }
 
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-    // Check if token is blacklisted (logged out)
+    
+    // Check if token is blacklisted
     if (decoded.jti) {
       const isBlacklisted = await isTokenBlacklisted(decoded.jti);
       if (isBlacklisted) {
-        throw new AppError('Token has been revoked. Please login again.', 401);
+        return next(new AppError('Token has been revoked. Please login again.', 401)); // ✅ return here
       }
     }
-    // Ensure this is an access token if using the new token system
+    
+    // Ensure this is an access token
     if (decoded.type && decoded.type !== 'access') {
-      throw new AppError('Invalid token type', 401);
+      return next(new AppError('Invalid token type', 401)); // ✅ return here
     }
 
     const user = await prisma.user.findUnique({
@@ -156,14 +157,14 @@ export const authenticate = async (
     });
 
     if (!user || !user.isActive) {
-      throw new AppError('User not found or inactive', 401);
+      return next(new AppError('User not found or inactive', 401)); // ✅ return here
     }
 
     // SUPER_ADMIN doesn't need society assignment
     // Other roles need an active society
     if (user.role !== 'SUPER_ADMIN') {
       if (user.societyId && !user.society?.isActive) {
-        throw new AppError('Society is inactive', 403);
+        return next(new AppError('Society is inactive', 403)); // ✅ return here
       }
     }
 
@@ -171,15 +172,14 @@ export const authenticate = async (
     next();
   } catch (error: any) {
     if (error.name === 'JsonWebTokenError') {
-      return next(new AppError('Invalid token', 401));
+      return next(new AppError('Invalid token', 401)); // ✅ return here
     }
     if (error.name === 'TokenExpiredError') {
-      return next(new AppError('Token expired. Please login again.', 401));
+      return next(new AppError('Token expired. Please login again.', 401)); // ✅ return here
     }
-    next(error);
+    return next(error); // ✅ return here
   }
 };
-
 // ============================================
 // ONBOARDING AUTHENTICATION (Allows inactive users)
 // ============================================
@@ -358,9 +358,9 @@ export const ensureSameSociety = async (
   next: NextFunction
 ) => {
   try {
-    // If authenticate middleware hasn't run or failed, req.user won't exist
+    // ✅ CRITICAL: Explicit check that user exists
     if (!req.user) {
-      throw new AppError('Authentication required', 401);
+      return next(new AppError('Authentication required. User not found in request.', 401));
     }
 
     // SUPER_ADMIN can access any society
@@ -372,13 +372,21 @@ export const ensureSameSociety = async (
 
     // Ensure user has a society
     if (!userSocietyId) {
-      throw new AppError('User must be assigned to a society', 403);
+      return next(new AppError('User must be assigned to a society', 403));
     }
 
     const resourceSocietyId = req.body.societyId || req.params.societyId || req.query.societyId;
 
     if (resourceSocietyId && resourceSocietyId !== userSocietyId) {
-      throw new AppError('Access denied. You can only access resources in your society.', 403);
+      return next(new AppError('Access denied. You can only access resources in your society.', 403));
+    }
+
+    // Auto-inject societyId for convenience
+    if (!req.body.societyId) {
+      req.body.societyId = userSocietyId;
+    }
+    if (!req.query.societyId) {
+      req.query.societyId = userSocietyId;
     }
 
     next();
