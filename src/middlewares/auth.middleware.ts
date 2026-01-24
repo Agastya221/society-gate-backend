@@ -352,43 +352,39 @@ export const authorize = (...allowedRoles: Role[]) => {
 // SOCIETY ISOLATION MIDDLEWARE
 // ============================================
 
+// If you have a global type augmentation already, put this there instead.
+// This is the simplest local-safe way:
+type ReqWithSociety = Request & { societyId?: string };
+
 export const ensureSameSociety = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // ✅ Must have req.user (set by authenticate middleware)
+    // Must have req.user (set by authenticate)
     if (!req.user) {
       return next(
-        new AppError(
-          'Authentication required. User not found in request.',
-          401
-        )
+        new AppError('Authentication required. User not found in request.', 401)
       );
     }
 
-    // ✅ SUPER_ADMIN can access any society
-    if (req.user.role === 'SUPER_ADMIN') {
-      return next();
-    }
+    // SUPER_ADMIN can access everything
+    if (req.user.role === 'SUPER_ADMIN') return next();
 
     const userSocietyId = req.user.societyId;
-
-    // ✅ User must belong to a society
     if (!userSocietyId) {
       return next(new AppError('User must be assigned to a society', 403));
     }
 
-    // ✅ Read societyId from request (body/query/params) safely
+    // Read societyId from incoming request WITHOUT mutating req.query
     const bodySocietyId = (req.body as any)?.societyId;
     const querySocietyId = (req.query as any)?.societyId;
     const paramSocietyId = (req.params as any)?.societyId;
 
-    const resourceSocietyId =
-      bodySocietyId || querySocietyId || paramSocietyId;
+    const resourceSocietyId = bodySocietyId || querySocietyId || paramSocietyId;
 
-    // ✅ If request explicitly targets a society, it must match user's society
+    // If client provided a societyId, it must match user's society
     if (
       resourceSocietyId &&
       String(resourceSocietyId) !== String(userSocietyId)
@@ -401,11 +397,10 @@ export const ensureSameSociety = async (
       );
     }
 
-    // ✅ GET should rely on query, not body
-    // Inject societyId into query so services can use req.query.societyId
-    req.query = { ...(req.query as any), societyId: userSocietyId } as any;
+    // ✅ Store computed societyId safely on request (no mutation of query)
+    (req as ReqWithSociety).societyId = userSocietyId;
 
-    // ✅ Only inject into body if body exists (POST/PUT/PATCH)
+    // ✅ For non-GET requests, you may also inject into body IF body exists
     if (req.body && !bodySocietyId) {
       (req.body as any).societyId = userSocietyId;
     }
