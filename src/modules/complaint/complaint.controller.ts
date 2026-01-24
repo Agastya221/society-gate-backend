@@ -1,7 +1,6 @@
 import type { Response, Request } from 'express';
 import { ComplaintService } from './complaint.service';
-import { asyncHandler } from '../../utils/ResponseHandler';
-import { log } from 'console';
+import { asyncHandler, AppError } from '../../utils/ResponseHandler';
 
 const complaintService = new ComplaintService();
 
@@ -21,24 +20,32 @@ export const createComplaint = asyncHandler(async (req: Request, res: Response) 
 });
 
 // Admin/Resident get complaints (filtered by role)
+// In complaint.controller.ts
 export const getComplaints = asyncHandler(async (req: Request, res: Response) => {
+  // ✅ Add safety checks
+  if (!req.user) {
+    throw new AppError('Authentication required', 401);
+  }
+
   const userId = req.user.id;
   const userRole = req.user.role;
-  const userSocietyId = req.user!.societyId;
-  const userFlatId = req.user!.flatId;
+  const userSocietyId = req.user.societyId;
+  const userFlatId = req.user.flatId;
+  
+  // ✅ Validate required fields for non-SUPER_ADMIN
+  if (userRole !== 'SUPER_ADMIN' && !userSocietyId) {
+    throw new AppError('User must be assigned to a society', 403);
+  }
+
   const filters = req.query;
-  console.log('Filters:', filters);
-  console.log('User Role:', userRole);
-  console.log('User Society ID:', userSocietyId);
-  console.log('User Flat ID:', userFlatId);
 
-
+  console.log('Get complaints request:', { userId, userRole, userSocietyId, filters }); // Debug log
 
   const result = await complaintService.getComplaints(
     filters,
     userId,
     userRole,
-    userSocietyId,
+    userSocietyId!,
     userFlatId
   );
 

@@ -12,19 +12,19 @@ import { authenticate, authorize, ensureSameSociety } from '../../middlewares/au
 
 const router = Router();
 
-// Apply authentication and society isolation globally
+// Apply authentication and society isolation globally ONCE
 router.use(authenticate);
 router.use(ensureSameSociety);
 
-// Resident routes
-router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), createComplaint);
-router.get('/', getComplaints);
+// Resident routes - NO NEED to add authenticate again
+router.post('/', authorize('RESIDENT', 'ADMIN'), createComplaint);
+router.get('/', getComplaints);  // ✅ No duplicate authenticate
 router.get('/:id', getComplaintById);
 router.delete('/:id', deleteComplaint);
 
 // Admin routes
-router.patch('/:id/status', authorize('ADMIN', 'SUPER_ADMIN'), updateComplaintStatus);
-router.patch('/:id/assign', authorize('ADMIN', 'SUPER_ADMIN'), assignComplaint);
-router.patch('/:id/resolve', authorize('ADMIN', 'SUPER_ADMIN'), resolveComplaint);
+router.patch('/:id/status', authorize('ADMIN'), updateComplaintStatus);
+router.patch('/:id/assign', authorize('ADMIN'), assignComplaint);
+router.patch('/:id/resolve', authorize('ADMIN'), resolveComplaint);
 
 export default router;

@@ -51,13 +51,14 @@ export class ComplaintService {
   }
 
   // Get complaints (filtered by role)
-  async getComplaints(
-    filters: any,
-    userId: string,
-    userRole: Role,
-    userSocietyId: string,
-    userFlatId: string | null
-  ) {
+ async getComplaints(
+  filters: any,
+  userId: string,
+  userRole: Role,
+  userSocietyId: string,
+  userFlatId: string | null
+) {
+  try {
     const { category, status, priority, page = 1, limit = 20 } = filters;
 
     const where: any = {};
@@ -67,6 +68,9 @@ export class ComplaintService {
       // No filter
     } else if (userRole === 'ADMIN') {
       // Admin sees all complaints in their society
+      if (!userSocietyId) {
+        throw new AppError('Admin must be assigned to a society', 400);
+      }
       where.societyId = userSocietyId;
     } else {
       // Resident sees only their own complaints
@@ -77,6 +81,8 @@ export class ComplaintService {
     if (category) where.category = category;
     if (status) where.status = status;
     if (priority) where.priority = priority;
+
+    console.log('Complaints query where:', JSON.stringify(where, null, 2)); // Debug log
 
     const [complaints, total] = await Promise.all([
       prisma.complaint.findMany({
@@ -119,7 +125,11 @@ export class ComplaintService {
         pages: Math.ceil(total / Number(limit)),
       },
     };
+  } catch (error) {
+    console.error('Error in getComplaints service:', error);
+    throw error; // Re-throw to be caught by asyncHandler
   }
+}
 
   // Get single complaint (Admin sees all details including photos)
   async getComplaintById(
