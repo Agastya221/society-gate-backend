@@ -358,12 +358,17 @@ export const ensureSameSociety = async (
   next: NextFunction
 ) => {
   try {
+    // If authenticate middleware hasn't run or failed, req.user won't exist
+    if (!req.user) {
+      throw new AppError('Authentication required', 401);
+    }
+
     // SUPER_ADMIN can access any society
-    if (req.user?.role === 'SUPER_ADMIN') {
+    if (req.user.role === 'SUPER_ADMIN') {
       return next();
     }
 
-    const userSocietyId = req.user?.societyId;
+    const userSocietyId = req.user.societyId;
 
     // Ensure user has a society
     if (!userSocietyId) {
