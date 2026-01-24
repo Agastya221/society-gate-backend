@@ -18,17 +18,17 @@ router.use(authenticate);
 router.use(ensureSameSociety);
 
 // All authenticated users can create emergencies
-router.post('/', authenticate, createEmergency);
+router.post('/', createEmergency);
 
 // Resident route - get their own emergencies (must be before /:id)
-router.get('/my', authenticate, getMyEmergencies);
+router.get('/my', getMyEmergencies);
 
 // Admin and Guard routes
-router.get('/', authenticate, authorize('ADMIN', 'GUARD'), getEmergencies);
-router.get('/active', authenticate, authorize('ADMIN', 'GUARD'), getActiveEmergencies);
-router.get('/:id', authenticate, getEmergencyById);
-router.patch('/:id/respond', authenticate, authorize('ADMIN', 'GUARD'), respondToEmergency);
-router.patch('/:id/resolve', authenticate, authorize('ADMIN'), resolveEmergency);
-router.patch('/:id/false-alarm', authenticate, authorize('ADMIN'), markAsFalseAlarm);
+router.get('/', authorize('ADMIN', 'SUPER_ADMIN', 'GUARD'), getEmergencies);
+router.get('/active', authorize('ADMIN', 'SUPER_ADMIN', 'GUARD'), getActiveEmergencies);
+router.get('/:id', getEmergencyById);
+router.patch('/:id/respond', authorize('ADMIN', 'SUPER_ADMIN', 'GUARD'), respondToEmergency);
+router.patch('/:id/resolve', authorize('ADMIN', 'SUPER_ADMIN'), resolveEmergency);
+router.patch('/:id/false-alarm', authorize('ADMIN', 'SUPER_ADMIN'), markAsFalseAlarm);
 
 export default router;

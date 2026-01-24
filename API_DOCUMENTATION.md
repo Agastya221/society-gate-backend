@@ -441,6 +441,7 @@ Development: http://localhost:3000/api/v1/auth
   "message": "Access token refreshed successfully",
   "data": {
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "user": {
       "id": "uuid-here",
       "name": "John Doe",
@@ -454,6 +455,8 @@ Development: http://localhost:3000/api/v1/auth
   }
 }
 ```
+
+**Important:** The refresh token is rotated on every refresh for security. Always store the new `refreshToken` from the response and discard the old one.
 
 #### Error Responses
 

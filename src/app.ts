@@ -5,34 +5,12 @@ import { errorHandler } from './middlewares/error.middleware';
 // Import v1 routes (New optimized structure)
 import v1Routes from './routes/v1';
 
-// Import legacy routes (Backward compatibility - will be deprecated)
-import authRoutes from './modules/user/user.routes';
-import societyRoutes from './modules/society/society.routes';
-import entryRoutes from './modules/entry/entry.routes';
-import deliveryRoutes from './modules/delivery/delivery.routes';
-import domesticStaffRoutes from './modules/domestic-staff/domestic-staff.routes';
-import preapprovalRoutes from './modules/preapproval/preapproval.routes';
-import gatepassRoutes from './modules/gatepass/gatepass.routes';
-import noticeRoutes from './modules/notice/notice.routes';
-import amenityRoutes from './modules/amenity/amenity.routes';
-import complaintRoutes from './modules/complaint/complaint.routes';
-import emergencyRoutes from './modules/emergency/emergency.routes';
-import vendorRoutes from './modules/vendor/vendor.routes';
-import reportsRoutes from './modules/reports/reports.routes';
-import onboardingRoutes from './modules/onboarding/onboarding.routes';
-import uploadRoutes from './modules/upload/upload.routes';
-import notificationRoutes from './modules/notification/notification.routes';
-import entryRequestRoutes from './modules/entry-request/entry-request.routes';
-import familyRoutes from './modules/family/family.routes';
-
 const app = express();
-
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 // Health check
 app.get('/health', (req, res) => {
@@ -45,32 +23,9 @@ app.get('/', (req, res) => {
 });
 
 // ============================================
-// V1 API ROUTES (New Optimized Structure)
+// V1 API ROUTES
 // ============================================
 app.use('/api/v1', v1Routes);
-
-// ============================================
-// LEGACY ROUTES (Backward Compatibility)
-// Will be deprecated in future versions
-// ============================================
-app.use('/api/auth', authRoutes);
-app.use('/api/societies', societyRoutes);
-app.use('/api/entries', entryRoutes);
-app.use('/api/deliveries', deliveryRoutes);
-app.use('/api/domestic-staff', domesticStaffRoutes);
-app.use('/api/preapprovals', preapprovalRoutes);
-app.use('/api/gatepasses', gatepassRoutes);
-app.use('/api/notices', noticeRoutes);
-app.use('/api/amenities', amenityRoutes);
-app.use('/api/complaints', complaintRoutes);
-app.use('/api/emergencies', emergencyRoutes);
-app.use('/api/vendors', vendorRoutes);
-app.use('/api/reports', reportsRoutes);
-app.use('/api/onboarding', onboardingRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/entry-requests', entryRequestRoutes);
-app.use('/api/family', familyRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);

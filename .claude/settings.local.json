@@ -25,7 +25,9 @@
       "Bash(git reset:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(npm run seed:realistic:*)"
+      "Bash(npm run seed:realistic:*)",
+      "Bash(curl:*)",
+      "Bash(bash test_auth.sh:*)"
     ]
   }
 }

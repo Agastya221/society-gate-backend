@@ -20,8 +20,18 @@ export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayloa
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
+}
+
+export type UserAvgAggregateOutputType = {
+  tokenVersion: number | null
+}
+
+export type UserSumAggregateOutputType = {
+  tokenVersion: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -40,6 +50,9 @@ export type UserMinAggregateOutputType = {
   familyRole: $Enums.FamilyRole | null
   primaryResidentId: string | null
   lastLogin: Date | null
+  refreshToken: string | null
+  tokenVersion: number | null
+  lastTokenRefresh: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +73,9 @@ export type UserMaxAggregateOutputType = {
   familyRole: $Enums.FamilyRole | null
   primaryResidentId: string | null
   lastLogin: Date | null
+  refreshToken: string | null
+  tokenVersion: number | null
+  lastTokenRefresh: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,11 +96,22 @@ export type UserCountAggregateOutputType = {
   familyRole: number
   primaryResidentId: number
   lastLogin: number
+  refreshToken: number
+  tokenVersion: number
+  lastTokenRefresh: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type UserAvgAggregateInputType = {
+  tokenVersion?: true
+}
+
+export type UserSumAggregateInputType = {
+  tokenVersion?: true
+}
 
 export type UserMinAggregateInputType = {
   id?: true
@@ -102,6 +129,9 @@ export type UserMinAggregateInputType = {
   familyRole?: true
   primaryResidentId?: true
   lastLogin?: true
+  refreshToken?: true
+  tokenVersion?: true
+  lastTokenRefresh?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -122,6 +152,9 @@ export type UserMaxAggregateInputType = {
   familyRole?: true
   primaryResidentId?: true
   lastLogin?: true
+  refreshToken?: true
+  tokenVersion?: true
+  lastTokenRefresh?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -142,6 +175,9 @@ export type UserCountAggregateInputType = {
   familyRole?: true
   primaryResidentId?: true
   lastLogin?: true
+  refreshToken?: true
+  tokenVersion?: true
+  lastTokenRefresh?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -185,6 +221,18 @@ export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UserAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UserSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserMinAggregateInputType
@@ -215,6 +263,8 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
+  _avg?: UserAvgAggregateInputType
+  _sum?: UserSumAggregateInputType
   _min?: UserMinAggregateInputType
   _max?: UserMaxAggregateInputType
 }
@@ -235,9 +285,14 @@ export type UserGroupByOutputType = {
   familyRole: $Enums.FamilyRole | null
   primaryResidentId: string | null
   lastLogin: Date | null
+  refreshToken: string | null
+  tokenVersion: number
+  lastTokenRefresh: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
@@ -276,6 +331,9 @@ export type UserWhereInput = {
   familyRole?: Prisma.EnumFamilyRoleNullableFilter<"User"> | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.StringNullableFilter<"User"> | string | null
   lastLogin?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  refreshToken?: Prisma.StringNullableFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntFilter<"User"> | number
+  lastTokenRefresh?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
@@ -326,6 +384,9 @@ export type UserOrderByWithRelationInput = {
   familyRole?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryResidentId?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLogin?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
+  lastTokenRefresh?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   flat?: Prisma.FlatOrderByWithRelationInput
@@ -379,6 +440,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   familyRole?: Prisma.EnumFamilyRoleNullableFilter<"User"> | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.StringNullableFilter<"User"> | string | null
   lastLogin?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  refreshToken?: Prisma.StringNullableFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntFilter<"User"> | number
+  lastTokenRefresh?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
@@ -429,11 +493,16 @@ export type UserOrderByWithAggregationInput = {
   familyRole?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryResidentId?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLogin?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
+  lastTokenRefresh?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
+  _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
+  _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
@@ -455,6 +524,9 @@ export type UserScalarWhereWithAggregatesInput = {
   familyRole?: Prisma.EnumFamilyRoleNullableWithAggregatesFilter<"User"> | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastLogin?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  refreshToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntWithAggregatesFilter<"User"> | number
+  lastTokenRefresh?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -472,6 +544,9 @@ export type UserCreateInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -522,6 +597,9 @@ export type UserUncheckedCreateInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -566,6 +644,9 @@ export type UserUpdateInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -616,6 +697,9 @@ export type UserUncheckedUpdateInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -663,6 +747,9 @@ export type UserCreateManyInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -680,6 +767,9 @@ export type UserUpdateManyMutationInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -700,6 +790,9 @@ export type UserUncheckedUpdateManyInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -735,8 +828,15 @@ export type UserCountOrderByAggregateInput = {
   familyRole?: Prisma.SortOrder
   primaryResidentId?: Prisma.SortOrder
   lastLogin?: Prisma.SortOrder
+  refreshToken?: Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
+  lastTokenRefresh?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserAvgOrderByAggregateInput = {
+  tokenVersion?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -755,6 +855,9 @@ export type UserMaxOrderByAggregateInput = {
   familyRole?: Prisma.SortOrder
   primaryResidentId?: Prisma.SortOrder
   lastLogin?: Prisma.SortOrder
+  refreshToken?: Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
+  lastTokenRefresh?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -775,8 +878,15 @@ export type UserMinOrderByAggregateInput = {
   familyRole?: Prisma.SortOrder
   primaryResidentId?: Prisma.SortOrder
   lastLogin?: Prisma.SortOrder
+  refreshToken?: Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
+  lastTokenRefresh?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+  tokenVersion?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -1327,6 +1437,9 @@ export type UserCreateWithoutSocietyInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -1375,6 +1488,9 @@ export type UserUncheckedCreateWithoutSocietyInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -1451,6 +1567,9 @@ export type UserScalarWhereInput = {
   familyRole?: Prisma.EnumFamilyRoleNullableFilter<"User"> | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.StringNullableFilter<"User"> | string | null
   lastLogin?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  refreshToken?: Prisma.StringNullableFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntFilter<"User"> | number
+  lastTokenRefresh?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
@@ -1468,6 +1587,9 @@ export type UserCreateWithoutFlatInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   society?: Prisma.SocietyCreateNestedOneWithoutUsersInput
@@ -1516,6 +1638,9 @@ export type UserUncheckedCreateWithoutFlatInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -1586,6 +1711,9 @@ export type UserCreateWithoutFamilyMembersInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -1635,6 +1763,9 @@ export type UserUncheckedCreateWithoutFamilyMembersInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1683,6 +1814,9 @@ export type UserCreateWithoutPrimaryResidentInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -1731,6 +1865,9 @@ export type UserUncheckedCreateWithoutPrimaryResidentInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -1796,6 +1933,9 @@ export type UserUpdateWithoutFamilyMembersInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -1845,6 +1985,9 @@ export type UserUncheckedUpdateWithoutFamilyMembersInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1904,6 +2047,9 @@ export type UserCreateWithoutCreatedEntriesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -1953,6 +2099,9 @@ export type UserUncheckedCreateWithoutCreatedEntriesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -2001,6 +2150,9 @@ export type UserCreateWithoutApprovedEntriesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -2050,6 +2202,9 @@ export type UserUncheckedCreateWithoutApprovedEntriesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -2109,6 +2264,9 @@ export type UserUpdateWithoutCreatedEntriesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -2158,6 +2316,9 @@ export type UserUncheckedUpdateWithoutCreatedEntriesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -2212,6 +2373,9 @@ export type UserUpdateWithoutApprovedEntriesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -2261,6 +2425,9 @@ export type UserUncheckedUpdateWithoutApprovedEntriesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -2304,6 +2471,9 @@ export type UserCreateWithoutPreApprovalsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -2353,6 +2523,9 @@ export type UserUncheckedCreateWithoutPreApprovalsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -2412,6 +2585,9 @@ export type UserUpdateWithoutPreApprovalsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -2461,6 +2637,9 @@ export type UserUncheckedUpdateWithoutPreApprovalsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -2504,6 +2683,9 @@ export type UserCreateWithoutExpectedDeliveriesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -2553,6 +2735,9 @@ export type UserUncheckedCreateWithoutExpectedDeliveriesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -2612,6 +2797,9 @@ export type UserUpdateWithoutExpectedDeliveriesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -2661,6 +2849,9 @@ export type UserUncheckedUpdateWithoutExpectedDeliveriesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -2704,6 +2895,9 @@ export type UserCreateWithoutDeliveryAutoApproveRulesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -2753,6 +2947,9 @@ export type UserUncheckedCreateWithoutDeliveryAutoApproveRulesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -2812,6 +3009,9 @@ export type UserUpdateWithoutDeliveryAutoApproveRulesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -2861,6 +3061,9 @@ export type UserUncheckedUpdateWithoutDeliveryAutoApproveRulesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -2904,6 +3107,9 @@ export type UserCreateWithoutAddedDomesticStaffInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -2953,6 +3159,9 @@ export type UserUncheckedCreateWithoutAddedDomesticStaffInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -3012,6 +3221,9 @@ export type UserUpdateWithoutAddedDomesticStaffInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -3061,6 +3273,9 @@ export type UserUncheckedUpdateWithoutAddedDomesticStaffInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -3104,6 +3319,9 @@ export type UserCreateWithoutVerifiedStaffAttendanceInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -3153,6 +3371,9 @@ export type UserUncheckedCreateWithoutVerifiedStaffAttendanceInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -3212,6 +3433,9 @@ export type UserUpdateWithoutVerifiedStaffAttendanceInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -3261,6 +3485,9 @@ export type UserUncheckedUpdateWithoutVerifiedStaffAttendanceInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -3304,6 +3531,9 @@ export type UserCreateWithoutStaffBookingsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -3353,6 +3583,9 @@ export type UserUncheckedCreateWithoutStaffBookingsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -3412,6 +3645,9 @@ export type UserUpdateWithoutStaffBookingsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -3461,6 +3697,9 @@ export type UserUncheckedUpdateWithoutStaffBookingsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -3504,6 +3743,9 @@ export type UserCreateWithoutStaffReviewsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -3553,6 +3795,9 @@ export type UserUncheckedCreateWithoutStaffReviewsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -3612,6 +3857,9 @@ export type UserUpdateWithoutStaffReviewsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -3661,6 +3909,9 @@ export type UserUncheckedUpdateWithoutStaffReviewsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -3704,6 +3955,9 @@ export type UserCreateWithoutVehiclesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -3753,6 +4007,9 @@ export type UserUncheckedCreateWithoutVehiclesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -3812,6 +4069,9 @@ export type UserUpdateWithoutVehiclesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -3861,6 +4121,9 @@ export type UserUncheckedUpdateWithoutVehiclesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -3904,6 +4167,9 @@ export type UserCreateWithoutRequestedGatePassesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -3953,6 +4219,9 @@ export type UserUncheckedCreateWithoutRequestedGatePassesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -4001,6 +4270,9 @@ export type UserCreateWithoutApprovedGatePassesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -4050,6 +4322,9 @@ export type UserUncheckedCreateWithoutApprovedGatePassesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -4109,6 +4384,9 @@ export type UserUpdateWithoutRequestedGatePassesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -4158,6 +4436,9 @@ export type UserUncheckedUpdateWithoutRequestedGatePassesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -4212,6 +4493,9 @@ export type UserUpdateWithoutApprovedGatePassesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -4261,6 +4545,9 @@ export type UserUncheckedUpdateWithoutApprovedGatePassesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -4304,6 +4591,9 @@ export type UserCreateWithoutCreatedNoticesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -4353,6 +4643,9 @@ export type UserUncheckedCreateWithoutCreatedNoticesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -4412,6 +4705,9 @@ export type UserUpdateWithoutCreatedNoticesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -4461,6 +4757,9 @@ export type UserUncheckedUpdateWithoutCreatedNoticesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -4504,6 +4803,9 @@ export type UserCreateWithoutAmenityBookingsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -4553,6 +4855,9 @@ export type UserUncheckedCreateWithoutAmenityBookingsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -4612,6 +4917,9 @@ export type UserUpdateWithoutAmenityBookingsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -4661,6 +4969,9 @@ export type UserUncheckedUpdateWithoutAmenityBookingsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -4704,6 +5015,9 @@ export type UserCreateWithoutReportedComplaintsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -4753,6 +5067,9 @@ export type UserUncheckedCreateWithoutReportedComplaintsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -4801,6 +5118,9 @@ export type UserCreateWithoutAssignedComplaintsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -4850,6 +5170,9 @@ export type UserUncheckedCreateWithoutAssignedComplaintsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -4898,6 +5221,9 @@ export type UserCreateWithoutResolvedComplaintsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -4947,6 +5273,9 @@ export type UserUncheckedCreateWithoutResolvedComplaintsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -5006,6 +5335,9 @@ export type UserUpdateWithoutReportedComplaintsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -5055,6 +5387,9 @@ export type UserUncheckedUpdateWithoutReportedComplaintsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -5109,6 +5444,9 @@ export type UserUpdateWithoutAssignedComplaintsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -5158,6 +5496,9 @@ export type UserUncheckedUpdateWithoutAssignedComplaintsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -5212,6 +5553,9 @@ export type UserUpdateWithoutResolvedComplaintsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -5261,6 +5605,9 @@ export type UserUncheckedUpdateWithoutResolvedComplaintsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -5304,6 +5651,9 @@ export type UserCreateWithoutReportedEmergenciesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -5353,6 +5703,9 @@ export type UserUncheckedCreateWithoutReportedEmergenciesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -5401,6 +5754,9 @@ export type UserCreateWithoutRespondedEmergenciesInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -5450,6 +5806,9 @@ export type UserUncheckedCreateWithoutRespondedEmergenciesInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -5509,6 +5868,9 @@ export type UserUpdateWithoutReportedEmergenciesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -5558,6 +5920,9 @@ export type UserUncheckedUpdateWithoutReportedEmergenciesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -5612,6 +5977,9 @@ export type UserUpdateWithoutRespondedEmergenciesInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -5661,6 +6029,9 @@ export type UserUncheckedUpdateWithoutRespondedEmergenciesInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -5704,6 +6075,9 @@ export type UserCreateWithoutAddedVendorsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -5753,6 +6127,9 @@ export type UserUncheckedCreateWithoutAddedVendorsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -5812,6 +6189,9 @@ export type UserUpdateWithoutAddedVendorsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -5861,6 +6241,9 @@ export type UserUncheckedUpdateWithoutAddedVendorsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -5904,6 +6287,9 @@ export type UserCreateWithoutOnboardingRequestInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -5953,6 +6339,9 @@ export type UserUncheckedCreateWithoutOnboardingRequestInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -6001,6 +6390,9 @@ export type UserCreateWithoutReviewedOnboardingsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -6050,6 +6442,9 @@ export type UserUncheckedCreateWithoutReviewedOnboardingsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -6109,6 +6504,9 @@ export type UserUpdateWithoutOnboardingRequestInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -6158,6 +6556,9 @@ export type UserUncheckedUpdateWithoutOnboardingRequestInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -6212,6 +6613,9 @@ export type UserUpdateWithoutReviewedOnboardingsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -6261,6 +6665,9 @@ export type UserUncheckedUpdateWithoutReviewedOnboardingsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -6304,6 +6711,9 @@ export type UserCreateWithoutOnboardingAuditLogsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -6353,6 +6763,9 @@ export type UserUncheckedCreateWithoutOnboardingAuditLogsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -6412,6 +6825,9 @@ export type UserUpdateWithoutOnboardingAuditLogsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -6461,6 +6877,9 @@ export type UserUncheckedUpdateWithoutOnboardingAuditLogsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -6504,6 +6923,9 @@ export type UserCreateWithoutNotificationsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -6553,6 +6975,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -6612,6 +7037,9 @@ export type UserUpdateWithoutNotificationsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -6661,6 +7089,9 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -6704,6 +7135,9 @@ export type UserCreateWithoutCreatedEntryRequestsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -6753,6 +7187,9 @@ export type UserUncheckedCreateWithoutCreatedEntryRequestsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -6801,6 +7238,9 @@ export type UserCreateWithoutApprovedEntryRequestsInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
@@ -6850,6 +7290,9 @@ export type UserUncheckedCreateWithoutApprovedEntryRequestsInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
@@ -6909,6 +7352,9 @@ export type UserUpdateWithoutCreatedEntryRequestsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -6958,6 +7404,9 @@ export type UserUncheckedUpdateWithoutCreatedEntryRequestsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -7012,6 +7461,9 @@ export type UserUpdateWithoutApprovedEntryRequestsInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -7061,6 +7513,9 @@ export type UserUncheckedUpdateWithoutApprovedEntryRequestsInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -7106,6 +7561,9 @@ export type UserCreateManySocietyInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -7123,6 +7581,9 @@ export type UserUpdateWithoutSocietyInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -7171,6 +7632,9 @@ export type UserUncheckedUpdateWithoutSocietyInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -7217,6 +7681,9 @@ export type UserUncheckedUpdateManyWithoutSocietyInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -7236,6 +7703,9 @@ export type UserCreateManyFlatInput = {
   familyRole?: $Enums.FamilyRole | null
   primaryResidentId?: string | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -7253,6 +7723,9 @@ export type UserUpdateWithoutFlatInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   society?: Prisma.SocietyUpdateOneWithoutUsersNestedInput
@@ -7301,6 +7774,9 @@ export type UserUncheckedUpdateWithoutFlatInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -7347,6 +7823,9 @@ export type UserUncheckedUpdateManyWithoutFlatInput = {
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -7366,6 +7845,9 @@ export type UserCreateManyPrimaryResidentInput = {
   isPrimaryResident?: boolean
   familyRole?: $Enums.FamilyRole | null
   lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -7383,6 +7865,9 @@ export type UserUpdateWithoutPrimaryResidentInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
@@ -7431,6 +7916,9 @@ export type UserUncheckedUpdateWithoutPrimaryResidentInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
@@ -7477,6 +7965,9 @@ export type UserUncheckedUpdateManyWithoutPrimaryResidentInput = {
   isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
   familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
   lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -7753,6 +8244,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   familyRole?: boolean
   primaryResidentId?: boolean
   lastLogin?: boolean
+  refreshToken?: boolean
+  tokenVersion?: boolean
+  lastTokenRefresh?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   flat?: boolean | Prisma.User$flatArgs<ExtArgs>
@@ -7804,6 +8298,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   familyRole?: boolean
   primaryResidentId?: boolean
   lastLogin?: boolean
+  refreshToken?: boolean
+  tokenVersion?: boolean
+  lastTokenRefresh?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   flat?: boolean | Prisma.User$flatArgs<ExtArgs>
@@ -7827,6 +8324,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   familyRole?: boolean
   primaryResidentId?: boolean
   lastLogin?: boolean
+  refreshToken?: boolean
+  tokenVersion?: boolean
+  lastTokenRefresh?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   flat?: boolean | Prisma.User$flatArgs<ExtArgs>
@@ -7850,11 +8350,14 @@ export type UserSelectScalar = {
   familyRole?: boolean
   primaryResidentId?: boolean
   lastLogin?: boolean
+  refreshToken?: boolean
+  tokenVersion?: boolean
+  lastTokenRefresh?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "phone" | "email" | "password" | "role" | "photoUrl" | "isActive" | "flatId" | "isOwner" | "societyId" | "isPrimaryResident" | "familyRole" | "primaryResidentId" | "lastLogin" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "phone" | "email" | "password" | "role" | "photoUrl" | "isActive" | "flatId" | "isOwner" | "societyId" | "isPrimaryResident" | "familyRole" | "primaryResidentId" | "lastLogin" | "refreshToken" | "tokenVersion" | "lastTokenRefresh" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   flat?: boolean | Prisma.User$flatArgs<ExtArgs>
   society?: boolean | Prisma.User$societyArgs<ExtArgs>
@@ -7949,6 +8452,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     familyRole: $Enums.FamilyRole | null
     primaryResidentId: string | null
     lastLogin: Date | null
+    refreshToken: string | null
+    tokenVersion: number
+    lastTokenRefresh: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -8419,6 +8925,9 @@ export interface UserFieldRefs {
   readonly familyRole: Prisma.FieldRef<"User", 'FamilyRole'>
   readonly primaryResidentId: Prisma.FieldRef<"User", 'String'>
   readonly lastLogin: Prisma.FieldRef<"User", 'DateTime'>
+  readonly refreshToken: Prisma.FieldRef<"User", 'String'>
+  readonly tokenVersion: Prisma.FieldRef<"User", 'Int'>
+  readonly lastTokenRefresh: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

@@ -121,6 +121,16 @@ export class UserService {
         'RESIDENT_APP'
       );
 
+      // Store refresh token in database
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          refreshToken,
+          lastTokenRefresh: new Date(),
+          lastLogin: new Date(),
+        },
+      });
+
       // Check onboarding status
       const onboardingRequest = await prisma.onboardingRequest.findFirst({
         where: { userId: user.id },
@@ -163,6 +173,15 @@ export class UserService {
       user.flatId,
       'RESIDENT_APP'
     );
+
+    // Store refresh token in database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        refreshToken,
+        lastTokenRefresh: new Date(),
+      },
+    });
 
     return {
       accessToken,
@@ -213,6 +232,16 @@ export class UserService {
       user.flatId,
       'RESIDENT_APP'
     );
+
+    // Store refresh token in database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        refreshToken,
+        lastTokenRefresh: new Date(),
+        lastLogin: new Date(),
+      },
+    });
 
     return {
       accessToken,
@@ -268,6 +297,16 @@ export class UserService {
       'RESIDENT_APP'
     );
 
+    // Store refresh token in database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        refreshToken,
+        lastTokenRefresh: new Date(),
+        lastLogin: new Date(),
+      },
+    });
+
     return { accessToken, refreshToken, user, appType: 'RESIDENT_APP' };
   }
 
@@ -318,9 +357,14 @@ export class UserService {
       'GUARD_APP'
     );
 
+    // Store refresh token in database
     await prisma.user.update({
       where: { id: user.id },
-      data: { lastLogin: new Date() },
+      data: {
+        refreshToken,
+        lastTokenRefresh: new Date(),
+        lastLogin: new Date(),
+      },
     });
 
     const { password: _, ...userWithoutPassword } = user;
@@ -428,10 +472,13 @@ export class UserService {
   // REFRESH TOKEN
   // ============================================
   async refreshAccessToken(refreshToken: string) {
-    const decoded = verifyRefreshToken(refreshToken);
+    // Check if token is blacklisted
+    const isBlacklisted = await isTokenBlacklisted(refreshToken);
+    if (isBlacklisted) {
+      throw new AppError('Refresh token has been revoked. Please login again.', 401);
+    }
 
-    const blocked = await isTokenBlacklisted(decoded.jti);
-    if (blocked) throw new AppError("Token revoked", 401);
+    const decoded = verifyRefreshToken(refreshToken);
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -442,6 +489,12 @@ export class UserService {
       throw new AppError('User not found or inactive', 401);
     }
 
+    // Validate refresh token matches the one stored in database
+    if (user.refreshToken !== refreshToken) {
+      throw new AppError('Invalid refresh token. Please login again.', 401);
+    }
+
+    // Generate new access token
     const newAccessToken = generateAccessToken(
       user.id,
       user.role,
@@ -450,11 +503,30 @@ export class UserService {
       decoded.appType
     );
 
-    const { password: _, ...userWithoutPassword } = user;
+    // Rotate refresh token for better security
+    const newRefreshToken = generateRefreshToken(
+      user.id,
+      user.role,
+      user.societyId,
+      user.flatId,
+      decoded.appType
+    );
+
+    // Update refresh token in database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        refreshToken: newRefreshToken,
+        lastTokenRefresh: new Date(),
+      },
+    });
+
+    const { password: _, refreshToken: __, ...userWithoutSensitiveData } = user;
 
     return {
       accessToken: newAccessToken,
-      user: userWithoutPassword,
+      refreshToken: newRefreshToken,
+      user: userWithoutSensitiveData,
     };
   }
 
@@ -464,19 +536,34 @@ export class UserService {
   async logout(accessToken: string, refreshToken?: string) {
     try {
       const accessDecoded = jwt.verify(accessToken, process.env.JWT_SECRET!) as any;
+
+      // Clear refresh token from database
+      if (accessDecoded && accessDecoded.userId) {
+        await prisma.user.update({
+          where: { id: accessDecoded.userId },
+          data: {
+            refreshToken: null,
+          },
+        }).catch(err => {
+          console.error('Error clearing refresh token from database:', err);
+        });
+      }
+
+      // Blacklist access token
       if (accessDecoded && accessDecoded.exp) {
         const ttl = accessDecoded.exp - Math.floor(Date.now() / 1000);
         if (ttl > 0) {
-          await blacklistToken(accessDecoded.jti, ttl);
+          await blacklistToken(accessToken, ttl);
         }
       }
 
+      // Blacklist refresh token
       if (refreshToken) {
-        const refreshDecoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!) as any;
+        const refreshDecoded = jwt.decode(refreshToken) as any;
         if (refreshDecoded && refreshDecoded.exp) {
           const ttl = refreshDecoded.exp - Math.floor(Date.now() / 1000);
           if (ttl > 0) {
-            await blacklistToken(refreshDecoded.jti, ttl);
+            await blacklistToken(refreshToken, ttl);
           }
         }
       }

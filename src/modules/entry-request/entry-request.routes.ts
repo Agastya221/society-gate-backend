@@ -29,12 +29,12 @@ router.get('/', getEntryRequests);
 router.get('/:id', getEntryRequestById);
 
 // Get entry request photo (Residents/Admins only)
-router.get('/:id/photo', authorize('RESIDENT', 'ADMIN'), getEntryRequestPhoto);
+router.get('/:id/photo', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), getEntryRequestPhoto);
 
-// Approve entry request (Resident only)
-router.patch('/:id/approve', authorize('RESIDENT'), approveEntryRequest);
+// Approve entry request (Resident/Admin)
+router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), approveEntryRequest);
 
-// Reject entry request (Resident only)
-router.patch('/:id/reject', authorize('RESIDENT'), rejectEntryRequest);
+// Reject entry request (Resident/Admin)
+router.patch('/:id/reject', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), rejectEntryRequest);
 
 export default router;

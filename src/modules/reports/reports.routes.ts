@@ -8,17 +8,21 @@ import {
   getVisitorFrequencyReport,
   getSocietyHealthScore,
 } from './reports.controller';
-import { authenticate, authorize } from '../../middlewares/auth.middleware';
+import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 
 const router = Router();
 
+// Apply authentication and society isolation globally
+router.use(authenticate);
+router.use(ensureSameSociety);
+
 // All reports require admin authorization
-router.get('/dashboard', authenticate, authorize('ADMIN'), getDashboardStats);
-router.get('/entries', authenticate, authorize('ADMIN'), getEntryStatistics);
-router.get('/peak-hours', authenticate, authorize('ADMIN'), getPeakHoursAnalysis);
-router.get('/delivery-patterns', authenticate, authorize('ADMIN'), getDeliveryPatterns);
-router.get('/complaints', authenticate, authorize('ADMIN'), getComplaintStatistics);
-router.get('/visitor-frequency', authenticate, authorize('ADMIN'), getVisitorFrequencyReport);
-router.get('/health-score', authenticate, authorize('ADMIN'), getSocietyHealthScore);
+router.get('/dashboard', authorize('ADMIN', 'SUPER_ADMIN'), getDashboardStats);
+router.get('/entries', authorize('ADMIN', 'SUPER_ADMIN'), getEntryStatistics);
+router.get('/peak-hours', authorize('ADMIN', 'SUPER_ADMIN'), getPeakHoursAnalysis);
+router.get('/delivery-patterns', authorize('ADMIN', 'SUPER_ADMIN'), getDeliveryPatterns);
+router.get('/complaints', authorize('ADMIN', 'SUPER_ADMIN'), getComplaintStatistics);
+router.get('/visitor-frequency', authorize('ADMIN', 'SUPER_ADMIN'), getVisitorFrequencyReport);
+router.get('/health-score', authorize('ADMIN', 'SUPER_ADMIN'), getSocietyHealthScore);
 
 export default router;

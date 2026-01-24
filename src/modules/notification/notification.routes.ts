@@ -5,13 +5,14 @@ import {
   markAsRead,
   markAllAsRead,
 } from './notification.controller';
-import { authenticate } from '../../middlewares/auth.middleware';
+import { authenticate, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 
 const router = Router();
 
-// All routes require authentication
+// All routes require authentication and society isolation
 router.use(authenticate);
+router.use(ensureSameSociety);
 
 // Get user's notifications (cached for 1 minute, varies by user)
 router.get('/', cache({ ttl: 60, keyPrefix: 'notifications', varyBy: ['userId'] }), getNotifications);

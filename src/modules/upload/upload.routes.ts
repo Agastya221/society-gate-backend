@@ -6,12 +6,13 @@ import {
   deleteDocument,
   getEntryPhotoViewUrl,
 } from './upload.controller';
-import { authenticate } from '../../middlewares/auth.middleware';
+import { authenticate, ensureSameSociety } from '../../middlewares/auth.middleware';
 
 const router = Router();
 
-// All routes require authentication
+// All routes require authentication and society isolation
 router.use(authenticate);
+router.use(ensureSameSociety);
 
 // Get pre-signed upload URL
 router.post('/presigned-url', getPresignedUrl);

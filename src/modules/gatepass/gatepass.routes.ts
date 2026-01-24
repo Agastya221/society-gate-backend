@@ -22,17 +22,17 @@ router.use(ensureSameSociety);
 // ============================================
 
 // Resident/Admin routes - specific paths first
-router.post('/', authenticate, authorize('RESIDENT', 'ADMIN'), createGatePass);
-router.get('/', authenticate, getGatePasses);
+router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), createGatePass);
+router.get('/', getGatePasses);
 
 // Guard routes - specific /scan path before /:id
-router.post('/scan', authenticate, authorize('GUARD'), scanGatePass);
+router.post('/scan', authorize('GUARD'), scanGatePass);
 
 // Parameterized routes come LAST
-router.get('/:id', authenticate, getGatePassById);
-router.get('/:id/qr', authenticate, getGatePassQR);
-router.patch('/:id/approve', authenticate, authorize('ADMIN'), approveGatePass);
-router.patch('/:id/reject', authenticate, authorize('ADMIN'), rejectGatePass);
-router.delete('/:id', authenticate, cancelGatePass);
+router.get('/:id', getGatePassById);
+router.get('/:id/qr', getGatePassQR);
+router.patch('/:id/approve', authorize('ADMIN', 'SUPER_ADMIN'), approveGatePass);
+router.patch('/:id/reject', authorize('ADMIN', 'SUPER_ADMIN'), rejectGatePass);
+router.delete('/:id', cancelGatePass);
 
 export default router;

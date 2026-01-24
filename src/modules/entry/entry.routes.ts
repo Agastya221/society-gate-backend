@@ -15,12 +15,12 @@ router.post('/', authorize('GUARD'), entryController.createEntry);
 // Resident/Admin approves or rejects
 router.patch(
   '/:id/approve',
-  authorize('RESIDENT', 'ADMIN'),
+  authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
   entryController.approveEntry
 );
 router.patch(
   '/:id/reject',
-  authorize('RESIDENT', 'ADMIN'),
+  authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
   entryController.rejectEntry
 );
 
@@ -33,7 +33,7 @@ router.get('/', entryController.getEntries);
 // Get pending approvals (resident/admin only)
 router.get(
   '/pending',
-  authorize('RESIDENT', 'ADMIN'),
+  authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
   entryController.getPendingApprovals
 );
 

@@ -1,6 +1,7 @@
 import type { Response, Request } from 'express';
 import { ComplaintService } from './complaint.service';
 import { asyncHandler } from '../../utils/ResponseHandler';
+import { log } from 'console';
 
 const complaintService = new ComplaintService();
 
@@ -21,11 +22,17 @@ export const createComplaint = asyncHandler(async (req: Request, res: Response) 
 
 // Admin/Resident get complaints (filtered by role)
 export const getComplaints = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
-  const userRole = req.user!.role;
+  const userId = req.user.id;
+  const userRole = req.user.role;
   const userSocietyId = req.user!.societyId;
   const userFlatId = req.user!.flatId;
   const filters = req.query;
+  console.log('Filters:', filters);
+  console.log('User Role:', userRole);
+  console.log('User Society ID:', userSocietyId);
+  console.log('User Flat ID:', userFlatId);
+
+
 
   const result = await complaintService.getComplaints(
     filters,

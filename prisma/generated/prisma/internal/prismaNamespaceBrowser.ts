@@ -182,6 +182,9 @@ export const UserScalarFieldEnum = {
   familyRole: 'familyRole',
   primaryResidentId: 'primaryResidentId',
   lastLogin: 'lastLogin',
+  refreshToken: 'refreshToken',
+  tokenVersion: 'tokenVersion',
+  lastTokenRefresh: 'lastTokenRefresh',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

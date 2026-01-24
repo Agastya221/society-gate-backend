@@ -17,14 +17,14 @@ router.use(authenticate);
 router.use(ensureSameSociety);
 
 // Resident routes
-router.post('/', authenticate, authorize('RESIDENT', 'ADMIN'), createComplaint);
-router.get('/', authenticate, getComplaints);
-router.get('/:id', authenticate, getComplaintById);
-router.delete('/:id', authenticate, deleteComplaint);
+router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), createComplaint);
+router.get('/', getComplaints);
+router.get('/:id', getComplaintById);
+router.delete('/:id', deleteComplaint);
 
 // Admin routes
-router.patch('/:id/status', authenticate, authorize('ADMIN'), updateComplaintStatus);
-router.patch('/:id/assign', authenticate, authorize('ADMIN'), assignComplaint);
-router.patch('/:id/resolve', authenticate, authorize('ADMIN'), resolveComplaint);
+router.patch('/:id/status', authorize('ADMIN', 'SUPER_ADMIN'), updateComplaintStatus);
+router.patch('/:id/assign', authorize('ADMIN', 'SUPER_ADMIN'), assignComplaint);
+router.patch('/:id/resolve', authorize('ADMIN', 'SUPER_ADMIN'), resolveComplaint);
 
 export default router;

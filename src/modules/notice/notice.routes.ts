@@ -16,13 +16,13 @@ router.use(authenticate);
 router.use(ensureSameSociety);
 
 // Public routes (all authenticated users)
-router.get('/', authenticate, getNotices);
-router.get('/:id', authenticate, getNoticeById);
+router.get('/', getNotices);
+router.get('/:id', getNoticeById);
 
 // Admin only routes
-router.post('/', authenticate, authorize('ADMIN'), createNotice);
-router.patch('/:id', authenticate, authorize('ADMIN'), updateNotice);
-router.delete('/:id', authenticate, authorize('ADMIN'), deleteNotice);
-router.patch('/:id/toggle-pin', authenticate, authorize('ADMIN'), togglePinNotice);
+router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), createNotice);
+router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), updateNotice);
+router.delete('/:id', authorize('ADMIN', 'SUPER_ADMIN'), deleteNotice);
+router.patch('/:id/toggle-pin', authorize('ADMIN', 'SUPER_ADMIN'), togglePinNotice);
 
 export default router;

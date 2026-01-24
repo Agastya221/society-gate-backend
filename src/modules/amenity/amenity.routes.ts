@@ -19,16 +19,16 @@ router.use(authenticate);
 router.use(ensureSameSociety);
 
 // Amenity routes
-router.get('/amenities', authenticate, getAmenities);
-router.get('/amenities/:id', authenticate, getAmenityById);
-router.post('/amenities', authenticate, authorize('ADMIN'), createAmenity);
-router.patch('/amenities/:id', authenticate, authorize('ADMIN'), updateAmenity);
-router.delete('/amenities/:id', authenticate, authorize('ADMIN'), deleteAmenity);
+router.get('/amenities', getAmenities);
+router.get('/amenities/:id', getAmenityById);
+router.post('/amenities', authorize('ADMIN', 'SUPER_ADMIN'), createAmenity);
+router.patch('/amenities/:id', authorize('ADMIN', 'SUPER_ADMIN'), updateAmenity);
+router.delete('/amenities/:id', authorize('ADMIN', 'SUPER_ADMIN'), deleteAmenity);
 
 // Booking routes
-router.post('/bookings', authenticate, authorize('RESIDENT', 'ADMIN'), createBooking);
-router.get('/bookings', authenticate, getBookings);
-router.patch('/bookings/:id/approve', authenticate, authorize('ADMIN'), approveBooking);
-router.patch('/bookings/:id/cancel', authenticate, cancelBooking);
+router.post('/bookings', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), createBooking);
+router.get('/bookings', getBookings);
+router.patch('/bookings/:id/approve', authorize('ADMIN', 'SUPER_ADMIN'), approveBooking);
+router.patch('/bookings/:id/cancel', cancelBooking);
 
 export default router;

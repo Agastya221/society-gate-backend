@@ -513,8 +513,11 @@ model User {
   createdEntryRequests  EntryRequest[] @relation("EntryRequestGuard")
   approvedEntryRequests EntryRequest[] @relation("EntryRequestApprover")
 
-  // Auth
-  lastLogin DateTime?
+  // Auth & Tokens
+  lastLogin     DateTime?
+  refreshToken  String?   @db.Text // Store current refresh token
+  tokenVersion  Int       @default(0) // Increment to invalidate all tokens
+  lastTokenRefresh DateTime? // Track when token was last refreshed
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -522,6 +525,7 @@ model User {
   @@index([societyId, role])
   @@index([phone])
   @@index([email])
+  @@index([refreshToken])
 }
 
 // --------------------
