@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { redis } from '../config/redis';
+import { redis, isRedisAvailable } from '../config/redis';
 
 interface CacheOptions {
   ttl?: number; // Time to live in seconds (default: 300 = 5 minutes)
@@ -21,6 +21,11 @@ export const cache = (options: CacheOptions = {}) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     // Only cache GET requests
     if (req.method !== 'GET') {
+      return next();
+    }
+
+    // Skip caching if Redis is not available
+    if (!isRedisAvailable()) {
       return next();
     }
 

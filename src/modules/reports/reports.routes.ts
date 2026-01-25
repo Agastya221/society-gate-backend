@@ -9,6 +9,7 @@ import {
   getSocietyHealthScore,
 } from './reports.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
+import { cache } from '../../middlewares/cache.middleware';
 
 const router = Router();
 
@@ -16,13 +17,13 @@ const router = Router();
 router.use(authenticate);
 router.use(ensureSameSociety);
 
-// All reports require admin authorization
-router.get('/dashboard', authorize('ADMIN', 'SUPER_ADMIN'), getDashboardStats);
-router.get('/entries', authorize('ADMIN', 'SUPER_ADMIN'), getEntryStatistics);
-router.get('/peak-hours', authorize('ADMIN', 'SUPER_ADMIN'), getPeakHoursAnalysis);
-router.get('/delivery-patterns', authorize('ADMIN', 'SUPER_ADMIN'), getDeliveryPatterns);
-router.get('/complaints', authorize('ADMIN', 'SUPER_ADMIN'), getComplaintStatistics);
-router.get('/visitor-frequency', authorize('ADMIN', 'SUPER_ADMIN'), getVisitorFrequencyReport);
-router.get('/health-score', authorize('ADMIN', 'SUPER_ADMIN'), getSocietyHealthScore);
+// All reports require admin authorization (cached for 3 minutes)
+router.get('/dashboard', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 180, keyPrefix: 'reports', varyBy: ['societyId'] }), getDashboardStats);
+router.get('/entries', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 180, keyPrefix: 'reports', varyBy: ['societyId'] }), getEntryStatistics);
+router.get('/peak-hours', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 180, keyPrefix: 'reports', varyBy: ['societyId'] }), getPeakHoursAnalysis);
+router.get('/delivery-patterns', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 180, keyPrefix: 'reports', varyBy: ['societyId'] }), getDeliveryPatterns);
+router.get('/complaints', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 180, keyPrefix: 'reports', varyBy: ['societyId'] }), getComplaintStatistics);
+router.get('/visitor-frequency', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 180, keyPrefix: 'reports', varyBy: ['societyId'] }), getVisitorFrequencyReport);
+router.get('/health-score', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 180, keyPrefix: 'reports', varyBy: ['societyId'] }), getSocietyHealthScore);
 
 export default router;

@@ -3,8 +3,11 @@ import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/Client';
 import { AppError } from '../utils/ResponseHandler';
 import { Role } from '../../prisma/generated/prisma/enums';
-import { redis } from '../config/redis';
+import { redis, isRedisAvailable } from '../config/redis';
 import crypto from "crypto";
+
+// In-memory fallback for token blacklist when Redis is unavailable
+const inMemoryBlacklist = new Map<string, number>(); // jti -> expiresAt timestamp
 
 interface JwtPayload {
   userId: string;
@@ -101,22 +104,48 @@ export const generateToken = (
 // ============================================
 
 export const blacklistToken = async (jti: string, expiresIn: number) => {
-  try {
-    const key = `blacklist:jti:${jti}`;
-    await redis.setex(key, expiresIn, '1');
-  } catch (error) {
-    console.error('Redis error while blacklisting token:', error);
+  if (isRedisAvailable()) {
+    try {
+      const key = `blacklist:jti:${jti}`;
+      await redis.setex(key, expiresIn, '1');
+    } catch (error) {
+      console.error('Redis error while blacklisting token:', error);
+      // Fallback to in-memory
+      inMemoryBlacklist.set(jti, Date.now() + expiresIn * 1000);
+    }
+  } else {
+    // Fallback to in-memory storage
+    console.warn('⚠️  Redis unavailable, using in-memory token blacklist');
+    inMemoryBlacklist.set(jti, Date.now() + expiresIn * 1000);
   }
 };
 
 export const isTokenBlacklisted = async (jti: string): Promise<boolean> => {
-  try {
-    const key = `blacklist:jti:${jti}`;
-    const result = await redis.get(key);
-    return result === '1';
-  } catch (error) {
-    console.error('Redis error while checking blacklist:', error);
-    return false;
+  if (isRedisAvailable()) {
+    try {
+      const key = `blacklist:jti:${jti}`;
+      const result = await redis.get(key);
+      return result === '1';
+    } catch (error) {
+      console.error('Redis error while checking blacklist:', error);
+      // Fallback to in-memory check
+      const expiresAt = inMemoryBlacklist.get(jti);
+      if (!expiresAt) return false;
+      if (Date.now() > expiresAt) {
+        inMemoryBlacklist.delete(jti);
+        return false;
+      }
+      return true;
+    }
+  } else {
+    // Fallback to in-memory storage
+    const expiresAt = inMemoryBlacklist.get(jti);
+    if (!expiresAt) return false;
+    if (Date.now() > expiresAt) {
+      inMemoryBlacklist.delete(jti);
+      return false;
+    }
+    return true;
   }
 };
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { errorHandler } from './middlewares/error.middleware';
+import { isRedisAvailable } from './config/redis';
 
 // Import v1 routes (New optimized structure)
 import v1Routes from './routes/v1';
@@ -14,7 +15,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  const redisStatus = isRedisAvailable();
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    services: {
+      api: 'healthy',
+      redis: redisStatus ? 'connected' : 'disconnected',
+    },
+  });
 });
 
 // Root endpoint
