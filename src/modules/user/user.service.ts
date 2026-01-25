@@ -274,10 +274,10 @@ export class UserService {
     }
 
     if (!user) throw new AppError('Invalid credentials', 401);
-    // Re Comment it before production🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
-    // if (user.role !== 'ADMIN' && user.role !== 'RESIDENT' && user.role !== 'SUPER_ADMIN') {
-    //   throw new AppError('Access denied', 403);
-    // }
+    
+    if (user.role !== 'ADMIN' && user.role !== 'RESIDENT' && user.role !== 'SUPER_ADMIN') {
+      throw new AppError('Access denied', 403);
+    }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) throw new AppError('Invalid credentials', 401);
