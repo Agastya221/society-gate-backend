@@ -27,7 +27,8 @@
       "Bash(git commit:*)",
       "Bash(npm run seed:realistic:*)",
       "Bash(curl:*)",
-      "Bash(bash test_auth.sh:*)"
+      "Bash(bash test_auth.sh:*)",
+      "Bash(python -m json.tool:*)"
     ]
   }
 }

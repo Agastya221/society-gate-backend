@@ -9,32 +9,22 @@ import {
   getPendingCount,
 } from './entry-request.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
+import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 
 const router = Router();
 
-// All routes require authentication and society isolation
 router.use(authenticate);
 router.use(ensureSameSociety);
 
-// Guard creates entry request
-router.post('/', authorize('GUARD'), createEntryRequest);
+// Specific routes BEFORE parameterized routes
+router.post('/', authorize('GUARD'), clearCacheAfter(['entry-requests:*']), createEntryRequest);
+router.get('/pending-count', authorize('GUARD'), cache({ ttl: 10, keyPrefix: 'entry-requests', varyBy: ['userId'] }), getPendingCount);
+router.get('/', cache({ ttl: 20, keyPrefix: 'entry-requests', varyBy: ['societyId', 'userId'] }), getEntryRequests);
 
-// Get pending count for guard
-router.get('/pending-count', authorize('GUARD'), getPendingCount);
-
-// Get entry requests (all roles, filtered by role)
-router.get('/', getEntryRequests);
-
-// Get single entry request
-router.get('/:id', getEntryRequestById);
-
-// Get entry request photo (Residents/Admins only)
+// Parameterized routes LAST
+router.get('/:id', cache({ ttl: 30, keyPrefix: 'entry-requests' }), getEntryRequestById);
 router.get('/:id/photo', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), getEntryRequestPhoto);
-
-// Approve entry request (Resident/Admin)
-router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), approveEntryRequest);
-
-// Reject entry request (Resident/Admin)
-router.patch('/:id/reject', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), rejectEntryRequest);
+router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['entry-requests:*', 'entries:*']), approveEntryRequest);
+router.patch('/:id/reject', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['entry-requests:*']), rejectEntryRequest);
 
 export default router;

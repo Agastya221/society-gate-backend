@@ -31,7 +31,7 @@ export const getComplaints = asyncHandler(async (req: Request, res: Response) =>
   const userRole = req.user.role;
   const userSocietyId = req.user.societyId;
   const userFlatId = req.user.flatId;
-  
+
   // ✅ Validate required fields for non-SUPER_ADMIN
   if (userRole !== 'SUPER_ADMIN' && !userSocietyId) {
     throw new AppError('User must be assigned to a society', 403);
@@ -39,7 +39,7 @@ export const getComplaints = asyncHandler(async (req: Request, res: Response) =>
 
   const filters = req.query;
 
-  console.log('Get complaints request:', { userId, userRole, userSocietyId, filters }); // Debug log
+  console.log('🔍 [CACHE CHECK] Fetching complaints from DATABASE...', { userId, userRole, userSocietyId, filters });
 
   const result = await complaintService.getComplaints(
     filters,
@@ -48,6 +48,8 @@ export const getComplaints = asyncHandler(async (req: Request, res: Response) =>
     userSocietyId!,
     userFlatId
   );
+
+  console.log('✅ [DATABASE] Complaints fetched:', result.pagination.total);
 
   res.status(200).json({
     success: true,
@@ -62,7 +64,11 @@ export const getComplaintById = asyncHandler(async (req: Request, res: Response)
   const userRole = req.user!.role;
   const userSocietyId = req.user!.societyId;
 
+  console.log('🔍 [CACHE CHECK] Fetching complaint by ID from DATABASE...', { complaintId: id, userId, userRole });
+
   const complaint = await complaintService.getComplaintById(String(id), userId, userRole, userSocietyId);
+
+  console.log('✅ [DATABASE] Complaint fetched:', complaint.id);
 
   res.status(200).json({
     success: true,

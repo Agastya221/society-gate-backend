@@ -1,43 +1,23 @@
 import { Router } from 'express';
 import { EntryController } from './entry.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
+import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 
 const router = Router();
 const entryController = new EntryController();
 
-// All routes require authentication and society isolation
 router.use(authenticate);
 router.use(ensureSameSociety);
 
-// Guard creates entry
-router.post('/', authorize('GUARD'), entryController.createEntry);
+// Cached GET routes (short TTL since entries change frequently)
+router.get('/', cache({ ttl: 30, keyPrefix: 'entries', varyBy: ['societyId'] }), entryController.getEntries);
+router.get('/pending', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), cache({ ttl: 15, keyPrefix: 'entries', varyBy: ['societyId', 'userId'] }), entryController.getPendingApprovals);
+router.get('/today', authorize('GUARD'), cache({ ttl: 30, keyPrefix: 'entries', varyBy: ['societyId'] }), entryController.getTodayEntries);
 
-// Resident/Admin approves or rejects
-router.patch(
-  '/:id/approve',
-  authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
-  entryController.approveEntry
-);
-router.patch(
-  '/:id/reject',
-  authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
-  entryController.rejectEntry
-);
-
-// Guard does checkout
-router.patch('/:id/checkout', authorize('GUARD'), entryController.checkoutEntry);
-
-// Get entries (all roles)
-router.get('/', entryController.getEntries);
-
-// Get pending approvals (resident/admin only)
-router.get(
-  '/pending',
-  authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
-  entryController.getPendingApprovals
-);
-
-// Today's entries (guard dashboard)
-router.get('/today', authorize('GUARD'), entryController.getTodayEntries);
+// Routes that invalidate cache
+router.post('/', authorize('GUARD'), clearCacheAfter(['entries:*']), entryController.createEntry);
+router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['entries:*']), entryController.approveEntry);
+router.patch('/:id/reject', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['entries:*']), entryController.rejectEntry);
+router.patch('/:id/checkout', authorize('GUARD'), clearCacheAfter(['entries:*']), entryController.checkoutEntry);
 
 export default router;

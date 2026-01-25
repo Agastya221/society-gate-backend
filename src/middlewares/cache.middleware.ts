@@ -51,9 +51,12 @@ export const cache = (options: CacheOptions = {}) => {
       const cachedData = await redis.get(cacheKey);
 
       if (cachedData) {
+        console.log(`📦 [CACHE HIT] Serving from CACHE: ${req.originalUrl || req.url}`);
         const parsed = JSON.parse(cachedData);
         return res.json(parsed);
       }
+
+      console.log(`💾 [CACHE MISS] Will cache response: ${req.originalUrl || req.url}`);
 
       // Store original json function
       const originalJson = res.json.bind(res);
@@ -61,7 +64,9 @@ export const cache = (options: CacheOptions = {}) => {
       // Override json function to cache the response
       res.json = ((body: any) => {
         // Cache the response
-        redis.setex(cacheKey, ttl, JSON.stringify(body)).catch(err => {
+        redis.setex(cacheKey, ttl, JSON.stringify(body)).then(() => {
+          console.log(`✅ [CACHE SET] Cached response for ${ttl}s: ${req.originalUrl || req.url}`);
+        }).catch(err => {
           console.error('Redis cache set error:', err);
         });
 
@@ -147,7 +152,10 @@ export const clearCacheAfter = (patterns: string[]) => {
     res.json = ((body: any) => {
       // Clear cache patterns
       patterns.forEach(pattern => {
-        clearCacheByPattern(pattern).catch(err => {
+        console.log(`🗑️  [CACHE INVALIDATION] Clearing cache pattern: ${pattern}`);
+        clearCacheByPattern(pattern).then(deletedCount => {
+          console.log(`✅ [CACHE CLEARED] Deleted ${deletedCount} cache entries for pattern: ${pattern}`);
+        }).catch(err => {
           console.error('Clear cache after mutation error:', err);
         });
       });
