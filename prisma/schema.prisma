@@ -129,6 +129,7 @@ enum ComplaintCategory {
   WATER
   ELECTRICITY
   PARKING
+  PLUMBING
   NOISE
   PETS
   OTHER
