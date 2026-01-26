@@ -8,18 +8,23 @@ export class ComplaintService {
   /**
    * Generate presigned view URLs for complaint images
    */
-  private async generateImageUrls(images: string[]): Promise<{ s3Key: string; viewUrl: string }[]> {
+  private async generateImageUrls(images: string[]) {
     if (!images || images.length === 0) return [];
 
     const results = await Promise.all(
       images.map(async (s3Key) => {
         try {
-          // Skip local file paths (legacy data)
           if (s3Key.startsWith('file://') || s3Key.startsWith('content://')) {
             console.warn(`Skipping local file path: ${s3Key}`);
             return null;
           }
-          const viewUrl = await getPresignedViewUrl(s3Key, 3600); // 1 hour expiry
+
+          let viewUrl = await getPresignedViewUrl(s3Key, 3600);
+
+          // ✅ sanitize bad characters (quotes/spaces) that break signature
+          viewUrl = viewUrl.trim().replace(/"+$/, ''); // remove trailing "
+          viewUrl = viewUrl.replace(/%22$/, '');       // remove encoded trailing quote if present
+
           return { s3Key, viewUrl };
         } catch (error) {
           console.error(`Failed to generate URL for ${s3Key}:`, error);
@@ -30,6 +35,7 @@ export class ComplaintService {
 
     return results.filter(Boolean) as { s3Key: string; viewUrl: string }[];
   }
+
 
   // Resident creates complaint with photos
   async createComplaint(
@@ -188,10 +194,9 @@ export class ComplaintService {
           };
 
           // Optionally include image URLs
-          if (includeImageUrls === 'true') {
-            const limitedImages = (c.images || []).slice(0, 3);
-            complaintData.imageUrls = await this.generateImageUrls(limitedImages);
-          }
+          const limitedImages = (c.images || []).slice(0, 5); // or 3 if you want lighter
+          complaintData.imageUrls = await this.generateImageUrls(limitedImages);
+
 
           return complaintData;
         })

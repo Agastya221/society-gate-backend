@@ -49,7 +49,7 @@ export const generateAccessToken = (
       jti: crypto.randomUUID(),
     },
     process.env.JWT_SECRET!,
-    { expiresIn: '15m' } // Access token expires in 15 minutes
+    { expiresIn: '2d' } // Access token expires in 2 days
   );
 };
 
@@ -166,7 +166,7 @@ export const authenticate = async (
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-    
+
     // Check if token is blacklisted
     if (decoded.jti) {
       const isBlacklisted = await isTokenBlacklisted(decoded.jti);
@@ -174,7 +174,7 @@ export const authenticate = async (
         return next(new AppError('Token has been revoked. Please login again.', 401)); // ✅ return here
       }
     }
-    
+
     // Ensure this is an access token
     if (decoded.type && decoded.type !== 'access') {
       return next(new AppError('Invalid token type', 401)); // ✅ return here
