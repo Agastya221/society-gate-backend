@@ -38,7 +38,7 @@ export class ComplaintService {
       priority?: ComplaintPriority;
       title: string;
       description: string;
-      images?: string[]; // Array of S3 URLs
+      images?: string[];
       location?: string;
       isAnonymous?: boolean;
     },
@@ -46,10 +46,8 @@ export class ComplaintService {
     societyId: string,
     flatId: string | null
   ) {
-    // Validate required fields
     validateRequiredFields(data, ['category', 'title', 'description'], 'Complaint');
 
-    // Validate images array if provided
     if (data.images && data.images.length > 5) {
       throw new AppError('Maximum 5 images allowed per complaint', 400);
     }
@@ -69,7 +67,13 @@ export class ComplaintService {
       },
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
-        flat: true,
+        flat: {
+          select: {
+            id: true,
+            flatNumber: true,
+            block: { select: { name: true } },
+          },
+        },
         society: { select: { id: true, name: true } },
       },
     });
@@ -77,92 +81,138 @@ export class ComplaintService {
     return complaint;
   }
 
-  // Get complaints (filtered by role)
- async getComplaints(
-  filters: any,
-  userId: string,
-  userRole: Role,
-  userSocietyId: string,
-  userFlatId: string | null
-) {
-  try {
-    const { category, status, priority, page = 1, limit = 20 } = filters;
+  // Get complaints - ALL society members can see ALL society complaints
+  async getComplaints(
+    filters: any,
+    userId: string,
+    userRole: Role,
+    userSocietyId: string,
+    userFlatId: string | null
+  ) {
+    try {
+      const {
+        category,
+        status,
+        priority,
+        page = 1,
+        limit = 20,
+        sortBy = 'createdAt',
+        includeImageUrls = 'false'
+      } = filters;
 
-    const where: any = {};
+      const where: any = {};
 
-    // SUPER_ADMIN can see all complaints
-    if (userRole === 'SUPER_ADMIN') {
-      // No filter
-    } else if (userRole === 'ADMIN') {
-      // Admin sees all complaints in their society
-      if (!userSocietyId) {
-        throw new AppError('Admin must be assigned to a society', 400);
+      // Role-based filtering
+      if (userRole === 'SUPER_ADMIN') {
+        // SUPER_ADMIN sees all complaints across all societies
+      } else if (userRole === 'ADMIN' || userRole === 'RESIDENT') {
+        // ADMIN and RESIDENT see all complaints in their society
+        if (!userSocietyId) {
+          throw new AppError('User must be assigned to a society', 400);
+        }
+        where.societyId = userSocietyId;
+      } else {
+        throw new AppError('Invalid role for viewing complaints', 403);
       }
-      where.societyId = userSocietyId;
-    } else {
-      // Resident sees only their own complaints
-      where.reportedById = userId;
-    }
 
-    // Apply additional filters
-    if (category) where.category = category;
-    if (status) where.status = status;
-    if (priority) where.priority = priority;
+      // Apply additional filters
+      if (category) where.category = category;
+      if (status) where.status = status;
+      if (priority) where.priority = priority;
 
-    console.log('Complaints query where:', JSON.stringify(where, null, 2)); // Debug log
+      // Determine sort order
+      const orderBy = sortBy === 'priority'
+        ? [{ priority: 'desc' as const }, { createdAt: 'desc' as const }]
+        : [{ createdAt: 'desc' as const }];
 
-    const [complaints, total] = await Promise.all([
-      prisma.complaint.findMany({
+      console.log('Complaints query:', {
         where,
-        include: {
-          reportedBy: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
+        userRole,
+        userSocietyId,
+        userId,
+        orderBy,
+      });
+
+      const [complaints, total] = await Promise.all([
+        prisma.complaint.findMany({
+          where,
+          include: {
+            reportedBy: {
+              select: {
+                id: true,
+                name: true,
+                phone: true,
+              },
             },
-          },
-          flat: {
-            select: {
-              id: true,
-              flatNumber: true,
-              block: {
-                select: {
-                  name: true,
+            flat: {
+              select: {
+                id: true,
+                flatNumber: true,
+                block: {
+                  select: {
+                    name: true,
+                  },
                 },
               },
             },
+            assignedTo: { select: { id: true, name: true, phone: true } },
+            resolvedBy: { select: { id: true, name: true, phone: true } },
           },
-          assignedTo: { select: { id: true, name: true, phone: true } },
-          resolvedBy: { select: { id: true, name: true, phone: true } },
+          orderBy,
+          skip: (Number(page) - 1) * Number(limit),
+          take: Number(limit),
+        }),
+        prisma.complaint.count({ where }),
+      ]);
+
+      // Process complaints with anonymous handling and optional image URLs
+      const processedComplaints = await Promise.all(
+        complaints.map(async (c) => {
+          const isOwn = c.reportedById === userId;
+
+          // Hide reporter details if anonymous (unless it's own complaint or user is ADMIN/SUPER_ADMIN)
+          const canSeeReporterDetails = isOwn || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
+          const shouldHideReporter = c.isAnonymous && !canSeeReporterDetails;
+
+          const reportedBy = shouldHideReporter ? null : c.reportedBy;
+          const flat = shouldHideReporter ? null : c.flat;
+
+          // Base complaint data
+          const complaintData: any = {
+            ...c,
+            reportedBy,
+            flat,
+            isOwn,
+            imageCount: c.images?.length || 0,
+            hasImages: (c.images?.length || 0) > 0,
+          };
+
+          // Optionally include image URLs
+          if (includeImageUrls === 'true') {
+            const limitedImages = (c.images || []).slice(0, 3);
+            complaintData.imageUrls = await this.generateImageUrls(limitedImages);
+          }
+
+          return complaintData;
+        })
+      );
+
+      return {
+        complaints: processedComplaints,
+        pagination: {
+          total,
+          page: Number(page),
+          limit: Number(limit),
+          pages: Math.ceil(total / Number(limit)),
         },
-        orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
-        skip: (Number(page) - 1) * Number(limit),
-        take: Number(limit),
-      }),
-      prisma.complaint.count({ where }),
-    ]);
-
-    return {
-      complaints: complaints.map(c => ({
-        ...c,
-        imageCount: c.images?.length || 0,
-        hasImages: (c.images?.length || 0) > 0,
-      })),
-      pagination: {
-        total,
-        page: Number(page),
-        limit: Number(limit),
-        pages: Math.ceil(total / Number(limit)),
-      },
-    };
-  } catch (error) {
-    console.error('Error in getComplaints service:', error);
-    throw error; // Re-throw to be caught by asyncHandler
+      };
+    } catch (error) {
+      console.error('Error in getComplaints service:', error);
+      throw error;
+    }
   }
-}
 
-  // Get single complaint (Admin sees all details including photos)
+  // Get single complaint with full details and image URLs
   async getComplaintById(
     complaintId: string,
     userId: string,
@@ -194,26 +244,35 @@ export class ComplaintService {
       throw new AppError('Complaint not found', 404);
     }
 
-    // Access control
+    // Access control - society members can view society complaints
     if (userRole === 'SUPER_ADMIN') {
       // Can see any complaint
-    } else if (userRole === 'ADMIN') {
-      // Admin can only see complaints in their society
+    } else if (userRole === 'ADMIN' || userRole === 'RESIDENT') {
+      // Can see any complaint in their society
       if (complaint.societyId !== userSocietyId) {
         throw new AppError('Access denied. Complaint not in your society.', 403);
       }
     } else {
-      // Resident can only see their own complaints
-      if (complaint.reportedById !== userId) {
-        throw new AppError('Access denied. You can only view your own complaints.', 403);
-      }
+      throw new AppError('Access denied.', 403);
     }
+
+    const isOwn = complaint.reportedById === userId;
 
     // Generate view URLs for images
     const imageUrls = await this.generateImageUrls(complaint.images || []);
 
+    // Hide reporter details if anonymous (unless own complaint or ADMIN/SUPER_ADMIN)
+    const canSeeReporterDetails = isOwn || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
+    const shouldHideReporter = complaint.isAnonymous && !canSeeReporterDetails;
+
+    const reportedBy = shouldHideReporter ? null : complaint.reportedBy;
+    const flat = shouldHideReporter ? null : complaint.flat;
+
     return {
       ...complaint,
+      reportedBy,
+      flat,
+      isOwn,
       imageUrls,
     };
   }
@@ -232,7 +291,6 @@ export class ComplaintService {
       throw new AppError('Complaint not found', 404);
     }
 
-    // Society isolation check
     if (complaint.societyId !== adminSocietyId) {
       throw new AppError('Access denied. Complaint not in your society.', 403);
     }
@@ -259,12 +317,10 @@ export class ComplaintService {
       throw new AppError('Complaint not found', 404);
     }
 
-    // Society isolation check
     if (complaint.societyId !== adminSocietyId) {
       throw new AppError('Access denied. Complaint not in your society.', 403);
     }
 
-    // Check if assignee exists and is in same society
     const assignee = await prisma.user.findUnique({
       where: { id: assignedToId },
     });
@@ -311,7 +367,6 @@ export class ComplaintService {
       throw new AppError('Complaint not found', 404);
     }
 
-    // Society isolation check
     if (complaint.societyId !== adminSocietyId) {
       throw new AppError('Access denied. Complaint not in your society.', 403);
     }
@@ -332,7 +387,7 @@ export class ComplaintService {
     return updatedComplaint;
   }
 
-  // Resident deletes their own complaint
+  // Resident deletes own complaint (within 24 hours and before admin action)
   async deleteComplaint(complaintId: string, userId: string) {
     const complaint = await prisma.complaint.findUnique({
       where: { id: complaintId },
@@ -347,9 +402,15 @@ export class ComplaintService {
       throw new AppError('You can only delete your own complaints', 403);
     }
 
-    // Can't delete resolved complaints
-    if (complaint.status === 'RESOLVED') {
-      throw new AppError('Cannot delete resolved complaints', 400);
+    // Can't delete if status has changed from OPEN (admin has taken action)
+    if (complaint.status !== 'OPEN') {
+      throw new AppError('Cannot delete complaint after admin has taken action', 400);
+    }
+
+    // Can't delete after 24 hours
+    const hoursSinceCreation = (Date.now() - complaint.createdAt.getTime()) / (1000 * 60 * 60);
+    if (hoursSinceCreation > 24) {
+      throw new AppError('Cannot delete complaint after 24 hours. Please contact admin.', 400);
     }
 
     await prisma.complaint.delete({
