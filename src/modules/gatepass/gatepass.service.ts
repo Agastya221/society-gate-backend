@@ -39,7 +39,7 @@ export class GatePassService {
     }
 
     // Generate QR token
-    const qrToken = await generateQRToken({
+    const qrToken = generateQRToken({
       type: 'gatepass',
       flatId,
       societyId,

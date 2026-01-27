@@ -26,7 +26,7 @@ router.get('/', authorize('ADMIN', 'SUPER_ADMIN', 'GUARD'), cache({ ttl: 15, key
 // Parameterized routes LAST
 router.get('/:id', cache({ ttl: 30, keyPrefix: 'emergencies' }), getEmergencyById);
 router.patch('/:id/respond', authorize('ADMIN', 'SUPER_ADMIN', 'GUARD'), clearCacheAfter(['emergencies:*']), respondToEmergency);
-router.patch('/:id/resolve', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['emergencies:*']), resolveEmergency);
+router.patch('/:id/resolve', authorize('ADMIN', 'SUPER_ADMIN','GUARD'), clearCacheAfter(['emergencies:*']), resolveEmergency);
 router.patch('/:id/false-alarm', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['emergencies:*']), markAsFalseAlarm);
 
 export default router;

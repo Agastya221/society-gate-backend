@@ -27,7 +27,7 @@ export class DomesticStaffService {
     }
 
     // Generate QR token
-    const qrToken = await generateQRToken({
+    const qrToken =  generateQRToken({
       type: 'domestic_staff',
       phone,
       societyId,
