@@ -1,8 +1,16 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import type {
+  CreateVendorDTO,
+  UpdateVendorDTO,
+  VendorFilters,
+  Prisma,
+  VendorCategory,
+  Vendor,
+} from '../../types';
 
 export class VendorService {
-  async createVendor(data: any, addedById: string) {
+  async createVendor(data: CreateVendorDTO, addedById: string) {
     const vendor = await prisma.vendor.create({
       data: {
         ...data,
@@ -17,13 +25,13 @@ export class VendorService {
     return vendor;
   }
 
-  async getVendors(filters: any) {
-    const { societyId, category, isVerified, isActive = true, page = 1, limit = 20 } = filters;
+  async getVendors(filters: VendorFilters) {
+    const { societyId, category, isVerified, isActive, page = 1, limit = 20 } = filters;
 
-    const where: any = { societyId };
+    const where: Prisma.VendorWhereInput = { societyId };
     if (category) where.category = category;
-    if (isVerified !== undefined) where.isVerified = isVerified === 'true';
-    if (isActive !== undefined) where.isActive = isActive === 'true';
+    if (isVerified !== undefined) where.isVerified = isVerified;
+    if (isActive !== undefined) where.isActive = isActive;
 
     const [vendors, total] = await Promise.all([
       prisma.vendor.findMany({
@@ -65,7 +73,7 @@ export class VendorService {
     return vendor;
   }
 
-  async updateVendor(vendorId: string, data: any) {
+  async updateVendor(vendorId: string, data: UpdateVendorDTO) {
     const vendor = await prisma.vendor.findUnique({
       where: { id: vendorId },
     });
@@ -157,13 +165,13 @@ export class VendorService {
     });
 
     // Group by category
-    const groupedByCategory = vendors.reduce((acc: any, vendor) => {
+    const groupedByCategory = vendors.reduce<Record<VendorCategory, Vendor[]>>((acc, vendor) => {
       if (!acc[vendor.category]) {
         acc[vendor.category] = [];
       }
       acc[vendor.category].push(vendor);
       return acc;
-    }, {});
+    }, {} as Record<VendorCategory, Vendor[]>);
 
     return groupedByCategory;
   }

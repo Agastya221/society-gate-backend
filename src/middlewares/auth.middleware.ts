@@ -5,6 +5,7 @@ import { AppError } from '../utils/ResponseHandler';
 import { Role } from '../../prisma/generated/prisma/enums';
 import { redis, isRedisAvailable } from '../config/redis';
 import crypto from "crypto";
+import type { AuthenticatedUser } from '../types';
 
 // In-memory fallback for token blacklist when Redis is unavailable
 const inMemoryBlacklist = new Map<string, number>(); // jti -> expiresAt timestamp
@@ -19,10 +20,16 @@ interface JwtPayload {
   jti: string;
 }
 
+// Helper to check if error is a JWT error
+function isJwtError(error: unknown): error is Error & { name: string } {
+  return error instanceof Error && 'name' in error;
+}
+
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: AuthenticatedUser;
+      societyId?: string;
     }
   }
 }
@@ -199,16 +206,19 @@ export const authenticate = async (
 
     req.user = user;
     next();
-  } catch (error: any) {
-    if (error.name === 'JsonWebTokenError') {
-      return next(new AppError('Invalid token', 401)); // ✅ return here
+  } catch (error: unknown) {
+    if (isJwtError(error)) {
+      if (error.name === 'JsonWebTokenError') {
+        return next(new AppError('Invalid token', 401));
+      }
+      if (error.name === 'TokenExpiredError') {
+        return next(new AppError('Token expired. Please login again.', 401));
+      }
     }
-    if (error.name === 'TokenExpiredError') {
-      return next(new AppError('Token expired. Please login again.', 401)); // ✅ return here
-    }
-    return next(error); // ✅ return here
+    return next(error);
   }
 };
+
 // ============================================
 // ONBOARDING AUTHENTICATION (Allows inactive users)
 // ============================================
@@ -249,12 +259,14 @@ export const authenticateForOnboarding = async (
 
     req.user = user;
     next();
-  } catch (error: any) {
-    if (error.name === 'JsonWebTokenError') {
-      return next(new AppError('Invalid token', 401));
-    }
-    if (error.name === 'TokenExpiredError') {
-      return next(new AppError('Token expired. Please login again.', 401));
+  } catch (error: unknown) {
+    if (isJwtError(error)) {
+      if (error.name === 'JsonWebTokenError') {
+        return next(new AppError('Invalid token', 401));
+      }
+      if (error.name === 'TokenExpiredError') {
+        return next(new AppError('Token expired. Please login again.', 401));
+      }
     }
     next(error);
   }
@@ -270,7 +282,7 @@ export const authenticateResidentApp = async (
   next: NextFunction
 ) => {
   // First authenticate
-  await authenticate(req, res, (err?: any) => {
+  await authenticate(req, res, (err?: unknown) => {
     // If authentication failed, propagate the error
     if (err) {
       return next(err);
@@ -302,7 +314,7 @@ export const authenticateGuardApp = async (
   next: NextFunction
 ) => {
   // First authenticate
-  await authenticate(req, res, (err?: any) => {
+  await authenticate(req, res, (err?: unknown) => {
     // If authentication failed, propagate the error
     if (err) {
       return next(err);
@@ -343,12 +355,14 @@ export const verifyRefreshToken = (refreshToken: string): JwtPayload => {
     }
 
     return decoded;
-  } catch (error: any) {
-    if (error.name === 'JsonWebTokenError') {
-      throw new AppError('Invalid refresh token', 401);
-    }
-    if (error.name === 'TokenExpiredError') {
-      throw new AppError('Refresh token expired. Please login again.', 401);
+  } catch (error: unknown) {
+    if (isJwtError(error)) {
+      if (error.name === 'JsonWebTokenError') {
+        throw new AppError('Invalid refresh token', 401);
+      }
+      if (error.name === 'TokenExpiredError') {
+        throw new AppError('Refresh token expired. Please login again.', 401);
+      }
     }
     throw error;
   }
@@ -381,9 +395,11 @@ export const authorize = (...allowedRoles: Role[]) => {
 // SOCIETY ISOLATION MIDDLEWARE
 // ============================================
 
-// If you have a global type augmentation already, put this there instead.
-// This is the simplest local-safe way:
-type ReqWithSociety = Request & { societyId?: string };
+// Request body type with societyId
+interface RequestBodyWithSociety {
+  societyId?: string;
+  [key: string]: unknown;
+}
 
 export const ensureSameSociety = async (
   req: Request,
@@ -407,9 +423,10 @@ export const ensureSameSociety = async (
     }
 
     // Read societyId from incoming request WITHOUT mutating req.query
-    const bodySocietyId = (req.body as any)?.societyId;
-    const querySocietyId = (req.query as any)?.societyId;
-    const paramSocietyId = (req.params as any)?.societyId;
+    const body = req.body as RequestBodyWithSociety | undefined;
+    const bodySocietyId = body?.societyId;
+    const querySocietyId = req.query.societyId as string | undefined;
+    const paramSocietyId = req.params.societyId;
 
     const resourceSocietyId = bodySocietyId || querySocietyId || paramSocietyId;
 
@@ -426,12 +443,12 @@ export const ensureSameSociety = async (
       );
     }
 
-    // ✅ Store computed societyId safely on request (no mutation of query)
-    (req as ReqWithSociety).societyId = userSocietyId;
+    // Store computed societyId safely on request
+    req.societyId = userSocietyId;
 
-    // ✅ For non-GET requests, you may also inject into body IF body exists
-    if (req.body && !bodySocietyId) {
-      (req.body as any).societyId = userSocietyId;
+    // For non-GET requests, inject societyId into body if not present
+    if (body && !bodySocietyId) {
+      body.societyId = userSocietyId;
     }
 
     return next();

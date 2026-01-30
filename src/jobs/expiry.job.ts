@@ -1,5 +1,6 @@
 import cron from 'node-cron';
 import { prisma } from '../utils/Client';
+import { emitToUser, SOCKET_EVENTS } from '../utils/socket';
 
 /**
  * Cron job to auto-expire pending entry requests
@@ -7,17 +8,39 @@ import { prisma } from '../utils/Client';
  */
 cron.schedule('* * * * *', async () => {
   try {
-    const result = await prisma.entryRequest.updateMany({
+    // Find expired requests before updating so we can notify guards
+    const expiredRequests = await prisma.entryRequest.findMany({
       where: {
         status: 'PENDING',
         expiresAt: { lt: new Date() },
       },
+      select: {
+        id: true,
+        guardId: true,
+        flat: { select: { flatNumber: true } },
+      },
+    });
+
+    if (expiredRequests.length === 0) return;
+
+    // Bulk update to EXPIRED
+    await prisma.entryRequest.updateMany({
+      where: {
+        id: { in: expiredRequests.map((r) => r.id) },
+      },
       data: { status: 'EXPIRED' },
     });
 
-    if (result.count > 0) {
-      console.log(`[Cron] Auto-expired ${result.count} entry requests`);
+    // Notify each guard via Socket.IO
+    for (const request of expiredRequests) {
+      emitToUser(request.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
+        id: request.id,
+        status: 'EXPIRED',
+        flatNumber: request.flat.flatNumber,
+      });
     }
+
+    console.log(`[Cron] Auto-expired ${expiredRequests.length} entry requests`);
   } catch (error) {
     console.error('[Cron] Error expiring entry requests:', error);
   }

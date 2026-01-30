@@ -84,9 +84,9 @@ export class ReportsService {
     });
 
     // Group by date
-    const byDate: any = {};
-    const byType: any = {};
-    const byStatus: any = {};
+    const byDate: Record<string, number> = {};
+    const byType: Record<string, number> = {};
+    const byStatus: Record<string, number> = {};
 
     entries.forEach((entry) => {
       const date = entry.checkInTime.toISOString().split('T')[0];
@@ -119,14 +119,14 @@ export class ReportsService {
       },
     });
 
-    const hourlyData: any = {};
+    const hourlyData: Record<number, number> = {};
     entries.forEach((entry) => {
       const hour = entry.checkInTime.getHours();
       hourlyData[hour] = (hourlyData[hour] || 0) + 1;
     });
 
     const peakHours = Object.entries(hourlyData)
-      .sort((a: any, b: any) => b[1] - a[1])
+      .sort((a, b) => (b[1] as number) - (a[1] as number))
       .slice(0, 5)
       .map(([hour, count]) => ({ hour: `${hour}:00`, count }));
 
@@ -154,7 +154,7 @@ export class ReportsService {
       },
     });
 
-    const byCompany: any = {};
+    const byCompany: Record<string, number> = {};
     deliveries.forEach((delivery) => {
       if (delivery.companyName) {
         byCompany[delivery.companyName] = (byCompany[delivery.companyName] || 0) + 1;
@@ -162,7 +162,7 @@ export class ReportsService {
     });
 
     const topCompanies = Object.entries(byCompany)
-      .sort((a: any, b: any) => b[1] - a[1])
+      .sort((a, b) => (b[1] as number) - (a[1] as number))
       .slice(0, 10)
       .map(([company, count]) => ({ company, count }));
 
@@ -190,9 +190,9 @@ export class ReportsService {
       },
     });
 
-    const byCategory: any = {};
-    const byStatus: any = {};
-    const byPriority: any = {};
+    const byCategory: Record<string, number> = {};
+    const byStatus: Record<string, number> = {};
+    const byPriority: Record<string, number> = {};
 
     let totalResolutionTime = 0;
     let resolvedCount = 0;

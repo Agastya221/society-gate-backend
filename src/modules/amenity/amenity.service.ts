@@ -1,9 +1,17 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import type {
+  CreateAmenityDTO,
+  UpdateAmenityDTO,
+  AmenityFilters,
+  CreateBookingDTO,
+  BookingFilters,
+  Prisma,
+} from '../../types';
 
 export class AmenityService {
   // Admin: Create amenity
-  async createAmenity(data: any) {
+  async createAmenity(data: CreateAmenityDTO) {
     const amenity = await prisma.amenity.create({
       data,
       include: {
@@ -15,12 +23,12 @@ export class AmenityService {
   }
 
   // Get all amenities
-  async getAmenities(filters: any) {
-    const { societyId, type, isActive = true } = filters;
+  async getAmenities(filters: AmenityFilters) {
+    const { societyId, type, isActive } = filters;
 
-    const where: any = { societyId };
+    const where: Prisma.AmenityWhereInput = { societyId };
     if (type) where.type = type;
-    if (isActive !== undefined) where.isActive = isActive === 'true';
+    if (isActive !== undefined) where.isActive = isActive;
 
     const amenities = await prisma.amenity.findMany({
       where,
@@ -44,7 +52,7 @@ export class AmenityService {
   }
 
   // Admin: Update amenity
-  async updateAmenity(amenityId: string, data: any) {
+  async updateAmenity(amenityId: string, data: UpdateAmenityDTO) {
     const amenity = await prisma.amenity.findUnique({
       where: { id: amenityId },
     });
@@ -79,7 +87,7 @@ export class AmenityService {
   }
 
   // Create booking
-  async createBooking(data: any, userId: string) {
+  async createBooking(data: CreateBookingDTO, userId: string) {
     const { amenityId, bookingDate, startTime, endTime } = data;
 
     // Use transaction to prevent double-booking race condition
@@ -167,10 +175,10 @@ export class AmenityService {
   }
 
   // Get bookings
-  async getBookings(filters: any) {
+  async getBookings(filters: BookingFilters) {
     const { societyId, amenityId, userId, status, bookingDate, page = 1, limit = 20 } = filters;
 
-    const where: any = { societyId };
+    const where: Prisma.AmenityBookingWhereInput = { societyId };
     if (amenityId) where.amenityId = amenityId;
     if (userId) where.userId = userId;
     if (status) where.status = status;

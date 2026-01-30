@@ -120,7 +120,7 @@ export class UserController {
 
   // Get All Guards (Admin only)
   getGuards = asyncHandler(async (req: Request, res: Response) => {
-    const guards = await userService.getGuards(req.user!.societyId);
+    const guards = await userService.getGuards(req.user!.societyId!);
 
     res.json({
       success: true,

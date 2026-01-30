@@ -160,6 +160,7 @@ export const ComplaintCategory = {
   WATER: 'WATER',
   ELECTRICITY: 'ELECTRICITY',
   PARKING: 'PARKING',
+  PLUMBING: 'PLUMBING',
   NOISE: 'NOISE',
   PETS: 'PETS',
   OTHER: 'OTHER'

@@ -1,6 +1,8 @@
 import type { Response, Request } from 'express';
 import { EntryRequestService } from './entry-request.service';
 import { UploadService } from '../upload/upload.service';
+import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
+import type { EntryRequestStatus } from '../../types';
 
 const entryRequestService = new EntryRequestService();
 const uploadService = new UploadService();
@@ -10,7 +12,7 @@ const uploadService = new UploadService();
  */
 export const createEntryRequest = async (req: Request, res: Response) => {
   try {
-    const guardId = (req as any).user.id;
+    const guardId = req.user!.id;
     const { type, flatId, visitorName, visitorPhone, providerTag, photoKey } = req.body;
 
     if (!type || !flatId) {
@@ -30,10 +32,10 @@ export const createEntryRequest = async (req: Request, res: Response) => {
       message: 'Entry request created. Notification sent to residents.',
       data: entryRequest,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to create entry request',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -43,11 +45,11 @@ export const createEntryRequest = async (req: Request, res: Response) => {
  */
 export const getEntryRequests = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { status, flatId, page, limit } = req.query;
 
     const result = await entryRequestService.getEntryRequests(userId, {
-      status: status as any,
+      status: status as EntryRequestStatus | undefined,
       flatId: flatId as string,
       page: page ? parseInt(page as string, 10) : undefined,
       limit: limit ? parseInt(limit as string, 10) : undefined,
@@ -57,10 +59,10 @@ export const getEntryRequests = async (req: Request, res: Response) => {
       success: true,
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch entry requests',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -70,7 +72,7 @@ export const getEntryRequests = async (req: Request, res: Response) => {
  */
 export const getEntryRequestById = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
 
     const entryRequest = await entryRequestService.getEntryRequestById(String(id), userId);
@@ -79,10 +81,10 @@ export const getEntryRequestById = async (req: Request, res: Response) => {
       success: true,
       data: entryRequest,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch entry request',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -92,7 +94,7 @@ export const getEntryRequestById = async (req: Request, res: Response) => {
  */
 export const getEntryRequestPhoto = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
 
     const viewUrl = await uploadService.getEntryPhotoViewUrl(String(id), userId);
@@ -101,10 +103,10 @@ export const getEntryRequestPhoto = async (req: Request, res: Response) => {
       success: true,
       data: { viewUrl },
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to get photo URL',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -114,7 +116,7 @@ export const getEntryRequestPhoto = async (req: Request, res: Response) => {
  */
 export const approveEntryRequest = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
 
     const entryRequest = await entryRequestService.approveEntryRequest(String(id), userId);
@@ -124,10 +126,10 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
       message: 'Entry request approved. Visitor can enter.',
       data: entryRequest,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to approve entry request',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -137,7 +139,7 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
  */
 export const rejectEntryRequest = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
     const { reason } = req.body;
 
@@ -148,10 +150,10 @@ export const rejectEntryRequest = async (req: Request, res: Response) => {
       message: 'Entry request rejected.',
       data: entryRequest,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to reject entry request',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -161,7 +163,7 @@ export const rejectEntryRequest = async (req: Request, res: Response) => {
  */
 export const getPendingCount = async (req: Request, res: Response) => {
   try {
-    const guardId = (req as any).user.id;
+    const guardId = req.user!.id;
 
     const count = await entryRequestService.getPendingCountForGuard(guardId);
 
@@ -169,10 +171,10 @@ export const getPendingCount = async (req: Request, res: Response) => {
       success: true,
       data: { pendingCount: count },
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to get pending count',
+      message: getErrorMessage(error),
     });
   }
 };

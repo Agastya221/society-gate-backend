@@ -1,6 +1,8 @@
 import type { Response, Request } from 'express';
 import { DomesticStaffService } from './domestic-staff.service';
 import { generateQRImage } from '../../utils/QrGenerate';
+import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
+import type { StaffFilters, StaffBookingFilters, DomesticStaffType, StaffAvailabilityStatus, StaffBookingStatus } from '../../types';
 
 const staffService = new DomesticStaffService();
 
@@ -10,7 +12,7 @@ const staffService = new DomesticStaffService();
 
 export const createStaff = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const staff = await staffService.createStaff(req.body, userId);
 
     res.status(201).json({
@@ -18,27 +20,36 @@ export const createStaff = async (req: Request, res: Response) => {
       message: 'Staff added successfully',
       data: staff,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to add staff',
+      message: getErrorMessage(error),
     });
   }
 };
 
 export const getStaffList = async (req: Request, res: Response) => {
   try {
-    const filters = req.query;
+    const filters: StaffFilters & { search?: string } = {
+      societyId: req.user!.societyId!,
+      staffType: req.query.staffType as DomesticStaffType | undefined,
+      availabilityStatus: req.query.availabilityStatus as StaffAvailabilityStatus | undefined,
+      isVerified: req.query.isVerified === 'true' ? true : req.query.isVerified === 'false' ? false : undefined,
+      isActive: req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined,
+      search: req.query.search as string | undefined,
+      page: req.query.page ? Number(req.query.page) : undefined,
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+    };
     const result = await staffService.getStaffList(filters);
 
     res.status(200).json({
       success: true,
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch staff list',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -52,10 +63,10 @@ export const getStaffById = async (req: Request, res: Response) => {
       success: true,
       data: staff,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch staff details',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -70,10 +81,10 @@ export const updateStaff = async (req: Request, res: Response) => {
       message: 'Staff updated successfully',
       data: staff,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to update staff',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -87,10 +98,10 @@ export const deleteStaff = async (req: Request, res: Response) => {
       success: true,
       ...result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to delete staff',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -98,7 +109,7 @@ export const deleteStaff = async (req: Request, res: Response) => {
 export const verifyStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const staff = await staffService.verifyStaff(String(id), userId);
 
     res.status(200).json({
@@ -106,10 +117,10 @@ export const verifyStaff = async (req: Request, res: Response) => {
       message: staff.isVerified ? 'Staff verified' : 'Staff unverified',
       data: staff,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to verify staff',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -131,10 +142,10 @@ export const getStaffQRCode = async (req: Request, res: Response) => {
         qrCodeImage,
       },
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to generate QR code',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -152,10 +163,10 @@ export const assignStaffToFlat = async (req: Request, res: Response) => {
       message: 'Staff assigned to flat successfully',
       data: assignment,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to assign staff',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -170,10 +181,10 @@ export const updateAssignment = async (req: Request, res: Response) => {
       message: 'Assignment updated successfully',
       data: assignment,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to update assignment',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -187,10 +198,10 @@ export const removeAssignment = async (req: Request, res: Response) => {
       success: true,
       ...result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to remove assignment',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -204,10 +215,10 @@ export const getStaffAssignments = async (req: Request, res: Response) => {
       success: true,
       data: assignments,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch assignments',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -218,8 +229,8 @@ export const getStaffAssignments = async (req: Request, res: Response) => {
 
 export const checkIn = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
-    const role = (req as any).user.role;
+    const userId = req.user!.id;
+    const role = req.user!.role;
     const verifiedByGuardId = role === 'GUARD' ? userId : undefined;
 
     const attendance = await staffService.checkIn(req.body, verifiedByGuardId);
@@ -229,10 +240,10 @@ export const checkIn = async (req: Request, res: Response) => {
       message: 'Staff checked in successfully',
       data: attendance,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to check in',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -248,10 +259,10 @@ export const checkOut = async (req: Request, res: Response) => {
       message: 'Staff checked out successfully',
       data: attendance,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to check out',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -259,8 +270,8 @@ export const checkOut = async (req: Request, res: Response) => {
 export const scanQRCode = async (req: Request, res: Response) => {
   try {
     const { qrToken, flatId, societyId } = req.body;
-    const userId = (req as any).user.id;
-    const role = (req as any).user.role;
+    const userId = req.user!.id;
+    const role = req.user!.role;
     const verifiedByGuardId = role === 'GUARD' ? userId : undefined;
 
     const result = await staffService.scanQRCode(qrToken, flatId, societyId, verifiedByGuardId);
@@ -270,27 +281,35 @@ export const scanQRCode = async (req: Request, res: Response) => {
       message: result.checkOutTime ? 'Staff checked out successfully' : 'Staff checked in successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to scan QR code',
+      message: getErrorMessage(error),
     });
   }
 };
 
 export const getAttendanceRecords = async (req: Request, res: Response) => {
   try {
-    const filters = req.query;
+    const filters = {
+      societyId: req.query.societyId as string | undefined,
+      flatId: req.query.flatId as string | undefined,
+      domesticStaffId: req.query.domesticStaffId as string | undefined,
+      startDate: req.query.startDate as string | undefined,
+      endDate: req.query.endDate as string | undefined,
+      page: req.query.page ? Number(req.query.page) : undefined,
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+    };
     const result = await staffService.getAttendanceRecords(filters);
 
     res.status(200).json({
       success: true,
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch attendance records',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -301,7 +320,7 @@ export const getAttendanceRecords = async (req: Request, res: Response) => {
 
 export const createBooking = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const booking = await staffService.createBooking(req.body, userId);
 
     res.status(201).json({
@@ -309,27 +328,35 @@ export const createBooking = async (req: Request, res: Response) => {
       message: 'Booking created successfully',
       data: booking,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to create booking',
+      message: getErrorMessage(error),
     });
   }
 };
 
 export const getBookings = async (req: Request, res: Response) => {
   try {
-    const filters = req.query;
+    const filters: StaffBookingFilters & { bookingDate?: string } = {
+      domesticStaffId: req.query.domesticStaffId as string | undefined,
+      bookedById: req.query.bookedById as string | undefined,
+      flatId: req.query.flatId as string | undefined,
+      status: req.query.status as StaffBookingStatus | undefined,
+      bookingDate: req.query.bookingDate as string | undefined,
+      page: req.query.page ? Number(req.query.page) : undefined,
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+    };
     const result = await staffService.getBookings(filters);
 
     res.status(200).json({
       success: true,
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch bookings',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -344,10 +371,10 @@ export const acceptBooking = async (req: Request, res: Response) => {
       message: 'Booking accepted successfully',
       data: booking,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to accept booking',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -363,10 +390,10 @@ export const rejectBooking = async (req: Request, res: Response) => {
       message: 'Booking rejected',
       data: booking,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to reject booking',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -382,10 +409,10 @@ export const completeBooking = async (req: Request, res: Response) => {
       message: 'Booking completed successfully',
       data: booking,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to complete booking',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -396,7 +423,7 @@ export const completeBooking = async (req: Request, res: Response) => {
 
 export const addReview = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const review = await staffService.addReview(req.body, userId);
 
     res.status(201).json({
@@ -404,10 +431,10 @@ export const addReview = async (req: Request, res: Response) => {
       message: 'Review added successfully',
       data: review,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to add review',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -421,10 +448,10 @@ export const getStaffReviews = async (req: Request, res: Response) => {
       success: true,
       data: reviews,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch reviews',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -435,17 +462,23 @@ export const getStaffReviews = async (req: Request, res: Response) => {
 
 export const getAvailableStaff = async (req: Request, res: Response) => {
   try {
-    const filters = req.query;
+    const filters = {
+      societyId: req.user!.societyId!,
+      staffType: req.query.staffType as DomesticStaffType | undefined,
+      bookingDate: req.query.bookingDate as string | undefined,
+      startTime: req.query.startTime as string | undefined,
+      endTime: req.query.endTime as string | undefined,
+    };
     const staff = await staffService.getAvailableStaff(filters);
 
     res.status(200).json({
       success: true,
       data: staff,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch available staff',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -461,10 +494,10 @@ export const updateAvailabilityStatus = async (req: Request, res: Response) => {
       message: 'Availability status updated',
       data: staff,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to update availability status',
+      message: getErrorMessage(error),
     });
   }
 };

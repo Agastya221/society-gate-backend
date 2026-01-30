@@ -1,8 +1,9 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import type { Prisma } from '../../types';
 
 export class SocietyService {
-  async createSociety(data: any) {
+  async createSociety(data: Omit<Prisma.SocietyUncheckedCreateInput, 'nextDueDate' | 'isActive'>) {
     // Set next due date (30 days from now)
     const nextDueDate = new Date();
     nextDueDate.setDate(nextDueDate.getDate() + 30);
@@ -26,10 +27,10 @@ export class SocietyService {
     return society;
   }
 
-  async getSocieties(filters?: any) {
+  async getSocieties(filters?: { city?: string; isActive?: boolean; page?: number; limit?: number }) {
     const { city, isActive, page = 1, limit = 20 } = filters || {};
 
-    const where: any = {};
+    const where: Prisma.SocietyWhereInput = {};
     if (city) where.city = city;
     if (isActive !== undefined) where.isActive = isActive;
 
@@ -85,7 +86,7 @@ export class SocietyService {
     return society;
   }
 
-  async updateSociety(societyId: string, data: any) {
+  async updateSociety(societyId: string, data: Prisma.SocietyUpdateInput) {
     const society = await prisma.society.update({
       where: { id: societyId },
       data,

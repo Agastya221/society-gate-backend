@@ -6,15 +6,29 @@ import {
   validateRequiredFields,
   validateTimeRange,
   validatePositiveNumber,
-  validatePhoneNumber,
 } from '../../utils/validation';
+import type {
+  CreateStaffDTO,
+  UpdateStaffDTO,
+  StaffFilters,
+  CreateStaffAssignmentDTO,
+  UpdateStaffAssignmentDTO,
+  StaffCheckInDTO,
+  AttendanceFilters,
+  CreateStaffBookingDTO,
+  StaffBookingFilters,
+  CreateStaffReviewDTO,
+  Prisma,
+  StaffAvailabilityStatus,
+  DomesticStaffType,
+} from '../../types';
 
 export class DomesticStaffService {
   // ============================================
   // STAFF MANAGEMENT
   // ============================================
 
-  async createStaff(data: any, addedById: string) {
+  async createStaff(data: CreateStaffDTO, addedById: string) {
     const { societyId, phone } = data;
 
     // Check if staff with this phone already exists in society
@@ -48,23 +62,23 @@ export class DomesticStaffService {
     return staff;
   }
 
-  async getStaffList(filters: any) {
+  async getStaffList(filters: StaffFilters & { search?: string }) {
     const {
       societyId,
       staffType,
       availabilityStatus,
       isVerified,
-      isActive = true,
+      isActive,
       search,
       page = 1,
       limit = 20,
     } = filters;
 
-    const where: any = { societyId };
+    const where: Prisma.DomesticStaffWhereInput = { societyId };
     if (staffType) where.staffType = staffType;
     if (availabilityStatus) where.availabilityStatus = availabilityStatus;
-    if (isVerified !== undefined) where.isVerified = isVerified === 'true';
-    if (isActive !== undefined) where.isActive = isActive === 'true';
+    if (isVerified !== undefined) where.isVerified = isVerified;
+    if (isActive !== undefined) where.isActive = isActive;
 
     if (search) {
       where.OR = [
@@ -132,7 +146,7 @@ export class DomesticStaffService {
     return staff;
   }
 
-  async updateStaff(staffId: string, data: any) {
+  async updateStaff(staffId: string, data: UpdateStaffDTO) {
     const staff = await prisma.domesticStaff.findUnique({
       where: { id: staffId },
     });
@@ -190,7 +204,7 @@ export class DomesticStaffService {
   // FLAT ASSIGNMENTS
   // ============================================
 
-  async assignStaffToFlat(data: any) {
+  async assignStaffToFlat(data: CreateStaffAssignmentDTO) {
     const { domesticStaffId, flatId } = data;
 
     // Check if assignment already exists
@@ -218,7 +232,7 @@ export class DomesticStaffService {
     return assignment;
   }
 
-  async updateAssignment(assignmentId: string, data: any) {
+  async updateAssignment(assignmentId: string, data: UpdateStaffAssignmentDTO) {
     const assignment = await prisma.staffFlatAssignment.update({
       where: { id: assignmentId },
       data,
@@ -250,7 +264,7 @@ export class DomesticStaffService {
   // ATTENDANCE & CHECK-IN/OUT
   // ============================================
 
-  async checkIn(data: any, verifiedByGuardId?: string) {
+  async checkIn(data: StaffCheckInDTO & { notes?: string }, verifiedByGuardId?: string) {
     const { domesticStaffId, flatId, societyId, checkInMethod = 'QR', notes } = data;
 
     // Use transaction to prevent race conditions
@@ -421,10 +435,10 @@ export class DomesticStaffService {
     }
   }
 
-  async getAttendanceRecords(filters: any) {
+  async getAttendanceRecords(filters: AttendanceFilters & { startDate?: string; endDate?: string }) {
     const { domesticStaffId, flatId, societyId, startDate, endDate, page = 1, limit = 20 } = filters;
 
-    const where: any = {};
+    const where: Prisma.StaffAttendanceWhereInput = {};
     if (domesticStaffId) where.domesticStaffId = domesticStaffId;
     if (flatId) where.flatId = flatId;
     if (societyId) where.societyId = societyId;
@@ -466,7 +480,7 @@ export class DomesticStaffService {
   // BOOKINGS (On-demand/Urgent hiring)
   // ============================================
 
-  async createBooking(data: any, bookedById: string) {
+  async createBooking(data: CreateStaffBookingDTO & { requirements?: string; estimatedCost?: number }, bookedById: string) {
     const { domesticStaffId, flatId, societyId, bookingDate, startTime, endTime, durationHours, workType } = data;
 
     // Validate required fields
@@ -533,10 +547,10 @@ export class DomesticStaffService {
     return booking;
   }
 
-  async getBookings(filters: any) {
+  async getBookings(filters: StaffBookingFilters & { bookingDate?: string }) {
     const { domesticStaffId, bookedById, flatId, status, bookingDate, page = 1, limit = 20 } = filters;
 
-    const where: any = {};
+    const where: Prisma.StaffBookingWhereInput = {};
     if (domesticStaffId) where.domesticStaffId = domesticStaffId;
     if (bookedById) where.bookedById = bookedById;
     if (flatId) where.flatId = flatId;
@@ -633,7 +647,7 @@ export class DomesticStaffService {
   // REVIEWS & RATINGS
   // ============================================
 
-  async addReview(data: any, reviewerId: string) {
+  async addReview(data: CreateStaffReviewDTO, reviewerId: string) {
     const { domesticStaffId, rating } = data;
 
     const review = await prisma.staffReview.create({
@@ -686,10 +700,10 @@ export class DomesticStaffService {
   // AVAILABILITY & SCHEDULING
   // ============================================
 
-  async getAvailableStaff(filters: any) {
+  async getAvailableStaff(filters: { societyId: string; staffType?: DomesticStaffType; bookingDate?: string; startTime?: string; endTime?: string }) {
     const { societyId, staffType, bookingDate, startTime, endTime } = filters;
 
-    const where: any = {
+    const where: Prisma.DomesticStaffWhereInput = {
       societyId,
       isActive: true,
       availabilityStatus: 'AVAILABLE',
@@ -747,10 +761,10 @@ export class DomesticStaffService {
     return staff;
   }
 
-  async updateAvailabilityStatus(staffId: string, status: string) {
+  async updateAvailabilityStatus(staffId: string, status: StaffAvailabilityStatus) {
     const staff = await prisma.domesticStaff.update({
       where: { id: staffId },
-      data: { availabilityStatus: status as any },
+      data: { availabilityStatus: status },
     });
 
     return staff;

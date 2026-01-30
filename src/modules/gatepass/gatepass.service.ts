@@ -1,16 +1,14 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { generateQRToken } from '../../utils/QrGenerate';
-import { GatePassType, GatePassStatus } from '../../../prisma/generated/prisma/enums';
-import {
-  validateDateRange,
-  validateFutureDate,
-  validateRequiredFields,
-  sanitizeString,
-} from '../../utils/validation';
+import type {
+  CreateGatePassDTO,
+  GatePassFilters,
+  Prisma,
+} from '../../types';
 
 export class GatePassService {
-  async createGatePass(data: any, requestedById: string) {
+  async createGatePass(data: CreateGatePassDTO, requestedById: string) {
     // Get user info to determine flatId and societyId
     const user = await prisma.user.findUnique({
       where: { id: requestedById },
@@ -209,10 +207,10 @@ export class GatePassService {
     return updatedGatePass;
   }
 
-  async getGatePasses(filters: any) {
+  async getGatePasses(filters: GatePassFilters) {
     const { societyId, flatId, status, type, page = 1, limit = 20 } = filters;
 
-    const where: any = { societyId };
+    const where: Prisma.GatePassWhereInput = { societyId };
     if (flatId) where.flatId = flatId;
     if (status) where.status = status;
     if (type) where.type = type;

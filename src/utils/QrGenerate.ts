@@ -34,8 +34,8 @@ export const verifyQRToken = (token: string): JwtPayload | string => {
       token,
       process.env.JWT_SECRET as jwt.Secret
     );
-  } catch (error: any) {
-    if (error.name === 'TokenExpiredError') {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === 'TokenExpiredError') {
       throw new Error('QR code expired');
     }
     throw new Error('Invalid QR code');

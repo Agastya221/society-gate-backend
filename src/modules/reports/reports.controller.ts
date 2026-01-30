@@ -1,5 +1,6 @@
 import type { Response, Request } from 'express';
 import { ReportsService } from './reports.service';
+import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 
 const reportsService = new ReportsService();
 
@@ -12,10 +13,10 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       success: true,
       data: stats,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch dashboard stats',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -29,10 +30,10 @@ export const getEntryStatistics = async (req: Request, res: Response) => {
       success: true,
       data: stats,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch entry statistics',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -46,10 +47,10 @@ export const getPeakHoursAnalysis = async (req: Request, res: Response) => {
       success: true,
       data: analysis,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch peak hours analysis',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -63,10 +64,10 @@ export const getDeliveryPatterns = async (req: Request, res: Response) => {
       success: true,
       data: patterns,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch delivery patterns',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -80,10 +81,10 @@ export const getComplaintStatistics = async (req: Request, res: Response) => {
       success: true,
       data: stats,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch complaint statistics',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -97,10 +98,10 @@ export const getVisitorFrequencyReport = async (req: Request, res: Response) => 
       success: true,
       data: report,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch visitor frequency report',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -114,10 +115,10 @@ export const getSocietyHealthScore = async (req: Request, res: Response) => {
       success: true,
       data: healthScore,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch society health score',
+      message: getErrorMessage(error),
     });
   }
 };

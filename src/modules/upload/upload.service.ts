@@ -74,7 +74,7 @@ export class UploadService {
   async confirmUpload(
     data: ConfirmUploadRequest,
     userId: string
-  ): Promise<any> {
+  ) {
     const { s3Key, fileName, mimeType, fileSize, documentType, onboardingRequestId } =
       data;
 
@@ -245,7 +245,10 @@ export class UploadService {
   /**
    * Check if a user can view a document
    */
-  private canViewDocument(user: any, document: any): boolean {
+  private canViewDocument(
+    user: { id: string; role: string; societyId: string | null },
+    document: { onboardingRequest: { userId: string; societyId: string | null } }
+  ): boolean {
     // Super admin can view all
     if (user.role === 'SUPER_ADMIN') {
       return true;

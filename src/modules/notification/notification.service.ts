@@ -1,13 +1,14 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import { emitToUser, emitToFlat, emitToUsers } from '../../utils/socket';
+import { emitToUser, emitToFlat, emitToUsers, SOCKET_EVENTS } from '../../utils/socket';
 import { NotificationType } from '../../../prisma/generated/prisma/enums';
+import type { Prisma } from '../../types';
 
 interface CreateNotificationData {
   type: NotificationType;
   title: string;
   message: string;
-  data?: any;
+  data?: Prisma.InputJsonValue;
   referenceId?: string;
   referenceType?: string;
   societyId?: string;
@@ -20,7 +21,7 @@ export class NotificationService {
   async sendToUser(
     userId: string,
     notificationData: CreateNotificationData
-  ): Promise<any> {
+  ) {
     const notification = await prisma.notification.create({
       data: {
         type: notificationData.type,
@@ -35,7 +36,7 @@ export class NotificationService {
     });
 
     // Emit via Socket.IO
-    emitToUser(userId, 'notification', notification);
+    emitToUser(userId, SOCKET_EVENTS.NOTIFICATION, notification);
 
     return notification;
   }
@@ -46,7 +47,7 @@ export class NotificationService {
   async sendToFlat(
     flatId: string,
     notificationData: CreateNotificationData
-  ): Promise<any[]> {
+  ) {
     // Get all active residents of the flat
     const residents = await prisma.user.findMany({
       where: {
@@ -79,13 +80,8 @@ export class NotificationService {
       )
     );
 
-    // Emit to flat room via Socket.IO
-    emitToFlat(flatId, 'notification', {
-      type: notificationData.type,
-      title: notificationData.title,
-      message: notificationData.message,
-      data: notificationData.data,
-    });
+    // Emit to flat room via Socket.IO (send first notification as representative shape)
+    emitToFlat(flatId, SOCKET_EVENTS.NOTIFICATION, notifications[0]);
 
     return notifications;
   }
@@ -97,7 +93,7 @@ export class NotificationService {
     societyId: string,
     roles: ('ADMIN' | 'GUARD')[],
     notificationData: CreateNotificationData
-  ): Promise<any[]> {
+  ) {
     // Get all active staff with specified roles
     const staff = await prisma.user.findMany({
       where: {
@@ -130,16 +126,11 @@ export class NotificationService {
       )
     );
 
-    // Emit to each user
+    // Emit to each staff member (send first notification as representative shape)
     emitToUsers(
       staff.map((s) => s.id),
-      'notification',
-      {
-        type: notificationData.type,
-        title: notificationData.title,
-        message: notificationData.message,
-        data: notificationData.data,
-      }
+      SOCKET_EVENTS.NOTIFICATION,
+      notifications[0]
     );
 
     return notifications;
@@ -151,10 +142,10 @@ export class NotificationService {
   async getUserNotifications(
     userId: string,
     filters: { page?: number; limit?: number; unreadOnly?: boolean }
-  ): Promise<{ notifications: any[]; pagination: any }> {
+  ) {
     const { page = 1, limit = 20, unreadOnly = false } = filters;
 
-    const where: any = { userId };
+    const where: Prisma.NotificationWhereInput = { userId };
     if (unreadOnly) {
       where.isRead = false;
     }
@@ -195,7 +186,7 @@ export class NotificationService {
   /**
    * Mark a notification as read
    */
-  async markAsRead(notificationId: string, userId: string): Promise<any> {
+  async markAsRead(notificationId: string, userId: string) {
     const notification = await prisma.notification.findUnique({
       where: { id: notificationId },
     });

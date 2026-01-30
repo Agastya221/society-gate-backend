@@ -1,7 +1,8 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { notificationService } from '../notification/notification.service';
-import { emitToUser } from '../../utils/socket';
+import { emitToUser, SOCKET_EVENTS } from '../../utils/socket';
+import type { Prisma } from '../../types';
 import {
   EntryType,
   EntryRequestStatus,
@@ -26,7 +27,7 @@ export class EntryRequestService {
   async createEntryRequest(
     data: CreateEntryRequestData,
     guardId: string
-  ): Promise<any> {
+  ) {
     // Get guard's society
     const guard = await prisma.user.findUnique({
       where: { id: guardId },
@@ -106,7 +107,7 @@ export class EntryRequestService {
       page?: number;
       limit?: number;
     }
-  ): Promise<{ entryRequests: any[]; pagination: any }> {
+  ) {
     const { status, flatId, page = 1, limit = 20 } = filters;
 
     // Get user info
@@ -119,15 +120,15 @@ export class EntryRequestService {
       throw new AppError('User not found', 404);
     }
 
-    const where: any = {};
+    const where: Prisma.EntryRequestWhereInput = {};
 
     // Role-based filtering
     if (user.role === 'GUARD') {
       where.guardId = userId;
     } else if (user.role === 'RESIDENT') {
-      where.flatId = user.flatId;
+      if (user.flatId) where.flatId = user.flatId;
     } else if (user.role === 'ADMIN') {
-      where.societyId = user.societyId;
+      if (user.societyId) where.societyId = user.societyId;
     }
 
     // Additional filters
@@ -163,7 +164,7 @@ export class EntryRequestService {
   /**
    * Get a single entry request by ID
    */
-  async getEntryRequestById(entryRequestId: string, userId: string): Promise<any> {
+  async getEntryRequestById(entryRequestId: string, userId: string) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
       include: {
@@ -210,7 +211,7 @@ export class EntryRequestService {
   /**
    * Approve an entry request (Resident action)
    */
-  async approveEntryRequest(entryRequestId: string, userId: string): Promise<any> {
+  async approveEntryRequest(entryRequestId: string, userId: string) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
       include: {
@@ -282,7 +283,7 @@ export class EntryRequestService {
     });
 
     // Notify guard via Socket.IO
-    emitToUser(entryRequest.guardId, 'entry-request-status', {
+    emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
       id: entryRequestId,
       status: 'APPROVED',
       flatNumber: entryRequest.flat.flatNumber,
@@ -299,7 +300,7 @@ export class EntryRequestService {
     entryRequestId: string,
     userId: string,
     reason?: string
-  ): Promise<any> {
+  ) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
       include: {
@@ -343,7 +344,7 @@ export class EntryRequestService {
     });
 
     // Notify guard via Socket.IO
-    emitToUser(entryRequest.guardId, 'entry-request-status', {
+    emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
       id: entryRequestId,
       status: 'REJECTED',
       flatNumber: entryRequest.flat.flatNumber,

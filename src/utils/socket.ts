@@ -5,6 +5,18 @@ import { prisma } from './Client';
 
 let io: Server | null = null;
 
+/**
+ * Socket event name constants to prevent typos and ensure consistency
+ */
+export const SOCKET_EVENTS = {
+  NOTIFICATION: 'notification',
+  EMERGENCY_ALERT: 'emergency-alert',
+  EMERGENCY_UPDATE: 'emergency-update',
+  ENTRY_REQUEST_STATUS: 'entry-request-status',
+} as const;
+
+export type SocketEvent = (typeof SOCKET_EVENTS)[keyof typeof SOCKET_EVENTS];
+
 interface AuthenticatedSocket extends Socket {
   user?: {
     id: string;
@@ -18,10 +30,15 @@ interface AuthenticatedSocket extends Socket {
  * Initialize Socket.IO server with authentication
  */
 export function initializeSocketIO(httpServer: HttpServer): Server {
+  const allowedOrigins = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map((url) => url.trim())
+    : undefined;
+
   io = new Server(httpServer, {
     cors: {
-      origin: '*',
+      origin: allowedOrigins || '*',
       methods: ['GET', 'POST'],
+      credentials: true,
     },
   });
 
@@ -40,7 +57,7 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
         throw new Error('JWT_SECRET environment variable is not set');
       }
 
-      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
 
       // Get user from database
       const user = await prisma.user.findUnique({
@@ -74,7 +91,7 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
 
   // Connection handler
   io.on('connection', (socket: AuthenticatedSocket) => {
-    console.log(`User connected: ${socket.user?.id}`);
+    console.log(`[Socket] User connected: ${socket.user?.id} (${socket.user?.role})`);
 
     // Join user-specific room
     if (socket.user?.id) {
@@ -93,7 +110,7 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
 
     // Handle disconnection
     socket.on('disconnect', () => {
-      console.log(`User disconnected: ${socket.user?.id}`);
+      console.log(`[Socket] User disconnected: ${socket.user?.id}`);
     });
 
     // Optional: Handle custom events
@@ -102,7 +119,7 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
     });
   });
 
-  console.log('Socket.IO initialized');
+  console.log('[Socket] Socket.IO initialized');
   return io;
 }
 
@@ -119,37 +136,61 @@ export function getIO(): Server {
 /**
  * Emit to a specific user
  */
-export function emitToUser(userId: string, event: string, data: any): void {
-  if (io) {
+export function emitToUser(userId: string, event: SocketEvent, data: unknown): void {
+  if (!io) {
+    console.warn(`[Socket] Cannot emit '${event}' to user:${userId} - Socket.IO not initialized`);
+    return;
+  }
+  try {
     io.to(`user:${userId}`).emit(event, data);
+  } catch (error) {
+    console.error(`[Socket] Error emitting '${event}' to user:${userId}:`, error);
   }
 }
 
 /**
  * Emit to all users in a flat
  */
-export function emitToFlat(flatId: string, event: string, data: any): void {
-  if (io) {
+export function emitToFlat(flatId: string, event: SocketEvent, data: unknown): void {
+  if (!io) {
+    console.warn(`[Socket] Cannot emit '${event}' to flat:${flatId} - Socket.IO not initialized`);
+    return;
+  }
+  try {
     io.to(`flat:${flatId}`).emit(event, data);
+  } catch (error) {
+    console.error(`[Socket] Error emitting '${event}' to flat:${flatId}:`, error);
   }
 }
 
 /**
  * Emit to all users in a society
  */
-export function emitToSociety(societyId: string, event: string, data: any): void {
-  if (io) {
+export function emitToSociety(societyId: string, event: SocketEvent, data: unknown): void {
+  if (!io) {
+    console.warn(`[Socket] Cannot emit '${event}' to society:${societyId} - Socket.IO not initialized`);
+    return;
+  }
+  try {
     io.to(`society:${societyId}`).emit(event, data);
+  } catch (error) {
+    console.error(`[Socket] Error emitting '${event}' to society:${societyId}:`, error);
   }
 }
 
 /**
  * Emit to multiple users
  */
-export function emitToUsers(userIds: string[], event: string, data: any): void {
-  if (io) {
+export function emitToUsers(userIds: string[], event: SocketEvent, data: unknown): void {
+  if (!io) {
+    console.warn(`[Socket] Cannot emit '${event}' to ${userIds.length} users - Socket.IO not initialized`);
+    return;
+  }
+  try {
     userIds.forEach((userId) => {
       io!.to(`user:${userId}`).emit(event, data);
     });
+  } catch (error) {
+    console.error(`[Socket] Error emitting '${event}' to multiple users:`, error);
   }
 }

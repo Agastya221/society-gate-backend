@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { OnboardingService } from './onboarding.service';
 import { asyncHandler, AppError } from '../../utils/ResponseHandler';
+import type { OnboardingStatus, ResidentType } from '../../../prisma/generated/prisma/client';
 
 const onboardingService = new OnboardingService();
 
@@ -111,8 +112,8 @@ export class OnboardingController {
         const { status, residentType, page, limit } = req.query;
 
         const result = await onboardingService.listPendingRequests(adminSocietyId, {
-            status: status as any,
-            residentType: residentType as any,
+            status: status as OnboardingStatus | undefined,
+            residentType: residentType as ResidentType | undefined,
             page: page ? parseInt(page as string) : undefined,
             limit: limit ? parseInt(limit as string) : undefined,
         });

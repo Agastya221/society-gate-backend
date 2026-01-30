@@ -1,5 +1,6 @@
 import type { Response, Request } from 'express';
 import { NotificationService } from './notification.service';
+import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 
 const notificationService = new NotificationService();
 
@@ -8,7 +9,7 @@ const notificationService = new NotificationService();
  */
 export const getNotifications = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { page, limit, unreadOnly } = req.query;
 
     const result = await notificationService.getUserNotifications(userId, {
@@ -21,10 +22,10 @@ export const getNotifications = async (req: Request, res: Response) => {
       success: true,
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to fetch notifications',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -34,7 +35,7 @@ export const getNotifications = async (req: Request, res: Response) => {
  */
 export const getUnreadCount = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
 
     const count = await notificationService.getUnreadCount(userId);
 
@@ -42,10 +43,10 @@ export const getUnreadCount = async (req: Request, res: Response) => {
       success: true,
       data: { unreadCount: count },
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to get unread count',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -55,7 +56,7 @@ export const getUnreadCount = async (req: Request, res: Response) => {
  */
 export const markAsRead = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
 
     const notification = await notificationService.markAsRead(String(id), userId);
@@ -65,10 +66,10 @@ export const markAsRead = async (req: Request, res: Response) => {
       message: 'Notification marked as read',
       data: notification,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to mark notification as read',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -78,7 +79,7 @@ export const markAsRead = async (req: Request, res: Response) => {
  */
 export const markAllAsRead = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
 
     const result = await notificationService.markAllAsRead(userId);
 
@@ -87,10 +88,10 @@ export const markAllAsRead = async (req: Request, res: Response) => {
       message: `${result.count} notifications marked as read`,
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to mark notifications as read',
+      message: getErrorMessage(error),
     });
   }
 };

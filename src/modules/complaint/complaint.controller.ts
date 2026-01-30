@@ -7,7 +7,7 @@ const complaintService = new ComplaintService();
 // Resident creates complaint with photos
 export const createComplaint = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user!.id;
-  const societyId = req.user!.societyId;
+  const societyId = req.user!.societyId!;
   const flatId = req.user!.flatId;
 
   const complaint = await complaintService.createComplaint(req.body, userId, societyId, flatId);
@@ -66,7 +66,7 @@ export const getComplaintById = asyncHandler(async (req: Request, res: Response)
 
   console.log('🔍 [CACHE CHECK] Fetching complaint by ID from DATABASE...', { complaintId: id, userId, userRole });
 
-  const complaint = await complaintService.getComplaintById(String(id), userId, userRole, userSocietyId);
+  const complaint = await complaintService.getComplaintById(String(id), userId, userRole, userSocietyId!);
 
   console.log('✅ [DATABASE] Complaint fetched:', complaint.id);
 
@@ -82,7 +82,7 @@ export const updateComplaintStatus = asyncHandler(async (req: Request, res: Resp
   const { status } = req.body;
   const adminSocietyId = req.user!.societyId;
 
-  const complaint = await complaintService.updateComplaintStatus(String(id), status, adminSocietyId);
+  const complaint = await complaintService.updateComplaintStatus(String(id), status, adminSocietyId!);
 
   res.status(200).json({
     success: true,
@@ -97,7 +97,7 @@ export const assignComplaint = asyncHandler(async (req: Request, res: Response) 
   const { assignedToId } = req.body;
   const adminSocietyId = req.user!.societyId;
 
-  const complaint = await complaintService.assignComplaint(String(id), assignedToId, adminSocietyId);
+  const complaint = await complaintService.assignComplaint(String(id), assignedToId, adminSocietyId!);
 
   res.status(200).json({
     success: true,
@@ -113,7 +113,7 @@ export const resolveComplaint = asyncHandler(async (req: Request, res: Response)
   const userId = req.user!.id;
   const adminSocietyId = req.user!.societyId;
 
-  const complaint = await complaintService.resolveComplaint(String(id), resolution, userId, adminSocietyId);
+  const complaint = await complaintService.resolveComplaint(String(id), resolution, userId, adminSocietyId!);
 
   res.status(200).json({
     success: true,

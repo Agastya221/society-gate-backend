@@ -1,7 +1,8 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { generateQRToken, generateQRImage, verifyQRToken } from '../../utils/QrGenerate';
-import { VisitorType } from '../../../prisma/generated/prisma/enums';
+import { VisitorType, EntryType, EntryStatus, PreApprovalStatus } from '../../../prisma/generated/prisma/enums';
+import type { Prisma } from '../../types';
 import {
   validatePhoneNumber,
   validateDateRange,
@@ -10,10 +11,22 @@ import {
   sanitizeString,
 } from '../../utils/validation';
 
+interface TodayEntriesStats {
+  total: number;
+  pending: number;
+  approved: number;
+  rejected: number;
+  checkedOut: number;
+  delivery: number;
+  visitor: number;
+  domesticStaff: number;
+}
+
 export class PreApprovalService {
   // ============================================
-  // CREATE PRE-APPROVAL WITH QR CODE
+  // QR CODE PRE-APPROVAL METHODS
   // ============================================
+
   async createPreApproval(
     data: {
       visitorName: string;
@@ -112,10 +125,7 @@ export class PreApprovalService {
     };
   }
 
-  // ============================================
-  // GET PRE-APPROVALS (Resident)
-  // ============================================
-  async getPreApprovals(userId: string, filters?: { status?: string }) {
+  async getPreApprovals(userId: string, filters?: { status?: PreApprovalStatus }) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
@@ -124,7 +134,7 @@ export class PreApprovalService {
       throw new AppError('User must have a flat assigned', 400);
     }
 
-    const where: any = {
+    const where: Prisma.PreApprovalWhereInput = {
       flatId: user.flatId,
     };
 
@@ -157,9 +167,6 @@ export class PreApprovalService {
     return preApprovals;
   }
 
-  // ============================================
-  // GET PRE-APPROVAL QR CODE
-  // ============================================
   async getPreApprovalQR(preApprovalId: string, userId: string) {
     const preApproval = await prisma.preApproval.findUnique({
       where: { id: preApprovalId },
@@ -191,9 +198,6 @@ export class PreApprovalService {
     };
   }
 
-  // ============================================
-  // CANCEL PRE-APPROVAL
-  // ============================================
   async cancelPreApproval(preApprovalId: string, userId: string) {
     const preApproval = await prisma.preApproval.findUnique({
       where: { id: preApprovalId },
@@ -219,9 +223,6 @@ export class PreApprovalService {
     return updated;
   }
 
-  // ============================================
-  // SCAN PRE-APPROVAL QR CODE (Guard)
-  // ============================================
   async scanPreApprovalQR(qrToken: string, guardId: string) {
     const guard = await prisma.user.findUnique({
       where: { id: guardId },
@@ -232,13 +233,12 @@ export class PreApprovalService {
     }
 
     // Verify QR token
-
-    let decoded: any;
+    let decoded: Record<string, unknown>;
 
     try {
-      decoded = verifyQRToken(qrToken);
-    } catch (error: any) {
-      throw new AppError(error.message, 400);
+      decoded = verifyQRToken(qrToken) as Record<string, unknown>;
+    } catch (error: unknown) {
+      throw new AppError(error instanceof Error ? error.message : 'Invalid QR token', 400);
     }
 
     if (typeof decoded !== 'object' || decoded.type !== 'PRE_APPROVAL') {
@@ -283,7 +283,7 @@ export class PreApprovalService {
 
     // Check validity period
     const now = new Date();
-    
+
     if (now < preApproval.validFrom) {
       throw new AppError(
         `Pre-approval is not yet valid. Valid from: ${preApproval.validFrom.toLocaleString()}`,
@@ -374,5 +374,246 @@ export class PreApprovalService {
         createdBy: preApproval.createdBy.name,
       },
     };
+  }
+
+  // ============================================
+  // DELIVERY AUTO-APPROVAL METHODS
+  // ============================================
+
+  // Resident creates expected delivery
+  async createExpectedDelivery(data: Omit<Prisma.ExpectedDeliveryUncheckedCreateInput, 'createdById'>, userId: string) {
+    const expectedDelivery = await prisma.expectedDelivery.create({
+      data: {
+        ...data,
+        createdById: userId,
+      },
+    });
+
+    return expectedDelivery;
+  }
+
+  // Get expected deliveries for a flat
+  async getExpectedDeliveries(flatId: string) {
+    const deliveries = await prisma.expectedDelivery.findMany({
+      where: {
+        flatId,
+        isUsed: false,
+        expiresAt: { gte: new Date() },
+      },
+      orderBy: { expectedDate: 'asc' },
+    });
+
+    return deliveries;
+  }
+
+  // Resident sets auto-approve rule
+  async createAutoApproveRule(data: Omit<Prisma.DeliveryAutoApproveRuleUncheckedCreateInput, 'createdById'>, userId: string) {
+    const rule = await prisma.deliveryAutoApproveRule.create({
+      data: {
+        ...data,
+        createdById: userId,
+      },
+    });
+
+    return rule;
+  }
+
+  // Get auto-approve rules for a flat
+  async getAutoApproveRules(flatId: string) {
+    const rules = await prisma.deliveryAutoApproveRule.findMany({
+      where: { flatId, isActive: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return rules;
+  }
+
+  // Toggle auto-approve rule
+  async toggleAutoApproveRule(ruleId: string, isActive: boolean) {
+    const rule = await prisma.deliveryAutoApproveRule.update({
+      where: { id: ruleId },
+      data: { isActive },
+    });
+
+    return rule;
+  }
+
+  // Delete auto-approve rule
+  async deleteAutoApproveRule(ruleId: string) {
+    await prisma.deliveryAutoApproveRule.delete({
+      where: { id: ruleId },
+    });
+  }
+
+  // Popular delivery companies in India
+  getPopularCompanies() {
+    return [
+      { value: 'Swiggy', label: 'Swiggy', icon: '🍔' },
+      { value: 'Zomato', label: 'Zomato', icon: '🍕' },
+      { value: 'Amazon', label: 'Amazon', icon: '📦' },
+      { value: 'Flipkart', label: 'Flipkart', icon: '🛒' },
+      { value: 'BigBasket', label: 'BigBasket', icon: '🥬' },
+      { value: 'Blinkit', label: 'Blinkit', icon: '⚡' },
+      { value: 'Dunzo', label: 'Dunzo', icon: '🚴' },
+      { value: 'Zepto', label: 'Zepto', icon: '⏱️' },
+      { value: 'BlueDart', label: 'BlueDart', icon: '📮' },
+      { value: 'DTDC', label: 'DTDC', icon: '📫' },
+      { value: 'Delhivery', label: 'Delhivery', icon: '🚚' },
+      { value: 'Other', label: 'Other', icon: '📦' },
+    ];
+  }
+
+  // ============================================
+  // ENTRY QUERY METHODS (Read-only + Checkout)
+  // ============================================
+
+  async checkoutEntry(entryId: string) {
+    const entry = await prisma.entry.findUnique({
+      where: { id: entryId },
+    });
+
+    if (!entry) {
+      throw new AppError('Entry not found', 404);
+    }
+
+    if (entry.status !== 'APPROVED') {
+      throw new AppError('Only approved entries can be checked out', 400);
+    }
+
+    if (entry.checkOutTime) {
+      throw new AppError('Entry already checked out', 400);
+    }
+
+    const updatedEntry = await prisma.entry.update({
+      where: { id: entryId },
+      data: {
+        status: 'CHECKED_OUT',
+        checkOutTime: new Date(),
+      },
+      include: {
+        flat: true,
+        createdBy: { select: { id: true, name: true, role: true } },
+      },
+    });
+
+    return updatedEntry;
+  }
+
+  async getEntries(filters: {
+    societyId: string;
+    flatId?: string;
+    status?: EntryStatus;
+    type?: EntryType;
+    page?: number;
+    limit?: number;
+  }) {
+    const { societyId, flatId, status, type, page = 1, limit = 20 } = filters;
+
+    const where: Prisma.EntryWhereInput = { societyId };
+    if (flatId) where.flatId = flatId;
+    if (status) where.status = status;
+    if (type) where.type = type;
+
+    const [entries, total] = await Promise.all([
+      prisma.entry.findMany({
+        where,
+        include: {
+          flat: true,
+          createdBy: { select: { id: true, name: true, role: true } },
+          approvedBy: { select: { id: true, name: true, role: true } },
+        },
+        orderBy: { checkInTime: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.entry.count({ where }),
+    ]);
+
+    return {
+      entries,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async getPendingEntries(societyId: string, flatId?: string) {
+    const where: Prisma.EntryWhereInput = {
+      societyId,
+      status: 'PENDING',
+    };
+
+    if (flatId) where.flatId = flatId;
+
+    const entries = await prisma.entry.findMany({
+      where,
+      include: {
+        flat: true,
+        createdBy: { select: { id: true, name: true, role: true } },
+      },
+      orderBy: { checkInTime: 'desc' },
+    });
+
+    return entries;
+  }
+
+  async getTodayEntries(societyId: string) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const entries = await prisma.entry.findMany({
+      where: {
+        societyId,
+        checkInTime: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+      include: {
+        flat: true,
+        createdBy: { select: { id: true, name: true, role: true } },
+        approvedBy: { select: { id: true, name: true, role: true } },
+      },
+      orderBy: { checkInTime: 'desc' },
+    });
+
+    const stats: TodayEntriesStats = {
+      total: entries.length,
+      pending: entries.filter((e: { status?: EntryStatus }) => e.status === 'PENDING').length,
+      approved: entries.filter((e: { status?: EntryStatus }) => e.status === 'APPROVED').length,
+      rejected: entries.filter((e: { status?: EntryStatus }) => e.status === 'REJECTED').length,
+      checkedOut: entries.filter((e: { status?: EntryStatus }) => e.status === 'CHECKED_OUT').length,
+      delivery: entries.filter((e: { type?: EntryType }) => e.type === 'DELIVERY').length,
+      visitor: entries.filter((e: { type?: EntryType }) => e.type === 'VISITOR').length,
+      domesticStaff: entries.filter((e: { type?: EntryType }) => e.type === 'DOMESTIC_STAFF').length,
+    };
+
+    return {
+      entries,
+      stats,
+    };
+  }
+
+  async getEntryById(entryId: string) {
+    const entry = await prisma.entry.findUnique({
+      where: { id: entryId },
+      include: {
+        flat: true,
+        createdBy: { select: { id: true, name: true, role: true } },
+        approvedBy: { select: { id: true, name: true, role: true } },
+        domesticStaff: true,
+      },
+    });
+
+    if (!entry) {
+      throw new AppError('Entry not found', 404);
+    }
+
+    return entry;
   }
 }

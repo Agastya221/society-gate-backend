@@ -1,5 +1,6 @@
 import type { Response, Request } from 'express';
 import { UploadService } from './upload.service';
+import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 
 const uploadService = new UploadService();
 
@@ -8,7 +9,7 @@ const uploadService = new UploadService();
  */
 export const getPresignedUrl = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { context, fileName, mimeType, fileSize, documentType } = req.body;
 
     if (!context || !fileName || !mimeType || !fileSize) {
@@ -28,10 +29,10 @@ export const getPresignedUrl = async (req: Request, res: Response) => {
       message: 'Pre-signed upload URL generated',
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to generate upload URL',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -41,7 +42,7 @@ export const getPresignedUrl = async (req: Request, res: Response) => {
  */
 export const confirmUpload = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { s3Key, fileName, mimeType, fileSize, documentType, onboardingRequestId } =
       req.body;
 
@@ -63,10 +64,10 @@ export const confirmUpload = async (req: Request, res: Response) => {
       message: 'Document uploaded successfully',
       data: document,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to confirm upload',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -76,7 +77,7 @@ export const confirmUpload = async (req: Request, res: Response) => {
  */
 export const getViewUrl = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
 
     const viewUrl = await uploadService.getViewUrl(String(id), userId);
@@ -85,10 +86,10 @@ export const getViewUrl = async (req: Request, res: Response) => {
       success: true,
       data: { viewUrl },
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to generate view URL',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -98,7 +99,7 @@ export const getViewUrl = async (req: Request, res: Response) => {
  */
 export const deleteDocument = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
 
     await uploadService.deleteDocument(String(id), userId);
@@ -107,10 +108,10 @@ export const deleteDocument = async (req: Request, res: Response) => {
       success: true,
       message: 'Document deleted successfully',
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to delete document',
+      message: getErrorMessage(error),
     });
   }
 };
@@ -120,7 +121,7 @@ export const deleteDocument = async (req: Request, res: Response) => {
  */
 export const getEntryPhotoViewUrl = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { id } = req.params;
 
     const viewUrl = await uploadService.getEntryPhotoViewUrl(String(id), userId);
@@ -129,10 +130,10 @@ export const getEntryPhotoViewUrl = async (req: Request, res: Response) => {
       success: true,
       data: { viewUrl },
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
       success: false,
-      message: error.message || 'Failed to generate photo URL',
+      message: getErrorMessage(error),
     });
   }
 };

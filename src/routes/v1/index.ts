@@ -7,7 +7,7 @@ import residentRoutes from './resident.routes';
 import adminRoutes from './admin.routes';
 import guardRoutes from './guard.routes';
 import uploadRoutes from '../../modules/upload/upload.routes';
-import deliveryRoutes from '../../modules/delivery/delivery.routes';
+
 
 const router = Router();
 
@@ -20,6 +20,5 @@ router.use('/resident', residentRoutes);      // /api/v1/resident/*
 router.use('/admin', adminRoutes);            // /api/v1/admin/*
 router.use('/guard', guardRoutes);            // /api/v1/guard/*
 router.use('/upload', uploadRoutes);          // /api/v1/upload
-router.use('/deliveries', deliveryRoutes);    // /api/v1/deliveries (Resident delivery preferences)
 
 export default router;

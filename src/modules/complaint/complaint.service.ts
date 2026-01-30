@@ -3,6 +3,7 @@ import { AppError } from '../../utils/ResponseHandler';
 import { validateRequiredFields } from '../../utils/validation';
 import { ComplaintCategory, ComplaintStatus, ComplaintPriority, Role } from '../../../prisma/generated/prisma/enums';
 import { getPresignedViewUrl } from '../../utils/s3';
+import type { Prisma } from '../../types';
 
 export class ComplaintService {
   /**
@@ -89,7 +90,15 @@ export class ComplaintService {
 
   // Get complaints - ALL society members can see ALL society complaints
   async getComplaints(
-    filters: any,
+    filters: {
+      category?: ComplaintCategory;
+      status?: ComplaintStatus;
+      priority?: ComplaintPriority;
+      page?: number;
+      limit?: number;
+      sortBy?: string;
+      includeImageUrls?: string;
+    },
     userId: string,
     userRole: Role,
     userSocietyId: string,
@@ -106,7 +115,7 @@ export class ComplaintService {
         includeImageUrls = 'false'
       } = filters;
 
-      const where: any = {};
+      const where: Prisma.ComplaintWhereInput = {};
 
       // Role-based filtering
       if (userRole === 'SUPER_ADMIN') {
@@ -183,22 +192,20 @@ export class ComplaintService {
           const reportedBy = shouldHideReporter ? null : c.reportedBy;
           const flat = shouldHideReporter ? null : c.flat;
 
+          // Optionally include image URLs
+          const limitedImages = (c.images || []).slice(0, 5);
+          const imageUrls = await this.generateImageUrls(limitedImages);
+
           // Base complaint data
-          const complaintData: any = {
+          return {
             ...c,
             reportedBy,
             flat,
             isOwn,
             imageCount: c.images?.length || 0,
             hasImages: (c.images?.length || 0) > 0,
+            imageUrls,
           };
-
-          // Optionally include image URLs
-          const limitedImages = (c.images || []).slice(0, 5); // or 3 if you want lighter
-          complaintData.imageUrls = await this.generateImageUrls(limitedImages);
-
-
-          return complaintData;
         })
       );
 

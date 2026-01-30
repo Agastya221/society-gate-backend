@@ -1,13 +1,14 @@
 import { prisma, TransactionClient } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import type { OnboardingStatus, OnboardingAction, ResidentType, DocumentType } from '../../../prisma/generated/prisma/client';
+import type { Prisma } from '../../types';
 
 export class OnboardingService {
   // ============================================
   // LIST SOCIETIES
   // ============================================
   async listSocieties(filters?: { city?: string; search?: string }) {
-    const where: any = {
+    const where: Prisma.SocietyWhereInput = {
       isActive: true,
     };
 
@@ -300,7 +301,7 @@ export class OnboardingService {
     const limit = filters?.limit || 20;
     const skip = (page - 1) * limit;
 
-    const where: any = {
+    const where: Prisma.OnboardingRequestWhereInput = {
       societyId: adminSocietyId,
     };
 
@@ -514,7 +515,7 @@ export class OnboardingService {
       });
 
       // 5. Update flat occupancy
-      const updateData: any = {
+      const updateData: Prisma.FlatUncheckedUpdateInput = {
         isOccupied: true,
       };
 

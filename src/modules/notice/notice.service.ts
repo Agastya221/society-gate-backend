@@ -1,8 +1,14 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import type {
+  CreateNoticeDTO,
+  UpdateNoticeDTO,
+  NoticeFilters,
+  Prisma,
+} from '../../types';
 
 export class NoticeService {
-  async createNotice(data: any, createdById: string) {
+  async createNotice(data: CreateNoticeDTO, createdById: string) {
     const notice = await prisma.notice.create({
       data: {
         ...data,
@@ -17,14 +23,14 @@ export class NoticeService {
     return notice;
   }
 
-  async getNotices(filters: any) {
+  async getNotices(filters: NoticeFilters) {
     const { societyId, type, priority, isPinned, isActive = true, page = 1, limit = 20 } = filters;
 
-    const where: any = { societyId };
+    const where: Prisma.NoticeWhereInput = { societyId };
     if (type) where.type = type;
     if (priority) where.priority = priority;
-    if (isPinned !== undefined) where.isPinned = isPinned === 'true';
-    if (isActive !== undefined) where.isActive = isActive === 'true';
+    if (isPinned !== undefined) where.isPinned = isPinned;
+    if (isActive !== undefined) where.isActive = isActive;
 
     // Only show published notices
     where.publishAt = { lte: new Date() };
@@ -78,7 +84,7 @@ export class NoticeService {
     return notice;
   }
 
-  async updateNotice(noticeId: string, data: any, userId: string) {
+  async updateNotice(noticeId: string, data: UpdateNoticeDTO, userId: string) {
     const notice = await prisma.notice.findUnique({
       where: { id: noticeId },
     });

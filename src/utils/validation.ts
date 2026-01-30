@@ -13,11 +13,12 @@ export class ValidationError extends AppError {
 /**
  * Validate required fields exist in an object
  */
-export function validateRequiredFields(data: any, fields: string[], entityName: string = 'Data') {
+export function validateRequiredFields(data: Record<string, unknown> | object, fields: string[], entityName: string = 'Data') {
+  const record = data as Record<string, unknown>;
   const missingFields: string[] = [];
 
   for (const field of fields) {
-    if (data[field] === undefined || data[field] === null || data[field] === '') {
+    if (record[field] === undefined || record[field] === null || record[field] === '') {
       missingFields.push(field);
     }
   }
@@ -32,8 +33,8 @@ export function validateRequiredFields(data: any, fields: string[], entityName: 
 /**
  * Validate enum value
  */
-export function validateEnum<T>(value: any, enumObj: T, fieldName: string): value is T[keyof T] {
-  const validValues = Object.values(enumObj as any);
+export function validateEnum<T extends Record<string, unknown>>(value: unknown, enumObj: T, fieldName: string): value is T[keyof T] {
+  const validValues = Object.values(enumObj);
   if (!validValues.includes(value)) {
     throw new ValidationError(
       `Invalid ${fieldName}: ${value}. Must be one of: ${validValues.join(', ')}`
@@ -165,7 +166,7 @@ export function validateUUID(id: string, fieldName: string = 'ID') {
 /**
  * Validate array is not empty
  */
-export function validateNonEmptyArray(arr: any[], fieldName: string = 'Array') {
+export function validateNonEmptyArray(arr: unknown[], fieldName: string = 'Array') {
   if (!Array.isArray(arr) || arr.length === 0) {
     throw new ValidationError(`${fieldName} must be a non-empty array`);
   }

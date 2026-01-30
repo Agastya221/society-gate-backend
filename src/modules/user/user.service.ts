@@ -536,7 +536,7 @@ export class UserService {
   // ============================================
   async logout(accessToken: string, refreshToken?: string) {
     try {
-      const accessDecoded = jwt.verify(accessToken, process.env.JWT_SECRET!) as any;
+      const accessDecoded = jwt.verify(accessToken, process.env.JWT_SECRET!) as { userId?: string; exp?: number };
 
       // Clear refresh token from database
       if (accessDecoded && accessDecoded.userId) {
@@ -560,7 +560,7 @@ export class UserService {
 
       // Blacklist refresh token
       if (refreshToken) {
-        const refreshDecoded = jwt.decode(refreshToken) as any;
+        const refreshDecoded = jwt.decode(refreshToken) as { exp?: number } | null;
         if (refreshDecoded && refreshDecoded.exp) {
           const ttl = refreshDecoded.exp - Math.floor(Date.now() / 1000);
           if (ttl > 0) {
