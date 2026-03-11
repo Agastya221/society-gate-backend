@@ -1,29 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/Client';
 import { AppError } from '../utils/ResponseHandler';
 import { Role } from '../../prisma/generated/prisma/enums';
-import { redis, isRedisAvailable } from '../config/redis';
-import crypto from "crypto";
 import type { AuthenticatedUser } from '../types';
 
-// In-memory fallback for token blacklist when Redis is unavailable
-const inMemoryBlacklist = new Map<string, number>(); // jti -> expiresAt timestamp
+// Re-export token operations so existing imports continue to work
+export {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+  blacklistToken,
+  isTokenBlacklisted,
+  extractJti,
+  isJwtError,
+} from '../services/token.service';
 
-interface JwtPayload {
-  userId: string;
-  role: Role;
-  societyId: string | null;
-  flatId: string | null;
-  appType: 'RESIDENT_APP' | 'GUARD_APP';
-  type?: 'access' | 'refresh';
-  jti: string;
-}
-
-// Helper to check if error is a JWT error
-function isJwtError(error: unknown): error is Error & { name: string } {
-  return error instanceof Error && 'name' in error;
-}
+import {
+  verifyAccessToken,
+  isTokenBlacklisted,
+  isJwtError,
+} from '../services/token.service';
 
 declare global {
   namespace Express {
@@ -34,127 +30,8 @@ declare global {
   }
 }
 
-// ============================================
-// JWT TOKEN GENERATION
-// ============================================
-
-export const generateAccessToken = (
-  userId: string,
-  role: Role,
-  societyId: string | null,
-  flatId: string | null,
-  appType: 'RESIDENT_APP' | 'GUARD_APP',
-): string => {
-  return jwt.sign(
-    {
-      userId,
-      role,
-      societyId,
-      flatId,
-      appType,
-      type: 'access',
-      jti: crypto.randomUUID(),
-    },
-    process.env.JWT_SECRET!,
-    { expiresIn: '2d' } // Access token expires in 2 days
-  );
-};
-
-export const generateRefreshToken = (
-  userId: string,
-  role: Role,
-  societyId: string | null,
-  flatId: string | null,
-  appType: 'RESIDENT_APP' | 'GUARD_APP',
-): string => {
-  return jwt.sign(
-    {
-      userId,
-      role,
-      societyId,
-      flatId,
-      appType,
-      type: 'refresh',
-      jti: crypto.randomUUID(),
-    },
-    process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!,
-    { expiresIn: appType === 'RESIDENT_APP' ? '30d' : '7d' } // Refresh token lasts longer
-  );
-};
-
-// Legacy token generation (for backward compatibility)
-export const generateToken = (
-  userId: string,
-  role: Role,
-  societyId: string | null,
-  flatId: string | null,
-  appType: 'RESIDENT_APP' | 'GUARD_APP'
-): string => {
-  const expiresIn = appType === 'RESIDENT_APP' ? '30d' : '7d';
-
-  return jwt.sign(
-    {
-      userId,
-      role,
-      societyId,
-      flatId,
-      appType,
-      jti: crypto.randomUUID(),
-    },
-    process.env.JWT_SECRET!,
-    { expiresIn }
-  );
-};
-
-// ============================================
-// TOKEN BLACKLIST (LOGOUT SUPPORT)
-// ============================================
-
-export const blacklistToken = async (jti: string, expiresIn: number) => {
-  if (isRedisAvailable()) {
-    try {
-      const key = `blacklist:jti:${jti}`;
-      await redis.setex(key, expiresIn, '1');
-    } catch (error) {
-      console.error('Redis error while blacklisting token:', error);
-      // Fallback to in-memory
-      inMemoryBlacklist.set(jti, Date.now() + expiresIn * 1000);
-    }
-  } else {
-    // Fallback to in-memory storage
-    console.warn('⚠️  Redis unavailable, using in-memory token blacklist');
-    inMemoryBlacklist.set(jti, Date.now() + expiresIn * 1000);
-  }
-};
-
-export const isTokenBlacklisted = async (jti: string): Promise<boolean> => {
-  if (isRedisAvailable()) {
-    try {
-      const key = `blacklist:jti:${jti}`;
-      const result = await redis.get(key);
-      return result === '1';
-    } catch (error) {
-      console.error('Redis error while checking blacklist:', error);
-      // Fallback to in-memory check
-      const expiresAt = inMemoryBlacklist.get(jti);
-      if (!expiresAt) return false;
-      if (Date.now() > expiresAt) {
-        inMemoryBlacklist.delete(jti);
-        return false;
-      }
-      return true;
-    }
-  } else {
-    // Fallback to in-memory storage
-    const expiresAt = inMemoryBlacklist.get(jti);
-    if (!expiresAt) return false;
-    if (Date.now() > expiresAt) {
-      inMemoryBlacklist.delete(jti);
-      return false;
-    }
-    return true;
-  }
-};
+// Re-export society middleware so existing route imports still work
+export { ensureSameSociety } from './society.middleware';
 
 // ============================================
 // AUTHENTICATION MIDDLEWARE
@@ -169,22 +46,17 @@ export const authenticate = async (
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      return next(new AppError('No token provided. Please login.', 401)); // ✅ return here
+      return next(new AppError('No token provided. Please login.', 401));
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    const decoded = verifyAccessToken(token);
 
     // Check if token is blacklisted
     if (decoded.jti) {
       const isBlacklisted = await isTokenBlacklisted(decoded.jti);
       if (isBlacklisted) {
-        return next(new AppError('Token has been revoked. Please login again.', 401)); // ✅ return here
+        return next(new AppError('Token has been revoked. Please login again.', 401));
       }
-    }
-
-    // Ensure this is an access token
-    if (decoded.type && decoded.type !== 'access') {
-      return next(new AppError('Invalid token type', 401)); // ✅ return here
     }
 
     const user = await prisma.user.findUnique({
@@ -193,14 +65,13 @@ export const authenticate = async (
     });
 
     if (!user || !user.isActive) {
-      return next(new AppError('User not found or inactive', 401)); // ✅ return here
+      return next(new AppError('User not found or inactive', 401));
     }
 
     // SUPER_ADMIN doesn't need society assignment
-    // Other roles need an active society
     if (user.role !== 'SUPER_ADMIN') {
       if (user.societyId && !user.society?.isActive) {
-        return next(new AppError('Society is inactive', 403)); // ✅ return here
+        return next(new AppError('Society is inactive', 403));
       }
     }
 
@@ -235,15 +106,14 @@ export const authenticateForOnboarding = async (
       throw new AppError('No token provided. Please login.', 401);
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-    // Check if token is blacklisted (logged out)
+    const decoded = verifyAccessToken(token);
+
     if (decoded.jti) {
       const isBlacklisted = await isTokenBlacklisted(decoded.jti);
       if (isBlacklisted) {
         throw new AppError('Token has been revoked. Please login again.', 401);
       }
     }
-
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -254,9 +124,7 @@ export const authenticateForOnboarding = async (
       throw new AppError('User not found', 401);
     }
 
-    // Allow inactive users for onboarding - they need to complete onboarding to become active
-    // Only check if user exists, not if they're active
-
+    // Allow inactive users for onboarding
     req.user = user;
     next();
   } catch (error: unknown) {
@@ -281,25 +149,15 @@ export const authenticateResidentApp = async (
   res: Response,
   next: NextFunction
 ) => {
-  // First authenticate
   await authenticate(req, res, (err?: unknown) => {
-    // If authentication failed, propagate the error
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
+    if (!req.user) return next(new AppError('Authentication failed', 401));
 
-    // If no user (shouldn't happen after successful auth), return error
-    if (!req.user) {
-      return next(new AppError('Authentication failed', 401));
-    }
-
-    // Check role - Allow RESIDENT, ADMIN, and SUPER_ADMIN
     const allowedRoles = ['RESIDENT', 'ADMIN', 'SUPER_ADMIN'];
     if (!allowedRoles.includes(req.user.role)) {
       return next(new AppError('Access denied. This is for residents only.', 403));
     }
 
-    // Ensure resident has a flat assigned (except for ADMIN/SUPER_ADMIN)
     if (req.user.role === 'RESIDENT' && !req.user.flatId) {
       return next(new AppError('User must have a flat assigned', 403));
     }
@@ -313,59 +171,20 @@ export const authenticateGuardApp = async (
   res: Response,
   next: NextFunction
 ) => {
-  // First authenticate
   await authenticate(req, res, (err?: unknown) => {
-    // If authentication failed, propagate the error
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
+    if (!req.user) return next(new AppError('Authentication failed', 401));
 
-    // If no user (shouldn't happen after successful auth), return error
-    if (!req.user) {
-      return next(new AppError('Authentication failed', 401));
-    }
-
-    // Check role - Only GUARD allowed
     if (req.user.role !== 'GUARD') {
       return next(new AppError('Access denied. This is for guards only.', 403));
     }
 
-    // Ensure guard has a society assigned
     if (!req.user.societyId) {
       return next(new AppError('Guard must be assigned to a society', 403));
     }
 
     next();
   });
-};
-
-// ============================================
-// REFRESH TOKEN VERIFICATION
-// ============================================
-
-export const verifyRefreshToken = (refreshToken: string): JwtPayload => {
-  try {
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!
-    ) as JwtPayload;
-
-    if (decoded.type && decoded.type !== 'refresh') {
-      throw new AppError('Invalid refresh token', 401);
-    }
-
-    return decoded;
-  } catch (error: unknown) {
-    if (isJwtError(error)) {
-      if (error.name === 'JsonWebTokenError') {
-        throw new AppError('Invalid refresh token', 401);
-      }
-      if (error.name === 'TokenExpiredError') {
-        throw new AppError('Refresh token expired. Please login again.', 401);
-      }
-    }
-    throw error;
-  }
 };
 
 // ============================================
@@ -389,70 +208,4 @@ export const authorize = (...allowedRoles: Role[]) => {
 
     next();
   };
-};
-
-// ============================================
-// SOCIETY ISOLATION MIDDLEWARE
-// ============================================
-
-// Request body type with societyId
-interface RequestBodyWithSociety {
-  societyId?: string;
-  [key: string]: unknown;
-}
-
-export const ensureSameSociety = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    // Must have req.user (set by authenticate)
-    if (!req.user) {
-      return next(
-        new AppError('Authentication required. User not found in request.', 401)
-      );
-    }
-
-    // SUPER_ADMIN can access everything
-    if (req.user.role === 'SUPER_ADMIN') return next();
-
-    const userSocietyId = req.user.societyId;
-    if (!userSocietyId) {
-      return next(new AppError('User must be assigned to a society', 403));
-    }
-
-    // Read societyId from incoming request WITHOUT mutating req.query
-    const body = req.body as RequestBodyWithSociety | undefined;
-    const bodySocietyId = body?.societyId;
-    const querySocietyId = req.query.societyId as string | undefined;
-    const paramSocietyId = req.params.societyId;
-
-    const resourceSocietyId = bodySocietyId || querySocietyId || paramSocietyId;
-
-    // If client provided a societyId, it must match user's society
-    if (
-      resourceSocietyId &&
-      String(resourceSocietyId) !== String(userSocietyId)
-    ) {
-      return next(
-        new AppError(
-          'Access denied. You can only access resources in your society.',
-          403
-        )
-      );
-    }
-
-    // Store computed societyId safely on request
-    req.societyId = userSocietyId;
-
-    // For non-GET requests, inject societyId into body if not present
-    if (body && !bodySocietyId) {
-      body.societyId = userSocietyId;
-    }
-
-    return next();
-  } catch (error) {
-    return next(error);
-  }
 };

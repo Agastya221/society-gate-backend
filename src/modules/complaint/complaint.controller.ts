@@ -1,6 +1,7 @@
 import type { Response, Request } from 'express';
 import { ComplaintService } from './complaint.service';
 import { asyncHandler, AppError } from '../../utils/ResponseHandler';
+import logger from '../../utils/logger';
 
 const complaintService = new ComplaintService();
 
@@ -39,7 +40,7 @@ export const getComplaints = asyncHandler(async (req: Request, res: Response) =>
 
   const filters = req.query;
 
-  console.log('🔍 [CACHE CHECK] Fetching complaints from DATABASE...', { userId, userRole, userSocietyId, filters });
+  logger.debug({ userId, userRole, userSocietyId, filters }, 'Fetching complaints from database');
 
   const result = await complaintService.getComplaints(
     filters,
@@ -49,7 +50,7 @@ export const getComplaints = asyncHandler(async (req: Request, res: Response) =>
     userFlatId
   );
 
-  console.log('✅ [DATABASE] Complaints fetched:', result.pagination.total);
+  logger.debug({ total: result.pagination.total }, 'Complaints fetched');
 
   res.status(200).json({
     success: true,
@@ -64,11 +65,11 @@ export const getComplaintById = asyncHandler(async (req: Request, res: Response)
   const userRole = req.user!.role;
   const userSocietyId = req.user!.societyId;
 
-  console.log('🔍 [CACHE CHECK] Fetching complaint by ID from DATABASE...', { complaintId: id, userId, userRole });
+  logger.debug({ complaintId: id, userId, userRole }, 'Fetching complaint by ID');
 
   const complaint = await complaintService.getComplaintById(String(id), userId, userRole, userSocietyId!);
 
-  console.log('✅ [DATABASE] Complaint fetched:', complaint.id);
+  logger.debug({ complaintId: complaint.id }, 'Complaint fetched');
 
   res.status(200).json({
     success: true,

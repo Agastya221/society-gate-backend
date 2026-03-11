@@ -1,7 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import { notificationService } from '../notification/notification.service';
-import { emitToSociety, SOCKET_EVENTS } from '../../utils/socket';
+import { eventBus } from '../../utils/eventBus';
 import type {
   CreateEmergencyDTO,
   EmergencyFilters,
@@ -23,41 +22,14 @@ export class EmergencyService {
       },
     });
 
-    // Send alerts to all admins and guards in the society
-    const reporterName = emergency.reportedBy?.name || 'A resident';
-    const locationInfo = emergency.location ? ` at ${emergency.location}` : '';
-    const descriptionInfo = emergency.description ? ` - ${emergency.description}` : '';
-
-    const staffNotifications = await notificationService.sendToSocietyStaff(
-      data.societyId,
-      ['ADMIN', 'GUARD'],
-      {
-        type: 'EMERGENCY_ALERT',
-        title: `Emergency: ${emergency.type}`,
-        message: `${reporterName} reported a ${emergency.type} emergency${locationInfo}${descriptionInfo}`,
-        data: {
-          emergencyId: emergency.id,
-          type: emergency.type,
-          location: emergency.location,
-          reportedBy: reporterName,
-        },
-        referenceId: emergency.id,
-        referenceType: 'Emergency',
-        societyId: data.societyId,
-      }
-    );
-
-    // Broadcast to all connected society members via Socket.IO
-    emitToSociety(data.societyId, SOCKET_EVENTS.EMERGENCY_ALERT, emergency);
-
-    // Track that alerts were sent
-    const notifiedUserIds = staffNotifications.map((n) => n.userId);
-    await prisma.emergency.update({
-      where: { id: emergency.id },
-      data: {
-        alertsSent: true,
-        notifiedUsers: notifiedUserIds,
-      },
+    // ARCH-3: Emit event - listener handles notifications, socket broadcast, and alert tracking
+    eventBus.emit('emergency.created', {
+      emergencyId: emergency.id,
+      societyId: data.societyId,
+      type: emergency.type,
+      location: emergency.location || undefined,
+      description: emergency.description || undefined,
+      reporterName: emergency.reportedBy?.name || 'A resident',
     });
 
     return emergency;
@@ -154,20 +126,13 @@ export class EmergencyService {
       },
     });
 
-    // Notify the reporter that someone is responding
-    const responderName = updatedEmergency.respondedBy?.name || 'A responder';
-    await notificationService.sendToUser(emergency.reportedById, {
-      type: 'EMERGENCY_ALERT',
-      title: 'Emergency Response',
-      message: `${responderName} is responding to your ${emergency.type} emergency`,
-      data: { emergencyId, respondedBy: responderName },
-      referenceId: emergencyId,
-      referenceType: 'Emergency',
+    // ARCH-3: Emit event - listener handles notification and socket broadcast
+    eventBus.emit('emergency.responded', {
+      emergencyId,
+      reporterId: emergency.reportedById,
+      responderName: updatedEmergency.respondedBy?.name || 'A responder',
       societyId: emergency.societyId,
     });
-
-    // Broadcast update to the society
-    emitToSociety(emergency.societyId, SOCKET_EVENTS.EMERGENCY_UPDATE, updatedEmergency);
 
     return updatedEmergency;
   }
@@ -195,19 +160,13 @@ export class EmergencyService {
       },
     });
 
-    // Notify the reporter that the emergency has been resolved
-    await notificationService.sendToUser(emergency.reportedById, {
-      type: 'EMERGENCY_ALERT',
-      title: 'Emergency Resolved',
-      message: `Your ${emergency.type} emergency has been resolved`,
-      data: { emergencyId, notes },
-      referenceId: emergencyId,
-      referenceType: 'Emergency',
+    // ARCH-3: Emit event - listener handles notification and socket broadcast
+    eventBus.emit('emergency.resolved', {
+      emergencyId,
+      reporterId: emergency.reportedById,
+      resolverName: updatedEmergency.respondedBy?.name || 'Staff',
       societyId: emergency.societyId,
     });
-
-    // Broadcast update to the society
-    emitToSociety(emergency.societyId, SOCKET_EVENTS.EMERGENCY_UPDATE, updatedEmergency);
 
     return updatedEmergency;
   }

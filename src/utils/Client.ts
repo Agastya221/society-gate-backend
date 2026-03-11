@@ -1,10 +1,15 @@
 import "dotenv/config";
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient, Prisma } from '../../prisma/generated/prisma/client'
+import logger from './logger';
 
 const connectionString = `${process.env.DATABASE_URL}`
 
-const adapter = new PrismaPg({ connectionString })
+// IMP-3: Configure connection pool size
+const adapter = new PrismaPg({
+  connectionString,
+  max: parseInt(process.env.DB_POOL_SIZE || '10', 10),
+})
 const prisma = new PrismaClient({ adapter })
 
 // Export types
@@ -15,9 +20,9 @@ export { prisma };
 export const connectDB = async () => {
   try {
     await prisma.$connect();
-    console.log('✅ Database connected');
+    logger.info('Database connected');
   } catch (error) {
-    console.error('❌ Database connection failed:', error);
+    logger.fatal({ error }, 'Database connection failed');
     process.exit(1);
   }
 };

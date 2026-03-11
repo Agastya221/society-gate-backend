@@ -1,7 +1,8 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import { notificationService } from '../notification/notification.service';
+import { eventBus } from '../../utils/eventBus';
 import { emitToUser, SOCKET_EVENTS } from '../../utils/socket';
+import logger from '../../utils/logger';
 import type { Prisma } from '../../types';
 import {
   EntryType,
@@ -79,18 +80,14 @@ export class EntryRequestService {
       },
     });
 
-    // Send notification to flat residents
-    const providerName = data.providerTag || data.type;
-    await notificationService.sendToFlat(data.flatId, {
-      type: 'ENTRY_REQUEST',
-      title: `${providerName} at Gate`,
-      message: data.visitorName
-        ? `${data.visitorName} (${providerName}) is waiting at the gate`
-        : `${providerName} delivery is waiting at the gate`,
-      data: { entryRequestId: entryRequest.id },
-      referenceId: entryRequest.id,
-      referenceType: 'EntryRequest',
+    // ARCH-3: Emit event instead of calling notification service directly
+    eventBus.emit('entry-request.created', {
+      entryRequestId: entryRequest.id,
+      flatId: data.flatId,
       societyId: guard.societyId,
+      visitorName: data.visitorName,
+      providerTag: data.providerTag,
+      type: data.type,
     });
 
     return entryRequest;
@@ -368,7 +365,7 @@ export class EntryRequestService {
 
     // Optionally notify guards about expired requests
     if (result.count > 0) {
-      console.log(`Auto-expired ${result.count} entry requests`);
+      logger.info({ count: result.count }, 'Auto-expired entry requests');
     }
 
     return { count: result.count };

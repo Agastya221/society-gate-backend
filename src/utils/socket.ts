@@ -2,12 +2,10 @@ import { Server, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
 import jwt from 'jsonwebtoken';
 import { prisma } from './Client';
+import logger from './logger';
 
 let io: Server | null = null;
 
-/**
- * Socket event name constants to prevent typos and ensure consistency
- */
 export const SOCKET_EVENTS = {
   NOTIFICATION: 'notification',
   EMERGENCY_ALERT: 'emergency-alert',
@@ -26,9 +24,37 @@ interface AuthenticatedSocket extends Socket {
   };
 }
 
-/**
- * Initialize Socket.IO server with authentication
- */
+// NICE-6: Per-socket rate limiting
+const socketRateLimits = new Map<string, { count: number; resetAt: number }>();
+const SOCKET_RATE_LIMIT = 60; // max events per window
+const SOCKET_RATE_WINDOW = 60_000; // 1 minute
+
+function checkSocketRateLimit(socketId: string): boolean {
+  const now = Date.now();
+  const entry = socketRateLimits.get(socketId);
+
+  if (!entry || now > entry.resetAt) {
+    socketRateLimits.set(socketId, { count: 1, resetAt: now + SOCKET_RATE_WINDOW });
+    return true;
+  }
+
+  entry.count++;
+  if (entry.count > SOCKET_RATE_LIMIT) {
+    return false;
+  }
+  return true;
+}
+
+// Cleanup stale rate limit entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of socketRateLimits) {
+    if (now > entry.resetAt) {
+      socketRateLimits.delete(key);
+    }
+  }
+}, 5 * 60 * 1000);
+
 export function initializeSocketIO(httpServer: HttpServer): Server {
   const allowedOrigins = process.env.CLIENT_URL
     ? process.env.CLIENT_URL.split(',').map((url) => url.trim())
@@ -51,7 +77,6 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
         return next(new Error('Authentication required'));
       }
 
-      // Verify JWT token
       const JWT_SECRET = process.env.JWT_SECRET;
       if (!JWT_SECRET) {
         throw new Error('JWT_SECRET environment variable is not set');
@@ -59,7 +84,6 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
 
       const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
 
-      // Get user from database
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
         select: {
@@ -75,7 +99,6 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
         return next(new Error('User not found or inactive'));
       }
 
-      // Attach user to socket
       socket.user = {
         id: user.id,
         role: user.role,
@@ -91,41 +114,41 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
 
   // Connection handler
   io.on('connection', (socket: AuthenticatedSocket) => {
-    console.log(`[Socket] User connected: ${socket.user?.id} (${socket.user?.role})`);
+    logger.info({ userId: socket.user?.id, role: socket.user?.role }, 'Socket user connected');
 
-    // Join user-specific room
     if (socket.user?.id) {
       socket.join(`user:${socket.user.id}`);
     }
-
-    // Join society room (for society-wide broadcasts)
     if (socket.user?.societyId) {
       socket.join(`society:${socket.user.societyId}`);
     }
-
-    // Join flat room (for flat-specific notifications)
     if (socket.user?.flatId) {
       socket.join(`flat:${socket.user.flatId}`);
     }
 
-    // Handle disconnection
-    socket.on('disconnect', () => {
-      console.log(`[Socket] User disconnected: ${socket.user?.id}`);
+    // NICE-6: Rate limit incoming events
+    socket.use(([_event], next) => {
+      if (!checkSocketRateLimit(socket.id)) {
+        logger.warn({ socketId: socket.id, userId: socket.user?.id }, 'Socket rate limit exceeded');
+        return next(new Error('Rate limit exceeded'));
+      }
+      next();
     });
 
-    // Optional: Handle custom events
+    socket.on('disconnect', () => {
+      logger.debug({ userId: socket.user?.id }, 'Socket user disconnected');
+      socketRateLimits.delete(socket.id);
+    });
+
     socket.on('ping', () => {
       socket.emit('pong', { timestamp: new Date().toISOString() });
     });
   });
 
-  console.log('[Socket] Socket.IO initialized');
+  logger.info('Socket.IO initialized');
   return io;
 }
 
-/**
- * Get the Socket.IO instance
- */
 export function getIO(): Server {
   if (!io) {
     throw new Error('Socket.IO not initialized. Call initializeSocketIO first.');
@@ -133,64 +156,40 @@ export function getIO(): Server {
   return io;
 }
 
-/**
- * Emit to a specific user
- */
 export function emitToUser(userId: string, event: SocketEvent, data: unknown): void {
-  if (!io) {
-    console.warn(`[Socket] Cannot emit '${event}' to user:${userId} - Socket.IO not initialized`);
-    return;
-  }
+  if (!io) return;
   try {
     io.to(`user:${userId}`).emit(event, data);
   } catch (error) {
-    console.error(`[Socket] Error emitting '${event}' to user:${userId}:`, error);
+    logger.error({ error, userId, event }, 'Socket emit to user error');
   }
 }
 
-/**
- * Emit to all users in a flat
- */
 export function emitToFlat(flatId: string, event: SocketEvent, data: unknown): void {
-  if (!io) {
-    console.warn(`[Socket] Cannot emit '${event}' to flat:${flatId} - Socket.IO not initialized`);
-    return;
-  }
+  if (!io) return;
   try {
     io.to(`flat:${flatId}`).emit(event, data);
   } catch (error) {
-    console.error(`[Socket] Error emitting '${event}' to flat:${flatId}:`, error);
+    logger.error({ error, flatId, event }, 'Socket emit to flat error');
   }
 }
 
-/**
- * Emit to all users in a society
- */
 export function emitToSociety(societyId: string, event: SocketEvent, data: unknown): void {
-  if (!io) {
-    console.warn(`[Socket] Cannot emit '${event}' to society:${societyId} - Socket.IO not initialized`);
-    return;
-  }
+  if (!io) return;
   try {
     io.to(`society:${societyId}`).emit(event, data);
   } catch (error) {
-    console.error(`[Socket] Error emitting '${event}' to society:${societyId}:`, error);
+    logger.error({ error, societyId, event }, 'Socket emit to society error');
   }
 }
 
-/**
- * Emit to multiple users
- */
 export function emitToUsers(userIds: string[], event: SocketEvent, data: unknown): void {
-  if (!io) {
-    console.warn(`[Socket] Cannot emit '${event}' to ${userIds.length} users - Socket.IO not initialized`);
-    return;
-  }
+  if (!io) return;
   try {
     userIds.forEach((userId) => {
       io!.to(`user:${userId}`).emit(event, data);
     });
   } catch (error) {
-    console.error(`[Socket] Error emitting '${event}' to multiple users:`, error);
+    logger.error({ error, event, count: userIds.length }, 'Socket emit to users error');
   }
 }

@@ -4,6 +4,7 @@ import { validateRequiredFields } from '../../utils/validation';
 import { ComplaintCategory, ComplaintStatus, ComplaintPriority, Role } from '../../../prisma/generated/prisma/enums';
 import { getPresignedViewUrl } from '../../utils/s3';
 import type { Prisma } from '../../types';
+import logger from '../../utils/logger';
 
 export class ComplaintService {
   /**
@@ -16,7 +17,7 @@ export class ComplaintService {
       images.map(async (s3Key) => {
         try {
           if (s3Key.startsWith('file://') || s3Key.startsWith('content://')) {
-            console.warn(`Skipping local file path: ${s3Key}`);
+            logger.warn({ s3Key }, 'Skipping local file path');
             return null;
           }
 
@@ -28,7 +29,7 @@ export class ComplaintService {
 
           return { s3Key, viewUrl };
         } catch (error) {
-          console.error(`Failed to generate URL for ${s3Key}:`, error);
+          logger.error({ error, s3Key }, 'Failed to generate presigned URL');
           return null;
         }
       })
@@ -140,13 +141,7 @@ export class ComplaintService {
         ? [{ priority: 'desc' as const }, { createdAt: 'desc' as const }]
         : [{ createdAt: 'desc' as const }];
 
-      console.log('Complaints query:', {
-        where,
-        userRole,
-        userSocietyId,
-        userId,
-        orderBy,
-      });
+      logger.debug({ where, userRole, userSocietyId, userId, orderBy }, 'Complaints query');
 
       const [complaints, total] = await Promise.all([
         prisma.complaint.findMany({
@@ -219,7 +214,7 @@ export class ComplaintService {
         },
       };
     } catch (error) {
-      console.error('Error in getComplaints service:', error);
+      logger.error({ error }, 'Error in getComplaints service');
       throw error;
     }
   }

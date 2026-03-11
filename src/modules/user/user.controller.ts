@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { asyncHandler, AppError } from '../../utils/ResponseHandler';
@@ -7,65 +6,30 @@ const userService = new UserService();
 
 export class UserController {
 
-
-  // RESIDENT APP - Request OTP
-  // UserController
-  requestResidentOtp = asyncHandler(async (req: Request, res: Response) => {
-    const { phone } = req.body;
-
-    const ip = (req.ip as string) || (req.headers['x-forwarded-for'] as string) || '';
-    await userService.requestResidentOtp(phone, ip);
-
-    res.json({
-      success: true,
-      message: 'OTP sent successfully',
-    });
-  });
-
-  // NEW: Verify OTP and create profile (for onboarding)
-  verifyOtpAndCreateProfile = asyncHandler(async (req: Request, res: Response) => {
-    const { phone, otp, name, email } = req.body;
-
-    if (!name) {
-      throw new AppError('Name is required', 400);
-    }
-
-    const result = await userService.verifyOtpAndCreateProfile(phone, otp, name, email);
+  // ============================================
+  // RESIDENT APP — Verify MSG91 Widget Token
+  // Creates new user account if first time login
+  // ============================================
+  residentWidgetVerify = asyncHandler(async (req: Request, res: Response) => {
+    const { widgetToken, name, email } = req.body;
+    const result = await userService.residentWidgetVerify(widgetToken, name, email);
 
     res.json({
       success: true,
       message: result.requiresOnboarding
-        ? 'Profile created successfully. Please complete onboarding.'
-        : 'Welcome back!',
+        ? 'Welcome! Please complete your profile setup.'
+        : `Welcome back, ${result.user.name}!`,
       data: result,
     });
   });
 
-  // LEGACY: Verify OTP (backward compatibility)
-  verifyResidentOtp = asyncHandler(async (req: Request, res: Response) => {
-    const { phone, otp } = req.body;
-
-    const result = await userService.verifyOtpAndLoginResident(phone, otp);
-
-    res.json({
-      success: true,
-      message: `Welcome back!`,
-      data: result,
-    });
-  });
-
-
-  // RESIDENT APP - Login
-  residentAppLogin = asyncHandler(async (req: Request, res: Response) => {
-    const { phone, email, password } = req.body;
-    // Accept either phone or email as identifier
-    const identifier = email || phone;
-
-    if (!identifier || !password) {
-      throw new AppError('Phone/Email and password are required', 400);
-    }
-
-    const result = await userService.residentAppLogin(identifier, password);
+  // ============================================
+  // ADMIN APP — Verify MSG91 Widget Token
+  // Existing ADMIN / RESIDENT / SUPER_ADMIN only
+  // ============================================
+  adminAppOtpVerify = asyncHandler(async (req: Request, res: Response) => {
+    const { widgetToken } = req.body;
+    const result = await userService.adminAppOtpVerify(widgetToken);
 
     res.json({
       success: true,
@@ -74,10 +38,13 @@ export class UserController {
     });
   });
 
-  // GUARD APP - Login
-  guardAppLogin = asyncHandler(async (req: Request, res: Response) => {
-    const { phone, password } = req.body;
-    const result = await userService.guardAppLogin(phone, password);
+  // ============================================
+  // GUARD APP — Verify MSG91 Widget Token
+  // Existing GUARD accounts only
+  // ============================================
+  guardAppOtpVerify = asyncHandler(async (req: Request, res: Response) => {
+    const { widgetToken } = req.body;
+    const result = await userService.guardAppOtpVerify(widgetToken);
 
     res.json({
       success: true,
@@ -86,7 +53,9 @@ export class UserController {
     });
   });
 
-  // ADMIN - Create Guard
+  // ============================================
+  // ADMIN — Create Guard (OTP-only, no password)
+  // ============================================
   createGuard = asyncHandler(async (req: Request, res: Response) => {
     const guard = await userService.createGuard(req.body, req.user!.id);
 
@@ -131,7 +100,7 @@ export class UserController {
   // Toggle User Status (Admin only)
   toggleUserStatus = asyncHandler(async (req: Request, res: Response) => {
     const { isActive } = req.body;
-    const user = await userService.toggleUserStatus(String(req.params.id), isActive);
+    const user = await userService.toggleUserStatus(String(req.params.id), isActive, req.user!.societyId!);
 
     res.json({
       success: true,
@@ -173,4 +142,5 @@ export class UserController {
       message: 'Logged out successfully',
     });
   });
+
 }

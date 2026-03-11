@@ -1,102 +1,42 @@
 import bcrypt from 'bcryptjs';
-import axios from 'axios';
-import { prisma, TransactionClient } from '../../utils/Client';
+import jwt from 'jsonwebtoken';
+import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import {
-  generateToken,
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
   blacklistToken,
-  isTokenBlacklisted
-} from '../../middlewares/auth.middleware';
-import { OtpService } from '../../utils/Otp';
+  isTokenBlacklisted,
+  extractJti,
+} from '../../services/token.service';
+import { verifyMSG91WidgetToken } from '../../utils/msg91';
 import {
-  validatePhoneNumber,
   validateEmail,
   validateRequiredFields,
   sanitizeString,
 } from '../../utils/validation';
-import jwt from 'jsonwebtoken';
+import logger from '../../utils/logger';
 
-const OTP_TTL = 120; // 2 minutes
-const MAX_OTP_PHONE = 3; // per hour
-const MAX_OTP_IP = 5; // per hour
 
+// CRIT-6: Only name, email, photoUrl are allowed in profile updates
 
 export class UserService {
-  private otpService = new OtpService();
 
   // ============================================
-  // OTP HELPERS
+  // WIDGET: RESIDENT APP LOGIN / REGISTER
+  // Verifies MSG91 widget token, creates user if first time
   // ============================================
-  private generateOtp(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  }
+  async residentWidgetVerify(widgetToken: string, name?: string, email?: string) {
+    // 1. Verify with MSG91 — get the confirmed phone number
+    const phone = await verifyMSG91WidgetToken(widgetToken);
 
-  private async sendOtpSms(phone: string, otp: string) {
-    await axios.post('https://api.msg91.com/api/v5/otp', {
-      mobile: phone,
-      otp,
-      authkey: process.env.MSG91_API_KEY,
-    });
-  }
+    if (email) validateEmail(email);
 
-  // ============================================
-  // OTP REQUEST (RESIDENT APP)
-  // ============================================
-  async requestResidentOtp(phone: string, ip: string) {
-    // Validate phone number format
-    validatePhoneNumber(phone);
-
-    const phoneKey = `otp:attempts:phone:${phone}`;
-    const ipKey = `otp:attempts:ip:${ip}`;
-
-    const phoneAttempts = await this.otpService.getCount(phoneKey);
-    const ipAttempts = await this.otpService.getCount(ipKey);
-
-    if (phoneAttempts >= MAX_OTP_PHONE) {
-      throw new AppError('Too many OTP requests for this phone', 429);
-    }
-
-    if (ipAttempts >= MAX_OTP_IP) {
-      throw new AppError('Too many OTP requests from this IP', 429);
-    }
-
-    const otp = this.generateOtp();
-
-    await this.otpService.setOtp(phone, otp, OTP_TTL);
-    await this.otpService.increment(phoneKey, 3600);
-    await this.otpService.increment(ipKey, 3600);
-
-    await this.sendOtpSms(phone, otp);
-  }
-
-
-  // ============================================
-  // OTP VERIFY + CREATE PROFILE (NEW ONBOARDING)
-  // ============================================
-  async verifyOtpAndCreateProfile(phone: string, otp: string, name: string, email?: string) {
-    // Validate inputs
-    validatePhoneNumber(phone);
-    if (email) {
-      validateEmail(email);
-    }
-    const sanitizedName = sanitizeString(name);
-
-    const savedOtp = await this.otpService.getOtp(phone);
-
-    if (!savedOtp || savedOtp !== otp) {
-      throw new AppError('Invalid or expired OTP', 400);
-    }
-
-    await this.otpService.deleteOtp(phone);
-
-    // Check if user already exists
     let user = await prisma.user.findUnique({ where: { phone } });
 
     if (user) {
-      // If user is an invited family member (has flatId but not active), activate them
+      // Existing user — re-activate if they have a flat but are inactive
       if (!user.isActive && user.flatId && user.primaryResidentId) {
         user = await prisma.user.update({
           where: { id: user.id },
@@ -104,89 +44,47 @@ export class UserService {
         });
       }
 
-      // User exists, just return login
-      const accessToken = generateAccessToken(
-        user.id,
-        user.role,
-        user.societyId,
-        user.flatId,
-        'RESIDENT_APP'
-      );
+      const accessToken = generateAccessToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
+      const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
 
-      const refreshToken = generateRefreshToken(
-        user.id,
-        user.role,
-        user.societyId,
-        user.flatId,
-        'RESIDENT_APP'
-      );
-
-      // Store refresh token in database
       await prisma.user.update({
         where: { id: user.id },
-        data: {
-          refreshToken,
-          lastTokenRefresh: new Date(),
-          lastLogin: new Date(),
-        },
+        data: { refreshToken, lastTokenRefresh: new Date(), lastLogin: new Date() },
       });
 
-      // Check onboarding status
       const onboardingRequest = await prisma.onboardingRequest.findFirst({
         where: { userId: user.id },
         orderBy: { createdAt: 'desc' },
       });
 
+      const { password: _, refreshToken: __, ...safe } = user;
       return {
-        accessToken,
-        refreshToken,
-        user,
+        accessToken, refreshToken, user: safe,
         requiresOnboarding: !user.isActive || !user.societyId,
         onboardingStatus: onboardingRequest?.status || 'NOT_STARTED',
         appType: 'RESIDENT_APP',
       };
     }
 
-    // Create new user with profile
+    // New user — create account. Name is required for brand-new users.
+    if (!name) throw new AppError('Name is required for new accounts', 400);
+    const sanitizedName = sanitizeString(name);
+
     user = await prisma.user.create({
-      data: {
-        phone,
-        name: sanitizedName,
-        email,
-        role: 'RESIDENT',
-        isActive: false, // Will be activated after admin approval
-      },
+      data: { phone, name: sanitizedName, email, role: 'RESIDENT', isActive: false },
     });
 
-    const accessToken = generateAccessToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      'RESIDENT_APP'
-    );
+    const accessToken = generateAccessToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
+    const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
 
-    const refreshToken = generateRefreshToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      'RESIDENT_APP'
-    );
-
-    // Store refresh token in database
     await prisma.user.update({
       where: { id: user.id },
-      data: {
-        refreshToken,
-        lastTokenRefresh: new Date(),
-      },
+      data: { refreshToken, lastTokenRefresh: new Date() },
     });
 
+    const { password: _, refreshToken: __, ...safe } = user;
     return {
-      accessToken,
-      refreshToken,
-      user,
+      accessToken, refreshToken, user: safe,
       requiresOnboarding: true,
       onboardingStatus: 'DRAFT',
       appType: 'RESIDENT_APP',
@@ -194,192 +92,93 @@ export class UserService {
   }
 
   // ============================================
-  // OTP VERIFY + LOGIN (LEGACY - Keep for backward compatibility)
+  // WIDGET: ADMIN APP LOGIN (existing users only, no creation)
+  // Accepts: ADMIN, SUPER_ADMIN, RESIDENT
   // ============================================
-  async verifyOtpAndLoginResident(phone: string, otp: string) {
-    const savedOtp = await this.otpService.getOtp(phone);
+  async adminAppOtpVerify(widgetToken: string) {
+    const phone = await verifyMSG91WidgetToken(widgetToken);
 
-    if (!savedOtp || savedOtp !== otp) {
-      throw new AppError('Invalid or expired OTP', 400);
-    }
-
-    await this.otpService.deleteOtp(phone);
-
-    let user = await prisma.user.findUnique({ where: { phone } });
+    const user = await prisma.user.findUnique({
+      where: { phone },
+      include: { flat: true, society: true },
+    });
 
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          phone,
-          role: 'RESIDENT',
-          isActive: false, // Changed to false for new onboarding flow
-        },
-      });
+      throw new AppError('No account found for this number. Please contact your society admin.', 404);
     }
 
-    const accessToken = generateAccessToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      'RESIDENT_APP'
-    );
+    const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'RESIDENT'];
+    if (!allowedRoles.includes(user.role)) {
+      throw new AppError('Access denied. This app is for residents and admins only.', 403);
+    }
 
-    const refreshToken = generateRefreshToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      'RESIDENT_APP'
-    );
+    if (!user.isActive) {
+      throw new AppError('Your account is inactive. Please contact your society admin.', 403);
+    }
 
-    // Store refresh token in database
+    const accessToken = generateAccessToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
+    const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
+
     await prisma.user.update({
       where: { id: user.id },
-      data: {
-        refreshToken,
-        lastTokenRefresh: new Date(),
-        lastLogin: new Date(),
-      },
+      data: { refreshToken, lastTokenRefresh: new Date(), lastLogin: new Date() },
     });
 
-    return {
-      accessToken,
-      refreshToken,
-      user,
-      requiresOnboarding: !user.societyId,
-      appType: 'RESIDENT_APP',
-    };
+    const { password: _, refreshToken: __, ...safe } = user;
+    return { accessToken, refreshToken, user: safe, appType: 'RESIDENT_APP' };
   }
 
   // ============================================
-  // LEGACY PASSWORD LOGIN (OPTIONAL / ADMIN)
+  // WIDGET: GUARD APP LOGIN (guards only, no creation)
   // ============================================
-  async residentAppLogin(identifier: string, password: string) {
-    // Try to find user by email first, then by phone
-    let user = null;
+  async guardAppOtpVerify(widgetToken: string) {
+    const phone = await verifyMSG91WidgetToken(widgetToken);
 
-    // Check if identifier is email (contains @)
-    if (identifier.includes('@')) {
-      user = await prisma.user.findFirst({
-        where: { email: identifier },
-        include: { flat: true, society: true },
-      });
-    } else {
-      // Otherwise treat as phone number
-      user = await prisma.user.findUnique({
-        where: { phone: identifier },
-        include: { flat: true, society: true },
-      });
-    }
-
-    if (!user) throw new AppError('Invalid credentials', 401);
-    
-    if (user.role !== 'ADMIN' && user.role !== 'RESIDENT' && user.role !== 'SUPER_ADMIN') {
-      throw new AppError('Access denied', 403);
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) throw new AppError('Invalid credentials', 401);
-
-    const accessToken = generateAccessToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      'RESIDENT_APP'
-    );
-
-    const refreshToken = generateRefreshToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      'RESIDENT_APP'
-    );
-
-    // Store refresh token in database
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        refreshToken,
-        lastTokenRefresh: new Date(),
-        lastLogin: new Date(),
-      },
-    });
-
-    return { accessToken, refreshToken, user, appType: 'RESIDENT_APP' };
-  }
-
-
-  // ============================================
-  // GUARD APP - LOGIN
-  // ============================================
-  async guardAppLogin(phone: string, password: string) {
     const user = await prisma.user.findUnique({
       where: { phone },
       include: {
-        society: {
-          select: {
-            id: true,
-            name: true,
-            address: true,
-            city: true,
-            isActive: true,
-          },
-        },
+        society: { select: { id: true, name: true, address: true, city: true, isActive: true } },
       },
     });
 
-    if (!user) throw new AppError('Invalid credentials', 401);
-    if (user.role !== 'GUARD') {
-      throw new AppError('This app is only for guards.', 403);
+    if (!user) {
+      throw new AppError('No guard account found for this number. Please contact your admin.', 404);
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) throw new AppError('Invalid credentials', 401);
+    if (user.role !== 'GUARD') {
+      throw new AppError('Access denied. This app is for guards only.', 403);
+    }
 
-    if (!user.isActive) throw new AppError('Your account is inactive.', 403);
-    if (!user.society?.isActive) throw new AppError('Society inactive.', 403);
+    if (!user.isActive) {
+      throw new AppError('Your account is inactive. Please contact your society admin.', 403);
+    }
 
-    const accessToken = generateAccessToken(
-      user.id,
-      user.role,
-      user.societyId,
-      null,
-      'GUARD_APP'
-    );
+    if (!user.society?.isActive) {
+      throw new AppError('Society is currently inactive.', 403);
+    }
 
-    const refreshToken = generateRefreshToken(
-      user.id,
-      user.role,
-      user.societyId,
-      null,
-      'GUARD_APP'
-    );
+    const accessToken = generateAccessToken(user.id, user.role, user.societyId, null, 'GUARD_APP');
+    const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, null, 'GUARD_APP');
 
-    // Store refresh token in database
     await prisma.user.update({
       where: { id: user.id },
-      data: {
-        refreshToken,
-        lastTokenRefresh: new Date(),
-        lastLogin: new Date(),
-      },
+      data: { refreshToken, lastTokenRefresh: new Date(), lastLogin: new Date() },
     });
 
-    const { password: _, ...userWithoutPassword } = user;
-
-    return { accessToken, refreshToken, user: userWithoutPassword, appType: 'GUARD_APP' };
+    const { password: _, refreshToken: __, ...safe } = user;
+    return { accessToken, refreshToken, user: safe, appType: 'GUARD_APP' };
   }
 
   // ============================================
   // ADMIN - CREATE GUARD
+  // Guards no longer have passwords — they log in via OTP
   // ============================================
-  async createGuard(data: { name: string; phone: string; password: string; photoUrl?: string }, adminId: string) {
-    // Validate inputs
-    validateRequiredFields(data, ['name', 'phone', 'password'], 'Guard');
-    validatePhoneNumber(data.phone);
+  async createGuard(data: { name: string; phone: string; photoUrl?: string }, adminId: string) {
+    validateRequiredFields(data, ['name', 'phone'], 'Guard');
+    // Inline phone validation (no import needed)
+    if (!/^(\+91)?0?[6-9]\d{9}$/.test(data.phone)) {
+      throw new AppError('Invalid phone number format', 400);
+    }
     const guardName = sanitizeString(data.name);
 
     const admin = await prisma.user.findUnique({ where: { id: adminId } });
@@ -391,13 +190,10 @@ export class UserService {
     const existingUser = await prisma.user.findUnique({ where: { phone: data.phone } });
     if (existingUser) throw new AppError('Phone already registered', 400);
 
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-
     const guard = await prisma.user.create({
       data: {
         name: guardName,
         phone: data.phone,
-        password: hashedPassword,
         photoUrl: data.photoUrl,
         role: 'GUARD',
         societyId: admin.societyId,
@@ -421,22 +217,36 @@ export class UserService {
 
     if (!user) throw new AppError('User not found', 404);
 
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    const { password: _, refreshToken: __, ...userWithoutSensitive } = user;
+    return userWithoutSensitive;
   }
 
   // ============================================
   // UPDATE PROFILE
+  // CRIT-6: Only allow whitelisted fields to prevent privilege escalation
   // ============================================
-  async updateProfile(userId: string, data: { name?: string; email?: string; photoUrl?: string }) {
+  async updateProfile(userId: string, data: Record<string, unknown>) {
+    const sanitizedData: { name?: string; email?: string; photoUrl?: string } = {};
+
+    if (typeof data.name === 'string') {
+      sanitizedData.name = sanitizeString(data.name);
+    }
+    if (typeof data.email === 'string') {
+      validateEmail(data.email);
+      sanitizedData.email = data.email;
+    }
+    if (typeof data.photoUrl === 'string') {
+      sanitizedData.photoUrl = data.photoUrl;
+    }
+
     const user = await prisma.user.update({
       where: { id: userId },
-      data,
+      data: sanitizedData,
       include: { flat: true, society: true },
     });
 
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    const { password: _, refreshToken: __, ...userWithoutSensitive } = user;
+    return userWithoutSensitive;
   }
 
   // ============================================
@@ -460,8 +270,23 @@ export class UserService {
 
   // ============================================
   // TOGGLE USER STATUS
+  // CRIT-7: Verify target user belongs to admin's society and is not SUPER_ADMIN
   // ============================================
-  async toggleUserStatus(userId: string, isActive: boolean) {
+  async toggleUserStatus(userId: string, isActive: boolean, adminSocietyId: string) {
+    const targetUser = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!targetUser) {
+      throw new AppError('User not found', 404);
+    }
+
+    if (targetUser.role === 'SUPER_ADMIN') {
+      throw new AppError('Cannot modify super admin status', 403);
+    }
+
+    if (targetUser.societyId !== adminSocietyId) {
+      throw new AppError('Access denied. User does not belong to your society.', 403);
+    }
+
     return prisma.user.update({
       where: { id: userId },
       data: { isActive },
@@ -472,14 +297,17 @@ export class UserService {
   // ============================================
   // REFRESH TOKEN
   // ============================================
-  async refreshAccessToken(refreshToken: string) {
-    // Check if token is blacklisted
-    const isBlacklisted = await isTokenBlacklisted(refreshToken);
-    if (isBlacklisted) {
-      throw new AppError('Refresh token has been revoked. Please login again.', 401);
+  async refreshAccessToken(refreshTokenStr: string) {
+    // CRIT-3: Extract JTI properly and check blacklist
+    const { jti: refreshJti } = extractJti(refreshTokenStr);
+    if (refreshJti) {
+      const isBlacklisted = await isTokenBlacklisted(refreshJti);
+      if (isBlacklisted) {
+        throw new AppError('Refresh token has been revoked. Please login again.', 401);
+      }
     }
 
-    const decoded = verifyRefreshToken(refreshToken);
+    const decoded = verifyRefreshToken(refreshTokenStr);
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -490,30 +318,17 @@ export class UserService {
       throw new AppError('User not found or inactive', 401);
     }
 
-    // Validate refresh token matches the one stored in database
-    if (user.refreshToken !== refreshToken) {
+    if (user.refreshToken !== refreshTokenStr) {
       throw new AppError('Invalid refresh token. Please login again.', 401);
     }
 
-    // Generate new access token
     const newAccessToken = generateAccessToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      decoded.appType
+      user.id, user.role, user.societyId, user.flatId, decoded.appType
     );
-
-    // Rotate refresh token for better security
     const newRefreshToken = generateRefreshToken(
-      user.id,
-      user.role,
-      user.societyId,
-      user.flatId,
-      decoded.appType
+      user.id, user.role, user.societyId, user.flatId, decoded.appType
     );
 
-    // Update refresh token in database
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -533,46 +348,46 @@ export class UserService {
 
   // ============================================
   // LOGOUT
+  // CRIT-2 & CRIT-3: Use JTI for blacklisting, not full token string
   // ============================================
-  async logout(accessToken: string, refreshToken?: string) {
+  async logout(accessToken: string, refreshTokenStr?: string) {
     try {
-      const accessDecoded = jwt.verify(accessToken, process.env.JWT_SECRET!) as { userId?: string; exp?: number };
+      const fullDecoded = jwt.decode(accessToken) as { userId?: string; jti?: string; exp?: number } | null;
 
       // Clear refresh token from database
-      if (accessDecoded && accessDecoded.userId) {
+      if (fullDecoded?.userId) {
         await prisma.user.update({
-          where: { id: accessDecoded.userId },
-          data: {
-            refreshToken: null,
-          },
+          where: { id: fullDecoded.userId },
+          data: { refreshToken: null },
         }).catch(err => {
-          console.error('Error clearing refresh token from database:', err);
+          logger.error({ error: err }, 'Error clearing refresh token from database');
         });
       }
 
-      // Blacklist access token
-      if (accessDecoded && accessDecoded.exp) {
-        const ttl = accessDecoded.exp - Math.floor(Date.now() / 1000);
+      // Blacklist access token by JTI
+      if (fullDecoded?.jti && fullDecoded?.exp) {
+        const ttl = fullDecoded.exp - Math.floor(Date.now() / 1000);
         if (ttl > 0) {
-          await blacklistToken(accessToken, ttl);
+          await blacklistToken(fullDecoded.jti, ttl);
         }
       }
 
-      // Blacklist refresh token
-      if (refreshToken) {
-        const refreshDecoded = jwt.decode(refreshToken) as { exp?: number } | null;
-        if (refreshDecoded && refreshDecoded.exp) {
-          const ttl = refreshDecoded.exp - Math.floor(Date.now() / 1000);
+      // Blacklist refresh token by JTI
+      if (refreshTokenStr) {
+        const { jti: refreshJti, exp: refreshExp } = extractJti(refreshTokenStr);
+        if (refreshJti && refreshExp) {
+          const ttl = refreshExp - Math.floor(Date.now() / 1000);
           if (ttl > 0) {
-            await blacklistToken(refreshToken, ttl);
+            await blacklistToken(refreshJti, ttl);
           }
         }
       }
 
       return { success: true };
     } catch (error) {
-      console.error('Error during logout:', error);
+      logger.error({ error }, 'Error during logout');
       return { success: true };
     }
   }
+
 }

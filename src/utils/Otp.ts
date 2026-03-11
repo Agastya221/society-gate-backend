@@ -1,22 +1,40 @@
-import { redis, isRedisAvailable, safeRedisOperation } from "../config/redis";
-// OTP + RATE LIMIT UTILS (MATCHES UserService)
-// ============================================
+import { redis, isRedisAvailable } from "../config/redis";
+import logger from "./logger";
 
 // In-memory fallback storage (used when Redis is unavailable)
 const inMemoryOtpStore = new Map<string, { otp: string; expiresAt: number }>();
 const inMemoryCountStore = new Map<string, { count: number; expiresAt: number }>();
 
-export class OtpService {
-  // --------------------------------
-  // OTP STORAGE (used by UserService)
-  // --------------------------------
+// Periodic cleanup of expired entries (every 5 minutes)
+setInterval(() => {
+  const now = Date.now();
+  let cleaned = 0;
+  for (const [key, entry] of inMemoryOtpStore) {
+    if (now > entry.expiresAt) {
+      inMemoryOtpStore.delete(key);
+      cleaned++;
+    }
+  }
+  for (const [key, entry] of inMemoryCountStore) {
+    if (now > entry.expiresAt) {
+      inMemoryCountStore.delete(key);
+      cleaned++;
+    }
+  }
+  if (cleaned > 0) {
+    logger.debug({ cleaned }, 'Cleaned expired in-memory OTP entries');
+  }
+}, 5 * 60 * 1000);
 
+export class OtpService {
   async setOtp(phone: string, otp: string, ttlSeconds: number): Promise<void> {
     if (isRedisAvailable()) {
       await redis.set(`otp:${phone}`, otp, 'EX', ttlSeconds);
     } else {
-      // Fallback to in-memory storage
-      console.warn('⚠️  Redis unavailable, using in-memory OTP storage');
+      // IMP-4: Loud warning in production
+      if (process.env.NODE_ENV === 'production') {
+        logger.warn('PRODUCTION: Redis unavailable, using in-memory OTP storage - OTPs will not persist across restarts');
+      }
       inMemoryOtpStore.set(phone, {
         otp,
         expiresAt: Date.now() + ttlSeconds * 1000,
@@ -28,7 +46,6 @@ export class OtpService {
     if (isRedisAvailable()) {
       return await redis.get(`otp:${phone}`);
     } else {
-      // Fallback to in-memory storage
       const entry = inMemoryOtpStore.get(phone);
       if (!entry) return null;
       if (Date.now() > entry.expiresAt) {
@@ -47,16 +64,11 @@ export class OtpService {
     }
   }
 
-  // --------------------------------
-  // RATE LIMIT HELPERS (phone / IP)
-  // --------------------------------
-
   async getCount(key: string): Promise<number> {
     if (isRedisAvailable()) {
       const value = await redis.get(key);
       return value ? Number(value) : 0;
     } else {
-      // Fallback to in-memory storage
       const entry = inMemoryCountStore.get(key);
       if (!entry) return 0;
       if (Date.now() > entry.expiresAt) {
@@ -74,7 +86,6 @@ export class OtpService {
       pipeline.expire(key, ttlSeconds);
       await pipeline.exec();
     } else {
-      // Fallback to in-memory storage
       const entry = inMemoryCountStore.get(key);
       const currentCount = entry && Date.now() <= entry.expiresAt ? entry.count : 0;
       inMemoryCountStore.set(key, {
@@ -83,10 +94,6 @@ export class OtpService {
       });
     }
   }
-
-  // --------------------------------
-  // OPTIONAL DEBUG / CLEANUP HELPERS
-  // --------------------------------
 
   async clearOtpForPhone(phone: string): Promise<void> {
     if (isRedisAvailable()) {
@@ -110,15 +117,3 @@ export class OtpService {
     }
   }
 }
-
-// ============================================
-// KEY FORMAT USED (IMPORTANT)
-// ============================================
-// OTP VALUE:
-//   otp:{phone}
-//
-// RATE LIMIT:
-//   otp:attempts:phone:{phone}
-//   otp:attempts:ip:{ip}
-//
-// This EXACTLY matches UserService usage.

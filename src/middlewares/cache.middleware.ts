@@ -1,39 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
 import { redis, isRedisAvailable } from '../config/redis';
+import logger from '../utils/logger';
 
 interface CacheOptions {
-  ttl?: number; // Time to live in seconds (default: 300 = 5 minutes)
-  keyPrefix?: string; // Prefix for cache keys
-  varyBy?: string[]; // Fields to vary cache by (e.g., ['userId', 'societyId'])
+  ttl?: number;
+  keyPrefix?: string;
+  varyBy?: string[];
 }
 
 // ============================================
 // CACHE MIDDLEWARE
 // ============================================
 
-/**
- * Middleware to cache GET requests
- * Usage: router.get('/endpoint', cache({ ttl: 600 }), controller.method)
- */
 export const cache = (options: CacheOptions = {}) => {
   const { ttl = 300, keyPrefix = 'api', varyBy = [] } = options;
 
   return async (req: Request, res: Response, next: NextFunction) => {
-    // Only cache GET requests
     if (req.method !== 'GET') {
       return next();
     }
 
-    // Skip caching if Redis is not available
     if (!isRedisAvailable()) {
       return next();
     }
 
     try {
-      // Generate cache key
       const baseKey = `${keyPrefix}:${req.originalUrl || req.url}`;
 
-      // Add vary parameters if specified
       let varyKey = '';
       if (varyBy.length > 0) {
         const varyValues = varyBy.map(field => {
@@ -47,36 +40,28 @@ export const cache = (options: CacheOptions = {}) => {
 
       const cacheKey = `${baseKey}${varyKey}`;
 
-      // Check if cached data exists
       const cachedData = await redis.get(cacheKey);
 
       if (cachedData) {
-        console.log(`📦 [CACHE HIT] Serving from CACHE: ${req.originalUrl || req.url}`);
+        logger.debug({ url: req.originalUrl || req.url }, 'Cache hit');
         const parsed = JSON.parse(cachedData);
         return res.json(parsed);
       }
 
-      console.log(`💾 [CACHE MISS] Will cache response: ${req.originalUrl || req.url}`);
+      logger.debug({ url: req.originalUrl || req.url }, 'Cache miss');
 
-      // Store original json function
       const originalJson = res.json.bind(res);
 
-      // Override json function to cache the response
-      res.json = ((body: any) => {
-        // Cache the response
-        redis.setex(cacheKey, ttl, JSON.stringify(body)).then(() => {
-          console.log(`✅ [CACHE SET] Cached response for ${ttl}s: ${req.originalUrl || req.url}`);
-        }).catch(err => {
-          console.error('Redis cache set error:', err);
+      res.json = ((body: unknown) => {
+        redis.setex(cacheKey, ttl, JSON.stringify(body)).catch(err => {
+          logger.error({ error: err }, 'Redis cache set error');
         });
-
-        // Send the response
         return originalJson(body);
-      }) as any;
+      }) as typeof res.json;
 
       next();
     } catch (error) {
-      console.error('Cache middleware error:', error);
+      logger.error({ error }, 'Cache middleware error');
       next();
     }
   };
@@ -86,24 +71,13 @@ export const cache = (options: CacheOptions = {}) => {
 // CACHE INVALIDATION HELPERS
 // ============================================
 
-/**
- * Clear cache by pattern
- * Example: clearCacheByPattern('api:/api/v1/resident/notifications*')
- */
 export const clearCacheByPattern = async (pattern: string): Promise<number> => {
   try {
     let cursor = '0';
     let deletedCount = 0;
 
     do {
-      const [newCursor, keys] = await redis.scan(
-        cursor,
-        'MATCH',
-        pattern,
-        'COUNT',
-        100
-      );
-
+      const [newCursor, keys] = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
       cursor = newCursor;
 
       if (keys.length > 0) {
@@ -114,55 +88,39 @@ export const clearCacheByPattern = async (pattern: string): Promise<number> => {
 
     return deletedCount;
   } catch (error) {
-    console.error('Clear cache by pattern error:', error);
+    logger.error({ error, pattern }, 'Clear cache by pattern error');
     return 0;
   }
 };
 
-/**
- * Clear cache by exact key
- */
 export const clearCache = async (key: string): Promise<boolean> => {
   try {
     const result = await redis.del(key);
     return result > 0;
   } catch (error) {
-    console.error('Clear cache error:', error);
+    logger.error({ error, key }, 'Clear cache error');
     return false;
   }
 };
 
-/**
- * Clear all API cache
- */
 export const clearAllCache = async (): Promise<number> => {
   return clearCacheByPattern('api:*');
 };
 
-/**
- * Middleware to clear cache after mutations
- * Usage: router.post('/endpoint', clearCacheAfter(['api:/api/v1/notifications*']), controller.method)
- */
 export const clearCacheAfter = (patterns: string[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    // Store original json function
+  return async (_req: Request, res: Response, next: NextFunction) => {
     const originalJson = res.json.bind(res);
 
-    // Override json function to clear cache after response
-    res.json = ((body: any) => {
-      // Clear cache patterns
+    res.json = ((body: unknown) => {
       patterns.forEach(pattern => {
-        console.log(`🗑️  [CACHE INVALIDATION] Clearing cache pattern: ${pattern}`);
         clearCacheByPattern(pattern).then(deletedCount => {
-          console.log(`✅ [CACHE CLEARED] Deleted ${deletedCount} cache entries for pattern: ${pattern}`);
+          logger.debug({ pattern, deletedCount }, 'Cache invalidated');
         }).catch(err => {
-          console.error('Clear cache after mutation error:', err);
+          logger.error({ error: err, pattern }, 'Clear cache after mutation error');
         });
       });
-
-      // Send the response
       return originalJson(body);
-    }) as any;
+    }) as typeof res.json;
 
     next();
   };

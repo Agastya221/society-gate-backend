@@ -1,7 +1,7 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { generateQRToken } from '../../utils/QrGenerate';
-import { notificationService } from '../notification/notification.service';
+import { eventBus } from '../../utils/eventBus';
 import {
   validateRequiredFields,
   validateTimeRange,
@@ -87,6 +87,10 @@ export class DomesticStaffService {
       ];
     }
 
+    // NICE-1: Cap pagination limit to prevent large queries
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(Math.max(1, limit), 100);
+
     const [staff, total] = await Promise.all([
       prisma.domesticStaff.findMany({
         where,
@@ -102,8 +106,8 @@ export class DomesticStaffService {
           { rating: 'desc' },
           { name: 'asc' },
         ],
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (safePage - 1) * safeLimit,
+        take: safeLimit,
       }),
       prisma.domesticStaff.count({ where }),
     ]);
@@ -112,9 +116,9 @@ export class DomesticStaffService {
       staff,
       pagination: {
         total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit),
+        page: safePage,
+        limit: safeLimit,
+        pages: Math.ceil(total / safeLimit),
       },
     };
   }
@@ -163,6 +167,7 @@ export class DomesticStaffService {
     return updatedStaff;
   }
 
+  // NICE-4: Soft delete instead of hard delete for data consistency
   async deleteStaff(staffId: string) {
     const staff = await prisma.domesticStaff.findUnique({
       where: { id: staffId },
@@ -172,11 +177,15 @@ export class DomesticStaffService {
       throw new AppError('Staff not found', 404);
     }
 
-    await prisma.domesticStaff.delete({
+    await prisma.domesticStaff.update({
       where: { id: staffId },
+      data: {
+        isActive: false,
+        availabilityStatus: 'INACTIVE',
+      },
     });
 
-    return { message: 'Staff deleted successfully' };
+    return { message: 'Staff deactivated successfully' };
   }
 
   async verifyStaff(staffId: string, verifiedBy: string) {
@@ -314,20 +323,15 @@ export class DomesticStaffService {
       return attendance;
     });
 
-    // Send notification to flat residents about staff check-in
-    await notificationService.sendToFlat(flatId, {
-      type: 'STAFF_CHECKIN',
-      title: 'Staff Check-In',
-      message: `${result.domesticStaff.name} (${result.domesticStaff.staffType}) has checked in`,
-      data: {
-        staffId: domesticStaffId,
-        staffName: result.domesticStaff.name,
-        staffType: result.domesticStaff.staffType,
-        checkInTime: result.checkInTime,
-      },
-      referenceId: result.id,
-      referenceType: 'StaffAttendance',
+    // ARCH-3: Emit event for notification listener
+    eventBus.emit('staff.checked-in', {
+      attendanceId: result.id,
+      flatId,
       societyId,
+      staffId: domesticStaffId,
+      staffName: result.domesticStaff.name,
+      staffType: result.domesticStaff.staffType,
+      checkInTime: result.checkInTime,
     });
 
     return result;
@@ -389,21 +393,16 @@ export class DomesticStaffService {
       return updatedAttendance;
     });
 
-    // Send notification to flat residents about staff check-out
-    await notificationService.sendToFlat(result.flatId, {
-      type: 'STAFF_CHECKOUT',
-      title: 'Staff Check-Out',
-      message: `${result.domesticStaff.name} (${result.domesticStaff.staffType}) has checked out. Duration: ${result.duration} minutes`,
-      data: {
-        staffId: domesticStaffId,
-        staffName: result.domesticStaff.name,
-        staffType: result.domesticStaff.staffType,
-        checkOutTime: result.checkOutTime,
-        duration: result.duration,
-      },
-      referenceId: result.id,
-      referenceType: 'StaffAttendance',
+    // ARCH-3: Emit event for notification listener
+    eventBus.emit('staff.checked-out', {
+      attendanceId: result.id,
+      flatId: result.flatId,
       societyId: result.societyId,
+      staffId: domesticStaffId,
+      staffName: result.domesticStaff.name,
+      staffType: result.domesticStaff.staffType,
+      checkOutTime: result.checkOutTime!,
+      duration: result.duration || undefined,
     });
 
     return result;
@@ -542,7 +541,15 @@ export class DomesticStaffService {
       },
     });
 
-    // TODO: Send notification to staff
+    // ARCH-3: Emit event for notification listener
+    eventBus.emit('staff.booking-created', {
+      bookingId: booking.id,
+      flatId: booking.flatId,
+      societyId: booking.societyId,
+      staffName: booking.domesticStaff.name,
+      staffType: booking.domesticStaff.staffType,
+      bookingDate: booking.bookingDate,
+    });
 
     return booking;
   }
@@ -557,10 +564,13 @@ export class DomesticStaffService {
     if (status) where.status = status;
 
     if (bookingDate) {
-      const date = new Date(bookingDate);
+      const startOfDay = new Date(bookingDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(bookingDate);
+      endOfDay.setHours(23, 59, 59, 999);
       where.bookingDate = {
-        gte: new Date(date.setHours(0, 0, 0, 0)),
-        lt: new Date(date.setHours(23, 59, 59, 999)),
+        gte: startOfDay,
+        lt: endOfDay,
       };
     }
 
@@ -593,6 +603,7 @@ export class DomesticStaffService {
   async acceptBooking(bookingId: string) {
     const booking = await prisma.staffBooking.findUnique({
       where: { id: bookingId },
+      include: { domesticStaff: { select: { name: true, staffType: true } } },
     });
 
     if (!booking) {
@@ -611,7 +622,14 @@ export class DomesticStaffService {
       },
     });
 
-    // TODO: Send notification to resident
+    // ARCH-3: Emit event for notification listener
+    eventBus.emit('staff.booking-accepted', {
+      bookingId: booking.id,
+      bookedById: booking.bookedById,
+      staffName: booking.domesticStaff.name,
+      staffType: booking.domesticStaff.staffType,
+      societyId: booking.societyId,
+    });
 
     return updatedBooking;
   }
@@ -647,38 +665,42 @@ export class DomesticStaffService {
   // REVIEWS & RATINGS
   // ============================================
 
+  // IMP-6: Use transaction to prevent race condition in rating calculation
   async addReview(data: CreateStaffReviewDTO, reviewerId: string) {
     const { domesticStaffId, rating } = data;
 
-    const review = await prisma.staffReview.create({
-      data: {
-        ...data,
-        reviewerId,
-      },
-      include: {
-        reviewer: { select: { id: true, name: true } },
-        domesticStaff: true,
-      },
-    });
-
-    // Update staff rating
-    const staff = await prisma.domesticStaff.findUnique({
-      where: { id: domesticStaffId },
-    });
-
-    if (staff) {
-      const totalReviews = staff.totalReviews + 1;
-      const currentTotal = (staff.rating || 0) * staff.totalReviews;
-      const newRating = (currentTotal + rating) / totalReviews;
-
-      await prisma.domesticStaff.update({
-        where: { id: domesticStaffId },
+    const review = await prisma.$transaction(async (tx) => {
+      const createdReview = await tx.staffReview.create({
         data: {
-          rating: newRating,
-          totalReviews,
+          ...data,
+          reviewerId,
+        },
+        include: {
+          reviewer: { select: { id: true, name: true } },
+          domesticStaff: true,
         },
       });
-    }
+
+      const staff = await tx.domesticStaff.findUnique({
+        where: { id: domesticStaffId },
+      });
+
+      if (staff) {
+        const totalReviews = staff.totalReviews + 1;
+        const currentTotal = (staff.rating || 0) * staff.totalReviews;
+        const newRating = (currentTotal + rating) / totalReviews;
+
+        await tx.domesticStaff.update({
+          where: { id: domesticStaffId },
+          data: {
+            rating: newRating,
+            totalReviews,
+          },
+        });
+      }
+
+      return createdReview;
+    });
 
     return review;
   }

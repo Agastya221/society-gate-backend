@@ -1,5 +1,5 @@
-// src/config/redis.ts
 import Redis from 'ioredis';
+import logger from '../utils/logger';
 
 // Redis connection status
 let isRedisConnected = false;
@@ -8,7 +8,7 @@ export const redis = new Redis(process.env.REDIS_URL!, {
   maxRetriesPerRequest: 3,
   retryStrategy: (times) => {
     if (times > 10) {
-      console.error('❌ Redis connection failed after 10 attempts');
+      logger.error('Redis connection failed after 10 attempts');
       return null;
     }
     const delay = Math.min(times * 100, 3000);
@@ -21,22 +21,31 @@ export const redis = new Redis(process.env.REDIS_URL!, {
 
 redis.on('error', (err) => {
   isRedisConnected = false;
-  console.warn('⚠️  Redis connection error:', err.message);
+  // IMP-4: Loud warning in production
+  if (process.env.NODE_ENV === 'production') {
+    logger.error({ error: err.message }, 'PRODUCTION: Redis connection error - in-memory fallback active, token revocation and caching will not work across instances');
+  } else {
+    logger.warn({ error: err.message }, 'Redis connection error');
+  }
 });
 
 redis.on('connect', () => {
   isRedisConnected = true;
-  console.log('✅ Redis connected successfully');
+  logger.info('Redis connected successfully');
 });
 
 redis.on('close', () => {
   isRedisConnected = false;
-  console.warn('⚠️  Redis connection closed');
+  logger.warn('Redis connection closed');
 });
 
 // Connect to Redis
 redis.connect().catch((err) => {
-  console.warn('⚠️  Redis not available:', err.message);
+  if (process.env.NODE_ENV === 'production') {
+    logger.error({ error: err.message }, 'PRODUCTION: Redis not available - this is dangerous in production');
+  } else {
+    logger.warn({ error: err.message }, 'Redis not available');
+  }
 });
 
 // Export connection status checker
@@ -53,7 +62,7 @@ export const safeRedisOperation = async <T>(
   try {
     return await operation();
   } catch (error) {
-    console.error('Redis operation failed:', error);
+    logger.error({ error }, 'Redis operation failed');
     return fallback;
   }
 };

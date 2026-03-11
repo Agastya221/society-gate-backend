@@ -1,14 +1,12 @@
 import cron from 'node-cron';
 import { prisma } from '../utils/Client';
 import { emitToUser, SOCKET_EVENTS } from '../utils/socket';
+import logger from '../utils/logger';
 
-/**
- * Cron job to auto-expire pending entry requests
- * Runs every minute
- */
-cron.schedule('* * * * *', async () => {
+// ARCH-4: Each job is an exported function for future worker extraction
+
+export async function expireEntryRequests() {
   try {
-    // Find expired requests before updating so we can notify guards
     const expiredRequests = await prisma.entryRequest.findMany({
       where: {
         status: 'PENDING',
@@ -23,7 +21,6 @@ cron.schedule('* * * * *', async () => {
 
     if (expiredRequests.length === 0) return;
 
-    // Bulk update to EXPIRED
     await prisma.entryRequest.updateMany({
       where: {
         id: { in: expiredRequests.map((r) => r.id) },
@@ -31,7 +28,6 @@ cron.schedule('* * * * *', async () => {
       data: { status: 'EXPIRED' },
     });
 
-    // Notify each guard via Socket.IO
     for (const request of expiredRequests) {
       emitToUser(request.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
         id: request.id,
@@ -40,17 +36,13 @@ cron.schedule('* * * * *', async () => {
       });
     }
 
-    console.log(`[Cron] Auto-expired ${expiredRequests.length} entry requests`);
+    logger.info({ count: expiredRequests.length }, 'Auto-expired entry requests');
   } catch (error) {
-    console.error('[Cron] Error expiring entry requests:', error);
+    logger.error({ error }, 'Error expiring entry requests');
   }
-});
+}
 
-/**
- * Cron job to auto-expire pre-approvals past their validUntil date
- * Runs every 5 minutes
- */
-cron.schedule('*/5 * * * *', async () => {
+export async function expirePreApprovals() {
   try {
     const result = await prisma.preApproval.updateMany({
       where: {
@@ -61,18 +53,14 @@ cron.schedule('*/5 * * * *', async () => {
     });
 
     if (result.count > 0) {
-      console.log(`[Cron] Auto-expired ${result.count} pre-approvals`);
+      logger.info({ count: result.count }, 'Auto-expired pre-approvals');
     }
   } catch (error) {
-    console.error('[Cron] Error expiring pre-approvals:', error);
+    logger.error({ error }, 'Error expiring pre-approvals');
   }
-});
+}
 
-/**
- * Cron job to auto-expire gate passes past their validUntil date
- * Runs every 5 minutes
- */
-cron.schedule('*/5 * * * *', async () => {
+export async function expireGatePasses() {
   try {
     const result = await prisma.gatePass.updateMany({
       where: {
@@ -83,20 +71,17 @@ cron.schedule('*/5 * * * *', async () => {
     });
 
     if (result.count > 0) {
-      console.log(`[Cron] Auto-expired ${result.count} gate passes`);
+      logger.info({ count: result.count }, 'Auto-expired gate passes');
     }
   } catch (error) {
-    console.error('[Cron] Error expiring gate passes:', error);
+    logger.error({ error }, 'Error expiring gate passes');
   }
-});
+}
 
-/**
- * Cron job to clean up old read notifications (runs daily at 3 AM)
- */
-cron.schedule('0 3 * * *', async () => {
+export async function cleanupOldNotifications() {
   try {
     const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - 30); // 30 days old
+    cutoffDate.setDate(cutoffDate.getDate() - 30);
 
     const result = await prisma.notification.deleteMany({
       where: {
@@ -106,11 +91,17 @@ cron.schedule('0 3 * * *', async () => {
     });
 
     if (result.count > 0) {
-      console.log(`[Cron] Cleaned up ${result.count} old notifications`);
+      logger.info({ count: result.count }, 'Cleaned up old notifications');
     }
   } catch (error) {
-    console.error('[Cron] Error cleaning up notifications:', error);
+    logger.error({ error }, 'Error cleaning up notifications');
   }
-});
+}
 
-console.log('[Cron] Expiry and cleanup jobs scheduled');
+// Schedule jobs
+cron.schedule('* * * * *', expireEntryRequests);
+cron.schedule('*/5 * * * *', expirePreApprovals);
+cron.schedule('*/5 * * * *', expireGatePasses);
+cron.schedule('0 3 * * *', cleanupOldNotifications);
+
+logger.info('Cron jobs scheduled');

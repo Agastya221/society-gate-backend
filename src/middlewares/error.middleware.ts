@@ -1,22 +1,20 @@
-// In error.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/ResponseHandler';
+import logger from '../utils/logger';
 
 export const errorHandler = (
   err: Error | AppError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
-  // ✅ Log full error details for debugging
-  console.error('=== ERROR DETAILS ===');
-  console.error('Error name:', err.name);
-  console.error('Error message:', err.message);
-  console.error('Error stack:', err.stack);
-  console.error('Request path:', req.path);
-  console.error('Request method:', req.method);
-  console.error('Request user:', req.user?.id);
-  console.error('====================');
+  // IMP-8: Structured logging instead of console.error
+  logger.error({
+    err,
+    path: req.path,
+    method: req.method,
+    userId: req.user?.id,
+  }, 'Request error');
 
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
@@ -34,7 +32,6 @@ export const errorHandler = (
     });
   }
 
-  // ✅ Add more Prisma error types
   if (err.name === 'PrismaClientValidationError') {
     return res.status(400).json({
       success: false,
@@ -43,13 +40,13 @@ export const errorHandler = (
     });
   }
 
-  // Default error - but include details in development
+  // Default error
   res.status(500).json({
     success: false,
     message: 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { 
+    ...(process.env.NODE_ENV === 'development' && {
       error: err.message,
-      stack: err.stack 
+      stack: err.stack,
     }),
   });
 };

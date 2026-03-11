@@ -6,50 +6,60 @@ import {
   authorize,
   authenticate,
 } from '../../middlewares/auth.middleware';
+import { validate } from '../../middlewares/validate.middleware';
+import {
+  verifyWidgetTokenSchema,
+  verifyResidentWidgetTokenSchema,
+  refreshTokenSchema,
+  updateProfileSchema,
+  createGuardSchema,
+  toggleUserStatusSchema,
+  idParams,
+} from '../../schemas';
 
 const router = Router();
 const userController = new UserController();
 
 // ============================================
-// PUBLIC ROUTES (No authentication)
+// PUBLIC ROUTES — MSG91 Widget Auth
 // ============================================
 
-// OTP Routes (New Onboarding Flow)
-router.post('/otp/send', userController.requestResidentOtp);
-router.post('/otp/verify', userController.verifyOtpAndCreateProfile);
+// Resident App — verify widget token (creates new user if first login)
+router.post('/otp/verify', validate({ body: verifyResidentWidgetTokenSchema }), userController.residentWidgetVerify);
 
-// Admin App - Login
-router.post('/admin-app/login', userController.residentAppLogin);
+// Admin/Resident App — verify widget token (existing users only)
+router.post('/admin-app/otp/verify', validate({ body: verifyWidgetTokenSchema }), userController.adminAppOtpVerify);
 
-// Guard App - Login
-router.post('/guard-app/login', userController.guardAppLogin);
+// Guard App — verify widget token (guards only)
+router.post('/guard-app/otp/verify', validate({ body: verifyWidgetTokenSchema }), userController.guardAppOtpVerify);
 
 // Token Refresh
-router.post('/refresh-token', userController.refreshToken);
+router.post('/refresh-token', validate({ body: refreshTokenSchema }), userController.refreshToken);
 
-// Logout
+// Logout (requires valid access token)
 router.post('/logout', authenticate, userController.logout);
 
 
 // ============================================
-// RESIDENT APP - PROTECTED ROUTES
+// RESIDENT APP — PROTECTED ROUTES
 // ============================================
 
 // Get Profile
 router.get('/resident-app/profile', authenticateResidentApp, userController.getProfile);
 
 // Update Profile
-router.patch('/resident-app/profile', authenticateResidentApp, userController.updateProfile);
+router.patch('/resident-app/profile', authenticateResidentApp, validate({ body: updateProfileSchema }), userController.updateProfile);
 
-// Admin creates Guard
+// Admin: Create Guard
 router.post(
   '/resident-app/create-guard',
   authenticateResidentApp,
   authorize('ADMIN'),
+  validate({ body: createGuardSchema }),
   userController.createGuard
 );
 
-// Admin gets all Guards
+// Admin: Get all Guards
 router.get(
   '/resident-app/guards',
   authenticateResidentApp,
@@ -57,16 +67,18 @@ router.get(
   userController.getGuards
 );
 
-// Admin toggles user status
+// Admin: Toggle user active/inactive
 router.patch(
   '/resident-app/users/:id/status',
   authenticateResidentApp,
   authorize('ADMIN'),
+  validate({ params: idParams, body: toggleUserStatusSchema }),
   userController.toggleUserStatus
 );
 
+
 // ============================================
-// GUARD APP - PROTECTED ROUTES
+// GUARD APP — PROTECTED ROUTES
 // ============================================
 
 // Get Profile
