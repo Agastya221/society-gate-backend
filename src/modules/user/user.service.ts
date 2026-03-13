@@ -125,7 +125,13 @@ export class UserService {
     });
 
     const { password: _, refreshToken: __, ...safe } = user;
-    return { accessToken, refreshToken, user: safe, appType: 'RESIDENT_APP' };
+
+    // Tell the frontend which panel to show based on role
+    const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(user.role)
+      ? 'ADMIN_PANEL'
+      : 'RESIDENT_PANEL';
+
+    return { accessToken, refreshToken, user: safe, appType: 'RESIDENT_APP', redirectTo };
   }
 
   // ============================================

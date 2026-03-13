@@ -2,12 +2,16 @@ import axios from 'axios';
 import logger from './logger';
 import { AppError } from './ResponseHandler';
 
-const WIDGET_AUTH_KEY = process.env.MSG91_WIDGET_AUTH_KEY || process.env.MSG91_API_KEY!;
+const WIDGET_AUTH_KEY = process.env.MSG91_WIDGET_AUTH_KEY || process.env.MSG91_API_KEY;
+
+if (!WIDGET_AUTH_KEY) {
+  throw new Error('MSG91_WIDGET_AUTH_KEY (or MSG91_API_KEY) is not set in environment variables');
+}
 
 interface MSG91WidgetVerifyResponse {
   message: string;
-  mobile?: string;       // e.g. "919876543210"
-  type?: string;         // "success" | "error"
+  mobile?: string;
+  type?: string;
   code?: string;
 }
 
@@ -23,7 +27,7 @@ interface MSG91WidgetVerifyResponse {
  *  6. We use that phone to find/create the user and issue our own JWT
  *
  * @param widgetToken - The JWT token received from the MSG91 OTP Widget on the frontend
- * @returns The verified phone number in E.164 format (e.g. "919876543210")
+ * @returns The verified phone number in 10-digit Indian format
  */
 export async function verifyMSG91WidgetToken(widgetToken: string): Promise<string> {
   try {
@@ -46,9 +50,11 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
       throw new AppError(data.message || 'OTP verification failed', 400);
     }
 
-    // MSG91 returns mobile as "91XXXXXXXXXX" — normalise to our DB format
     return normalisePhone(data.mobile);
   } catch (err: any) {
+    // Re-throw AppErrors as-is so the status code is preserved
+    if (err instanceof AppError) throw err;
+
     const msg91Error = err?.response?.data?.message || err?.message;
     logger.error({ error: msg91Error }, 'MSG91 widget token verification failed');
 
@@ -66,9 +72,7 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
  */
 function normalisePhone(phone: string): string {
   const cleaned = phone.replace(/\D/g, '');
-  // MSG91 returns 91XXXXXXXXXX (12 digits) — strip country code
   if (cleaned.startsWith('91') && cleaned.length === 12) return cleaned.slice(2);
-  // Already 10 digits
   if (cleaned.length === 10) return cleaned;
   return cleaned;
 }
