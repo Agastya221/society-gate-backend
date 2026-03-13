@@ -29,27 +29,20 @@ The API now uses **Access Tokens** and **Refresh Tokens** for enhanced security:
 - **Access Token**: Short-lived (15 minutes) - Used for API requests
 - **Refresh Token**: Long-lived (7-30 days) - Used to get new access tokens
 
-### Login/Registration Flow Options:
+### Login/Registration Flow (MSG91 Widget)
 
-#### Option 1: OTP-Based (Phone Only)
+The backend now uses the **MSG91 SDK Widget** for OTP verification. The client app handles the initial OTP entry through the widget and receives a JWT `widgetToken`, which is then sent to the backend for validation.
+
 ```
-1. POST /otp/send → Send OTP to phone
-2. POST /otp/verify → Verify OTP + create/login user
-3. Store accessToken and refreshToken
+1. Client completes MSG91 Widget OTP flow
+2. Client sends widgetToken to:
+   - POST /otp/verify (Residents/New Users)
+   - POST /admin-app/otp/verify (Admins)
+   - POST /guard-app/otp/verify (Guards)
+3. Backend validates widgetToken and returns accessToken + refreshToken
 4. Use accessToken for authenticated requests
 5. When accessToken expires, use refreshToken to get new accessToken
 6. Use POST /logout to invalidate both tokens
-```
-
-#### Option 2: Password-Based
-```
-1. POST /resident-app/login (for residents/admins)
-   OR
-   POST /guard-app/login (for guards)
-2. Store accessToken and refreshToken
-3. Use accessToken for authenticated requests
-4. When accessToken expires, use refreshToken to get new accessToken
-5. Use POST /logout to invalidate both tokens
 ```
 
 ### Token Refresh Flow
@@ -91,72 +84,17 @@ Development: http://localhost:3000/api/v1/auth
 
 ## Public Endpoints
 
-### 1. Send OTP
-
-**Endpoint:** `POST /otp/send`
-**Description:** Request an OTP for phone verification (used for login/registration)
-**Authentication:** Not required
-
-#### Request Body
-```json
-{
-  "phone": "+919876543210"
-}
-```
-
-#### Success Response (200)
-```json
-{
-  "success": true,
-  "message": "OTP sent successfully"
-}
-```
-
-#### Error Responses
-
-**429 - Too Many Requests (Phone Limit)**
-```json
-{
-  "success": false,
-  "message": "Too many OTP requests for this phone number. Please try again after 1 hour."
-}
-```
-
-**429 - Too Many Requests (IP Limit)**
-```json
-{
-  "success": false,
-  "message": "Too many OTP requests from this IP address. Please try again after 1 hour."
-}
-```
-
-**400 - Invalid Phone**
-```json
-{
-  "success": false,
-  "message": "Invalid phone number format"
-}
-```
-
-#### Rate Limits
-- 3 OTP requests per phone number per hour
-- 5 OTP requests per IP address per hour
-- OTP validity: 2 minutes
-
----
-
-### 2. Verify OTP
+### 1. Resident App Login / Registration
 
 **Endpoint:** `POST /otp/verify`
-**Description:** Verify OTP and create/login user
+**Description:** Verify MSG91 Widget Token and create/login Resident user
 **Authentication:** Not required
 
 #### Request Body
 ```json
 {
-  "phone": "+919876543210",
-  "otp": "123456",
-  "name": "John Doe",
+  "widgetToken": "eyJhbG...",
+  "name": "John Doe",           // Required ONLY for new users
   "email": "john@example.com"  // Optional
 }
 ```
@@ -167,10 +105,10 @@ Development: http://localhost:3000/api/v1/auth
 ```json
 {
   "success": true,
-  "message": "Profile created successfully. Please complete onboarding.",
+  "message": "Welcome! Please complete your profile setup.",
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "accessToken": "...",
+    "refreshToken": "...",
     "user": {
       "id": "uuid-here",
       "name": "John Doe",
@@ -196,10 +134,10 @@ Development: http://localhost:3000/api/v1/auth
 ```json
 {
   "success": true,
-  "message": "Welcome back!",
+  "message": "Welcome back, John Doe!",
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "accessToken": "...",
+    "refreshToken": "...",
     "user": {
       "id": "uuid-here",
       "name": "John Doe",
@@ -215,7 +153,7 @@ Development: http://localhost:3000/api/v1/auth
       "updatedAt": "2026-01-22T12:00:00Z"
     },
     "requiresOnboarding": false,
-    "onboardingStatus": "NOT_STARTED",
+    "onboardingStatus": "COMPLETED",
     "appType": "RESIDENT_APP"
   }
 }
@@ -223,53 +161,34 @@ Development: http://localhost:3000/api/v1/auth
 
 #### Error Responses
 
-**400 - Invalid OTP**
+**400 - Missing Name for New User**
 ```json
 {
   "success": false,
-  "message": "Invalid or expired OTP"
+  "message": "Name is required for new accounts"
 }
 ```
 
-**400 - Missing Name**
+**400 - Invalid Token**
 ```json
 {
   "success": false,
-  "message": "Name is required"
-}
-```
-
-**400 - Invalid Email**
-```json
-{
-  "success": false,
-  "message": "Invalid email format"
+  "message": "Invalid or expired widget token"
 }
 ```
 
 ---
 
-### 3. admin App Login
+### 2. Admin App Login
 
-**Endpoint:** `POST /admin-app/login`
-**Description:** Login for residents, admins, and super admins using password
+**Endpoint:** `POST /admin-app/otp/verify`
+**Description:** Login for existing residents, admins, and super admins using MSG91 Widget Token
 **Authentication:** Not required
 
 #### Request Body
-
-**Using Phone:**
 ```json
 {
-  "phone": "+919876543210",
-  "password": "your-password"
-}
-```
-
-**Using Email:**
-```json
-{
-  "email": "john@example.com",
-  "password": "your-password"
+  "widgetToken": "eyJhbG..."
 }
 ```
 
@@ -279,33 +198,9 @@ Development: http://localhost:3000/api/v1/auth
   "success": true,
   "message": "Welcome back, John Doe!",
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "id": "uuid-here",
-      "name": "John Doe",
-      "phone": "+919876543210",
-      "email": "john@example.com",
-      "role": "RESIDENT",
-      "isActive": true,
-      "flatId": "uuid-here",
-      "societyId": "uuid-here",
-      "photoUrl": "https://example.com/photo.jpg",
-      "lastLogin": "2026-01-22T12:00:00Z",
-      "flat": {
-        "id": "uuid-here",
-        "flatNumber": "A-101",
-        "floor": "1",
-        "wing": "A"
-      },
-      "society": {
-        "id": "uuid-here",
-        "name": "Green Valley Society",
-        "address": "123 Main Street",
-        "city": "Mumbai",
-        "isActive": true
-      }
-    },
+    "accessToken": "...",
+    "refreshToken": "...",
+    "user": { "id": "uuid-here", "name": "John Doe", "role": "ADMIN" },
     "appType": "RESIDENT_APP"
   }
 }
@@ -313,43 +208,42 @@ Development: http://localhost:3000/api/v1/auth
 
 #### Error Responses
 
-**401 - Invalid Credentials**
+**404 - Not Found**
 ```json
 {
   "success": false,
-  "message": "Invalid credentials"
+  "message": "No account found for this number. Please contact your society admin."
 }
 ```
 
-**403 - Access Denied (Wrong Role)**
+**403 - Access Denied**
 ```json
 {
   "success": false,
-  "message": "Access denied"
+  "message": "Access denied. This app is for residents and admins only."
 }
 ```
 
-**400 - Missing Fields**
+**403 - Account Inactive**
 ```json
 {
   "success": false,
-  "message": "Phone/Email and password are required"
+  "message": "Your account is inactive. Please contact your society admin."
 }
 ```
 
 ---
 
-### 4. Guard App Login
+### 3. Guard App Login
 
-**Endpoint:** `POST /guard-app/login`
-**Description:** Login for security guards using phone and password
+**Endpoint:** `POST /guard-app/otp/verify`
+**Description:** Login for existing security guards using MSG91 Widget Token
 **Authentication:** Not required
 
 #### Request Body
 ```json
 {
-  "phone": "+919876543210",
-  "password": "your-password"
+  "widgetToken": "eyJhbG..."
 }
 ```
 
@@ -359,25 +253,9 @@ Development: http://localhost:3000/api/v1/auth
   "success": true,
   "message": "Welcome back, Guard Name!",
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "id": "uuid-here",
-      "name": "Guard Name",
-      "phone": "+919876543210",
-      "role": "GUARD",
-      "isActive": true,
-      "societyId": "uuid-here",
-      "photoUrl": "https://example.com/photo.jpg",
-      "lastLogin": "2026-01-22T12:00:00Z",
-      "society": {
-        "id": "uuid-here",
-        "name": "Green Valley Society",
-        "address": "123 Main Street",
-        "city": "Mumbai",
-        "isActive": true
-      }
-    },
+    "accessToken": "...",
+    "refreshToken": "...",
+    "user": { "id": "uuid-here", "name": "Guard Name", "role": "GUARD" },
     "appType": "GUARD_APP"
   }
 }
@@ -385,19 +263,19 @@ Development: http://localhost:3000/api/v1/auth
 
 #### Error Responses
 
-**401 - Invalid Credentials**
+**404 - Not Found**
 ```json
 {
   "success": false,
-  "message": "Invalid credentials"
+  "message": "No guard account found for this number. Please contact your admin."
 }
 ```
 
-**403 - Not a Guard**
+**403 - Access Denied**
 ```json
 {
   "success": false,
-  "message": "This app is only for guards"
+  "message": "Access denied. This app is for guards only."
 }
 ```
 
@@ -405,7 +283,7 @@ Development: http://localhost:3000/api/v1/auth
 ```json
 {
   "success": false,
-  "message": "Your account is inactive"
+  "message": "Your account is inactive. Please contact your society admin."
 }
 ```
 
@@ -413,7 +291,7 @@ Development: http://localhost:3000/api/v1/auth
 ```json
 {
   "success": false,
-  "message": "Society is inactive. Contact admin."
+  "message": "Society is currently inactive."
 }
 ```
 
@@ -706,7 +584,6 @@ Note: You can send one or more fields. Only the fields you send will be updated.
 {
   "name": "Security Guard Name",
   "phone": "+919876543210",
-  "password": "secure-password-123",
   "photoUrl": "https://example.com/guard-photo.jpg"  // Optional
 }
 ```
@@ -766,7 +643,7 @@ Note: You can send one or more fields. Only the fields you send will be updated.
 ```json
 {
   "success": false,
-  "message": "Name, phone, and password are required"
+  "message": "Name and phone are required"
 }
 ```
 

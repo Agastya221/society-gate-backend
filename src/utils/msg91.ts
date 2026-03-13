@@ -1,5 +1,6 @@
 import axios from 'axios';
 import logger from './logger';
+import { AppError } from './ResponseHandler';
 
 const WIDGET_AUTH_KEY = process.env.MSG91_WIDGET_AUTH_KEY || process.env.MSG91_API_KEY!;
 
@@ -42,7 +43,7 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
     logger.info({ status: data.message, mobile: data.mobile }, 'MSG91 widget token verified');
 
     if (data.message !== 'success' || !data.mobile) {
-      throw new Error(data.message || 'OTP verification failed');
+      throw new AppError(data.message || 'OTP verification failed', 400);
     }
 
     // MSG91 returns mobile as "91XXXXXXXXXX" — normalise to our DB format
@@ -52,10 +53,10 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
     logger.error({ error: msg91Error }, 'MSG91 widget token verification failed');
 
     if (err?.response?.status === 401 || msg91Error?.toLowerCase().includes('invalid')) {
-      throw new Error('OTP is invalid or has expired. Please try again.');
+      throw new AppError('OTP is invalid or has expired. Please try again.', 400);
     }
 
-    throw new Error('Could not verify OTP. Please try again.');
+    throw new AppError('Could not verify OTP. Please try again.', 502);
   }
 }
 
