@@ -9,6 +9,7 @@ import logger from './utils/logger';
 
 // Import v1 routes
 import v1Routes from './routes/v1';
+import societyRegistrationRoutes from './modules/society-registration/society-registration.routes';
 
 const app = express();
 
@@ -77,6 +78,7 @@ app.get('/', (_req, res) => {
 
 // V1 API ROUTES
 app.use('/api/v1', v1Routes);
+app.use('/api/v1/society-registration', societyRegistrationRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);

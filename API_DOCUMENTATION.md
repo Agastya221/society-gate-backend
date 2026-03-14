@@ -1818,3 +1818,446 @@ For API issues or questions, contact:
 
 **Last Updated:** 2026-01-23
 **API Version:** 2.0
+
+---
+
+## Family Members
+
+### Overview
+
+The platform supports a primary resident + family member model per flat.
+
+- The resident who completes onboarding and gets approved becomes the 
+  **primary resident** (`isPrimaryResident: true`)
+- The primary resident can invite up to 5 additional family members 
+  (6 total including themselves) per flat
+- Invited family members are created as inactive User accounts 
+  (`isActive: false`) pre-linked to the flat via `primaryResidentId`
+- A family member activates their account by completing the MSG91 OTP 
+  widget flow on the resident app — the system auto-detects the 
+  `primaryResidentId` link and activates them automatically
+- Only primary residents can invite, remove, or update family member roles
+
+### FamilyRole values
+- SPOUSE
+- CHILD
+- PARENT
+- SIBLING
+- OTHER
+
+### Endpoints
+
+---
+
+#### Invite Family Member
+POST /api/v1/resident/family/invite
+Authorization: Bearer <primary_resident_token>
+
+Request body:
+```json
+{
+  "phone": "+919876543210",
+  "name": "Priya Sharma",
+  "email": "priya@example.com",
+  "familyRole": "SPOUSE"
+}
+```
+
+Rules:
+- Caller must be isPrimaryResident: true
+- Phone must not already be registered
+- Flat must not already have 6 residents
+- Family member is created with isActive: false
+- They activate by doing OTP verify on the resident app
+
+Response 201:
+```json
+{
+  "success": true,
+  "message": "Family member invited successfully. They need to verify OTP to activate account.",
+  "data": {
+    "id": "uuid",
+    "name": "Priya Sharma",
+    "phone": "+919876543210",
+    "email": "priya@example.com",
+    "role": "RESIDENT",
+    "familyRole": "SPOUSE",
+    "isActive": false,
+    "flatId": "uuid",
+    "societyId": "uuid",
+    "primaryResidentId": "uuid"
+  }
+}
+```
+
+Error cases:
+- 403 — caller is not a primary resident
+- 400 — flat already has 6 residents
+- 400 — phone already registered
+
+---
+
+#### Get Family Members
+GET /api/v1/resident/family
+Authorization: Bearer <resident_token>
+
+Returns all residents in the same flat (primary + family members).
+Ordered: primary resident first, then by join date.
+
+Response 200:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Rahul Sharma",
+      "phone": "+919876543210",
+      "email": "rahul@example.com",
+      "photoUrl": null,
+      "isActive": true,
+      "isPrimaryResident": true,
+      "familyRole": null,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "uuid",
+      "name": "Priya Sharma",
+      "phone": "+919876543211",
+      "email": "priya@example.com",
+      "photoUrl": null,
+      "isActive": true,
+      "isPrimaryResident": false,
+      "familyRole": "SPOUSE",
+      "createdAt": "2026-01-02T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+#### Remove Family Member
+DELETE /api/v1/resident/family/:memberId
+Authorization: Bearer <primary_resident_token>
+
+Rules:
+- Caller must be isPrimaryResident: true
+- Cannot remove yourself
+- Cannot remove another primary resident
+- Member must be in the same flat
+- Soft delete: isActive → false, flatId → null, societyId → null, 
+  primaryResidentId → null
+
+Response 200:
+```json
+{
+  "success": true,
+  "message": "Family member removed successfully"
+}
+```
+
+Error cases:
+- 403 — caller is not a primary resident
+- 400 — attempting to remove self
+- 403 — member is in a different flat
+
+---
+
+#### Update Family Role
+PATCH /api/v1/resident/family/:memberId/role
+Authorization: Bearer <primary_resident_token>
+
+Request body:
+```json
+{
+  "familyRole": "PARENT"
+}
+```
+
+Rules:
+- Caller must be isPrimaryResident: true
+- Cannot update the primary resident's own role
+- Member must be in the same flat
+
+Response 200:
+```json
+{
+  "success": true,
+  "message": "Family role updated successfully",
+  "data": {
+    "id": "uuid",
+    "name": "Priya Sharma",
+    "phone": "+919876543211",
+    "familyRole": "PARENT"
+  }
+}
+```
+
+---
+
+### How family member activation works (OTP flow)
+
+1. Primary resident calls POST /api/v1/resident/family/invite with the 
+   family member's phone number
+2. System creates an inactive User account pre-linked to the flat
+3. Family member opens the resident app and completes OTP verification 
+   via POST /api/v1/auth/otp/verify with their phone
+4. residentWidgetVerify detects: user exists + isActive: false + 
+   flatId is set + primaryResidentId is set
+5. System sets isActive: true automatically — no admin approval needed
+6. Family member receives accessToken + refreshToken and is logged in
+
+This is different from the main resident onboarding flow which requires 
+admin approval. Family members skip the approval step entirely because 
+the primary resident has already vouched for them.
+
+---
+
+## Bootstrap SUPER_ADMIN
+
+### Overview
+
+The platform has a one-time bootstrap endpoint to create the first 
+SUPER_ADMIN account. This must be called before anything else in a 
+fresh production deployment. It permanently disables itself after 
+first successful use.
+
+### Endpoint
+POST /api/v1/auth/bootstrap-superadmin
+
+No authentication required.
+
+Request body:
+```json
+{
+  "phone": "+919876543210",
+  "name": "Platform Admin",
+  "email": "admin@platform.com",
+  "bootstrapSecret": "your-BOOTSTRAP_SECRET-env-value"
+}
+```
+
+Rules:
+- bootstrapSecret must match BOOTSTRAP_SECRET in server .env
+- If any SUPER_ADMIN already exists in the DB → 403 permanently
+- Phone must not already be registered
+- email is optional
+
+Response 201:
+```json
+{
+  "success": true,
+  "message": "SUPER_ADMIN created successfully. This endpoint is now permanently disabled.",
+  "data": {
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ...",
+    "user": {
+      "id": "uuid",
+      "name": "Platform Admin",
+      "phone": "+919876543210",
+      "email": "admin@platform.com",
+      "role": "SUPER_ADMIN",
+      "isActive": true
+    }
+  }
+}
+```
+
+Error cases:
+- 403 wrong secret — Invalid bootstrap secret
+- 403 already done — Bootstrap already completed. A SUPER_ADMIN account 
+  already exists.
+- 409 — This phone number is already registered
+- 500 — Bootstrap is not configured on this server (BOOTSTRAP_SECRET 
+  env var not set)
+
+---
+
+## Society Registration (Flow 2)
+
+### Overview
+
+A RESIDENT who wants to register their society on the platform submits 
+a registration request. The SUPER_ADMIN reviews it and either approves 
+or rejects it. On approval the society is created and the requestor is 
+automatically upgraded to ADMIN of that society.
+
+### Endpoints
+
+---
+
+#### Submit Registration Request (Resident)
+POST /api/v1/society-registration/request
+Authorization: Bearer <resident_token>
+
+Request body:
+```json
+{
+  "societyName": "Green Valley Apartments",
+  "address": "123 Main Road",
+  "city": "Mumbai",
+  "state": "Maharashtra",
+  "pincode": "400001",
+  "contactName": "Rahul Sharma",
+  "contactPhone": "+919876543210",
+  "contactEmail": "rahul@greenvalley.com",
+  "totalFlats": 120,
+  "monthlyFee": 2500
+}
+```
+
+Rules:
+- Any authenticated active user can submit
+- Blocked if user already has a PENDING or APPROVED request (409)
+
+Response 201:
+```json
+{
+  "success": true,
+  "message": "Society registration request submitted. Awaiting SUPER_ADMIN review.",
+  "data": {
+    "id": "uuid",
+    "status": "PENDING",
+    "societyName": "Green Valley Apartments",
+    "requestedBy": {
+      "id": "uuid",
+      "name": "Rahul Sharma",
+      "phone": "+919876543210"
+    },
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+}
+```
+
+---
+
+#### Get My Request Status (Resident)
+GET /api/v1/society-registration/my-status
+Authorization: Bearer <resident_token>
+
+Response 200:
+```json
+{
+  "success": true,
+  "data": {
+    "status": "PENDING",
+    "request": {
+      "id": "uuid",
+      "societyName": "Green Valley Apartments",
+      "status": "PENDING",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "society": null
+    }
+  }
+}
+```
+
+If no request submitted yet:
+```json
+{
+  "success": true,
+  "data": {
+    "status": "NOT_SUBMITTED",
+    "request": null
+  }
+}
+```
+
+---
+
+#### List All Requests (SUPER_ADMIN only)
+GET /api/v1/society-registration/requests?status=PENDING&page=1&limit=20
+Authorization: Bearer <super_admin_token>
+
+Query params (all optional):
+- status: PENDING | APPROVED | REJECTED
+- page: default 1
+- limit: default 20
+
+Response 200:
+```json
+{
+  "success": true,
+  "data": {
+    "requests": [...],
+    "pagination": {
+      "total": 5,
+      "page": 1,
+      "limit": 20,
+      "totalPages": 1
+    }
+  }
+}
+```
+
+---
+
+#### Get Single Request (SUPER_ADMIN only)
+GET /api/v1/society-registration/requests/:id
+Authorization: Bearer <super_admin_token>
+
+---
+
+#### Approve Request (SUPER_ADMIN only)
+POST /api/v1/society-registration/requests/:id/approve
+Authorization: Bearer <super_admin_token>
+
+No request body required.
+
+What happens in a single transaction:
+1. Society row is created from the submitted details
+2. Requesting user: role → ADMIN, societyId → new society id, isActive → true
+3. Request: status → APPROVED, societyId linked, reviewedById + reviewedAt set
+
+Response 200:
+```json
+{
+  "success": true,
+  "message": "Society registration approved. Society created and admin assigned.",
+  "data": {
+    "society": { "id": "uuid", "name": "Green Valley Apartments" },
+    "user": { "id": "uuid", "role": "ADMIN", "societyId": "uuid" },
+    "request": { "id": "uuid", "status": "APPROVED" }
+  }
+}
+```
+
+Error cases:
+- 404 — request not found
+- 409 — request is not PENDING (already approved or rejected)
+
+---
+
+#### Reject Request (SUPER_ADMIN only)
+POST /api/v1/society-registration/requests/:id/reject
+Authorization: Bearer <super_admin_token>
+
+Request body:
+```json
+{
+  "rejectionReason": "Incomplete address details provided."
+}
+```
+
+Rules:
+- rejectionReason is required, minimum 10 characters
+- Request must be in PENDING status
+
+Response 200:
+```json
+{
+  "success": true,
+  "message": "Society registration request rejected.",
+  "data": {
+    "id": "uuid",
+    "status": "REJECTED",
+    "rejectionReason": "Incomplete address details provided.",
+    "reviewedAt": "2026-01-01T00:00:00.000Z"
+  }
+}
+```
+
+Error cases:
+- 404 — request not found
+- 409 — request is not PENDING

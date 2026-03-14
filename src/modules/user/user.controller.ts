@@ -7,6 +7,26 @@ const userService = new UserService();
 export class UserController {
 
   // ============================================
+  // BOOTSTRAP SUPER ADMIN
+  // ============================================
+  bootstrapSuperAdmin = asyncHandler(async (req: Request, res: Response) => {
+    const { phone, name, email, bootstrapSecret } = req.body;
+    const result = await userService.bootstrapSuperAdmin({
+      phone,
+      name,
+      email,
+      bootstrapSecret,
+    });
+
+    res.status(201).json({
+      success: true,
+      message:
+        'SUPER_ADMIN created successfully. This endpoint is now permanently disabled.',
+      data: result,
+    });
+  });
+
+  // ============================================
   // RESIDENT APP — Verify MSG91 Widget Token
   // Creates new user account if first time login
   // ============================================

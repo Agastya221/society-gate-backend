@@ -844,3 +844,26 @@ export interface WhereClause {
   };
   [key: string]: unknown;
 }
+
+// ============================================
+// SOCIETY REGISTRATION TYPES
+// ============================================
+
+export interface SubmitSocietyRegistrationDTO {
+  societyName: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  contactName: string;
+  contactPhone: string;
+  contactEmail?: string;
+  totalFlats?: number;
+  monthlyFee?: number;
+}
+
+export interface SocietyRegistrationFilters {
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+  page?: number;
+  limit?: number;
+}

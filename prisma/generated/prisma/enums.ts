@@ -226,6 +226,15 @@ export const VendorCategory = {
 export type VendorCategory = (typeof VendorCategory)[keyof typeof VendorCategory]
 
 
+export const SocietyRegistrationStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type SocietyRegistrationStatus = (typeof SocietyRegistrationStatus)[keyof typeof SocietyRegistrationStatus]
+
+
 export const OnboardingStatus = {
   DRAFT: 'DRAFT',
   PENDING_DOCS: 'PENDING_DOCS',

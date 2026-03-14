@@ -47,6 +47,13 @@ export const verifyResidentWidgetTokenSchema = z.object({
   email: z.string().email().optional(),
 });
 
+export const bootstrapSuperAdminSchema = z.object({
+  phone: z.string().min(10, 'Phone is required'),
+  name: z.string().min(2, 'Name is required'),
+  email: z.string().email('Invalid email').optional(),
+  bootstrapSecret: z.string().min(1, 'Bootstrap secret is required'),
+});
+
 export const loginSchema = z.object({
   phone: phoneSchema.optional(),
   email: z.string().email().optional(),
@@ -416,6 +423,27 @@ export const addFamilyMemberSchema = z.object({
   phone: phoneSchema,
   email: z.string().email().optional(),
   familyRole: familyRoleEnum,
+});
+
+// ============================================
+// SOCIETY REGISTRATION SCHEMAS
+// ============================================
+
+export const submitSocietyRegistrationSchema = z.object({
+  societyName: z.string().min(2, 'Society name is required'),
+  address: z.string().min(5, 'Address is required'),
+  city: z.string().min(2, 'City is required'),
+  state: z.string().min(2, 'State is required'),
+  pincode: z.string().min(5, 'Pincode is required'),
+  contactName: z.string().min(2, 'Contact name is required'),
+  contactPhone: z.string().min(10, 'Contact phone is required'),
+  contactEmail: z.string().email('Invalid email').optional(),
+  totalFlats: z.number().int().positive().optional(),
+  monthlyFee: z.number().positive().optional(),
+});
+
+export const rejectSocietyRegistrationSchema = z.object({
+  rejectionReason: z.string().min(10, 'Rejection reason must be at least 10 characters'),
 });
 
 // ============================================

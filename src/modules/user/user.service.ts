@@ -22,6 +22,73 @@ import logger from '../../utils/logger';
 // CRIT-6: Only name, email, photoUrl are allowed in profile updates
 
 export class UserService {
+  // ============================================
+  // BOOTSTRAP: CREATE SUPER_ADMIN
+  // ============================================
+  async bootstrapSuperAdmin(data: {
+    phone: string;
+    name: string;
+    email?: string;
+    bootstrapSecret: string;
+  }) {
+    // 1. Verify secret
+    const expectedSecret = process.env.BOOTSTRAP_SECRET;
+    if (!expectedSecret) {
+      throw new AppError('Bootstrap is not configured on this server.', 500);
+    }
+    if (data.bootstrapSecret !== expectedSecret) {
+      throw new AppError('Invalid bootstrap secret.', 403);
+    }
+
+    // 2. One-time gate — block if SUPER_ADMIN already exists
+    const existingSuperAdmin = await prisma.user.findFirst({
+      where: { role: 'SUPER_ADMIN' },
+    });
+    if (existingSuperAdmin) {
+      throw new AppError(
+        'Bootstrap already completed. A SUPER_ADMIN account already exists.',
+        403
+      );
+    }
+
+    // 3. Phone uniqueness check
+    const existingUser = await prisma.user.findUnique({ where: { phone: data.phone } });
+    if (existingUser) {
+      throw new AppError('This phone number is already registered.', 409);
+    }
+
+    // 4. Create SUPER_ADMIN
+    const superAdmin = await prisma.user.create({
+      data: {
+        phone: data.phone,
+        name: sanitizeString(data.name),
+        email: data.email,
+        role: 'SUPER_ADMIN',
+        isActive: true,
+      },
+    });
+
+    // 5. Issue tokens — same pattern as residentWidgetVerify
+    const accessToken = generateAccessToken(
+      superAdmin.id, superAdmin.role, null, null, 'RESIDENT_APP'
+    );
+    const refreshToken = generateRefreshToken(
+      superAdmin.id, superAdmin.role, null, null, 'RESIDENT_APP'
+    );
+
+    await prisma.user.update({
+      where: { id: superAdmin.id },
+      data: { refreshToken, lastTokenRefresh: new Date() },
+    });
+
+    logger.info(
+      `[BOOTSTRAP] SUPER_ADMIN created — id: ${superAdmin.id} | phone: ${superAdmin.phone}`
+    );
+
+    const { password: _, refreshToken: __, ...safe } = superAdmin;
+    return { accessToken, refreshToken, user: safe };
+  }
+
 
   // ============================================
   // WIDGET: RESIDENT APP LOGIN / REGISTER

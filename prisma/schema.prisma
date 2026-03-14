@@ -176,6 +176,11 @@ enum VendorCategory {
   APPLIANCE_REPAIR
   OTHER
 }
+enum SocietyRegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
 
 enum OnboardingStatus {
   DRAFT              // User created profile, not submitted yet
@@ -334,9 +339,46 @@ model Society {
   onboardingRequests       OnboardingRequest[]
   notifications            Notification[]
   entryRequests            EntryRequest[]
+  registrationRequest      SocietyRegistrationRequest?
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
+}
+
+model SocietyRegistrationRequest {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // The RESIDENT who submitted this request (future society secretary)
+  requestedById String
+  requestedBy   User   @relation("SocietyRegistrationRequests", fields: [requestedById], references: [id])
+
+  // Society details submitted by the applicant
+  societyName  String
+  address      String
+  city         String
+  state        String
+  pincode      String
+  contactName  String
+  contactPhone String
+  contactEmail String?
+  totalFlats   Int?
+  monthlyFee   Float?
+
+  // Review tracking
+  status          SocietyRegistrationStatus @default(PENDING)
+  reviewedById    String?
+  reviewedBy      User?    @relation("SocietyRegistrationReviews", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  // Once approved, points to the society that was created
+  societyId String?  @unique
+  society   Society? @relation(fields: [societyId], references: [id])
+
+  @@index([status])
+  @@index([requestedById])
 }
 
 // --------------------
@@ -506,6 +548,10 @@ model User {
   onboardingRequest    OnboardingRequest?  @relation("ResidentOnboarding")
   reviewedOnboardings  OnboardingRequest[] @relation("OnboardingReviewer")
   onboardingAuditLogs  OnboardingAuditLog[]
+
+  // Society Registration
+  societyRegistrationRequests SocietyRegistrationRequest[] @relation("SocietyRegistrationRequests")
+  societyRegistrationReviews  SocietyRegistrationRequest[] @relation("SocietyRegistrationReviews")
 
   // Notification relations
   notifications Notification[]

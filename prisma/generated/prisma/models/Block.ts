@@ -499,14 +499,6 @@ export type BlockUncheckedUpdateManyWithoutSocietyNestedInput = {
   deleteMany?: Prisma.BlockScalarWhereInput | Prisma.BlockScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type BlockCreateNestedOneWithoutFlatsInput = {
   create?: Prisma.XOR<Prisma.BlockCreateWithoutFlatsInput, Prisma.BlockUncheckedCreateWithoutFlatsInput>
   connectOrCreate?: Prisma.BlockCreateOrConnectWithoutFlatsInput

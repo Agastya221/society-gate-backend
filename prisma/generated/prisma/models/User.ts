@@ -363,6 +363,8 @@ export type UserWhereInput = {
   onboardingRequest?: Prisma.XOR<Prisma.OnboardingRequestNullableScalarRelationFilter, Prisma.OnboardingRequestWhereInput> | null
   reviewedOnboardings?: Prisma.OnboardingRequestListRelationFilter
   onboardingAuditLogs?: Prisma.OnboardingAuditLogListRelationFilter
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestListRelationFilter
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   createdEntryRequests?: Prisma.EntryRequestListRelationFilter
   approvedEntryRequests?: Prisma.EntryRequestListRelationFilter
@@ -416,6 +418,8 @@ export type UserOrderByWithRelationInput = {
   onboardingRequest?: Prisma.OnboardingRequestOrderByWithRelationInput
   reviewedOnboardings?: Prisma.OnboardingRequestOrderByRelationAggregateInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogOrderByRelationAggregateInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestOrderByRelationAggregateInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   createdEntryRequests?: Prisma.EntryRequestOrderByRelationAggregateInput
   approvedEntryRequests?: Prisma.EntryRequestOrderByRelationAggregateInput
@@ -472,6 +476,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   onboardingRequest?: Prisma.XOR<Prisma.OnboardingRequestNullableScalarRelationFilter, Prisma.OnboardingRequestWhereInput> | null
   reviewedOnboardings?: Prisma.OnboardingRequestListRelationFilter
   onboardingAuditLogs?: Prisma.OnboardingAuditLogListRelationFilter
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestListRelationFilter
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   createdEntryRequests?: Prisma.EntryRequestListRelationFilter
   approvedEntryRequests?: Prisma.EntryRequestListRelationFilter
@@ -576,6 +582,8 @@ export type UserCreateInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -626,6 +634,8 @@ export type UserUncheckedCreateInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -676,6 +686,8 @@ export type UserUpdateInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -726,6 +738,8 @@ export type UserUncheckedUpdateInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -805,6 +819,11 @@ export type UserListRelationFilter = {
 
 export type UserOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -889,11 +908,6 @@ export type UserSumOrderByAggregateInput = {
   tokenVersion?: Prisma.SortOrder
 }
 
-export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput
-  isNot?: Prisma.UserWhereInput
-}
-
 export type UserCreateNestedManyWithoutSocietyInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutSocietyInput, Prisma.UserUncheckedCreateWithoutSocietyInput> | Prisma.UserCreateWithoutSocietyInput[] | Prisma.UserUncheckedCreateWithoutSocietyInput[]
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocietyInput | Prisma.UserCreateOrConnectWithoutSocietyInput[]
@@ -934,6 +948,36 @@ export type UserUncheckedUpdateManyWithoutSocietyNestedInput = {
   update?: Prisma.UserUpdateWithWhereUniqueWithoutSocietyInput | Prisma.UserUpdateWithWhereUniqueWithoutSocietyInput[]
   updateMany?: Prisma.UserUpdateManyWithWhereWithoutSocietyInput | Prisma.UserUpdateManyWithWhereWithoutSocietyInput[]
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedOneWithoutSocietyRegistrationRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationRequestsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocietyRegistrationRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutSocietyRegistrationReviewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationReviewsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocietyRegistrationReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSocietyRegistrationRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationRequestsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocietyRegistrationRequestsInput
+  upsert?: Prisma.UserUpsertWithoutSocietyRegistrationRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSocietyRegistrationRequestsInput, Prisma.UserUpdateWithoutSocietyRegistrationRequestsInput>, Prisma.UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput>
+}
+
+export type UserUpdateOneWithoutSocietyRegistrationReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationReviewsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocietyRegistrationReviewsInput
+  upsert?: Prisma.UserUpsertWithoutSocietyRegistrationReviewsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSocietyRegistrationReviewsInput, Prisma.UserUpdateWithoutSocietyRegistrationReviewsInput>, Prisma.UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput>
 }
 
 export type UserCreateNestedManyWithoutFlatInput = {
@@ -1468,6 +1512,8 @@ export type UserCreateWithoutSocietyInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -1517,6 +1563,8 @@ export type UserUncheckedCreateWithoutSocietyInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -1574,6 +1622,446 @@ export type UserScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
 
+export type UserCreateWithoutSocietyRegistrationRequestsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  isOwner?: boolean
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
+  society?: Prisma.SocietyCreateNestedOneWithoutUsersInput
+  primaryResident?: Prisma.UserCreateNestedOneWithoutFamilyMembersInput
+  familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
+  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
+  requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
+  onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+}
+
+export type UserUncheckedCreateWithoutSocietyRegistrationRequestsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  flatId?: string | null
+  isOwner?: boolean
+  societyId?: string | null
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  primaryResidentId?: string | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
+  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
+  requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorUncheckedCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+}
+
+export type UserCreateOrConnectWithoutSocietyRegistrationRequestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationRequestsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationRequestsInput>
+}
+
+export type UserCreateWithoutSocietyRegistrationReviewsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  isOwner?: boolean
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
+  society?: Prisma.SocietyCreateNestedOneWithoutUsersInput
+  primaryResident?: Prisma.UserCreateNestedOneWithoutFamilyMembersInput
+  familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
+  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
+  requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
+  onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+}
+
+export type UserUncheckedCreateWithoutSocietyRegistrationReviewsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  flatId?: string | null
+  isOwner?: boolean
+  societyId?: string | null
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  primaryResidentId?: string | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
+  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
+  requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorUncheckedCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+}
+
+export type UserCreateOrConnectWithoutSocietyRegistrationReviewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationReviewsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationReviewsInput>
+}
+
+export type UserUpsertWithoutSocietyRegistrationRequestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSocietyRegistrationRequestsInput, Prisma.UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationRequestsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationRequestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSocietyRegistrationRequestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSocietyRegistrationRequestsInput, Prisma.UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput>
+}
+
+export type UserUpdateWithoutSocietyRegistrationRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
+  society?: Prisma.SocietyUpdateOneWithoutUsersNestedInput
+  primaryResident?: Prisma.UserUpdateOneWithoutFamilyMembersNestedInput
+  familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
+  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
+  requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  societyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
+  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+  requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUncheckedUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+}
+
+export type UserUpsertWithoutSocietyRegistrationReviewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSocietyRegistrationReviewsInput, Prisma.UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSocietyRegistrationReviewsInput, Prisma.UserUncheckedCreateWithoutSocietyRegistrationReviewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSocietyRegistrationReviewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSocietyRegistrationReviewsInput, Prisma.UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput>
+}
+
+export type UserUpdateWithoutSocietyRegistrationReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
+  society?: Prisma.SocietyUpdateOneWithoutUsersNestedInput
+  primaryResident?: Prisma.UserUpdateOneWithoutFamilyMembersNestedInput
+  familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
+  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
+  requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  societyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
+  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
+  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
+  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+  requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUncheckedUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+}
+
 export type UserCreateWithoutFlatInput = {
   id?: string
   name?: string
@@ -1618,6 +2106,8 @@ export type UserCreateWithoutFlatInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -1667,6 +2157,8 @@ export type UserUncheckedCreateWithoutFlatInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -1742,6 +2234,8 @@ export type UserCreateWithoutFamilyMembersInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -1791,6 +2285,8 @@ export type UserUncheckedCreateWithoutFamilyMembersInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -1845,6 +2341,8 @@ export type UserCreateWithoutPrimaryResidentInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -1894,6 +2392,8 @@ export type UserUncheckedCreateWithoutPrimaryResidentInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -1964,6 +2464,8 @@ export type UserUpdateWithoutFamilyMembersInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -2013,6 +2515,8 @@ export type UserUncheckedUpdateWithoutFamilyMembersInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -2078,6 +2582,8 @@ export type UserCreateWithoutCreatedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -2127,6 +2633,8 @@ export type UserUncheckedCreateWithoutCreatedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -2181,6 +2689,8 @@ export type UserCreateWithoutApprovedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -2230,6 +2740,8 @@ export type UserUncheckedCreateWithoutApprovedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -2295,6 +2807,8 @@ export type UserUpdateWithoutCreatedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -2344,6 +2858,8 @@ export type UserUncheckedUpdateWithoutCreatedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -2404,6 +2920,8 @@ export type UserUpdateWithoutApprovedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -2453,6 +2971,8 @@ export type UserUncheckedUpdateWithoutApprovedEntriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -2502,6 +3022,8 @@ export type UserCreateWithoutPreApprovalsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -2551,6 +3073,8 @@ export type UserUncheckedCreateWithoutPreApprovalsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -2616,6 +3140,8 @@ export type UserUpdateWithoutPreApprovalsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -2665,6 +3191,8 @@ export type UserUncheckedUpdateWithoutPreApprovalsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -2714,6 +3242,8 @@ export type UserCreateWithoutExpectedDeliveriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -2763,6 +3293,8 @@ export type UserUncheckedCreateWithoutExpectedDeliveriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -2828,6 +3360,8 @@ export type UserUpdateWithoutExpectedDeliveriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -2877,6 +3411,8 @@ export type UserUncheckedUpdateWithoutExpectedDeliveriesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -2926,6 +3462,8 @@ export type UserCreateWithoutDeliveryAutoApproveRulesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -2975,6 +3513,8 @@ export type UserUncheckedCreateWithoutDeliveryAutoApproveRulesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -3040,6 +3580,8 @@ export type UserUpdateWithoutDeliveryAutoApproveRulesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -3089,6 +3631,8 @@ export type UserUncheckedUpdateWithoutDeliveryAutoApproveRulesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -3138,6 +3682,8 @@ export type UserCreateWithoutAddedDomesticStaffInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -3187,6 +3733,8 @@ export type UserUncheckedCreateWithoutAddedDomesticStaffInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -3252,6 +3800,8 @@ export type UserUpdateWithoutAddedDomesticStaffInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -3301,6 +3851,8 @@ export type UserUncheckedUpdateWithoutAddedDomesticStaffInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -3350,6 +3902,8 @@ export type UserCreateWithoutVerifiedStaffAttendanceInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -3399,6 +3953,8 @@ export type UserUncheckedCreateWithoutVerifiedStaffAttendanceInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -3464,6 +4020,8 @@ export type UserUpdateWithoutVerifiedStaffAttendanceInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -3513,6 +4071,8 @@ export type UserUncheckedUpdateWithoutVerifiedStaffAttendanceInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -3562,6 +4122,8 @@ export type UserCreateWithoutStaffBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -3611,6 +4173,8 @@ export type UserUncheckedCreateWithoutStaffBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -3676,6 +4240,8 @@ export type UserUpdateWithoutStaffBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -3725,6 +4291,8 @@ export type UserUncheckedUpdateWithoutStaffBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -3774,6 +4342,8 @@ export type UserCreateWithoutStaffReviewsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -3823,6 +4393,8 @@ export type UserUncheckedCreateWithoutStaffReviewsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -3888,6 +4460,8 @@ export type UserUpdateWithoutStaffReviewsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -3937,6 +4511,8 @@ export type UserUncheckedUpdateWithoutStaffReviewsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -3986,6 +4562,8 @@ export type UserCreateWithoutVehiclesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -4035,6 +4613,8 @@ export type UserUncheckedCreateWithoutVehiclesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -4100,6 +4680,8 @@ export type UserUpdateWithoutVehiclesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -4149,6 +4731,8 @@ export type UserUncheckedUpdateWithoutVehiclesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -4198,6 +4782,8 @@ export type UserCreateWithoutRequestedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -4247,6 +4833,8 @@ export type UserUncheckedCreateWithoutRequestedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -4301,6 +4889,8 @@ export type UserCreateWithoutApprovedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -4350,6 +4940,8 @@ export type UserUncheckedCreateWithoutApprovedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -4415,6 +5007,8 @@ export type UserUpdateWithoutRequestedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -4464,6 +5058,8 @@ export type UserUncheckedUpdateWithoutRequestedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -4524,6 +5120,8 @@ export type UserUpdateWithoutApprovedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -4573,6 +5171,8 @@ export type UserUncheckedUpdateWithoutApprovedGatePassesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -4622,6 +5222,8 @@ export type UserCreateWithoutCreatedNoticesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -4671,6 +5273,8 @@ export type UserUncheckedCreateWithoutCreatedNoticesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -4736,6 +5340,8 @@ export type UserUpdateWithoutCreatedNoticesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -4785,6 +5391,8 @@ export type UserUncheckedUpdateWithoutCreatedNoticesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -4834,6 +5442,8 @@ export type UserCreateWithoutAmenityBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -4883,6 +5493,8 @@ export type UserUncheckedCreateWithoutAmenityBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -4948,6 +5560,8 @@ export type UserUpdateWithoutAmenityBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -4997,6 +5611,8 @@ export type UserUncheckedUpdateWithoutAmenityBookingsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -5046,6 +5662,8 @@ export type UserCreateWithoutReportedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -5095,6 +5713,8 @@ export type UserUncheckedCreateWithoutReportedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -5149,6 +5769,8 @@ export type UserCreateWithoutAssignedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -5198,6 +5820,8 @@ export type UserUncheckedCreateWithoutAssignedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -5252,6 +5876,8 @@ export type UserCreateWithoutResolvedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -5301,6 +5927,8 @@ export type UserUncheckedCreateWithoutResolvedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -5366,6 +5994,8 @@ export type UserUpdateWithoutReportedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -5415,6 +6045,8 @@ export type UserUncheckedUpdateWithoutReportedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -5475,6 +6107,8 @@ export type UserUpdateWithoutAssignedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -5524,6 +6158,8 @@ export type UserUncheckedUpdateWithoutAssignedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -5584,6 +6220,8 @@ export type UserUpdateWithoutResolvedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -5633,6 +6271,8 @@ export type UserUncheckedUpdateWithoutResolvedComplaintsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -5682,6 +6322,8 @@ export type UserCreateWithoutReportedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -5731,6 +6373,8 @@ export type UserUncheckedCreateWithoutReportedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -5785,6 +6429,8 @@ export type UserCreateWithoutRespondedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -5834,6 +6480,8 @@ export type UserUncheckedCreateWithoutRespondedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -5899,6 +6547,8 @@ export type UserUpdateWithoutReportedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -5948,6 +6598,8 @@ export type UserUncheckedUpdateWithoutReportedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -6008,6 +6660,8 @@ export type UserUpdateWithoutRespondedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -6057,6 +6711,8 @@ export type UserUncheckedUpdateWithoutRespondedEmergenciesInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -6106,6 +6762,8 @@ export type UserCreateWithoutAddedVendorsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -6155,6 +6813,8 @@ export type UserUncheckedCreateWithoutAddedVendorsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -6220,6 +6880,8 @@ export type UserUpdateWithoutAddedVendorsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -6269,6 +6931,8 @@ export type UserUncheckedUpdateWithoutAddedVendorsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -6318,6 +6982,8 @@ export type UserCreateWithoutOnboardingRequestInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -6367,6 +7033,8 @@ export type UserUncheckedCreateWithoutOnboardingRequestInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -6421,6 +7089,8 @@ export type UserCreateWithoutReviewedOnboardingsInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -6470,6 +7140,8 @@ export type UserUncheckedCreateWithoutReviewedOnboardingsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -6535,6 +7207,8 @@ export type UserUpdateWithoutOnboardingRequestInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -6584,6 +7258,8 @@ export type UserUncheckedUpdateWithoutOnboardingRequestInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -6644,6 +7320,8 @@ export type UserUpdateWithoutReviewedOnboardingsInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -6693,6 +7371,8 @@ export type UserUncheckedUpdateWithoutReviewedOnboardingsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -6742,6 +7422,8 @@ export type UserCreateWithoutOnboardingAuditLogsInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
@@ -6791,6 +7473,8 @@ export type UserUncheckedCreateWithoutOnboardingAuditLogsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -6856,6 +7540,8 @@ export type UserUpdateWithoutOnboardingAuditLogsInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -6905,6 +7591,8 @@ export type UserUncheckedUpdateWithoutOnboardingAuditLogsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -6955,6 +7643,8 @@ export type UserCreateWithoutNotificationsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
 }
@@ -7004,6 +7694,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
 }
@@ -7069,6 +7761,8 @@ export type UserUpdateWithoutNotificationsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
 }
@@ -7118,6 +7812,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
 }
@@ -7167,6 +7863,8 @@ export type UserCreateWithoutCreatedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
 }
@@ -7216,6 +7914,8 @@ export type UserUncheckedCreateWithoutCreatedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
 }
@@ -7270,6 +7970,8 @@ export type UserCreateWithoutApprovedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
 }
@@ -7319,6 +8021,8 @@ export type UserUncheckedCreateWithoutApprovedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
 }
@@ -7384,6 +8088,8 @@ export type UserUpdateWithoutCreatedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
 }
@@ -7433,6 +8139,8 @@ export type UserUncheckedUpdateWithoutCreatedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
 }
@@ -7493,6 +8201,8 @@ export type UserUpdateWithoutApprovedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
 }
@@ -7542,6 +8252,8 @@ export type UserUncheckedUpdateWithoutApprovedEntryRequestsInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
 }
@@ -7612,6 +8324,8 @@ export type UserUpdateWithoutSocietyInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -7661,6 +8375,8 @@ export type UserUncheckedUpdateWithoutSocietyInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -7754,6 +8470,8 @@ export type UserUpdateWithoutFlatInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -7803,6 +8521,8 @@ export type UserUncheckedUpdateWithoutFlatInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -7896,6 +8616,8 @@ export type UserUpdateWithoutPrimaryResidentInput = {
   onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
@@ -7945,6 +8667,8 @@ export type UserUncheckedUpdateWithoutPrimaryResidentInput = {
   onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
   reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -8001,6 +8725,8 @@ export type UserCountOutputType = {
   staffReviews: number
   reviewedOnboardings: number
   onboardingAuditLogs: number
+  societyRegistrationRequests: number
+  societyRegistrationReviews: number
   notifications: number
   createdEntryRequests: number
   approvedEntryRequests: number
@@ -8030,6 +8756,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   staffReviews?: boolean | UserCountOutputTypeCountStaffReviewsArgs
   reviewedOnboardings?: boolean | UserCountOutputTypeCountReviewedOnboardingsArgs
   onboardingAuditLogs?: boolean | UserCountOutputTypeCountOnboardingAuditLogsArgs
+  societyRegistrationRequests?: boolean | UserCountOutputTypeCountSocietyRegistrationRequestsArgs
+  societyRegistrationReviews?: boolean | UserCountOutputTypeCountSocietyRegistrationReviewsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   createdEntryRequests?: boolean | UserCountOutputTypeCountCreatedEntryRequestsArgs
   approvedEntryRequests?: boolean | UserCountOutputTypeCountApprovedEntryRequestsArgs
@@ -8209,6 +8937,20 @@ export type UserCountOutputTypeCountOnboardingAuditLogsArgs<ExtArgs extends runt
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountSocietyRegistrationRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SocietyRegistrationRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSocietyRegistrationReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SocietyRegistrationRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.NotificationWhereInput
 }
@@ -8276,6 +9018,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   onboardingRequest?: boolean | Prisma.User$onboardingRequestArgs<ExtArgs>
   reviewedOnboardings?: boolean | Prisma.User$reviewedOnboardingsArgs<ExtArgs>
   onboardingAuditLogs?: boolean | Prisma.User$onboardingAuditLogsArgs<ExtArgs>
+  societyRegistrationRequests?: boolean | Prisma.User$societyRegistrationRequestsArgs<ExtArgs>
+  societyRegistrationReviews?: boolean | Prisma.User$societyRegistrationReviewsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   createdEntryRequests?: boolean | Prisma.User$createdEntryRequestsArgs<ExtArgs>
   approvedEntryRequests?: boolean | Prisma.User$approvedEntryRequestsArgs<ExtArgs>
@@ -8386,6 +9130,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   onboardingRequest?: boolean | Prisma.User$onboardingRequestArgs<ExtArgs>
   reviewedOnboardings?: boolean | Prisma.User$reviewedOnboardingsArgs<ExtArgs>
   onboardingAuditLogs?: boolean | Prisma.User$onboardingAuditLogsArgs<ExtArgs>
+  societyRegistrationRequests?: boolean | Prisma.User$societyRegistrationRequestsArgs<ExtArgs>
+  societyRegistrationReviews?: boolean | Prisma.User$societyRegistrationReviewsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   createdEntryRequests?: boolean | Prisma.User$createdEntryRequestsArgs<ExtArgs>
   approvedEntryRequests?: boolean | Prisma.User$approvedEntryRequestsArgs<ExtArgs>
@@ -8432,6 +9178,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     onboardingRequest: Prisma.$OnboardingRequestPayload<ExtArgs> | null
     reviewedOnboardings: Prisma.$OnboardingRequestPayload<ExtArgs>[]
     onboardingAuditLogs: Prisma.$OnboardingAuditLogPayload<ExtArgs>[]
+    societyRegistrationRequests: Prisma.$SocietyRegistrationRequestPayload<ExtArgs>[]
+    societyRegistrationReviews: Prisma.$SocietyRegistrationRequestPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     createdEntryRequests: Prisma.$EntryRequestPayload<ExtArgs>[]
     approvedEntryRequests: Prisma.$EntryRequestPayload<ExtArgs>[]
@@ -8878,6 +9626,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   onboardingRequest<T extends Prisma.User$onboardingRequestArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingRequestArgs<ExtArgs>>): Prisma.Prisma__OnboardingRequestClient<runtime.Types.Result.GetResult<Prisma.$OnboardingRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reviewedOnboardings<T extends Prisma.User$reviewedOnboardingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedOnboardingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   onboardingAuditLogs<T extends Prisma.User$onboardingAuditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingAuditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  societyRegistrationRequests<T extends Prisma.User$societyRegistrationRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$societyRegistrationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocietyRegistrationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  societyRegistrationReviews<T extends Prisma.User$societyRegistrationReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$societyRegistrationReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocietyRegistrationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdEntryRequests<T extends Prisma.User$createdEntryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdEntryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvedEntryRequests<T extends Prisma.User$approvedEntryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedEntryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9951,6 +10701,54 @@ export type User$onboardingAuditLogsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.OnboardingAuditLogScalarFieldEnum | Prisma.OnboardingAuditLogScalarFieldEnum[]
+}
+
+/**
+ * User.societyRegistrationRequests
+ */
+export type User$societyRegistrationRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SocietyRegistrationRequest
+   */
+  select?: Prisma.SocietyRegistrationRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SocietyRegistrationRequest
+   */
+  omit?: Prisma.SocietyRegistrationRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SocietyRegistrationRequestInclude<ExtArgs> | null
+  where?: Prisma.SocietyRegistrationRequestWhereInput
+  orderBy?: Prisma.SocietyRegistrationRequestOrderByWithRelationInput | Prisma.SocietyRegistrationRequestOrderByWithRelationInput[]
+  cursor?: Prisma.SocietyRegistrationRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SocietyRegistrationRequestScalarFieldEnum | Prisma.SocietyRegistrationRequestScalarFieldEnum[]
+}
+
+/**
+ * User.societyRegistrationReviews
+ */
+export type User$societyRegistrationReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SocietyRegistrationRequest
+   */
+  select?: Prisma.SocietyRegistrationRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SocietyRegistrationRequest
+   */
+  omit?: Prisma.SocietyRegistrationRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SocietyRegistrationRequestInclude<ExtArgs> | null
+  where?: Prisma.SocietyRegistrationRequestWhereInput
+  orderBy?: Prisma.SocietyRegistrationRequestOrderByWithRelationInput | Prisma.SocietyRegistrationRequestOrderByWithRelationInput[]
+  cursor?: Prisma.SocietyRegistrationRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SocietyRegistrationRequestScalarFieldEnum | Prisma.SocietyRegistrationRequestScalarFieldEnum[]
 }
 
 /**

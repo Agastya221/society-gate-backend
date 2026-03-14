@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Society: 'Society',
+  SocietyRegistrationRequest: 'SocietyRegistrationRequest',
   GatePoint: 'GatePoint',
   Block: 'Block',
   Flat: 'Flat',
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "gatePoint" | "block" | "flat" | "user" | "entry" | "preApproval" | "expectedDelivery" | "deliveryAutoApproveRule" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest"
+    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "preApproval" | "expectedDelivery" | "deliveryAutoApproveRule" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -503,6 +504,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SocietyCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SocietyCountAggregateOutputType> | number
+        }
+      }
+    }
+    SocietyRegistrationRequest: {
+      payload: Prisma.$SocietyRegistrationRequestPayload<ExtArgs>
+      fields: Prisma.SocietyRegistrationRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SocietyRegistrationRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SocietyRegistrationRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.SocietyRegistrationRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SocietyRegistrationRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>
+        }
+        findMany: {
+          args: Prisma.SocietyRegistrationRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>[]
+        }
+        create: {
+          args: Prisma.SocietyRegistrationRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>
+        }
+        createMany: {
+          args: Prisma.SocietyRegistrationRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SocietyRegistrationRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.SocietyRegistrationRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>
+        }
+        update: {
+          args: Prisma.SocietyRegistrationRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.SocietyRegistrationRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SocietyRegistrationRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SocietyRegistrationRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.SocietyRegistrationRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRegistrationRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.SocietyRegistrationRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSocietyRegistrationRequest>
+        }
+        groupBy: {
+          args: Prisma.SocietyRegistrationRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyRegistrationRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SocietyRegistrationRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyRegistrationRequestCountAggregateOutputType> | number
         }
       }
     }
@@ -2640,6 +2715,31 @@ export const SocietyScalarFieldEnum = {
 export type SocietyScalarFieldEnum = (typeof SocietyScalarFieldEnum)[keyof typeof SocietyScalarFieldEnum]
 
 
+export const SocietyRegistrationRequestScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  requestedById: 'requestedById',
+  societyName: 'societyName',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  pincode: 'pincode',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  contactEmail: 'contactEmail',
+  totalFlats: 'totalFlats',
+  monthlyFee: 'monthlyFee',
+  status: 'status',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  rejectionReason: 'rejectionReason',
+  societyId: 'societyId'
+} as const
+
+export type SocietyRegistrationRequestScalarFieldEnum = (typeof SocietyRegistrationRequestScalarFieldEnum)[keyof typeof SocietyRegistrationRequestScalarFieldEnum]
+
+
 export const GatePointScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -3381,6 +3481,20 @@ export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'SocietyRegistrationStatus'
+ */
+export type EnumSocietyRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyRegistrationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SocietyRegistrationStatus[]'
+ */
+export type ListEnumSocietyRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyRegistrationStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Role'
  */
 export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -3881,6 +3995,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   society?: Prisma.SocietyOmit
+  societyRegistrationRequest?: Prisma.SocietyRegistrationRequestOmit
   gatePoint?: Prisma.GatePointOmit
   block?: Prisma.BlockOmit
   flat?: Prisma.FlatOmit

@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Society: 'Society',
+  SocietyRegistrationRequest: 'SocietyRegistrationRequest',
   GatePoint: 'GatePoint',
   Block: 'Block',
   Flat: 'Flat',
@@ -119,6 +120,31 @@ export const SocietyScalarFieldEnum = {
 } as const
 
 export type SocietyScalarFieldEnum = (typeof SocietyScalarFieldEnum)[keyof typeof SocietyScalarFieldEnum]
+
+
+export const SocietyRegistrationRequestScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  requestedById: 'requestedById',
+  societyName: 'societyName',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  pincode: 'pincode',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  contactEmail: 'contactEmail',
+  totalFlats: 'totalFlats',
+  monthlyFee: 'monthlyFee',
+  status: 'status',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  rejectionReason: 'rejectionReason',
+  societyId: 'societyId'
+} as const
+
+export type SocietyRegistrationRequestScalarFieldEnum = (typeof SocietyRegistrationRequestScalarFieldEnum)[keyof typeof SocietyRegistrationRequestScalarFieldEnum]
 
 
 export const GatePointScalarFieldEnum = {

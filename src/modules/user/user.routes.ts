@@ -14,6 +14,7 @@ import {
   updateProfileSchema,
   createGuardSchema,
   toggleUserStatusSchema,
+  bootstrapSuperAdminSchema,
   idParams,
 } from '../../schemas';
 
@@ -23,6 +24,12 @@ const userController = new UserController();
 // ============================================
 // PUBLIC ROUTES — MSG91 Widget Auth
 // ============================================
+
+router.post(
+  '/bootstrap-superadmin',
+  validate({ body: bootstrapSuperAdminSchema }),
+  userController.bootstrapSuperAdmin
+);
 
 // Resident App — verify widget token (creates new user if first login)
 router.post('/otp/verify', validate({ body: verifyResidentWidgetTokenSchema }), userController.residentWidgetVerify);

@@ -43,6 +43,11 @@ export { Prisma }
  */
 export type Society = Prisma.SocietyModel
 /**
+ * Model SocietyRegistrationRequest
+ * 
+ */
+export type SocietyRegistrationRequest = Prisma.SocietyRegistrationRequestModel
+/**
  * Model GatePoint
  * 
  */

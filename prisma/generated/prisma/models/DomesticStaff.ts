@@ -1322,14 +1322,6 @@ export type EnumStaffAvailabilityStatusFieldUpdateOperationsInput = {
   set?: $Enums.StaffAvailabilityStatus
 }
 
-export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type DomesticStaffCreateNestedOneWithoutAssignedFlatsInput = {
   create?: Prisma.XOR<Prisma.DomesticStaffCreateWithoutAssignedFlatsInput, Prisma.DomesticStaffUncheckedCreateWithoutAssignedFlatsInput>
   connectOrCreate?: Prisma.DomesticStaffCreateOrConnectWithoutAssignedFlatsInput

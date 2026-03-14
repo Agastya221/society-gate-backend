@@ -1,0 +1,4 @@
+src/modules/society-registration/society-registration.service.ts(123,11): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+  Type 'null' is not assignable to type 'number | undefined'.
+src/modules/society-registration/society-registration.service.ts(124,11): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+  Type 'null' is not assignable to type 'number | undefined'.
