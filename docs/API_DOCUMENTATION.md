@@ -1,6 +1,6 @@
 # Society Gate Backend - API Documentation
 
-**Base URL:** `http://localhost:3000/api/v1`
+**Base URL:** `http://localhost:4000/api/v1`
 
 ---
 
@@ -28,7 +28,8 @@
    - [Societies](#71-societies)
    - [Reports](#72-reports)
 8. [Upload](#8-upload)
-9. [Enums Reference](#9-enums-reference)
+9. [Society Registration](#9-society-registration)
+10. [Enums Reference](#10-enums-reference)
 
 ---
 
@@ -45,135 +46,199 @@ Content-Type: application/json
 
 ## 1. Authentication
 
-### Send OTP (Resident)
-```http
-POST /auth/otp/send
-```
+The backend uses MSG91 OTP Widget for all authentication.
+The widget handles phone entry, OTP delivery, and verification on the 
+frontend. On success it gives your app a short-lived `widgetToken`.
+You send that token to the backend — the backend verifies it with 
+MSG91 and issues your accessToken + refreshToken.
 
-**Request Body:**
-```json
-{
-  "phone": "9876543210"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "OTP sent successfully"
-}
-```
+**Token lifetimes:**
+- accessToken: 1 hour
+- refreshToken: 30 days (residents) / 7 days (guards)
 
 ---
 
-### Verify OTP & Login
+### Bootstrap SUPER_ADMIN (one-time only)
 ```http
-POST /auth/otp/verify
+POST /auth/bootstrap-superadmin
 ```
+No authentication required. Permanently disabled after first use.
 
 **Request Body:**
 ```json
 {
-  "phone": "9876543210",
-  "otp": "123456",
+  "phone": "+919876543210",
+  "name": "Platform Admin",
+  "email": "admin@platform.com",
+  "bootstrapSecret": "your-BOOTSTRAP_SECRET-env-value"
+}
+```
+
+**Response 201:**
+```json
+{
+  "success": true,
+  "message": "SUPER_ADMIN created successfully. This endpoint is now permanently disabled.",
+  "data": {
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ...",
+    "user": {
+      "id": "uuid",
+      "name": "Platform Admin",
+      "phone": "+919876543210",
+      "role": "SUPER_ADMIN",
+      "isActive": true
+    }
+  }
+}
+```
+
+**Errors:** 403 wrong secret | 403 already done | 409 phone taken | 500 secret not configured
+
+---
+
+### Resident App — Login / Register
+```http
+POST /auth/otp/verify
+```
+No authentication required. Creates a new user if phone not seen before.
+
+**Request Body:**
+```json
+{
+  "widgetToken": "token-from-msg91-widget",
   "name": "John Doe",
   "email": "john@example.com"
 }
 ```
+Note: `name` is required only for new users. `email` is always optional.
 
-**Response:**
+**Response — New User:**
 ```json
 {
   "success": true,
-  "message": "OTP verified successfully",
+  "message": "Welcome! Please complete your profile setup.",
   "data": {
-    "requiresOnboarding": true,
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ...",
     "user": {
       "id": "uuid",
       "name": "John Doe",
       "phone": "9876543210",
-      "email": "john@example.com",
-      "role": "RESIDENT"
+      "role": "RESIDENT",
+      "isActive": false,
+      "flatId": null,
+      "societyId": null
     },
-    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+    "requiresOnboarding": true,
+    "onboardingStatus": "DRAFT",
+    "appType": "RESIDENT_APP"
   }
 }
 ```
 
+**Response — Existing User:**
+```json
+{
+  "success": true,
+  "message": "Welcome back, John Doe!",
+  "data": {
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ...",
+    "user": {
+      "id": "uuid",
+      "name": "John Doe",
+      "phone": "9876543210",
+      "role": "RESIDENT",
+      "isActive": true,
+      "flatId": "uuid",
+      "societyId": "uuid"
+    },
+    "requiresOnboarding": false,
+    "onboardingStatus": "COMPLETED",
+    "appType": "RESIDENT_APP"
+  }
+}
+```
+
+**Errors:** 400 name required for new user | 400 invalid widget token
+
 ---
 
-### Admin/Resident App Login
+### Admin App — Login
 ```http
-POST /auth/admin-app/login
+POST /auth/admin-app/otp/verify
 ```
+No authentication required. For existing ADMIN, SUPER_ADMIN, RESIDENT accounts only.
+Does NOT create new users.
 
 **Request Body:**
 ```json
 {
-  "email": "admin@society.com",
-  "password": "securepassword123"
-}
-```
-or
-```json
-{
-  "phone": "9876543210",
-  "password": "securepassword123"
+  "widgetToken": "token-from-msg91-widget"
 }
 ```
 
-**Response:**
+**Response 200:**
 ```json
 {
   "success": true,
-  "message": "Login successful",
+  "message": "Welcome back, Jane Admin!",
   "data": {
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ...",
     "user": {
       "id": "uuid",
-      "name": "Admin User",
+      "name": "Jane Admin",
       "role": "ADMIN",
       "societyId": "uuid"
     },
-    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+    "redirectTo": "ADMIN_PANEL",
+    "appType": "RESIDENT_APP"
   }
 }
 ```
 
+Note: `redirectTo` is either `ADMIN_PANEL` (for ADMIN/SUPER_ADMIN) or 
+`RESIDENT_PANEL` (for RESIDENT). Use this to decide which screen to show.
+
+**Errors:** 404 no account found | 403 wrong app | 403 account inactive
+
 ---
 
-### Guard App Login
+### Guard App — Login
 ```http
-POST /auth/guard-app/login
+POST /auth/guard-app/otp/verify
 ```
+No authentication required. For GUARD accounts only.
 
 **Request Body:**
 ```json
 {
-  "phone": "9876543210",
-  "password": "guardpass123"
+  "widgetToken": "token-from-msg91-widget"
 }
 ```
 
-**Response:**
+**Response 200:**
 ```json
 {
   "success": true,
-  "message": "Login successful",
+  "message": "Welcome back, Guard Name!",
   "data": {
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ...",
     "user": {
       "id": "uuid",
       "name": "Guard Name",
       "role": "GUARD",
       "societyId": "uuid"
     },
-    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+    "appType": "GUARD_APP"
   }
 }
 ```
+
+**Errors:** 404 no guard account | 403 not a guard | 403 account inactive | 403 society inactive
 
 ---
 
@@ -185,21 +250,23 @@ POST /auth/refresh-token
 **Request Body:**
 ```json
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+  "refreshToken": "eyJ..."
 }
 ```
 
-**Response:**
+**Response 200:**
 ```json
 {
   "success": true,
-  "message": "Token refreshed",
   "data": {
-    "accessToken": "new-access-token...",
-    "refreshToken": "new-refresh-token..."
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ..."
   }
 }
 ```
+
+Note: Token rotation — every refresh returns a NEW refreshToken. 
+Store the new one, discard the old one.
 
 ---
 
@@ -212,61 +279,52 @@ Authorization: Bearer <access_token>
 **Request Body:**
 ```json
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+  "refreshToken": "eyJ..."
 }
 ```
 
+**Response 200:**
+```json
+{
+  "success": true,
+  "message": "Logged out successfully"
+}
+```
+
+What happens: accessToken blacklisted in Redis, refreshToken cleared 
+from database. Both tokens are dead immediately.
+
 ---
 
-### Get Resident Profile
+### Get Profile (Resident App)
 ```http
 GET /auth/resident-app/profile
 Authorization: Bearer <access_token>
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": "uuid",
-    "name": "John Doe",
-    "phone": "9876543210",
-    "email": "john@example.com",
-    "role": "RESIDENT",
-    "societyId": "uuid",
-    "flatId": "uuid",
-    "flat": {
-      "id": "uuid",
-      "number": "A-101",
-      "block": { "name": "Block A" }
-    }
-  }
-}
-```
-
 ---
 
-### Update Resident Profile
+### Update Profile (Resident App)
 ```http
 PATCH /auth/resident-app/profile
 Authorization: Bearer <access_token>
 ```
 
-**Request Body:**
+**Request Body (all optional):**
 ```json
 {
-  "name": "John Updated",
-  "email": "john.updated@example.com"
+  "name": "Updated Name",
+  "email": "new@example.com",
+  "photoUrl": "https://s3.../photo.jpg"
 }
 ```
 
 ---
 
-### Create Guard (Admin Only)
+### Create Guard (ADMIN only)
 ```http
 POST /auth/resident-app/create-guard
-Authorization: Bearer <access_token>
+Authorization: Bearer <admin_token>
 ```
 
 **Request Body:**
@@ -274,25 +332,25 @@ Authorization: Bearer <access_token>
 {
   "name": "Guard Name",
   "phone": "9876543211",
-  "email": "guard@society.com",
-  "password": "guardpass123"
+  "photoUrl": "https://s3.../photo.jpg"
 }
 ```
+Note: No password. Guards log in via OTP widget only.
 
 ---
 
-### Get All Guards (Admin Only)
+### Get All Guards (ADMIN only)
 ```http
 GET /auth/resident-app/guards
-Authorization: Bearer <access_token>
+Authorization: Bearer <admin_token>
 ```
 
 ---
 
-### Toggle User Status (Admin Only)
+### Toggle User Status (ADMIN only)
 ```http
 PATCH /auth/resident-app/users/:id/status
-Authorization: Bearer <access_token>
+Authorization: Bearer <admin_token>
 ```
 
 **Request Body:**
@@ -300,6 +358,14 @@ Authorization: Bearer <access_token>
 {
   "isActive": false
 }
+```
+
+---
+
+### Get Profile (Guard App)
+```http
+GET /auth/guard-app/profile
+Authorization: Bearer <guard_token>
 ```
 
 ---
@@ -2057,7 +2123,110 @@ Authorization: Bearer <access_token>
 
 ---
 
-## 9. Enums Reference
+## 9. Society Registration
+
+A RESIDENT submits a request to register their society. SUPER_ADMIN 
+reviews and approves or rejects. On approval the society is created 
+and the requestor becomes ADMIN automatically.
+
+---
+
+### Submit Registration Request (any authenticated user)
+```http
+POST /society-registration/request
+Authorization: Bearer <access_token>
+```
+
+**Request Body:**
+```json
+{
+  "societyName": "Green Valley Apartments",
+  "address": "123 Main Road",
+  "city": "Mumbai",
+  "state": "Maharashtra",
+  "pincode": "400001",
+  "contactName": "Rahul Sharma",
+  "contactPhone": "+919876543210",
+  "contactEmail": "rahul@greenvalley.com",
+  "totalFlats": 120,
+  "monthlyFee": 2500
+}
+```
+
+**Errors:** 409 already have active request
+
+---
+
+### Get My Request Status
+```http
+GET /society-registration/my-status
+Authorization: Bearer <access_token>
+```
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "status": "PENDING",
+    "request": { "id": "uuid", "societyName": "Green Valley Apartments" }
+  }
+}
+```
+
+If not submitted: `"status": "NOT_SUBMITTED", "request": null`
+
+---
+
+### List All Requests (SUPER_ADMIN only)
+```http
+GET /society-registration/requests?status=PENDING&page=1&limit=20
+Authorization: Bearer <super_admin_token>
+```
+
+---
+
+### Get Single Request (SUPER_ADMIN only)
+```http
+GET /society-registration/requests/:id
+Authorization: Bearer <super_admin_token>
+```
+
+---
+
+### Approve Request (SUPER_ADMIN only)
+```http
+POST /society-registration/requests/:id/approve
+Authorization: Bearer <super_admin_token>
+```
+
+No request body. What happens in one transaction:
+1. Society row created from submitted details
+2. Requesting user: role → ADMIN, societyId → new society
+3. Request: status → APPROVED
+
+**Errors:** 404 not found | 409 not PENDING
+
+---
+
+### Reject Request (SUPER_ADMIN only)
+```http
+POST /society-registration/requests/:id/reject
+Authorization: Bearer <super_admin_token>
+```
+
+**Request Body:**
+```json
+{
+  "rejectionReason": "Incomplete address details provided."
+}
+```
+
+**Errors:** 404 not found | 409 not PENDING
+
+---
+
+## 10. Enums Reference
 
 ### User Roles
 | Value | Description |
@@ -2334,14 +2503,14 @@ Authorization: Bearer <access_token>
 
 ### Login as Admin
 ```bash
-curl -X POST http://localhost:3000/api/v1/auth/admin-app/login \
+curl -X POST http://localhost:4000/api/v1/auth/admin-app/login \
   -H "Content-Type: application/json" \
   -d '{"email": "admin@society.com", "password": "password123"}'
 ```
 
 ### Create Entry Request (Guard)
 ```bash
-curl -X POST http://localhost:3000/api/v1/gate/requests \
+curl -X POST http://localhost:4000/api/v1/gate/requests \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <guard_token>" \
   -d '{
@@ -2355,7 +2524,7 @@ curl -X POST http://localhost:3000/api/v1/gate/requests \
 
 ### Create Pre-Approval (Resident)
 ```bash
-curl -X POST http://localhost:3000/api/v1/gate/ \
+curl -X POST http://localhost:4000/api/v1/gate/ \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <resident_token>" \
   -d '{
@@ -2370,7 +2539,7 @@ curl -X POST http://localhost:3000/api/v1/gate/ \
 
 ### Create Complaint
 ```bash
-curl -X POST http://localhost:3000/api/v1/community/complaints \
+curl -X POST http://localhost:4000/api/v1/community/complaints \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{
