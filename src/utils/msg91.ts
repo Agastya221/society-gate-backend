@@ -2,11 +2,26 @@ import axios from 'axios';
 import logger from './logger';
 import { AppError } from './ResponseHandler';
 
-const WIDGET_AUTH_KEY = process.env.MSG91_WIDGET_AUTH_KEY || process.env.MSG91_API_KEY;
+// ============================================
+// MSG91 CONFIGURATION
+// ============================================
+// ENV variable names:
+//   MSG91_AUTH_KEY    — MSG91 ACCOUNT authkey (Dashboard → Authkey). Used by backend for server-side API calls.
+//   MSG91_WIDGET_ID  — OTP Widget ID (Dashboard → OTP Widget → Widget ID). Frontend SDK only, not used here.
+//   MSG91_TOKEN_AUTH — OTP Widget Token (Dashboard → OTP Widget → Token). Frontend SDK only, not used here.
 
-if (!WIDGET_AUTH_KEY) {
-  throw new Error('MSG91_WIDGET_AUTH_KEY (or MSG91_API_KEY) is not set in environment variables');
+const MSG91_AUTH_KEY = process.env.MSG91_AUTH_KEY;
+
+if (!MSG91_AUTH_KEY) {
+  throw new Error(
+    'MSG91_AUTH_KEY is not set in environment variables. ' +
+    'Set this to your MSG91 ACCOUNT authkey (Dashboard → Authkey section).'
+  );
 }
+
+logger.info(
+  `[MSG91] Auth key loaded: ${MSG91_AUTH_KEY.substring(0, 6)}...${MSG91_AUTH_KEY.substring(MSG91_AUTH_KEY.length - 4)} (length: ${MSG91_AUTH_KEY.length})`
+);
 
 interface MSG91WidgetVerifyResponse {
   message: string;
@@ -16,17 +31,17 @@ interface MSG91WidgetVerifyResponse {
 }
 
 /**
- * Verifies the JWT access-token issued by the MSG91 OTP Widget.
+ * Verifies the JWT access-token issued by the MSG91 OTP Widget / SendOTP SDK.
  *
  * Flow:
- *  1. Frontend embeds the MSG91 OTP Widget (handles SMS send + OTP input UI)
- *  2. On success, Widget gives the frontend a short-lived JWT ("access-token")
- *  3. Frontend sends that JWT to our backend
- *  4. We call this function to verify it with MSG91
+ *  1. Frontend uses MSG91 SendOTP React Native SDK
+ *  2. SDK handles OTP send + verify internally, returns a JWT "access-token"
+ *  3. Frontend sends that JWT to our backend as `widgetToken`
+ *  4. We call MSG91's verifyAccessToken API with our ACCOUNT authkey (MSG91_AUTH_KEY)
  *  5. MSG91 returns the verified phone number
  *  6. We use that phone to find/create the user and issue our own JWT
  *
- * @param widgetToken - The JWT token received from the MSG91 OTP Widget on the frontend
+ * @param widgetToken - The JWT token from the MSG91 SDK on the frontend
  * @returns The verified phone number in 10-digit Indian format
  */
 export async function verifyMSG91WidgetToken(widgetToken: string): Promise<string> {
@@ -34,7 +49,7 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
     const response = await axios.post<MSG91WidgetVerifyResponse>(
       'https://control.msg91.com/api/v5/widget/verifyAccessToken',
       {
-        authkey: WIDGET_AUTH_KEY,
+        authkey: MSG91_AUTH_KEY,
         'access-token': widgetToken,
       },
       {
@@ -52,13 +67,23 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
 
     return normalisePhone(data.mobile);
   } catch (err: any) {
-    // Re-throw AppErrors as-is so the status code is preserved
     if (err instanceof AppError) throw err;
 
+    const status = err?.response?.status;
     const msg91Error = err?.response?.data?.message || err?.message;
-    logger.error({ error: msg91Error }, 'MSG91 widget token verification failed');
 
-    if (err?.response?.status === 401 || msg91Error?.toLowerCase().includes('invalid')) {
+    logger.error(
+      {
+        error: msg91Error,
+        httpStatus: status,
+        responseData: err?.response?.data,
+        authKeyLength: MSG91_AUTH_KEY?.length,
+        tokenPrefix: widgetToken?.substring(0, 30),
+      },
+      'MSG91 verifyAccessToken failed'
+    );
+
+    if (status === 401 || msg91Error?.toLowerCase().includes('invalid')) {
       throw new AppError('OTP is invalid or has expired. Please try again.', 400);
     }
 
@@ -67,8 +92,8 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
 }
 
 /**
- * Normalise phone to 10-digit Indian format (stored in DB without country code).
- * MSG91 returns "91XXXXXXXXXX" — we strip the "91" prefix for DB storage.
+ * Normalise phone to 10-digit Indian format.
+ * MSG91 returns "91XXXXXXXXXX" — we strip the "91" prefix.
  */
 function normalisePhone(phone: string): string {
   const cleaned = phone.replace(/\D/g, '');
