@@ -20,6 +20,7 @@ export const errorHandler = (
     return res.status(err.statusCode).json({
       success: false,
       message: err.message,
+      statusCode: err.statusCode,
     });
   }
 
@@ -35,20 +36,19 @@ export const errorHandler = (
   }
 
   if (err.name === 'PrismaClientValidationError') {
+    logger.error({ prismaValidationError: err.message }, 'Prisma validation error');
     return res.status(400).json({
       success: false,
       message: 'Invalid data provided',
-      ...(process.env.NODE_ENV === 'development' && { error: err.message }),
+      error: err.message,
     });
   }
 
-  // Default error
+  // Default error — temporarily expose details for debugging
   res.status(500).json({
     success: false,
     message: 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && {
-      error: err.message,
-      stack: err.stack,
-    }),
+    error: err.message,
+    name: err.name,
   });
 };

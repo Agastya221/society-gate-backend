@@ -95,12 +95,16 @@ export class UserService {
   // Verifies MSG91 widget token, creates user if first time
   // ============================================
   async residentWidgetVerify(widgetToken: string, name?: string, email?: string) {
+    logger.info({ tokenPrefix: widgetToken?.substring(0, 20), hasName: !!name, hasEmail: !!email }, '[residentWidgetVerify] called');
+
     // 1. Verify with MSG91 — get the confirmed phone number
     const phone = await verifyMSG91WidgetToken(widgetToken);
+    logger.info({ phone }, '[residentWidgetVerify] MSG91 verified phone');
 
     if (email) validateEmail(email);
 
     let user = await prisma.user.findUnique({ where: { phone } });
+    logger.info({ userFound: !!user, userId: user?.id, role: user?.role }, '[residentWidgetVerify] DB lookup result');
 
     if (user) {
       // Existing user — re-activate if they have a flat but are inactive
