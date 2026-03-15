@@ -125,17 +125,24 @@ export class UserService {
       });
 
       const { password: _, refreshToken: __, ...safe } = user;
+
+      // Tell frontend which panel to show based on role
+      const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(user.role)
+        ? 'ADMIN_PANEL'
+        : 'RESIDENT_PANEL';
+
       return {
         accessToken, refreshToken, user: safe,
         requiresOnboarding: !user.isActive || !user.societyId,
         onboardingStatus: onboardingRequest?.status || 'NOT_STARTED',
         appType: 'RESIDENT_APP',
+        redirectTo,
       };
     }
 
-    // New user — create account. Name is required for brand-new users.
-    if (!name) throw new AppError('Name is required for new accounts', 400);
-    const sanitizedName = sanitizeString(name);
+    // New user — auto-create with phone only (Swiggy/Zomato pattern)
+    // Name is optional at signup; collected during onboarding
+    const sanitizedName = name ? sanitizeString(name) : '';
 
     user = await prisma.user.create({
       data: { phone, name: sanitizedName, email, role: 'RESIDENT', isActive: false },
@@ -155,6 +162,7 @@ export class UserService {
       requiresOnboarding: true,
       onboardingStatus: 'DRAFT',
       appType: 'RESIDENT_APP',
+      redirectTo: 'ONBOARDING',
     };
   }
 

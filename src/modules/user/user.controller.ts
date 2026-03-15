@@ -34,11 +34,19 @@ export class UserController {
     const { widgetToken, name, email } = req.body;
     const result = await userService.residentWidgetVerify(widgetToken, name, email);
 
+    // Build appropriate welcome message
+    let message: string;
+    if (result.requiresOnboarding) {
+      message = 'Welcome! Please complete your profile setup.';
+    } else if (result.user.name) {
+      message = `Welcome back, ${result.user.name}!`;
+    } else {
+      message = 'Welcome back!';
+    }
+
     res.json({
       success: true,
-      message: result.requiresOnboarding
-        ? 'Welcome! Please complete your profile setup.'
-        : `Welcome back, ${result.user.name}!`,
+      message,
       data: result,
     });
   });

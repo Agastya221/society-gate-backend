@@ -111,7 +111,7 @@ No authentication required. Creates a new user if phone not seen before.
   "email": "john@example.com"
 }
 ```
-Note: `name` is required only for new users. `email` is always optional.
+Note: `name` and `email` are both optional. Name is collected during onboarding, not at signup.
 
 **Response — New User:**
 ```json
@@ -123,7 +123,7 @@ Note: `name` is required only for new users. `email` is always optional.
     "refreshToken": "eyJ...",
     "user": {
       "id": "uuid",
-      "name": "John Doe",
+      "name": "",
       "phone": "9876543210",
       "role": "RESIDENT",
       "isActive": false,
@@ -132,12 +132,13 @@ Note: `name` is required only for new users. `email` is always optional.
     },
     "requiresOnboarding": true,
     "onboardingStatus": "DRAFT",
-    "appType": "RESIDENT_APP"
+    "appType": "RESIDENT_APP",
+    "redirectTo": "ONBOARDING"
   }
 }
 ```
 
-**Response — Existing User:**
+**Response — Existing Resident:**
 ```json
 {
   "success": true,
@@ -156,12 +157,38 @@ Note: `name` is required only for new users. `email` is always optional.
     },
     "requiresOnboarding": false,
     "onboardingStatus": "COMPLETED",
-    "appType": "RESIDENT_APP"
+    "appType": "RESIDENT_APP",
+    "redirectTo": "RESIDENT_PANEL"
   }
 }
 ```
 
-**Errors:** 400 name required for new user | 400 invalid widget token
+**Response — Existing Admin/Super Admin:**
+```json
+{
+  "success": true,
+  "message": "Welcome back, Admin Name!",
+  "data": {
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ...",
+    "user": {
+      "id": "uuid",
+      "name": "Admin Name",
+      "phone": "9876543210",
+      "role": "ADMIN",
+      "isActive": true,
+      "flatId": null,
+      "societyId": "uuid"
+    },
+    "requiresOnboarding": false,
+    "onboardingStatus": "APPROVED",
+    "appType": "RESIDENT_APP",
+    "redirectTo": "ADMIN_PANEL"
+  }
+}
+```
+
+**Errors:** 400 invalid widget token
 
 ---
 
