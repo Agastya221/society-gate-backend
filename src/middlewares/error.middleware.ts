@@ -25,10 +25,12 @@ export const errorHandler = (
 
   // Prisma errors
   if (err.name === 'PrismaClientKnownRequestError') {
+    logger.error({ prismaError: err.message, code: (err as any).code, meta: (err as any).meta }, 'Prisma error');
     return res.status(400).json({
       success: false,
       message: 'Database error occurred',
-      ...(process.env.NODE_ENV === 'development' && { error: err.message }),
+      error: err.message,
+      code: (err as any).code,
     });
   }
 
