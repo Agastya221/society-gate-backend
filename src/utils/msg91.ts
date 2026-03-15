@@ -61,11 +61,16 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
     const data = response.data;
     logger.info({ status: data.message, mobile: data.mobile }, 'MSG91 widget token verified');
 
-    if (data.message !== 'success' || !data.mobile) {
+    // MSG91 verifyAccessToken returns phone in `message` field and status in `type` field
+    // e.g. { "message": "916202923165", "type": "success" }
+    // OR   { "message": "success", "mobile": "916202923165" } (older format)
+    const phone = data.mobile || (data.type === 'success' ? data.message : null);
+
+    if (!phone) {
       throw new AppError(data.message || 'OTP verification failed', 400);
     }
 
-    return normalisePhone(data.mobile);
+    return normalisePhone(phone);
   } catch (err: any) {
     if (err instanceof AppError) throw err;
 
