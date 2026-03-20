@@ -1,6 +1,5 @@
 import { PrismaClient } from './generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import bcrypt from 'bcryptjs';
 import 'dotenv/config';
 
 const connectionString = `${process.env.DATABASE_URL}`;
@@ -29,7 +28,9 @@ const hoursAgo = (hours: number) => {
 async function main() {
   console.log('🌱 Starting realistic database seed...\n');
 
-  // Clean database
+  // ============================================
+  // CLEAN DATABASE
+  // ============================================
   console.log('🧹 Cleaning...');
   await prisma.notification.deleteMany();
   await prisma.entryRequest.deleteMany();
@@ -62,874 +63,607 @@ async function main() {
   await prisma.society.deleteMany();
   console.log('✅ Cleaned\n');
 
-  const hashedPassword = await bcrypt.hash('Test@1234', 10);
-
-  // SOCIETIES
-  console.log('🏢 Creating societies...');
-  const society1 = await prisma.society.create({
+  // ============================================
+  // SOCIETY — Greenfield Heights, Pune
+  // ============================================
+  console.log('🏢 Creating society...');
+  const society = await prisma.society.create({
     data: {
-      name: 'Emerald Heights Residency',
-      address: 'Survey No. 45/2, Outer Ring Road, Marathahalli, Bangalore',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560037',
-      contactName: 'Dr. Rajesh Kumar Mehta',
-      contactPhone: '+919876543210',
-      contactEmail: 'secretary@emeraldheights.in',
-      totalFlats: 144,
-      monthlyFee: 3500,
-      nextDueDate: daysFromNow(12),
-      paymentStatus: 'PAID',
-    },
-  });
-
-  const society2 = await prisma.society.create({
-    data: {
-      name: 'Orchid Gardens',
-      address: 'Plot 126, Sector 18, Kharghar, Navi Mumbai',
-      city: 'Mumbai',
+      name: 'Greenfield Heights',
+      address: 'Survey No. 28, Baner Road, Near Balewadi High Street',
+      city: 'Pune',
       state: 'Maharashtra',
-      pincode: '410210',
-      contactName: 'Mrs. Priya Deshmukh',
-      contactPhone: '+912227543299',
-      contactEmail: 'admin@orchidgardens.com',
+      pincode: '411045',
+      contactName: 'Agastya',
+      contactPhone: '7484827530',
+      contactEmail: 'admin@greenfieldheights.in',
       totalFlats: 96,
-      monthlyFee: 4200,
-      nextDueDate: daysFromNow(8),
+      monthlyFee: 4500,
+      nextDueDate: daysFromNow(15),
       paymentStatus: 'PAID',
     },
   });
-  console.log('✅ 2 societies\n');
+  console.log('✅ 1 society\n');
 
+  // ============================================
   // GATE POINTS
+  // ============================================
   console.log('🚪 Creating gate points...');
-  const mainGate1 = await prisma.gatePoint.create({
-    data: { name: 'East Gate (Main)', isActive: true, societyId: society1.id },
+  const mainGate = await prisma.gatePoint.create({
+    data: { name: 'Main Gate (North)', isActive: true, societyId: society.id },
   });
   await prisma.gatePoint.create({
-    data: { name: 'West Gate (Service)', isActive: true, societyId: society1.id },
+    data: { name: 'Service Gate (South)', isActive: true, societyId: society.id },
   });
-  await prisma.gatePoint.create({
-    data: { name: 'Tower Entrance', isActive: true, societyId: society2.id },
-  });
-  await prisma.gatePoint.create({
-    data: { name: 'Parking Gate', isActive: true, societyId: society2.id },
-  });
-  console.log('✅ 4 gate points\n');
+  console.log('✅ 2 gate points\n');
 
-  // BLOCKS
+  // ============================================
+  // BLOCKS — 3 towers
+  // ============================================
   console.log('🏗️ Creating blocks...');
-  const blockA = await prisma.block.create({
+  const towerA = await prisma.block.create({
     data: {
-      name: 'Tower A (Emerald)',
-      societyId: society1.id,
-      totalFloors: 12,
-      description: 'East facing tower with 2BHK & 3BHK units',
+      name: 'Tower A (Jasmine)',
+      societyId: society.id,
+      totalFloors: 8,
+      description: 'East-facing 2BHK & 3BHK apartments',
     },
   });
 
-  const blockB = await prisma.block.create({
+  const towerB = await prisma.block.create({
     data: {
-      name: 'Tower B (Jade)',
-      societyId: society1.id,
-      totalFloors: 12,
-      description: 'West facing premium 3BHK & 4BHK penthouses',
+      name: 'Tower B (Orchid)',
+      societyId: society.id,
+      totalFloors: 8,
+      description: 'West-facing premium 3BHK & 4BHK apartments',
     },
   });
 
-  const blockC = await prisma.block.create({
+  const towerC = await prisma.block.create({
     data: {
-      name: 'Tower C (Ruby)',
-      societyId: society1.id,
-      totalFloors: 10,
-      description: 'North facing compact 2BHK units',
+      name: 'Tower C (Lily)',
+      societyId: society.id,
+      totalFloors: 8,
+      description: 'North-facing 2BHK compact units',
     },
   });
+  console.log('✅ 3 blocks\n');
 
-  const towerX = await prisma.block.create({
-    data: {
-      name: 'Orchid Wing',
-      societyId: society2.id,
-      totalFloors: 16,
-      description: 'Premium high-rise with sea view',
-    },
-  });
-  console.log('✅ 4 blocks\n');
-
-  // FLATS
+  // ============================================
+  // FLATS — 32 per tower = 96 total
+  // ============================================
   console.log('🏠 Creating flats...');
   const flats: any[] = [];
-  // Tower A - 48 flats (12 floors x 4 units)
-  for (let floor = 1; floor <= 12; floor++) {
-    for (let flatNum = 1; flatNum <= 4; flatNum++) {
-      const flat = await prisma.flat.create({
-        data: {
-          flatNumber: `A${floor.toString().padStart(2, '0')}0${flatNum}`,
-          floor: `${floor}`,
-          blockId: blockA.id,
-          societyId: society1.id,
-          isOccupied: floor <= 10,
-        },
-      });
-      flats.push(flat);
+
+  for (const [block, prefix] of [[towerA, 'A'], [towerB, 'B'], [towerC, 'C']] as const) {
+    for (let floor = 1; floor <= 8; floor++) {
+      for (let unit = 1; unit <= 4; unit++) {
+        const flat = await prisma.flat.create({
+          data: {
+            flatNumber: `${prefix}${floor}0${unit}`,
+            floor: `${floor}`,
+            blockId: (block as any).id,
+            societyId: society.id,
+            isOccupied: floor <= 6, // top 2 floors vacant
+          },
+        });
+        flats.push(flat);
+      }
     }
   }
+  console.log(`✅ ${flats.length} flats\n`);
 
-  // Tower B - 48 flats (12 floors x 4 units)
-  for (let floor = 1; floor <= 12; floor++) {
-    for (let flatNum = 1; flatNum <= 4; flatNum++) {
-      const flat = await prisma.flat.create({
-        data: {
-          flatNumber: `B${floor.toString().padStart(2, '0')}0${flatNum}`,
-          floor: `${floor}`,
-          blockId: blockB.id,
-          societyId: society1.id,
-          isOccupied: floor <= 9,
-        },
-      });
-      flats.push(flat);
-    }
-  }
+  // Helper: get flat by number
+  const flat = (num: string) => flats.find((f: any) => f.flatNumber === num);
 
-  // Tower C - 40 flats (10 floors x 4 units)
-  for (let floor = 1; floor <= 10; floor++) {
-    for (let flatNum = 1; flatNum <= 4; flatNum++) {
-      const flat = await prisma.flat.create({
-        data: {
-          flatNumber: `C${floor.toString().padStart(2, '0')}0${flatNum}`,
-          floor: `${floor}`,
-          blockId: blockC.id,
-          societyId: society1.id,
-          isOccupied: floor <= 8,
-        },
-      });
-      flats.push(flat);
-    }
-  }
-
-  const flats2: any[] = [];
-  // Orchid Wing - 64 flats (16 floors x 4 units)
-  for (let floor = 1; floor <= 16; floor++) {
-    for (let flatNum = 1; flatNum <= 4; flatNum++) {
-      const flat = await prisma.flat.create({
-        data: {
-          flatNumber: `O${floor.toString().padStart(2, '0')}0${flatNum}`,
-          floor: `${floor}`,
-          blockId: towerX.id,
-          societyId: society2.id,
-          isOccupied: floor <= 13,
-        },
-      });
-      flats2.push(flat);
-    }
-  }
-  console.log(`✅ ${flats.length + flats2.length} flats\n`);
-
+  // ============================================
   // USERS
+  // ============================================
   console.log('👥 Creating users...');
 
-  // Super Admin
+  // --- SUPER ADMIN (platform level) ---
   const superAdmin = await prisma.user.create({
     data: {
-      name: 'Arvind Krishnan',
-      phone: '+919999999999',
-      email: 'superadmin@societygate.com',
-      password: hashedPassword,
+      name: 'Platform Admin',
+      phone: '9999900000',
+      email: 'superadmin@sgate.in',
       role: 'SUPER_ADMIN',
       isActive: true,
     },
   });
 
-  // Society 1 - Admin
-  const admin1 = await prisma.user.create({
+  // --- YOU — Society Admin ---
+  const admin = await prisma.user.create({
     data: {
-      name: 'Dr. Rajesh Kumar Mehta',
-      phone: '+919876543210',
-      email: 'secretary@emeraldheights.in',
-      password: hashedPassword,
+      name: 'Agastya',
+      phone: '7484827530',
+      email: 'admin@greenfieldheights.in',
       role: 'ADMIN',
-      societyId: society1.id,
+      societyId: society.id,
       isActive: true,
     },
   });
 
-  // Society 1 - Guards
+  // --- GUARDS ---
   const guard1 = await prisma.user.create({
     data: {
-      name: 'Ramesh Bahadur Singh',
-      phone: '+919123456780',
-      email: 'ramesh.security@emeraldheights.in',
-      password: hashedPassword,
+      name: 'Rajendra Singh',
+      phone: '9800000001',
       role: 'GUARD',
-      societyId: society1.id,
+      societyId: society.id,
       isActive: true,
     },
   });
 
   const guard2 = await prisma.user.create({
     data: {
-      name: 'Suresh Prasad Yadav',
-      phone: '+919123456781',
-      email: 'suresh.security@emeraldheights.in',
-      password: hashedPassword,
+      name: 'Sunil Yadav',
+      phone: '9800000002',
       role: 'GUARD',
-      societyId: society1.id,
+      societyId: society.id,
       isActive: true,
     },
   });
 
   const guard3 = await prisma.user.create({
     data: {
-      name: 'Mahesh Kumar Pandey',
-      phone: '+919123456782',
-      email: 'mahesh.security@emeraldheights.in',
-      password: hashedPassword,
+      name: 'Bhola Prasad',
+      phone: '9800000003',
       role: 'GUARD',
-      societyId: society1.id,
+      societyId: society.id,
       isActive: true,
     },
   });
 
-  // Society 1 - Residents (Family 1 - A0101 - Tech Entrepreneur Family)
-  const resident1 = await prisma.user.create({
+  // --- RESIDENT FAMILIES ---
+
+  // Family 1 — A101 (IT professional + spouse + child)
+  const res1 = await prisma.user.create({
     data: {
-      name: 'Amit Verma',
-      phone: '+919845123456',
-      email: 'amit.verma@techcorp.com',
-      password: hashedPassword,
+      name: 'Amit Sharma',
+      phone: '9811000001',
+      email: 'amit.sharma@techcorp.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[0].id,
+      societyId: society.id,
+      flatId: flat('A101').id,
       isOwner: true,
       isPrimaryResident: true,
       isActive: true,
     },
   });
 
-  const resident2 = await prisma.user.create({
+  await prisma.user.create({
     data: {
-      name: 'Priya Verma',
-      phone: '+919845123457',
-      email: 'priya.verma@designer.com',
-      password: hashedPassword,
+      name: 'Neha Sharma',
+      phone: '9811000002',
+      email: 'neha.sharma@designer.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[0].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('A101').id,
       isPrimaryResident: false,
-      primaryResidentId: resident1.id,
+      primaryResidentId: res1.id,
       familyRole: 'SPOUSE',
       isActive: true,
     },
   });
 
-  const resident3 = await prisma.user.create({
+  await prisma.user.create({
     data: {
-      name: 'Aarav Verma',
-      phone: '+919845123458',
-      email: 'aarav.verma@student.edu',
-      password: hashedPassword,
+      name: 'Aarav Sharma',
+      phone: '9811000003',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[0].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('A101').id,
       isPrimaryResident: false,
-      primaryResidentId: resident1.id,
+      primaryResidentId: res1.id,
       familyRole: 'CHILD',
       isActive: true,
     },
   });
 
-  // Family 2 (A0501 - Doctor - Single Parent)
-  const resident4 = await prisma.user.create({
+  // Family 2 — A301 (Doctor, single parent + kid)
+  const res2 = await prisma.user.create({
     data: {
-      name: 'Dr. Sneha Reddy',
-      phone: '+919845234567',
-      email: 'sneha.reddy@hospital.com',
-      password: hashedPassword,
+      name: 'Dr. Sneha Kulkarni',
+      phone: '9811000004',
+      email: 'sneha.kulkarni@hospital.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[16].id,
+      societyId: society.id,
+      flatId: flat('A301').id,
       isOwner: true,
       isPrimaryResident: true,
       isActive: true,
     },
   });
 
-  const resident4Child = await prisma.user.create({
+  await prisma.user.create({
     data: {
-      name: 'Aisha Reddy',
-      phone: '+919845234568',
-      email: 'aisha.reddy@student.edu',
-      password: hashedPassword,
+      name: 'Ishaan Kulkarni',
+      phone: '9811000005',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[16].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('A301').id,
       isPrimaryResident: false,
-      primaryResidentId: resident4.id,
+      primaryResidentId: res2.id,
       familyRole: 'CHILD',
       isActive: true,
     },
   });
 
-  // Family 3 (B0101 - Investment Banker Family - Tenant)
-  const resident5 = await prisma.user.create({
+  // Family 3 — B102 (Tenant couple, investment banker)
+  const res3 = await prisma.user.create({
     data: {
-      name: 'Vikram Singh Chauhan',
-      phone: '+919845345678',
-      email: 'vikram.singh@investment.com',
-      password: hashedPassword,
+      name: 'Vikram Chauhan',
+      phone: '9811000006',
+      email: 'vikram.chauhan@finance.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[48].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('B102').id,
       isPrimaryResident: true,
       isActive: true,
     },
   });
 
-  const resident6 = await prisma.user.create({
+  const res3Spouse = await prisma.user.create({
     data: {
-      name: 'Ananya Singh Chauhan',
-      phone: '+919845345679',
-      email: 'ananya.singh@architect.com',
-      password: hashedPassword,
+      name: 'Ananya Chauhan',
+      phone: '9811000007',
+      email: 'ananya.chauhan@architect.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[48].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('B102').id,
       isPrimaryResident: false,
-      primaryResidentId: resident5.id,
+      primaryResidentId: res3.id,
       familyRole: 'SPOUSE',
       isActive: true,
     },
   });
 
-  const resident6Child1 = await prisma.user.create({
+  // Family 4 — B401 (Retired couple)
+  const res4 = await prisma.user.create({
     data: {
-      name: 'Arjun Singh',
-      phone: '+919845345680',
-      email: 'arjun.singh@school.edu',
-      password: hashedPassword,
+      name: 'Mohan Joshi',
+      phone: '9811000008',
+      email: 'mohan.joshi@retired.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[48].id,
-      isOwner: false,
-      isPrimaryResident: false,
-      primaryResidentId: resident5.id,
-      familyRole: 'CHILD',
-      isActive: true,
-    },
-  });
-
-  const resident6Child2 = await prisma.user.create({
-    data: {
-      name: 'Kiara Singh',
-      phone: '+919845345681',
-      email: 'kiara.singh@school.edu',
-      password: hashedPassword,
-      role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[48].id,
-      isOwner: false,
-      isPrimaryResident: false,
-      primaryResidentId: resident5.id,
-      familyRole: 'CHILD',
-      isActive: true,
-    },
-  });
-
-  // Family 4 (C0101 - Retired Couple)
-  const resident7 = await prisma.user.create({
-    data: {
-      name: 'Rahul Kapoor',
-      phone: '+919845456789',
-      email: 'rahul.kapoor@retired.com',
-      password: hashedPassword,
-      role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[96].id,
+      societyId: society.id,
+      flatId: flat('B401').id,
       isOwner: true,
       isPrimaryResident: true,
       isActive: true,
     },
   });
 
-  const resident7Spouse = await prisma.user.create({
+  const res4Spouse = await prisma.user.create({
     data: {
-      name: 'Meera Kapoor',
-      phone: '+919845456790',
-      email: 'meera.kapoor@retired.com',
-      password: hashedPassword,
+      name: 'Sunita Joshi',
+      phone: '9811000009',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[96].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('B401').id,
       isPrimaryResident: false,
-      primaryResidentId: resident7.id,
+      primaryResidentId: res4.id,
       familyRole: 'SPOUSE',
       isActive: true,
     },
   });
 
-  // Family 5 (B0702 - Working Professional - Live alone)
-  const resident8 = await prisma.user.create({
+  // Family 5 — C201 (Young professional, lives alone)
+  const res5 = await prisma.user.create({
     data: {
-      name: 'Anita Desai',
-      phone: '+919845567890',
-      email: 'anita.desai@marketing.com',
-      password: hashedPassword,
+      name: 'Priya Desai',
+      phone: '9811000010',
+      email: 'priya.desai@startup.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[72].id,
+      societyId: society.id,
+      flatId: flat('C201').id,
       isOwner: true,
       isPrimaryResident: true,
       isActive: true,
     },
   });
 
-  // Family 6 (A0801 - Software Engineer Family with Parents)
-  const resident9IT = await prisma.user.create({
+  // Family 6 — C401 (Software engineer + spouse + parent)
+  const res6 = await prisma.user.create({
     data: {
       name: 'Karthik Nair',
-      phone: '+919845678901',
-      email: 'karthik.nair@techgiant.com',
-      password: hashedPassword,
+      phone: '9811000011',
+      email: 'karthik.nair@techgiant.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[28].id,
+      societyId: society.id,
+      flatId: flat('C401').id,
       isOwner: true,
       isPrimaryResident: true,
       isActive: true,
     },
   });
 
-  const resident9Spouse = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: 'Divya Nair',
-      phone: '+919845678902',
-      email: 'divya.nair@teacher.edu',
-      password: hashedPassword,
+      phone: '9811000012',
+      email: 'divya.nair@teacher.in',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[28].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('C401').id,
       isPrimaryResident: false,
-      primaryResidentId: resident9IT.id,
+      primaryResidentId: res6.id,
       familyRole: 'SPOUSE',
       isActive: true,
     },
   });
 
-  const resident9Parent = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: 'Ramesh Nair',
-      phone: '+919845678903',
-      email: 'ramesh.nair@retired.com',
-      password: hashedPassword,
+      phone: '9811000013',
       role: 'RESIDENT',
-      societyId: society1.id,
-      flatId: flats[28].id,
-      isOwner: false,
+      societyId: society.id,
+      flatId: flat('C401').id,
       isPrimaryResident: false,
-      primaryResidentId: resident9IT.id,
+      primaryResidentId: res6.id,
       familyRole: 'PARENT',
       isActive: true,
     },
   });
 
-  // Society 2 Users
-  const admin2 = await prisma.user.create({
-    data: {
-      name: 'Mrs. Priya Deshmukh',
-      phone: '+912227543299',
-      email: 'admin@orchidgardens.com',
-      password: hashedPassword,
-      role: 'ADMIN',
-      societyId: society2.id,
-      isActive: true,
-    },
-  });
+  console.log('✅ 18 users (1 super admin, 1 admin, 3 guards, 13 residents)\n');
 
-  const guard4 = await prisma.user.create({
-    data: {
-      name: 'Mohan Das Gupta',
-      phone: '+912227123456',
-      email: 'mohan.security@orchidgardens.com',
-      password: hashedPassword,
-      role: 'GUARD',
-      societyId: society2.id,
-      isActive: true,
-    },
-  });
+  // ============================================
+  // ONBOARDING REQUESTS (approved residents)
+  // ============================================
+  console.log('📋 Creating onboarding records...');
+  for (const r of [res1, res2, res3, res4, res5, res6]) {
+    await prisma.onboardingRequest.create({
+      data: {
+        userId: r.id,
+        societyId: society.id,
+        blockId: towerA.id,
+        flatId: r.flatId!,
+        residentType: r.isOwner ? 'OWNER' : 'TENANT',
+        status: 'APPROVED',
+        reviewedById: admin.id,
+        reviewedAt: daysAgo(30),
+      },
+    });
+  }
+  console.log('✅ 6 onboarding requests\n');
 
-  const guard5 = await prisma.user.create({
-    data: {
-      name: 'Shankar Patil',
-      phone: '+912227123457',
-      email: 'shankar.security@orchidgardens.com',
-      password: hashedPassword,
-      role: 'GUARD',
-      societyId: society2.id,
-      isActive: true,
-    },
-  });
-
-  // Society 2 - Family 1 (O0101 - Business Owner)
-  const resident10 = await prisma.user.create({
-    data: {
-      name: 'Kiran Patel',
-      phone: '+912227345678',
-      email: 'kiran.patel@manufacturing.com',
-      password: hashedPassword,
-      role: 'RESIDENT',
-      societyId: society2.id,
-      flatId: flats2[0].id,
-      isOwner: true,
-      isPrimaryResident: true,
-      isActive: true,
-    },
-  });
-
-  const resident10Spouse = await prisma.user.create({
-    data: {
-      name: 'Kavita Patel',
-      phone: '+912227345679',
-      email: 'kavita.patel@boutique.com',
-      password: hashedPassword,
-      role: 'RESIDENT',
-      societyId: society2.id,
-      flatId: flats2[0].id,
-      isOwner: false,
-      isPrimaryResident: false,
-      primaryResidentId: resident10.id,
-      familyRole: 'SPOUSE',
-      isActive: true,
-    },
-  });
-
-  // Society 2 - Family 2 (O0401 - Lawyer Family)
-  const resident11 = await prisma.user.create({
-    data: {
-      name: 'Adv. Maya Iyer',
-      phone: '+912227456789',
-      email: 'maya.iyer@lawfirm.com',
-      password: hashedPassword,
-      role: 'RESIDENT',
-      societyId: society2.id,
-      flatId: flats2[12].id,
-      isOwner: true,
-      isPrimaryResident: true,
-      isActive: true,
-    },
-  });
-
-  const resident11Spouse = await prisma.user.create({
-    data: {
-      name: 'Suresh Iyer',
-      phone: '+912227456790',
-      email: 'suresh.iyer@consultant.com',
-      password: hashedPassword,
-      role: 'RESIDENT',
-      societyId: society2.id,
-      flatId: flats2[12].id,
-      isOwner: false,
-      isPrimaryResident: false,
-      primaryResidentId: resident11.id,
-      familyRole: 'SPOUSE',
-      isActive: true,
-    },
-  });
-
-  console.log('✅ 20 users created\n');
-
+  // ============================================
   // VEHICLES
+  // ============================================
   console.log('🚗 Creating vehicles...');
   await prisma.vehicle.create({
     data: {
-      vehicleNumber: 'KA01MJ9876',
-      vehicleType: 'Car',
-      model: 'Honda City VX Diesel',
-      color: 'Platinum Silver',
-      isActive: true,
-      userId: resident1.id,
-      flatId: flats[0].id,
-      societyId: society1.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'KA02AB5432',
-      vehicleType: 'Bike',
-      model: 'Royal Enfield Classic 350',
-      color: 'Stealth Black',
-      isActive: true,
-      userId: resident3.id,
-      flatId: flats[0].id,
-      societyId: society1.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'KA51EB7890',
-      vehicleType: 'Car',
-      model: 'Maruti Swift VDi',
-      color: 'Pearl Arctic White',
-      isActive: true,
-      userId: resident2.id,
-      flatId: flats[0].id,
-      societyId: society1.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'KA05CD1234',
-      vehicleType: 'Car',
-      model: 'Toyota Fortuner 4x4',
-      color: 'Super White',
-      isActive: true,
-      userId: resident4.id,
-      flatId: flats[16].id,
-      societyId: society1.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'KA20MN5678',
-      vehicleType: 'Car',
-      model: 'BMW X5 xDrive',
-      color: 'Phytonic Blue',
-      isActive: true,
-      userId: resident5.id,
-      flatId: flats[48].id,
-      societyId: society1.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'KA03PQ8901',
-      vehicleType: 'Bike',
-      model: 'Honda Activa 6G',
-      color: 'Matte Black',
-      isActive: true,
-      userId: resident6.id,
-      flatId: flats[48].id,
-      societyId: society1.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'KA09RS2345',
+      vehicleNumber: 'MH12AB1234',
       vehicleType: 'Car',
       model: 'Hyundai Creta SX',
       color: 'Polar White',
       isActive: true,
-      userId: resident8.id,
-      flatId: flats[72].id,
-      societyId: society1.id,
+      userId: res1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
     },
   });
-
   await prisma.vehicle.create({
     data: {
-      vehicleNumber: 'MH04AB1234',
-      vehicleType: 'Car',
-      model: 'Mercedes-Benz E-Class',
-      color: 'Obsidian Black',
-      isActive: true,
-      userId: resident10.id,
-      flatId: flats2[0].id,
-      societyId: society2.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'MH04CD5678',
-      vehicleType: 'Car',
-      model: 'Audi Q7 Premium Plus',
-      color: 'Glacier White',
-      isActive: true,
-      userId: resident11.id,
-      flatId: flats2[12].id,
-      societyId: society2.id,
-    },
-  });
-
-  await prisma.vehicle.create({
-    data: {
-      vehicleNumber: 'MH04EF9012',
+      vehicleNumber: 'MH12CD5678',
       vehicleType: 'Bike',
-      model: 'Vespa SXL 150',
-      color: 'Matte Red',
+      model: 'Royal Enfield Classic 350',
+      color: 'Stealth Black',
       isActive: true,
-      userId: resident11.id,
-      flatId: flats2[12].id,
-      societyId: society2.id,
+      userId: res1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
     },
   });
+  await prisma.vehicle.create({
+    data: {
+      vehicleNumber: 'MH14EF9012',
+      vehicleType: 'Car',
+      model: 'Toyota Fortuner 4x4',
+      color: 'Super White',
+      isActive: true,
+      userId: res2.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
+    },
+  });
+  await prisma.vehicle.create({
+    data: {
+      vehicleNumber: 'MH12GH3456',
+      vehicleType: 'Car',
+      model: 'BMW X5 xDrive',
+      color: 'Phytonic Blue',
+      isActive: true,
+      userId: res3.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+    },
+  });
+  await prisma.vehicle.create({
+    data: {
+      vehicleNumber: 'MH12JK7890',
+      vehicleType: 'Bike',
+      model: 'Honda Activa 6G',
+      color: 'Matte Grey',
+      isActive: true,
+      userId: res3Spouse.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+    },
+  });
+  await prisma.vehicle.create({
+    data: {
+      vehicleNumber: 'MH12LM2345',
+      vehicleType: 'Car',
+      model: 'Maruti Swift VDi',
+      color: 'Pearl Arctic White',
+      isActive: true,
+      userId: res5.id,
+      flatId: flat('C201').id,
+      societyId: society.id,
+    },
+  });
+  await prisma.vehicle.create({
+    data: {
+      vehicleNumber: 'MH14NP6789',
+      vehicleType: 'Car',
+      model: 'Tata Nexon EV',
+      color: 'Teal Blue',
+      isActive: true,
+      userId: res6.id,
+      flatId: flat('C401').id,
+      societyId: society.id,
+    },
+  });
+  console.log('✅ 7 vehicles\n');
 
-  console.log('✅ 10 vehicles\n');
-
+  // ============================================
   // AMENITIES
+  // ============================================
   console.log('🏊 Creating amenities...');
-  const gym1 = await prisma.amenity.create({
+  const gym = await prisma.amenity.create({
     data: {
-      name: 'Emerald Fitness Studio',
+      name: 'Greenfield Fitness Studio',
       type: 'GYM',
-      description: 'State-of-the-art gym with treadmills, ellipticals, weights, and cross-trainers. Personal trainer available on request.',
-      capacity: 30,
-      pricePerHour: 0,
-      maxBookingsPerUser: 2,
-      isActive: true,
-      societyId: society1.id,
-    },
-  });
-
-  const pool1 = await prisma.amenity.create({
-    data: {
-      name: 'Aqua Paradise Pool',
-      type: 'SWIMMING_POOL',
-      description: 'Semi-Olympic size swimming pool (25m x 12m) with separate kids pool. Lifeguard on duty 6 AM - 9 PM.',
-      capacity: 45,
-      pricePerHour: 300,
-      maxBookingsPerUser: 4,
-      isActive: true,
-      societyId: society1.id,
-    },
-  });
-
-  const clubhouse1 = await prisma.amenity.create({
-    data: {
-      name: 'Grand Banquet Hall',
-      type: 'CLUBHOUSE',
-      description: 'Premium air-conditioned banquet hall with stage, sound system, and catering facility. Perfect for weddings, birthdays, and corporate events.',
-      capacity: 200,
-      pricePerHour: 3500,
-      maxBookingsPerUser: 2,
-      isActive: true,
-      societyId: society1.id,
-    },
-  });
-
-  await prisma.amenity.create({
-    data: {
-      name: "Children's Play Garden",
-      type: 'GARDEN',
-      description: 'Safe outdoor play area with swings, slides, see-saw, and sandpit for kids aged 2-12 years.',
+      description: 'Fully-equipped gym with treadmills, ellipticals, cross-trainers and free weights. Personal trainer available 6-8 AM & 6-8 PM.',
       capacity: 25,
       pricePerHour: 0,
-      maxBookingsPerUser: 5,
+      maxBookingsPerUser: 2,
       isActive: true,
-      societyId: society1.id,
+      societyId: society.id,
     },
   });
 
-  await prisma.amenity.create({
+  const pool = await prisma.amenity.create({
     data: {
-      name: 'Multi-Purpose Sports Court',
-      type: 'SPORTS_COURT',
-      description: 'Badminton, basketball, and tennis court with flood lights for evening play. Equipment available on rent.',
-      capacity: 12,
+      name: 'Aqua Pool',
+      type: 'SWIMMING_POOL',
+      description: 'Semi-Olympic size pool (25m x 12m) with kids pool. Lifeguard on duty 6 AM - 9 PM.',
+      capacity: 40,
       pricePerHour: 250,
       maxBookingsPerUser: 3,
       isActive: true,
-      societyId: society1.id,
+      societyId: society.id,
     },
   });
 
-  const gym2 = await prisma.amenity.create({
+  const clubhouse = await prisma.amenity.create({
     data: {
-      name: 'Orchid Wellness Center',
-      type: 'GYM',
-      description: 'Premium fitness center with yoga studio, steam room, and modern cardio equipment. Air-conditioned facility.',
-      capacity: 25,
-      pricePerHour: 0,
+      name: 'Grand Banquet Hall',
+      type: 'CLUBHOUSE',
+      description: 'AC banquet hall with stage, sound system, and catering area. Capacity 150 guests. Perfect for weddings and parties.',
+      capacity: 150,
+      pricePerHour: 3000,
       maxBookingsPerUser: 2,
       isActive: true,
-      societyId: society2.id,
+      societyId: society.id,
     },
   });
 
   await prisma.amenity.create({
     data: {
-      name: 'Sky Lounge',
-      type: 'PARTY_HALL',
-      description: 'Rooftop party hall with panoramic city views, DJ console, and BBQ area. Adults only (18+).',
-      capacity: 80,
-      pricePerHour: 2500,
-      maxBookingsPerUser: 1,
+      name: "Children's Play Zone",
+      type: 'GARDEN',
+      description: 'Safe outdoor play area with swings, slides, sandpit for kids aged 2-12.',
+      capacity: 20,
+      pricePerHour: 0,
+      maxBookingsPerUser: 5,
       isActive: true,
-      societyId: society2.id,
+      societyId: society.id,
     },
   });
 
-  console.log('✅ 7 amenities\n');
+  const sportsCourt = await prisma.amenity.create({
+    data: {
+      name: 'Multi-Sport Court',
+      type: 'SPORTS_COURT',
+      description: 'Badminton, basketball, and tennis court with flood lights.',
+      capacity: 10,
+      pricePerHour: 200,
+      maxBookingsPerUser: 3,
+      isActive: true,
+      societyId: society.id,
+    },
+  });
 
+  await prisma.amenity.create({
+    data: {
+      name: 'Rooftop Party Lounge',
+      type: 'PARTY_HALL',
+      description: 'Rooftop lounge with BBQ area, city views, and DJ console. Adults only.',
+      capacity: 60,
+      pricePerHour: 2000,
+      maxBookingsPerUser: 1,
+      isActive: true,
+      societyId: society.id,
+    },
+  });
+  console.log('✅ 6 amenities\n');
+
+  // ============================================
   // AMENITY BOOKINGS
+  // ============================================
   console.log('📅 Creating bookings...');
-  const tomorrow = daysFromNow(1);
-  tomorrow.setHours(18, 0, 0, 0);
-
-  // Confirmed booking - Birthday party
   await prisma.amenityBooking.create({
     data: {
-      amenityId: clubhouse1.id,
-      userId: resident1.id,
-      flatId: flats[0].id,
-      societyId: society1.id,
+      amenityId: clubhouse.id,
+      userId: res1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
       bookingDate: daysFromNow(5),
       startTime: '18:00',
       endTime: '23:00',
       status: 'CONFIRMED',
-      purpose: "My daughter's 10th birthday celebration - expecting 50 guests",
+      purpose: "Son's 8th birthday party — expecting 40 guests",
     },
   });
-
-  // Pending approval
   await prisma.amenityBooking.create({
     data: {
-      amenityId: pool1.id,
-      userId: resident4.id,
-      flatId: flats[16].id,
-      societyId: society1.id,
+      amenityId: pool.id,
+      userId: res2.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
       bookingDate: daysFromNow(3),
       startTime: '16:00',
       endTime: '18:00',
       status: 'PENDING',
-      purpose: 'Kids swimming lessons and practice session',
+      purpose: 'Kids swimming practice session',
     },
   });
-
-  // Confirmed - Sports court
   await prisma.amenityBooking.create({
     data: {
-      amenityId: gym1.id,
-      userId: resident5.id,
-      flatId: flats[48].id,
-      societyId: society1.id,
-      bookingDate: tomorrow,
+      amenityId: gym.id,
+      userId: res3.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+      bookingDate: daysFromNow(1),
       startTime: '06:00',
       endTime: '07:30',
       status: 'CONFIRMED',
-      purpose: 'Morning workout session',
+      purpose: 'Morning workout',
     },
   });
-
-  // Past completed booking
   await prisma.amenityBooking.create({
     data: {
-      amenityId: clubhouse1.id,
-      userId: resident7.id,
-      flatId: flats[96].id,
-      societyId: society1.id,
+      amenityId: sportsCourt.id,
+      userId: res5.id,
+      flatId: flat('C201').id,
+      societyId: society.id,
+      bookingDate: daysFromNow(2),
+      startTime: '18:00',
+      endTime: '19:30',
+      status: 'CONFIRMED',
+      purpose: 'Badminton with friends',
+    },
+  });
+  await prisma.amenityBooking.create({
+    data: {
+      amenityId: clubhouse.id,
+      userId: res4.id,
+      flatId: flat('B401').id,
+      societyId: society.id,
       bookingDate: daysAgo(10),
       startTime: '10:00',
       endTime: '14:00',
@@ -937,136 +671,119 @@ async function main() {
       purpose: 'Silver jubilee anniversary celebration',
     },
   });
-
-  // Cancelled booking
   await prisma.amenityBooking.create({
     data: {
-      amenityId: pool1.id,
-      userId: resident8.id,
-      flatId: flats[72].id,
-      societyId: society1.id,
-      bookingDate: daysFromNow(2),
+      amenityId: pool.id,
+      userId: res6.id,
+      flatId: flat('C401').id,
+      societyId: society.id,
+      bookingDate: daysFromNow(4),
       startTime: '17:00',
       endTime: '19:00',
       status: 'CANCELLED',
-      purpose: 'Pool party with colleagues',
+      purpose: 'Pool party — cancelled due to rain forecast',
     },
   });
+  console.log('✅ 6 bookings\n');
 
-  console.log('✅ 5 bookings\n');
-
+  // ============================================
   // DOMESTIC STAFF
-  console.log('👨‍🔧 Creating staff...');
+  // ============================================
+  console.log('👨‍🔧 Creating domestic staff...');
   const maid1 = await prisma.domesticStaff.create({
     data: {
-      name: 'Lakshmi Devi Sharma',
-      phone: '+919845678000',
+      name: 'Lakshmi Devi',
+      phone: '9820000001',
       staffType: 'MAID',
       qrToken: 'STAFF_MAID_001',
       isVerified: true,
       verifiedAt: daysAgo(180),
-      verifiedBy: admin1.id,
+      verifiedBy: admin.id,
       isActive: true,
       rating: 4.7,
-      totalReviews: 23,
-      societyId: society1.id,
-      addedById: admin1.id,
+      totalReviews: 18,
+      societyId: society.id,
+      addedById: admin.id,
     },
   });
 
   const cook1 = await prisma.domesticStaff.create({
     data: {
-      name: 'Ramesh Kumar Yadav',
-      phone: '+919845678001',
+      name: 'Ramesh Yadav',
+      phone: '9820000002',
       staffType: 'COOK',
       qrToken: 'STAFF_COOK_001',
       isVerified: true,
       verifiedAt: daysAgo(365),
-      verifiedBy: admin1.id,
+      verifiedBy: admin.id,
       isActive: true,
       rating: 4.9,
-      totalReviews: 18,
-      societyId: society1.id,
-      addedById: admin1.id,
+      totalReviews: 14,
+      societyId: society.id,
+      addedById: admin.id,
     },
   });
 
   const driver1 = await prisma.domesticStaff.create({
     data: {
-      name: 'Shankar Prasad',
-      phone: '+919845678002',
+      name: 'Shankar Patil',
+      phone: '9820000003',
       staffType: 'DRIVER',
       qrToken: 'STAFF_DRIVER_001',
       isVerified: true,
       verifiedAt: daysAgo(90),
-      verifiedBy: admin1.id,
+      verifiedBy: admin.id,
       isActive: true,
       rating: 4.5,
-      totalReviews: 8,
-      societyId: society1.id,
-      addedById: admin1.id,
+      totalReviews: 7,
+      societyId: society.id,
+      addedById: admin.id,
     },
   });
 
   const gardener1 = await prisma.domesticStaff.create({
     data: {
       name: 'Gopal Reddy',
-      phone: '+919845678003',
+      phone: '9820000004',
       staffType: 'GARDENER',
       qrToken: 'STAFF_GARDENER_001',
       isVerified: true,
       verifiedAt: daysAgo(250),
-      verifiedBy: admin1.id,
+      verifiedBy: admin.id,
       isActive: true,
       rating: 4.6,
-      totalReviews: 14,
-      societyId: society1.id,
-      addedById: admin1.id,
+      totalReviews: 10,
+      societyId: society.id,
+      addedById: admin.id,
     },
   });
 
-  const maid2 = await prisma.domesticStaff.create({
+  const nanny1 = await prisma.domesticStaff.create({
     data: {
-      name: 'Savita Ramesh Patil',
-      phone: '+912227890001',
-      staffType: 'MAID',
-      qrToken: 'STAFF_MAID_002',
+      name: 'Savita Patil',
+      phone: '9820000005',
+      staffType: 'NANNY',
+      qrToken: 'STAFF_NANNY_001',
       isVerified: true,
       verifiedAt: daysAgo(120),
-      verifiedBy: admin2.id,
+      verifiedBy: admin.id,
       isActive: true,
       rating: 4.8,
-      totalReviews: 16,
-      societyId: society2.id,
-      addedById: admin2.id,
+      totalReviews: 11,
+      societyId: society.id,
+      addedById: admin.id,
     },
   });
+  console.log('✅ 5 domestic staff\n');
 
-  const cook2 = await prisma.domesticStaff.create({
-    data: {
-      name: 'Mangal Singh Thakur',
-      phone: '+912227890002',
-      staffType: 'COOK',
-      qrToken: 'STAFF_COOK_002',
-      isVerified: true,
-      verifiedAt: daysAgo(200),
-      verifiedBy: admin2.id,
-      isActive: true,
-      rating: 4.7,
-      totalReviews: 12,
-      societyId: society2.id,
-      addedById: admin2.id,
-    },
-  });
-
-  console.log('✅ 6 staff members\n');
-
-  // STAFF ASSIGNMENTS
-  console.log('🔗 Creating assignments...');
+  // ============================================
+  // STAFF FLAT ASSIGNMENTS
+  // ============================================
+  console.log('🔗 Creating staff assignments...');
   await prisma.staffFlatAssignment.create({
     data: {
       domesticStaffId: maid1.id,
-      flatId: flats[0].id,
+      flatId: flat('A101').id,
       isActive: true,
       workingDays: ['MONDAY', 'WEDNESDAY', 'FRIDAY', 'SATURDAY'],
       workStartTime: '08:00',
@@ -1075,11 +792,10 @@ async function main() {
       rateType: 'monthly',
     },
   });
-
   await prisma.staffFlatAssignment.create({
     data: {
       domesticStaffId: maid1.id,
-      flatId: flats[16].id,
+      flatId: flat('A301').id,
       isActive: true,
       workingDays: ['TUESDAY', 'THURSDAY', 'SUNDAY'],
       workStartTime: '10:30',
@@ -1088,11 +804,10 @@ async function main() {
       rateType: 'monthly',
     },
   });
-
   await prisma.staffFlatAssignment.create({
     data: {
       domesticStaffId: cook1.id,
-      flatId: flats[48].id,
+      flatId: flat('B102').id,
       isActive: true,
       workingDays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'],
       workStartTime: '17:00',
@@ -1101,11 +816,10 @@ async function main() {
       rateType: 'monthly',
     },
   });
-
   await prisma.staffFlatAssignment.create({
     data: {
       domesticStaffId: driver1.id,
-      flatId: flats[48].id,
+      flatId: flat('B102').id,
       isActive: true,
       workingDays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
       workStartTime: '08:00',
@@ -1114,11 +828,10 @@ async function main() {
       rateType: 'monthly',
     },
   });
-
   await prisma.staffFlatAssignment.create({
     data: {
       domesticStaffId: gardener1.id,
-      flatId: flats[96].id,
+      flatId: flat('B401').id,
       isActive: true,
       workingDays: ['TUESDAY', 'THURSDAY'],
       workStartTime: '07:00',
@@ -1127,552 +840,559 @@ async function main() {
       rateType: 'monthly',
     },
   });
-
   await prisma.staffFlatAssignment.create({
     data: {
-      domesticStaffId: maid2.id,
-      flatId: flats2[0].id,
-      isActive: true,
-      workingDays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'],
-      workStartTime: '09:00',
-      workEndTime: '11:00',
-      agreedRate: 5000,
-      rateType: 'monthly',
-    },
-  });
-
-  await prisma.staffFlatAssignment.create({
-    data: {
-      domesticStaffId: cook2.id,
-      flatId: flats2[12].id,
+      domesticStaffId: nanny1.id,
+      flatId: flat('A301').id,
       isActive: true,
       workingDays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
-      workStartTime: '18:00',
-      workEndTime: '21:00',
-      agreedRate: 10000,
+      workStartTime: '09:00',
+      workEndTime: '17:00',
+      agreedRate: 15000,
       rateType: 'monthly',
     },
   });
+  console.log('✅ 6 staff assignments\n');
 
-  console.log('✅ 7 assignments\n');
-
+  // ============================================
   // STAFF ATTENDANCE
+  // ============================================
   console.log('📋 Creating attendance...');
-  const today = new Date();
-  today.setHours(8, 5, 0, 0);
-
   await prisma.staffAttendance.create({
     data: {
       domesticStaffId: maid1.id,
-      flatId: flats[0].id,
-      societyId: society1.id,
-      checkInTime: new Date(today),
-      checkOutTime: new Date(today.setHours(10, 2, 0, 0)),
+      flatId: flat('A101').id,
+      societyId: society.id,
+      checkInTime: hoursAgo(4),
+      checkOutTime: hoursAgo(2),
     },
   });
-
   await prisma.staffAttendance.create({
     data: {
       domesticStaffId: cook1.id,
-      flatId: flats[40].id,
-      societyId: society1.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
       checkInTime: hoursAgo(3),
       checkOutTime: hoursAgo(1),
     },
   });
-  console.log('✅ 2 attendance records\n');
+  await prisma.staffAttendance.create({
+    data: {
+      domesticStaffId: nanny1.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
+      checkInTime: hoursAgo(6),
+    },
+  });
+  console.log('✅ 3 attendance records\n');
 
+  // ============================================
   // STAFF REVIEWS
+  // ============================================
   console.log('⭐ Creating reviews...');
   await prisma.staffReview.create({
     data: {
       domesticStaffId: maid1.id,
-      reviewerId: resident1.id,
-      flatId: flats[0].id,
+      reviewerId: res1.id,
+      flatId: flat('A101').id,
       rating: 5,
-      review: 'Lakshmi has been working with us for over 6 months now. She is extremely punctual, thorough in her work, and very trustworthy. Highly recommend her!',
+      review: 'Lakshmi is extremely punctual and thorough. Our home has never been cleaner. Highly recommended!',
       workQuality: 5,
       punctuality: 5,
       behavior: 5,
     },
   });
-
   await prisma.staffReview.create({
     data: {
       domesticStaffId: maid1.id,
-      reviewerId: resident4.id,
-      flatId: flats[16].id,
+      reviewerId: res2.id,
+      flatId: flat('A301').id,
       rating: 4,
-      review: 'Good worker, cleans well. Sometimes arrives 10-15 mins late but otherwise very reliable.',
+      review: 'Good worker. Sometimes 10-15 mins late but cleans very well.',
       workQuality: 5,
       punctuality: 3,
       behavior: 5,
     },
   });
-
   await prisma.staffReview.create({
     data: {
       domesticStaffId: cook1.id,
-      reviewerId: resident5.id,
-      flatId: flats[48].id,
+      reviewerId: res3.id,
+      flatId: flat('B102').id,
       rating: 5,
-      review: 'Ramesh is an exceptional cook! Makes authentic North Indian and South Indian dishes. Very hygienic in the kitchen and respects our preferences. Been with us for a year now.',
+      review: 'Ramesh is an exceptional cook. Authentic North Indian and South Indian dishes. Very hygienic.',
       workQuality: 5,
       punctuality: 5,
       behavior: 5,
     },
   });
-
   await prisma.staffReview.create({
     data: {
-      domesticStaffId: maid2.id,
-      reviewerId: resident10.id,
-      flatId: flats2[0].id,
+      domesticStaffId: nanny1.id,
+      reviewerId: res2.id,
+      flatId: flat('A301').id,
       rating: 5,
-      review: 'Savita is wonderful! She takes care of our home like it is her own. Very honest and hardworking.',
+      review: 'Savita is wonderful with kids. Ishaan loves her. Very caring and responsible.',
       workQuality: 5,
       punctuality: 5,
       behavior: 5,
     },
   });
+  console.log('✅ 4 reviews\n');
 
-  await prisma.staffReview.create({
+  // ============================================
+  // STAFF BOOKINGS (on-demand)
+  // ============================================
+  console.log('📅 Creating staff bookings...');
+  await prisma.staffBooking.create({
     data: {
-      domesticStaffId: cook2.id,
-      reviewerId: resident11.id,
-      flatId: flats2[12].id,
-      rating: 4,
-      review: 'Mangal cooks delicious food, especially his biryanis and curries. Would give 5 stars if he was more flexible with menu changes.',
-      workQuality: 5,
-      punctuality: 5,
-      behavior: 3,
+      domesticStaffId: maid1.id,
+      bookedById: res5.id,
+      flatId: flat('C201').id,
+      societyId: society.id,
+      bookingDate: daysFromNow(2),
+      startTime: '10:00',
+      endTime: '13:00',
+      durationHours: 3,
+      workType: 'Deep Cleaning',
+      requirements: 'Full house deep clean including kitchen and bathrooms',
+      estimatedCost: 800,
+      status: 'CONFIRMED',
+      acceptedAt: daysAgo(1),
     },
   });
+  await prisma.staffBooking.create({
+    data: {
+      domesticStaffId: cook1.id,
+      bookedById: res4.id,
+      flatId: flat('B401').id,
+      societyId: society.id,
+      bookingDate: daysFromNow(5),
+      startTime: '11:00',
+      endTime: '15:00',
+      durationHours: 4,
+      workType: 'Party Cooking',
+      requirements: 'Cook for 20 people — anniversary dinner. Veg only.',
+      estimatedCost: 3000,
+      status: 'PENDING',
+    },
+  });
+  console.log('✅ 2 staff bookings\n');
 
-  console.log('✅ 5 reviews\n');
-
+  // ============================================
   // PRE-APPROVALS
+  // ============================================
   console.log('✅ Creating pre-approvals...');
-  const validFrom = new Date();
-  const validUntil = daysFromNow(7);
-
   await prisma.preApproval.create({
     data: {
-      visitorName: 'Rohit Sharma',
-      visitorPhone: '+919845901234',
+      visitorName: 'Rohit Patil',
+      visitorPhone: '9830000001',
       visitorType: 'FRIEND',
-      purpose: 'Regular weekend visits - childhood friend',
-      qrToken: 'PRE_EMERALD_001',
+      purpose: 'Weekend visits — college friend',
+      qrToken: 'PRE_GF_001',
       validFrom: daysAgo(3),
       validUntil: daysFromNow(25),
       maxUses: 10,
       usedCount: 3,
       status: 'ACTIVE',
-      flatId: flats[0].id,
-      societyId: society1.id,
-      createdById: resident1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      createdById: res1.id,
     },
   });
-
   await prisma.preApproval.create({
     data: {
       visitorName: 'Dr. Anjali Menon',
-      visitorPhone: '+919845901235',
+      visitorPhone: '9830000002',
       visitorType: 'SERVICE_PROVIDER',
-      purpose: 'Physiotherapy sessions - 3x per week',
-      qrToken: 'PRE_EMERALD_002',
-      validFrom,
+      purpose: 'Physiotherapy sessions 3x/week for Mr. Joshi',
+      qrToken: 'PRE_GF_002',
+      validFrom: new Date(),
       validUntil: daysFromNow(30),
       maxUses: 15,
       usedCount: 0,
       status: 'ACTIVE',
-      flatId: flats[96].id,
-      societyId: society1.id,
-      createdById: resident7.id,
+      flatId: flat('B401').id,
+      societyId: society.id,
+      createdById: res4.id,
     },
   });
-
   await prisma.preApproval.create({
     data: {
-      visitorName: 'Ravi Kapoor',
-      visitorPhone: '+919845901236',
+      visitorName: 'Meena Kulkarni',
+      visitorPhone: '9830000003',
       visitorType: 'FAMILY_MEMBER',
-      purpose: 'Sister visiting from Delhi - staying for 2 weeks',
-      qrToken: 'PRE_EMERALD_003',
+      purpose: 'Mother visiting from Nagpur — staying 2 weeks',
+      qrToken: 'PRE_GF_003',
       validFrom: daysFromNow(2),
       validUntil: daysFromNow(16),
       maxUses: 20,
       usedCount: 0,
       status: 'ACTIVE',
-      flatId: flats[72].id,
-      societyId: society1.id,
-      createdById: resident8.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
+      createdById: res2.id,
     },
   });
-
-  await prisma.preApproval.create({
-    data: {
-      visitorName: 'Fitness Trainer Vikram',
-      visitorPhone: '+912227901234',
-      visitorType: 'SERVICE_PROVIDER',
-      purpose: 'Personal training sessions',
-      qrToken: 'PRE_ORCHID_001',
-      validFrom: daysAgo(10),
-      validUntil: daysFromNow(20),
-      maxUses: 12,
-      usedCount: 5,
-      status: 'ACTIVE',
-      flatId: flats2[0].id,
-      societyId: society2.id,
-      createdById: resident10.id,
-    },
-  });
-
-  // Expired pre-approval
   await prisma.preApproval.create({
     data: {
       visitorName: 'Mohan Electrician',
-      visitorPhone: '+919845901237',
+      visitorPhone: '9830000004',
       visitorType: 'SERVICE_PROVIDER',
-      purpose: 'Electrical work - completed',
-      qrToken: 'PRE_EMERALD_004',
+      purpose: 'Electrical work — completed',
+      qrToken: 'PRE_GF_004',
       validFrom: daysAgo(15),
       validUntil: daysAgo(2),
       maxUses: 5,
       usedCount: 4,
       status: 'EXPIRED',
-      flatId: flats[48].id,
-      societyId: society1.id,
-      createdById: resident5.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+      createdById: res3.id,
     },
   });
+  console.log('✅ 4 pre-approvals\n');
 
-  console.log('✅ 5 pre-approvals\n');
-
+  // ============================================
   // GATE PASSES
+  // ============================================
   console.log('🎫 Creating gate passes...');
-  const passValidFrom = new Date();
-  const passValidUntil = daysFromNow(3);
-
   await prisma.gatePass.create({
     data: {
       type: 'MATERIAL',
       title: 'Furniture Delivery',
-      description: 'New sofa set',
-      vehicleNumber: 'KA03AB9876',
-      qrToken: 'GATE_SKYLINE_001',
-      validFrom: passValidFrom,
-      validUntil: passValidUntil,
+      description: 'New sofa set from Pepperfry',
+      vehicleNumber: 'MH12XX9876',
+      qrToken: 'GP_GF_001',
+      validFrom: new Date(),
+      validUntil: daysFromNow(3),
       status: 'APPROVED',
       isUsed: false,
-      flatId: flats[0].id,
-      societyId: society1.id,
-      requestedById: resident1.id,
-      approvedById: admin1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      requestedById: res1.id,
+      approvedById: admin.id,
       approvedAt: new Date(),
     },
   });
-
   await prisma.gatePass.create({
     data: {
-      type: 'VEHICLE',
-      title: 'Vehicle Entry Test',
-      description: 'Race condition testing',
-      vehicleNumber: 'TEST1234',
-      qrToken: 'GATE_RACE_TEST_001',
-      validFrom: passValidFrom,
-      validUntil: passValidUntil,
-      status: 'APPROVED',
+      type: 'MOVE_IN',
+      title: 'New Tenant Moving In',
+      description: 'Packers and movers — 1 truck + 1 tempo',
+      vehicleNumber: 'MH14ZZ5432',
+      qrToken: 'GP_GF_002',
+      validFrom: daysFromNow(5),
+      validUntil: daysFromNow(6),
+      status: 'PENDING',
       isUsed: false,
-      flatId: flats[0].id,
-      societyId: society1.id,
-      requestedById: resident1.id,
-      approvedById: admin1.id,
-      approvedAt: new Date(),
+      flatId: flat('A501').id,
+      societyId: society.id,
+      requestedById: res1.id,
     },
   });
   console.log('✅ 2 gate passes\n');
 
-  // AUTO-APPROVE RULES
+  // ============================================
+  // DELIVERY AUTO-APPROVE RULES
+  // ============================================
   console.log('📦 Creating auto-approve rules...');
   await prisma.deliveryAutoApproveRule.create({
     data: {
-      flatId: flats[0].id,
-      societyId: society1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
       isActive: true,
       timeFrom: '08:00',
       timeUntil: '23:00',
-      createdById: resident1.id,
+      createdById: res1.id,
     },
   });
-
   await prisma.deliveryAutoApproveRule.create({
     data: {
-      flatId: flats[4].id,
-      societyId: society1.id,
+      flatId: flat('C201').id,
+      societyId: society.id,
       isActive: true,
-      createdById: resident4.id,
+      createdById: res5.id,
     },
   });
-  console.log('✅ 2 rules\n');
+  console.log('✅ 2 auto-approve rules\n');
 
+  // ============================================
   // EXPECTED DELIVERIES
+  // ============================================
   console.log('📦 Creating expected deliveries...');
   await prisma.expectedDelivery.create({
     data: {
-      flatId: flats[0].id,
-      societyId: society1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
       companyName: 'Amazon',
-      itemName: 'Books and electronics',
+      itemName: 'Laptop stand and webcam',
       expectedDate: daysFromNow(1),
       expiresAt: daysFromNow(2),
       autoApprove: true,
       isUsed: false,
-      createdById: resident1.id,
+      createdById: res1.id,
     },
   });
-  console.log('✅ 1 delivery\n');
+  await prisma.expectedDelivery.create({
+    data: {
+      flatId: flat('B102').id,
+      societyId: society.id,
+      companyName: 'Flipkart',
+      itemName: 'Air purifier',
+      expectedDate: daysFromNow(2),
+      expiresAt: daysFromNow(3),
+      autoApprove: true,
+      isUsed: false,
+      createdById: res3.id,
+    },
+  });
+  console.log('✅ 2 expected deliveries\n');
 
-  // ENTRIES
+  // ============================================
+  // ENTRIES (gate log)
+  // ============================================
   console.log('🚪 Creating entries...');
   await prisma.entry.create({
     data: {
       type: 'VISITOR',
       status: 'CHECKED_OUT',
       visitorName: 'Deepak Joshi',
-      visitorPhone: '+919845123001',
+      visitorPhone: '9840000001',
       visitorType: 'FRIEND',
-      purpose: 'Weekend visit - college reunion dinner',
+      purpose: 'Weekend visit — college reunion dinner',
       checkInTime: daysAgo(2),
       checkOutTime: hoursAgo(46),
-      flatId: flats[0].id,
-      societyId: society1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard1.id,
       wasAutoApproved: false,
-      approvedById: resident1.id,
+      approvedById: res1.id,
       approvedAt: daysAgo(2),
     },
   });
-
   await prisma.entry.create({
     data: {
       type: 'DELIVERY',
       status: 'CHECKED_OUT',
       visitorName: 'Swiggy - Rahul',
-      visitorPhone: '+919845123002',
-      purpose: 'Food delivery - Biryani Blues order #AB123456',
+      visitorPhone: '9840000002',
+      purpose: 'Food delivery — Biryani Blues order',
+      companyName: 'Swiggy',
       checkInTime: hoursAgo(3),
       checkOutTime: hoursAgo(2.9),
-      flatId: flats[0].id,
-      societyId: society1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard1.id,
       wasAutoApproved: true,
       autoApprovalReason: 'Auto-approved by delivery rule (8 AM - 11 PM)',
     },
   });
-
   await prisma.entry.create({
     data: {
       type: 'DOMESTIC_STAFF',
       status: 'CHECKED_OUT',
-      visitorName: 'Lakshmi Devi Sharma',
-      visitorPhone: '+919845678000',
+      visitorName: 'Lakshmi Devi',
+      visitorPhone: '9820000001',
       purpose: 'Regular cleaning work',
       checkInTime: hoursAgo(4),
       checkOutTime: hoursAgo(2),
-      flatId: flats[0].id,
-      societyId: society1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard1.id,
       wasAutoApproved: true,
-      autoApprovalReason: 'Verified domestic staff - QR scanned',
+      autoApprovalReason: 'Verified domestic staff — QR scanned',
       domesticStaffId: maid1.id,
     },
   });
-
   await prisma.entry.create({
     data: {
       type: 'DOMESTIC_STAFF',
       status: 'CHECKED_IN',
-      visitorName: 'Ramesh Kumar Yadav',
-      visitorPhone: '+919845678001',
+      visitorName: 'Ramesh Yadav',
+      visitorPhone: '9820000002',
       purpose: 'Evening cooking',
       checkInTime: hoursAgo(1.5),
-      flatId: flats[48].id,
-      societyId: society1.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard2.id,
       wasAutoApproved: true,
-      autoApprovalReason: 'Verified domestic staff - QR scanned',
+      autoApprovalReason: 'Verified domestic staff — QR scanned',
       domesticStaffId: cook1.id,
     },
   });
-
   await prisma.entry.create({
     data: {
-      type: 'VISITOR',
+      type: 'DELIVERY',
       status: 'CHECKED_OUT',
-      visitorName: 'Amazon Delivery - Suresh',
-      visitorPhone: '+919845123003',
-      purpose: 'Package delivery - AWB 1234567890',
+      visitorName: 'Amazon - Suresh',
+      visitorPhone: '9840000003',
+      purpose: 'Package delivery — AWB 1234567890',
+      companyName: 'Amazon',
       checkInTime: hoursAgo(26),
       checkOutTime: hoursAgo(25.9),
-      flatId: flats[16].id,
-      societyId: society1.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard3.id,
       wasAutoApproved: true,
-      autoApprovalReason: 'Expected delivery - auto-approved',
+      autoApprovalReason: 'Expected delivery — auto-approved',
     },
   });
-
   await prisma.entry.create({
     data: {
       type: 'VISITOR',
       status: 'CHECKED_OUT',
-      visitorName: 'Kumar Plumbing - Technician',
-      visitorPhone: '+919845234001',
+      visitorName: 'Kumar Plumbing',
+      visitorPhone: '9840000004',
       visitorType: 'SERVICE_PROVIDER',
       purpose: 'Bathroom tap repair',
       checkInTime: hoursAgo(28),
       checkOutTime: hoursAgo(26.5),
-      flatId: flats[96].id,
-      societyId: society1.id,
+      flatId: flat('B401').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard1.id,
       wasAutoApproved: false,
-      approvedById: resident7.id,
+      approvedById: res4.id,
       approvedAt: hoursAgo(28),
     },
   });
-
   await prisma.entry.create({
     data: {
       type: 'VISITOR',
       status: 'CHECKED_IN',
-      visitorName: 'Rohit Sharma',
-      visitorPhone: '+919845901234',
+      visitorName: 'Rohit Patil',
+      visitorPhone: '9830000001',
       visitorType: 'FRIEND',
       purpose: 'Weekend visit',
       checkInTime: hoursAgo(2),
-      flatId: flats[0].id,
-      societyId: society1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard1.id,
       wasAutoApproved: true,
-      autoApprovalReason: 'Pre-approved visitor - valid QR code',
+      autoApprovalReason: 'Pre-approved visitor — valid QR code',
     },
   });
-
   await prisma.entry.create({
     data: {
-      type: 'VISITOR',
+      type: 'DELIVERY',
       status: 'CHECKED_OUT',
       visitorName: 'Zomato - Vijay',
-      visitorPhone: '+919845123004',
-      purpose: 'Food delivery - Order #789456',
+      visitorPhone: '9840000005',
+      purpose: 'Food delivery — Order #789456',
+      companyName: 'Zomato',
       checkInTime: daysAgo(1),
       checkOutTime: hoursAgo(23.9),
-      flatId: flats[48].id,
-      societyId: society1.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard2.id,
       wasAutoApproved: true,
       autoApprovalReason: 'Auto-approved by delivery rule',
     },
   });
-
-  await prisma.entry.create({
-    data: {
-      type: 'VISITOR',
-      status: 'CHECKED_IN',
-      visitorName: 'Adv. Pradeep Menon',
-      visitorPhone: '+912227123001',
-      visitorType: 'GUEST',
-      purpose: 'Legal consultation meeting',
-      checkInTime: hoursAgo(0.5),
-      flatId: flats2[12].id,
-      societyId: society2.id,
-      createdById: guard4.id,
-      wasAutoApproved: false,
-      approvedById: resident11.id,
-      approvedAt: hoursAgo(0.5),
-    },
-  });
-
   await prisma.entry.create({
     data: {
       type: 'CAB',
       status: 'CHECKED_OUT',
       visitorName: 'Uber Driver - Ravi',
-      visitorPhone: '+919845123005',
-      vehicleNumber: 'KA01XY9999',
-      purpose: 'Uber pickup',
+      visitorPhone: '9840000006',
+      vehicleNumber: 'MH12XY9999',
+      purpose: 'Uber pickup — Priya Desai',
       checkInTime: hoursAgo(25),
       checkOutTime: hoursAgo(24.9),
-      flatId: flats[72].id,
-      societyId: society1.id,
+      flatId: flat('C201').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
       createdById: guard1.id,
       wasAutoApproved: true,
-      autoApprovalReason: 'Cab service - auto-approved',
+      autoApprovalReason: 'Cab service — auto-approved',
     },
   });
-
+  await prisma.entry.create({
+    data: {
+      type: 'VISITOR',
+      status: 'CHECKED_OUT',
+      visitorName: 'Blinkit - Delivery',
+      visitorPhone: '9840000007',
+      purpose: 'Grocery delivery',
+      companyName: 'Blinkit',
+      checkInTime: hoursAgo(5),
+      checkOutTime: hoursAgo(4.9),
+      flatId: flat('C401').id,
+      societyId: society.id,
+      gatePointId: mainGate.id,
+      createdById: guard3.id,
+      wasAutoApproved: true,
+      autoApprovalReason: 'Auto-approved by delivery rule',
+    },
+  });
   console.log('✅ 10 entries\n');
 
-  // ENTRY REQUESTS
+  // ============================================
+  // ENTRY REQUESTS (pending at gate)
+  // ============================================
   console.log('📸 Creating entry requests...');
   await prisma.entryRequest.create({
     data: {
       type: 'DELIVERY',
       status: 'PENDING',
       visitorName: 'Zomato Delivery',
-      visitorPhone: '+919300000001',
+      visitorPhone: '9850000001',
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
-      flatId: flats[4].id,
-      societyId: society1.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
       guardId: guard1.id,
     },
   });
-
   await prisma.entryRequest.create({
     data: {
       type: 'VISITOR',
       status: 'PENDING',
       visitorName: 'Amit Kumar',
-      visitorPhone: '+919300000002',
+      visitorPhone: '9850000002',
       expiresAt: new Date(Date.now() + 12 * 60 * 1000),
-      flatId: flats[40].id,
-      societyId: society1.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
       guardId: guard2.id,
     },
   });
   console.log('✅ 2 entry requests\n');
 
+  // ============================================
   // NOTICES
+  // ============================================
   console.log('📢 Creating notices...');
   await prisma.notice.create({
     data: {
-      title: 'Maintenance Fees Due - February 2026',
+      title: 'Monthly Maintenance Due — March 2026',
       description: `Dear Residents,
 
-This is a reminder that monthly maintenance fees for February 2026 are due by 5th February 2026.
+Monthly maintenance of ₹4,500 for March 2026 is due by 5th March.
 
-Amount: ₹3,500 per flat
 Payment Options:
-- Online: UPI ID - emeraldheights@sbi
-- Bank Transfer: Account No. 12345678901, IFSC: SBIN0001234
-- Cheque: Payable to "Emerald Heights RWA"
+- UPI: greenfieldheights@sbi
+- Bank Transfer: A/C 9876543210, IFSC: SBIN0012345
+- Cheque: Payable to "Greenfield Heights CHS"
 
-Please ensure timely payment to avoid late fee charges (₹100 after 10th Feb).
+Late fee of ₹200 after 10th March.
 
-For queries, contact the accounts committee.
-
-Regards,
-Management Committee`,
+— Management Committee`,
       type: 'GENERAL',
       priority: 'HIGH',
       isActive: true,
       isPinned: true,
       isUrgent: true,
       publishAt: daysAgo(2),
-      expiresAt: daysFromNow(8),
-      societyId: society1.id,
-      createdById: admin1.id,
+      expiresAt: daysFromNow(12),
+      societyId: society.id,
+      createdById: admin.id,
       images: [],
       documents: [],
     },
@@ -1680,32 +1400,25 @@ Management Committee`,
 
   await prisma.notice.create({
     data: {
-      title: 'URGENT: Water Supply Disruption - 25th January',
-      description: `Dear Residents,
+      title: 'Water Supply Disruption — 20th March',
+      description: `Due to PMC pipeline maintenance:
 
-Due to scheduled maintenance work by BWSSB (Bangalore Water Supply and Sewerage Board), water supply will be disrupted on:
+Date: 20th March 2026 (Friday)
+Time: 10:00 AM to 3:00 PM
+Affected: All towers
 
-Date: 25th January 2026 (Saturday)
-Time: 10:00 AM to 2:00 PM
-Affected Areas: All towers
+Please store water. Tanker available on call: 9820001111.
 
-Please store adequate water in advance. Tanker service will be available on call for emergencies.
-
-Emergency Contact: +91 9845123000
-
-We apologize for the inconvenience.
-
-Regards,
-Maintenance Team`,
+— Maintenance Team`,
       type: 'MAINTENANCE',
       priority: 'HIGH',
       isActive: true,
       isPinned: true,
       isUrgent: true,
       publishAt: daysAgo(1),
-      expiresAt: daysFromNow(2),
-      societyId: society1.id,
-      createdById: admin1.id,
+      expiresAt: daysFromNow(5),
+      societyId: society.id,
+      createdById: admin.id,
       images: [],
       documents: [],
     },
@@ -1713,29 +1426,28 @@ Maintenance Team`,
 
   await prisma.notice.create({
     data: {
-      title: 'Republic Day Celebration - 26th January 2026',
+      title: 'Holi Celebration — 14th March 2026',
       description: `Dear Residents,
 
-Join us for the Republic Day celebration at Emerald Heights!
+Join us for Holi celebrations!
 
 Schedule:
-🇮🇳 8:00 AM - Flag Hoisting Ceremony at Main Lawn
-🎤 8:15 AM - National Anthem
-🏆 8:30 AM - Cultural Program by Kids
-☕ 9:00 AM - Refreshments
+🎨 10:00 AM — Gulal play at Central Lawn
+🎶 11:00 AM — DJ Music
+🍔 12:00 PM — Lunch & Thandai
+🚿 2:00 PM — Pool access for all
 
-All residents are cordially invited. Let's celebrate together!
+All residents and families welcome!
 
-Cultural Committee
-Emerald Heights`,
+— Cultural Committee`,
       type: 'EVENT',
       priority: 'MEDIUM',
       isActive: true,
       isPinned: true,
       publishAt: daysAgo(5),
-      expiresAt: daysFromNow(3),
-      societyId: society1.id,
-      createdById: admin1.id,
+      expiresAt: daysFromNow(1),
+      societyId: society.id,
+      createdById: admin.id,
       images: [],
       documents: [],
     },
@@ -1743,29 +1455,25 @@ Emerald Heights`,
 
   await prisma.notice.create({
     data: {
-      title: 'New Parking Rules - Effective 1st February',
-      description: `Dear Residents,
+      title: 'New Parking Rules — Effective 1st April',
+      description: `New parking regulations:
 
-New parking regulations will be enforced from 1st February 2026:
+1. All vehicles MUST display society stickers
+2. Visitor parking limited to 3 hours
+3. No parking in fire lane — towing enforced
+4. Two-wheelers only in designated zones
+5. Guest vehicles register at gate
 
-1. All vehicles MUST display parking stickers
-2. Visitor parking limited to 2 hours
-3. No parking in fire lane (Towing will be enforced)
-4. Two-wheeler parking only in designated zones
-5. Guest vehicles must register at gate
+Stickers: ₹200/vehicle at admin office.
 
-Parking stickers available at admin office. Cost: ₹200 per vehicle.
-
-Please cooperate to ensure smooth parking management.
-
-Security Committee`,
+— Security Committee`,
       type: 'GENERAL',
       priority: 'MEDIUM',
       isActive: true,
       publishAt: daysAgo(7),
       expiresAt: daysFromNow(30),
-      societyId: society1.id,
-      createdById: admin1.id,
+      societyId: society.id,
+      createdById: admin.id,
       images: [],
       documents: [],
     },
@@ -1773,593 +1481,396 @@ Security Committee`,
 
   await prisma.notice.create({
     data: {
-      title: 'Fitness Center Upgrade Complete!',
-      description: `Dear Members,
+      title: 'Pest Control — 22nd March',
+      description: `Quarterly pest control:
 
-We're excited to announce that our fitness center renovation is complete!
+Tower A: 22nd March, 9 AM - 12 PM
+Tower B: 22nd March, 2 PM - 5 PM
+Tower C: 23rd March, 9 AM - 12 PM
 
-New Equipment Added:
-✓ 3 Commercial-grade Treadmills
-✓ 2 Elliptical Trainers
+Keep windows open, cover food, remove pets for 2 hours.
+
+Contact: 9820001234 to reschedule.`,
+      type: 'MAINTENANCE',
+      priority: 'MEDIUM',
+      isActive: true,
+      publishAt: daysAgo(3),
+      expiresAt: daysFromNow(8),
+      societyId: society.id,
+      createdById: admin.id,
+      images: [],
+      documents: [],
+    },
+  });
+
+  await prisma.notice.create({
+    data: {
+      title: 'Gym Upgrade Complete!',
+      description: `New equipment added:
+✓ 2 Commercial Treadmills
 ✓ Rowing Machine
 ✓ Additional Free Weights
 ✓ New Yoga Mats
 
-Hours: 5:30 AM - 10:00 PM (Daily)
+Hours: 5:30 AM - 10:00 PM daily.
+Trainer available Mon-Sat, 6-8 AM and 6-8 PM.
 
-Certified trainer available Mon-Sat, 6-8 AM and 6-8 PM.
-
-Stay Fit, Stay Healthy!
-Amenities Committee`,
+— Amenities Committee`,
       type: 'GENERAL',
       priority: 'LOW',
       isActive: true,
-      publishAt: daysAgo(3),
-      societyId: society2.id,
-      createdById: admin2.id,
-      images: [],
-      documents: [],
-    },
-  });
-
-  await prisma.notice.create({
-    data: {
-      title: 'Pest Control Schedule - February',
-      description: `Quarterly pest control treatment scheduled for:
-
-Tower A: 1st February - 9 AM to 12 PM
-Tower B: 1st February - 2 PM to 5 PM
-Tower C: 2nd February - 9 AM to 12 PM
-
-Please keep windows open and vacate for 2 hours during treatment.
-Cover food items and remove pets temporarily.
-
-Contact: +91 9845123111 for rescheduling`,
-      type: 'MAINTENANCE',
-      priority: 'MEDIUM',
-      isActive: true,
       publishAt: daysAgo(4),
-      expiresAt: daysFromNow(10),
-      societyId: society1.id,
-      createdById: admin1.id,
+      societyId: society.id,
+      createdById: admin.id,
       images: [],
       documents: [],
     },
   });
-
   console.log('✅ 6 notices\n');
 
+  // ============================================
   // COMPLAINTS
+  // ============================================
   console.log('📝 Creating complaints...');
   await prisma.complaint.create({
     data: {
-      title: 'Elevator #2 in Tower A Not Working',
-      description: `Elevator #2 in Tower A has been malfunctioning for the past 3 days. It gets stuck between floors 5 and 6. This is causing major inconvenience especially for elderly residents and families with small children.
-
-The elevator makes strange noises before stopping. We've informed the security multiple times but no action has been taken yet.
-
-Please arrange for immediate repair as this is a safety hazard.`,
+      title: 'Elevator #2 in Tower A Stuck',
+      description: `Elevator #2 has been malfunctioning for 3 days. Gets stuck between floors 5 and 6 with strange grinding noise. Major inconvenience for elderly residents. Please arrange immediate repair — safety hazard.`,
       category: 'MAINTENANCE',
       priority: 'HIGH',
       status: 'IN_PROGRESS',
-      flatId: flats[0].id,
-      societyId: society1.id,
-      reportedById: resident1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      reportedById: res1.id,
       isAnonymous: false,
     },
   });
-
   await prisma.complaint.create({
     data: {
       title: 'Water Leakage from Overhead Tank',
-      description: `There is continuous water leakage from the overhead tank near the main gate. Water is dripping onto the pavement making it slippery and dangerous, especially during morning and evening rush hours.
-
-The issue has been ongoing for about a week now. This is also causing water wastage which will reflect in our bills.
-
-Location: Near main gate, below overhead tank
-Urgency: High - safety concern`,
+      description: `Continuous dripping from overhead tank near main gate. Pavement slippery and dangerous. Ongoing for a week. Also causing water wastage.`,
       category: 'WATER',
       priority: 'HIGH',
       status: 'RESOLVED',
-      flatId: flats[16].id,
-      societyId: society1.id,
-      reportedById: resident4.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
+      reportedById: res2.id,
       isAnonymous: false,
       resolvedAt: daysAgo(2),
     },
   });
-
   await prisma.complaint.create({
     data: {
-      title: 'Loud Music and Party Noise After 11 PM',
-      description: `My neighbor in B0901 has been playing extremely loud music almost every weekend till 1-2 AM. Last Saturday (20th Jan), there was a party with loud music till 1:30 AM.
-
-This is disturbing our sleep and affecting my child's studies. I have personally requested them to reduce volume but they are not cooperating.
-
-Request management to enforce society rules regarding noise levels after 11 PM.`,
+      title: 'Loud Music After 11 PM',
+      description: `Neighbor in B103 plays loud music every weekend till 1-2 AM. Disturbing sleep and affecting child's studies. Requested them to reduce volume but no cooperation. Please enforce noise rules.`,
       category: 'NOISE',
       priority: 'MEDIUM',
       status: 'OPEN',
-      flatId: flats[48].id,
-      societyId: society1.id,
-      reportedById: resident5.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+      reportedById: res3.id,
       isAnonymous: false,
     },
   });
-
   await prisma.complaint.create({
     data: {
-      title: 'Unauthorized Parking in My Designated Slot',
-      description: `A white Honda City (KA05XX1234) has been regularly parking in my designated parking spot (Tower A, Slot #A-101) for the past week.
-
-I have tried contacting the vehicle owner through security but no response. Yesterday I had to park on the street due to this.
-
-Please take strict action and ensure my parking slot remains available.`,
+      title: 'Unauthorized Parking in My Slot',
+      description: `A white car (MH12XX1234) regularly parks in my designated spot Tower A, Slot #A-101. Yesterday had to park on the street. Please take action.`,
       category: 'PARKING',
       priority: 'HIGH',
       status: 'OPEN',
-      flatId: flats[0].id,
-      societyId: society1.id,
-      reportedById: resident1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      reportedById: res1.id,
       isAnonymous: false,
     },
   });
-
   await prisma.complaint.create({
     data: {
-      title: 'Street Lights Not Working in Tower C Area',
-      description: `4 street lights near Tower C parking area have not been working for over 2 weeks now. The area becomes very dark after sunset which is a security concern.
-
-Several residents, especially women, feel unsafe walking to their cars in the evening.
-
-Request urgent repair/replacement of these lights.`,
+      title: 'Street Lights Not Working — Tower C',
+      description: `4 street lights near Tower C parking area out for 2+ weeks. Very dark after sunset. Security concern especially for women.`,
       category: 'ELECTRICITY',
       priority: 'HIGH',
       status: 'IN_PROGRESS',
-      flatId: flats[96].id,
-      societyId: society1.id,
-      reportedById: resident7.id,
+      flatId: flat('C201').id,
+      societyId: society.id,
+      reportedById: res5.id,
       isAnonymous: false,
     },
   });
-
   await prisma.complaint.create({
     data: {
-      title: 'Illegal Dumping of Construction Waste',
-      description: `Someone has been dumping construction debris near the garbage collection area behind Tower B. This has been happening for the past 4-5 days.
-
-The waste is creating a mess and bad smell. Also blocking the access path.
-
-Please identify who is doing this and remove the waste immediately.`,
+      title: 'Construction Debris Dumped Near Tower B',
+      description: `Someone dumping construction debris behind Tower B garbage area for 4-5 days. Bad smell and blocking path. Please identify culprit and remove waste.`,
       category: 'CLEANLINESS',
       priority: 'MEDIUM',
       status: 'OPEN',
-      flatId: flats[72].id,
-      societyId: society1.id,
-      reportedById: resident8.id,
+      flatId: flat('C401').id,
+      societyId: society.id,
+      reportedById: res6.id,
       isAnonymous: false,
     },
   });
-
   await prisma.complaint.create({
     data: {
-      title: 'Swimming Pool Water Quality Issue',
-      description: `The swimming pool water appears murky and has a strange smell. My kids complained of skin irritation after swimming yesterday.
-
-I suspect the chlorine levels are not being maintained properly. Request water quality testing and proper treatment.`,
+      title: 'Pool Water Quality Issue',
+      description: `Pool water murky with strange smell. Kids complained of skin irritation after swimming yesterday. Chlorine levels seem off. Request water testing.`,
       category: 'OTHER',
       priority: 'MEDIUM',
       status: 'IN_PROGRESS',
-      flatId: flats[48].id,
-      societyId: society1.id,
-      reportedById: resident6.id,
+      flatId: flat('B102').id,
+      societyId: society.id,
+      reportedById: res3Spouse.id,
       isAnonymous: false,
     },
   });
-
   await prisma.complaint.create({
     data: {
-      title: 'Anonymous - Security Guard Misbehavior',
-      description: `One of the security guards at the east gate has been rude and uncooperative. He delays entry approvals unnecessarily and speaks in a disrespectful tone to residents.
-
-This happened on multiple occasions in the past week. Please address this behavior issue.
-
-(Keeping anonymous to avoid confrontation)`,
+      title: 'Security Guard Misbehavior',
+      description: `One guard at main gate has been rude and delays entry approvals. Disrespectful tone with residents on multiple occasions. Keeping anonymous to avoid confrontation.`,
       category: 'SECURITY',
       priority: 'HIGH',
       status: 'OPEN',
-      flatId: flats[16].id,
-      societyId: society1.id,
-      reportedById: resident4.id,
+      flatId: flat('A301').id,
+      societyId: society.id,
+      reportedById: res2.id,
       isAnonymous: true,
     },
   });
+  console.log('✅ 8 complaints\n');
 
-  await prisma.complaint.create({
-    data: {
-      title: 'Visitor Parking Occupied by Residents',
-      description: `Several resident vehicles are permanently parked in visitor parking slots in Orchid Wing. This leaves no space for actual visitors.
-
-Yesterday my guest had to park on the main road and got a parking ticket.
-
-Please mark and enforce visitor parking strictly.`,
-      category: 'PARKING',
-      priority: 'MEDIUM',
-      status: 'OPEN',
-      flatId: flats2[0].id,
-      societyId: society2.id,
-      reportedById: resident10.id,
-      isAnonymous: false,
-    },
-  });
-
-  await prisma.complaint.create({
-    data: {
-      title: 'Gym Equipment Broken',
-      description: `The treadmill #2 in the gym stops working after 5-10 minutes of use. The elliptical machine also makes a loud squeaking noise.
-
-These issues have been there for over a month. Request repair or replacement.`,
-      category: 'OTHER',
-      priority: 'MEDIUM',
-      status: 'RESOLVED',
-      flatId: flats2[12].id,
-      societyId: society2.id,
-      reportedById: resident11.id,
-      isAnonymous: false,
-      resolvedAt: daysAgo(5),
-    },
-  });
-
-  console.log('✅ 10 complaints\n');
-
+  // ============================================
   // EMERGENCIES
+  // ============================================
   console.log('🚨 Creating emergencies...');
   await prisma.emergency.create({
     data: {
       type: 'FIRE',
-      description: `Kitchen fire at A0101. Resident attempted to cook while oil was overheated. Small fire broke out but was quickly controlled using kitchen fire extinguisher.
+      description: `Kitchen fire in A101. Oil overheated while cooking. Small fire controlled with extinguisher. Fire brigade called as precaution. No injuries. Minor cabinet damage.
 
-Fire brigade called as precaution. No injuries. Minor damage to kitchen cabinet.
-
-Action taken: Fire extinguisher replaced, fire safety training scheduled for all residents.`,
+Action: Fire extinguisher replaced, safety training scheduled.`,
       status: 'RESOLVED',
       resolvedAt: daysAgo(15),
-      flatId: flats[0].id,
-      societyId: society1.id,
-      reportedById: resident1.id,
+      flatId: flat('A101').id,
+      societyId: society.id,
+      reportedById: res1.id,
     },
   });
-
   await prisma.emergency.create({
     data: {
       type: 'MEDICAL',
-      description: `Elderly resident (Mr. Rahul Kapoor, 68 years) from C0101 slipped and fell in bathroom. Unable to get up, suspected hip fracture.
+      description: `Mr. Mohan Joshi (B401) slipped in bathroom. Suspected hip injury. Ambulance arrived in 12 mins. Transported to Ruby Hall Clinic. Surgery done, recovering well.
 
-Family called emergency number. Ambulance arrived in 15 minutes. Patient transported to Manipal Hospital.
-
-Follow-up: Patient underwent hip surgery, recovering well. Family requested installation of grab bars in bathroom.`,
+Follow-up: Grab bars installation requested.`,
       status: 'RESOLVED',
       resolvedAt: daysAgo(8),
-      flatId: flats[96].id,
-      societyId: society1.id,
-      reportedById: resident7.id,
+      flatId: flat('B401').id,
+      societyId: society.id,
+      reportedById: res4Spouse.id,
     },
   });
-
-  await prisma.emergency.create({
-    data: {
-      type: 'THEFT',
-      description: `Attempted break-in reported at B0702 around 2:30 AM. Resident heard suspicious noise near window. Security personnel immediately dispatched.
-
-Found ladder placed against building. Intruder fled when alarm rang. CCTV footage captured image. Police complaint filed (FIR #12345/2026).
-
-Action: Enhanced night patrolling, additional CCTV cameras installed.`,
-      status: 'RESOLVED',
-      resolvedAt: daysAgo(12),
-      flatId: flats[72].id,
-      societyId: society1.id,
-      reportedById: resident8.id,
-    },
-  });
-
   await prisma.emergency.create({
     data: {
       type: 'OTHER',
-      description: `Major water pipe burst on floor 6 of Tower A. Water flooding into multiple flats (A0601, A0602, A0603).
+      description: `Water pipe burst on floor 3, Tower C. Flooding into C301, C302. Main supply shut off. Cleanup completed in 3 hours. Electrical supply temporarily disconnected.
 
-Emergency maintenance team called. Main water supply shut off. Water extraction and cleanup completed. Affected flats' electrical supply temporarily disconnected as safety measure.
-
-Repairs completed in 4 hours. Insurance claim filed for damage restoration.`,
+Insurance claim filed.`,
       status: 'RESOLVED',
       resolvedAt: daysAgo(20),
-      flatId: flats[20].id,
-      societyId: society1.id,
-      reportedById: admin1.id,
+      flatId: flat('C301').id,
+      societyId: society.id,
+      reportedById: admin.id,
     },
   });
+  console.log('✅ 3 emergencies\n');
 
-  console.log('✅ 4 emergencies\n');
-
+  // ============================================
   // VENDORS
+  // ============================================
   console.log('🏪 Creating vendors...');
-  await prisma.vendor.create({
-    data: {
-      name: 'Kumar Plumbing Services',
-      category: 'PLUMBER',
-      phone: '+919845234001',
-      email: 'info@kumarplumbing.com',
-      description: 'Professional plumbing services - pipe repairs, tap installation, drainage cleaning, water tank maintenance. Available 24/7. Licensed and insured. 15+ years experience.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
+  const vendorData = [
+    { name: 'Kumar Plumbing Services', category: 'PLUMBER' as const, phone: '9860000001', email: 'info@kumarplumbing.com', description: 'Professional plumbing — pipe repairs, tap installation, drainage cleaning. Available 24/7. 15+ years experience.' },
+    { name: 'Bright Spark Electricians', category: 'ELECTRICIAN' as const, phone: '9860000002', email: 'contact@brightspark.in', description: 'Certified electricians — wiring, MCB, geyser/AC repairs, smart home setup. Emergency service available.' },
+    { name: 'AC Care Technicians', category: 'APPLIANCE_REPAIR' as const, phone: '9860000003', email: 'service@accare.com', description: 'AC installation, repair, gas refilling, AMC. All brands. Same-day service. Warranty on repairs.' },
+    { name: 'QuickFix Carpenters', category: 'CARPENTER' as const, phone: '9860000004', email: 'work@quickfix.com', description: 'Custom furniture, door/window repairs, modular kitchen, wardrobe work. Free estimates.' },
+    { name: 'HomePaint Solutions', category: 'PAINTER' as const, phone: '9860000005', email: 'paint@homepaint.in', description: 'Interior/exterior painting, texture work, waterproofing. Asian Paints authorized applicators.' },
+    { name: 'PestGuard Services', category: 'PEST_CONTROL' as const, phone: '9860000006', email: 'info@pestguard.in', description: 'Eco-friendly pest control — cockroaches, termites, bedbugs, rodents. Safe for kids & pets. AMC available.' },
+    { name: 'CleanHome Pro', category: 'CLEANER' as const, phone: '9860000007', email: 'book@cleanhome.in', description: 'Deep cleaning, sofa cleaning, bathroom sanitization, move-in/out cleaning. Trained staff.' },
+    { name: 'GreenThumb Landscaping', category: 'GARDENER' as const, phone: '9860000008', email: 'hello@greenthumb.in', description: 'Garden maintenance, plant care, landscape design, terrace garden setup. Monthly plans available.' },
+  ];
 
-  await prisma.vendor.create({
-    data: {
-      name: 'Bright Spark Electricians',
-      category: 'ELECTRICIAN',
-      phone: '+919845234002',
-      email: 'contact@brightspark.in',
-      description: 'Certified electricians for all electrical work - wiring, MCB installation, geyser/AC repairs, smart home setup. Emergency service available. 10+ years in business.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
+  for (const v of vendorData) {
+    await prisma.vendor.create({
+      data: {
+        ...v,
+        isVerified: true,
+        isActive: true,
+        societyId: society.id,
+        addedById: admin.id,
+      },
+    });
+  }
+  console.log('✅ 8 vendors\n');
 
-  await prisma.vendor.create({
-    data: {
-      name: 'AC Care Technicians',
-      category: 'APPLIANCE_REPAIR',
-      phone: '+919845234003',
-      email: 'service@accare.com',
-      description: 'Specialized in AC installation, repair, gas refilling, and AMC. All brands serviced. Same-day service. Warranty on repairs.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
-
-  await prisma.vendor.create({
-    data: {
-      name: 'QuickFix Carpenters',
-      category: 'CARPENTER',
-      phone: '+919845234004',
-      email: 'work@quickfixcarpentry.com',
-      description: 'Custom furniture, door/window repairs, modular kitchen installation, wardrobe work. Quality workmanship guaranteed. Free estimates.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
-
-  await prisma.vendor.create({
-    data: {
-      name: 'HomePaint Solutions',
-      category: 'PAINTER',
-      phone: '+919845234005',
-      email: 'paint@homepaint.in',
-      description: 'Interior and exterior painting, texture work, waterproofing. Asian Paints, Berger authorized applicators. Clean and professional service.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
-
-  await prisma.vendor.create({
-    data: {
-      name: 'PestGuard Services',
-      category: 'PEST_CONTROL',
-      phone: '+919845234006',
-      email: 'info@pestguard.co.in',
-      description: 'Eco-friendly pest control for cockroaches, termites, bedbugs, rodents. Licensed by health dept. Safe for kids and pets. AMC available.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
-
-  await prisma.vendor.create({
-    data: {
-      name: 'CleanHome Services',
-      category: 'CLEANER',
-      phone: '+919845234007',
-      email: 'booking@cleanhome.com',
-      description: 'Professional deep cleaning, sofa cleaning, bathroom sanitization, move-in/out cleaning. Trained staff. Affordable packages.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
-
-  await prisma.vendor.create({
-    data: {
-      name: 'PackersMovers Express',
-      category: 'OTHER',
-      phone: '+919845234008',
-      email: 'relocate@packersmove.com',
-      description: 'Reliable packing and moving services. Local and intercity. Insurance covered. Car transport available. Free quotation.',
-      isVerified: true,
-      isActive: true,
-      societyId: society1.id,
-      addedById: admin1.id,
-    },
-  });
-
-  await prisma.vendor.create({
-    data: {
-      name: 'Mumbai Plumbing Co.',
-      category: 'PLUMBER',
-      phone: '+912227234001',
-      email: 'service@mumbaiplumbing.in',
-      description: 'Trusted plumbing solutions across Mumbai. 24x7 emergency service. Bathroom fittings, pipeline work, water heater installation.',
-      isVerified: true,
-      isActive: true,
-      societyId: society2.id,
-      addedById: admin2.id,
-    },
-  });
-
-  await prisma.vendor.create({
-    data: {
-      name: 'ElectroFix Mumbai',
-      category: 'ELECTRICIAN',
-      phone: '+912227234002',
-      email: 'info@electrofix.co.in',
-      description: 'Licensed electrical contractors. Home automation, circuit repairs, inverter installation. Prompt and reliable service.',
-      isVerified: true,
-      isActive: true,
-      societyId: society2.id,
-      addedById: admin2.id,
-    },
-  });
-
-  console.log('✅ 10 vendors\n');
-
+  // ============================================
   // VISITOR FREQUENCY
+  // ============================================
   console.log('👥 Creating visitor frequency...');
   await prisma.visitorFrequency.create({
     data: {
-      visitorName: 'Rohit Sharma',
-      visitorPhone: '+919100000001',
-      flatId: flats[0].id,
-      societyId: society1.id,
+      visitorName: 'Rohit Patil',
+      visitorPhone: '9830000001',
+      flatId: flat('A101').id,
+      societyId: society.id,
       visitCount: 8,
       lastVisit: daysAgo(2),
     },
   });
-
   await prisma.visitorFrequency.create({
     data: {
       visitorName: 'Lakshmi Devi',
-      visitorPhone: '+919000000001',
-      flatId: flats[0].id,
-      societyId: society1.id,
+      visitorPhone: '9820000001',
+      flatId: flat('A101').id,
+      societyId: society.id,
       visitCount: 45,
       lastVisit: hoursAgo(2),
     },
   });
-  console.log('✅ 2 frequency records\n');
+  await prisma.visitorFrequency.create({
+    data: {
+      visitorName: 'Ramesh Yadav',
+      visitorPhone: '9820000002',
+      flatId: flat('B102').id,
+      societyId: society.id,
+      visitCount: 38,
+      lastVisit: hoursAgo(1.5),
+    },
+  });
+  console.log('✅ 3 frequency records\n');
 
+  // ============================================
   // NOTIFICATIONS
+  // ============================================
   console.log('🔔 Creating notifications...');
   await prisma.notification.create({
     data: {
       type: 'SYSTEM',
-      title: 'Welcome',
-      message: 'Account activated',
-      userId: resident1.id,
-      societyId: society1.id,
+      title: 'Welcome to Greenfield Heights',
+      message: 'Your account has been activated.',
+      userId: res1.id,
+      societyId: society.id,
       isRead: true,
       readAt: daysAgo(60),
     },
   });
-
   await prisma.notification.create({
     data: {
       type: 'ENTRY_REQUEST',
-      title: 'Delivery Waiting',
-      message: 'Zomato delivery at gate',
-      userId: resident4.id,
-      societyId: society1.id,
+      title: 'Delivery at Gate',
+      message: 'Zomato delivery waiting for approval at main gate.',
+      userId: res2.id,
+      societyId: society.id,
       isRead: false,
       referenceType: 'EntryRequest',
     },
   });
-
   await prisma.notification.create({
     data: {
       type: 'ONBOARDING_STATUS',
-      title: 'Booking Approved',
-      message: 'Hall booking approved',
-      userId: resident1.id,
-      societyId: society1.id,
+      title: 'Booking Confirmed',
+      message: 'Your banquet hall booking has been confirmed for March 21.',
+      userId: res1.id,
+      societyId: society.id,
       isRead: true,
       readAt: daysAgo(1),
       referenceType: 'AmenityBooking',
     },
   });
-
   await prisma.notification.create({
     data: {
       type: 'DELIVERY_REQUEST',
-      title: 'Package Arriving',
-      message: 'Amazon package today',
-      userId: resident1.id,
-      societyId: society1.id,
+      title: 'Amazon Package',
+      message: 'Your Amazon delivery is expected today.',
+      userId: res1.id,
+      societyId: society.id,
       isRead: false,
     },
   });
-
   await prisma.notification.create({
     data: {
       type: 'EMERGENCY_ALERT',
-      title: 'Fire Incident',
-      message: 'Minor fire in A-101, controlled',
-      userId: admin1.id,
-      societyId: society1.id,
+      title: 'Fire Incident Resolved',
+      message: 'Kitchen fire in A-101 has been controlled. No injuries.',
+      userId: admin.id,
+      societyId: society.id,
       isRead: true,
-      readAt: daysAgo(7),
+      readAt: daysAgo(15),
     },
   });
-  console.log('✅ 5 notifications\n');
+  await prisma.notification.create({
+    data: {
+      type: 'STAFF_CHECKIN',
+      title: 'Staff Arrived',
+      message: 'Lakshmi Devi (Maid) checked in at 8:05 AM.',
+      userId: res1.id,
+      societyId: society.id,
+      isRead: true,
+      readAt: hoursAgo(4),
+    },
+  });
+  console.log('✅ 6 notifications\n');
 
+  // ============================================
   // SUMMARY
-  console.log('\n🎉 Realistic seed data completed!\n');
+  // ============================================
+  console.log('\n🎉 Seed completed!\n');
   console.log('=====================================');
-  console.log('SUMMARY:');
+  console.log('  GREENFIELD HEIGHTS — Pune');
   console.log('=====================================');
-  console.log(`✅ Societies: 2 (Emerald Heights, Orchid Gardens)`);
-  console.log(`✅ Gate Points: 4`);
-  console.log(`✅ Blocks: 4 (3 towers + 1 wing)`);
-  console.log(`✅ Flats: ${flats.length + flats2.length} units`);
-  console.log(`✅ Users: 20+ (including families)`);
-  console.log(`✅ Vehicles: 10 (cars & bikes)`);
-  console.log(`✅ Amenities: 7 (gym, pool, halls, etc.)`);
-  console.log(`✅ Bookings: 5 (confirmed, pending, completed)`);
-  console.log(`✅ Staff: 6 (maids, cooks, driver, gardener)`);
-  console.log(`✅ Assignments: 7`);
-  console.log(`✅ Attendance: 2`);
-  console.log(`✅ Reviews: 5`);
-  console.log(`✅ Pre-approvals: 5 (active & expired)`);
-  console.log(`✅ Gate Passes: 2`);
-  console.log(`✅ Auto-approve Rules: 2`);
-  console.log(`✅ Expected Deliveries: 1`);
-  console.log(`✅ Entries: 10 (visitors, staff, deliveries, cab)`);
-  console.log(`✅ Entry Requests: 2 (pending approval)`);
-  console.log(`✅ Notices: 6 (maintenance, events, rules)`);
-  console.log(`✅ Complaints: 10 (various categories)`);
-  console.log(`✅ Emergencies: 4 (fire, medical, theft, water)`);
-  console.log(`✅ Vendors: 10 (plumber, electrician, etc.)`);
-  console.log(`✅ Visitor Frequency: 2`);
-  console.log(`✅ Notifications: 5`);
+  console.log(`  Society:        1`);
+  console.log(`  Gate Points:    2`);
+  console.log(`  Blocks:         3 towers (A, B, C)`);
+  console.log(`  Flats:          ${flats.length}`);
+  console.log(`  Users:          18 (1 super admin, 1 admin, 3 guards, 13 residents)`);
+  console.log(`  Onboarding:     6 approved requests`);
+  console.log(`  Vehicles:       7`);
+  console.log(`  Amenities:      6`);
+  console.log(`  Bookings:       6 (confirmed, pending, completed, cancelled)`);
+  console.log(`  Staff:          5 (maid, cook, driver, gardener, nanny)`);
+  console.log(`  Assignments:    6`);
+  console.log(`  Attendance:     3`);
+  console.log(`  Reviews:        4`);
+  console.log(`  Staff Bookings: 2 (confirmed, pending)`);
+  console.log(`  Pre-approvals:  4 (active, expired)`);
+  console.log(`  Gate Passes:    2 (approved, pending)`);
+  console.log(`  Auto-approve:   2 rules`);
+  console.log(`  Deliveries:     2 expected`);
+  console.log(`  Entries:        10 (visitors, staff, deliveries, cab)`);
+  console.log(`  Entry Requests: 2 (pending at gate)`);
+  console.log(`  Notices:        6`);
+  console.log(`  Complaints:     8`);
+  console.log(`  Emergencies:    3`);
+  console.log(`  Vendors:        8`);
+  console.log(`  Visitor Freq:   3`);
+  console.log(`  Notifications:  6`);
   console.log('=====================================\n');
-  console.log('🔐 PASSWORD FOR ALL USERS: Test@1234');
-  console.log('📧 EMAIL FORMAT: name@domain.com');
-  console.log('📱 PHONE: +91-XXXXXXXXXX');
-  console.log('=====================================');
-  console.log('\n💡 Sample Login Credentials:');
+  console.log('🔑 KEY ACCOUNTS:');
   console.log('-------------------------------------');
-  console.log('Super Admin:');
-  console.log('  Email: superadmin@societygate.com');
-  console.log('  Phone: +919999999999');
-  console.log('\nSociety Admin (Emerald Heights):');
-  console.log('  Email: secretary@emeraldheights.in');
-  console.log('  Phone: +919876543210');
-  console.log('\nGuard:');
-  console.log('  Email: ramesh.security@emeraldheights.in');
-  console.log('  Phone: +919123456780');
-  console.log('\nResident:');
-  console.log('  Email: amit.verma@techcorp.com');
-  console.log('  Phone: +919845123456');
+  console.log('SUPER ADMIN (Platform):');
+  console.log('  Phone: 9999900000');
+  console.log('\nSOCIETY ADMIN (Your account):');
+  console.log('  Phone: 7484827530');
+  console.log('  Name:  Agastya');
+  console.log('  Role:  ADMIN of Greenfield Heights');
+  console.log('\nGUARD:');
+  console.log('  Phone: 9800000001 (Rajendra Singh)');
+  console.log('\nRESIDENTS:');
+  console.log('  Phone: 9811000001 (Amit Sharma — A101)');
+  console.log('  Phone: 9811000004 (Dr. Sneha Kulkarni — A301)');
+  console.log('  Phone: 9811000006 (Vikram Chauhan — B102)');
+  console.log('  Phone: 9811000008 (Mohan Joshi — B401)');
+  console.log('  Phone: 9811000010 (Priya Desai — C201)');
+  console.log('  Phone: 9811000011 (Karthik Nair — C401)');
   console.log('=====================================\n');
 }
 
