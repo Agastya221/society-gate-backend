@@ -7,6 +7,10 @@ import {
 import { PreApprovalController } from '../../modules/preapproval/preapproval.controller';
 import { scanGatePass } from '../../modules/gatepass/gatepass.controller';
 import { scanQRCode } from '../../modules/domestic-staff/domestic-staff.controller';
+import {
+  respondToEmergency,
+  getActiveEmergencies,
+} from '../../modules/emergency/emergency.controller';
 
 const router = Router();
 const preApprovalController = new PreApprovalController();
@@ -37,5 +41,9 @@ router.post('/entry-requests', createEntryRequest);
 router.post('/scan/preapproval', preApprovalController.scanPreApprovalQR);
 router.post('/scan/gatepass', scanGatePass);
 router.post('/scan/staff', scanQRCode);
+
+// emergency
+router.get('/emergencies/active', getActiveEmergencies);
+router.patch('/emergencies/:id/respond', respondToEmergency);
 
 export default router;

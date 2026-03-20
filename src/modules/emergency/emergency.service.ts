@@ -9,6 +9,17 @@ import type {
 
 export class EmergencyService {
   async createEmergency(data: CreateEmergencyDTO, reportedById: string) {
+    // auto-attach reporter's flat if frontend didn't send one
+    if (!data.flatId) {
+      const reporter = await prisma.user.findUnique({
+        where: { id: reportedById },
+        select: { flatId: true },
+      });
+      if (reporter?.flatId) {
+        data.flatId = reporter.flatId;
+      }
+    }
+
     const emergency = await prisma.emergency.create({
       data: {
         ...data,

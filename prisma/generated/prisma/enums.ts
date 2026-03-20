@@ -193,6 +193,9 @@ export type ComplaintPriority = (typeof ComplaintPriority)[keyof typeof Complain
 export const EmergencyType = {
   MEDICAL: 'MEDICAL',
   FIRE: 'FIRE',
+  SECURITY: 'SECURITY',
+  LIFT_STUCK: 'LIFT_STUCK',
+  ANIMAL_THREAT: 'ANIMAL_THREAT',
   THEFT: 'THEFT',
   VIOLENCE: 'VIOLENCE',
   ACCIDENT: 'ACCIDENT',

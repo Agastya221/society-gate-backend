@@ -125,7 +125,10 @@ export const entryRequestQuerySchema = paginationQuery.extend({
 // EMERGENCY SCHEMAS
 // ============================================
 
-const emergencyTypeEnum = z.enum(['MEDICAL', 'FIRE', 'THEFT', 'VIOLENCE', 'ACCIDENT', 'OTHER']);
+const emergencyTypeEnum = z.enum([
+  'MEDICAL', 'FIRE', 'SECURITY', 'LIFT_STUCK',
+  'ANIMAL_THREAT', 'THEFT', 'VIOLENCE', 'ACCIDENT', 'OTHER'
+]);
 
 export const createEmergencySchema = z.object({
   societyId: uuidSchema,

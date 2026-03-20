@@ -153,6 +153,9 @@ enum ComplaintPriority {
 enum EmergencyType {
   MEDICAL
   FIRE
+  SECURITY
+  LIFT_STUCK
+  ANIMAL_THREAT
   THEFT
   VIOLENCE
   ACCIDENT

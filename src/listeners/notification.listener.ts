@@ -75,7 +75,8 @@ eventBus.on('emergency.created', async (payload) => {
       },
     });
 
-    const emergencyRoles = ['FIRE', 'LIFT_STUCK'].includes(payload.type)
+    const ALERT_ALL = ['FIRE', 'LIFT_STUCK'];
+    const emergencyRoles = ALERT_ALL.includes(payload.type)
       ? ['ADMIN', 'GUARD', 'RESIDENT'] as ('ADMIN' | 'GUARD' | 'RESIDENT')[]
       : ['ADMIN', 'GUARD'] as ('ADMIN' | 'GUARD')[];
 
