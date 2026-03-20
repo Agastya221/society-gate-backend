@@ -137,6 +137,18 @@ export class UserController {
     });
   });
 
+  // Update FCM Token
+  updateFcmToken = asyncHandler(async (req: Request, res: Response) => {
+    const { fcmToken, deviceType } = req.body;
+    const result = await userService.updateFcmToken(req.user!.id, fcmToken, deviceType);
+
+    res.json({
+      success: true,
+      message: 'FCM token updated successfully',
+      data: result,
+    });
+  });
+
   // Refresh Access Token
   refreshToken = asyncHandler(async (req: Request, res: Response) => {
     const { refreshToken } = req.body;

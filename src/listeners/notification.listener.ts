@@ -1,5 +1,6 @@
 import { eventBus } from '../utils/eventBus';
 import { notificationService } from '../modules/notification/notification.service';
+import { pushService } from '../services/push.service';
 import { emitToSociety, SOCKET_EVENTS } from '../utils/socket';
 import { prisma } from '../utils/Client';
 import logger from '../utils/logger';
@@ -21,6 +22,14 @@ eventBus.on('entry-request.created', async (payload) => {
       referenceType: 'EntryRequest',
       societyId: payload.societyId,
     });
+
+    pushService.sendToFlat(payload.flatId, {
+      title: 'Visitor at gate',
+      body: payload.visitorName
+        ? `${payload.visitorName} is waiting`
+        : `${payload.type} is waiting at the gate`,
+      data: { screen: 'EntryRequest', entryRequestId: payload.entryRequestId },
+    }).catch((err) => logger.error({ err }, 'Push failed: entry-request.created'));
   } catch (error) {
     logger.error({ error, event: 'entry-request.created', payload }, 'Failed to send entry request notification');
   }
@@ -65,6 +74,16 @@ eventBus.on('emergency.created', async (payload) => {
         notifiedUsers: notifiedUserIds,
       },
     });
+
+    const emergencyRoles = ['FIRE', 'LIFT_STUCK'].includes(payload.type)
+      ? ['ADMIN', 'GUARD', 'RESIDENT'] as ('ADMIN' | 'GUARD' | 'RESIDENT')[]
+      : ['ADMIN', 'GUARD'] as ('ADMIN' | 'GUARD')[];
+
+    pushService.sendToSocietyStaff(payload.societyId, emergencyRoles, {
+      title: `Emergency: ${payload.type}`,
+      body: payload.description ?? 'Immediate response required',
+      data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, type: payload.type },
+    }).catch((err) => logger.error({ err }, 'Push failed: emergency.created'));
   } catch (error) {
     logger.error({ error, event: 'emergency.created', payload }, 'Failed to send emergency notification');
   }
@@ -80,6 +99,12 @@ eventBus.on('emergency.responded', async (payload) => {
       referenceType: 'Emergency',
       societyId: payload.societyId,
     });
+
+    pushService.sendToUser(payload.reporterId, {
+      title: 'Help is on the way',
+      body: `${payload.responderName} is responding to your emergency`,
+      data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId },
+    }).catch((err) => logger.error({ err }, 'Push failed: emergency.responded'));
   } catch (error) {
     logger.error({ error, event: 'emergency.responded', payload }, 'Failed to send emergency response notification');
   }
@@ -100,6 +125,12 @@ eventBus.on('emergency.resolved', async (payload) => {
       id: payload.emergencyId,
       status: 'RESOLVED',
     });
+
+    pushService.sendToUser(payload.reporterId, {
+      title: 'Emergency resolved',
+      body: `Your emergency has been resolved by ${payload.resolverName}`,
+      data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId },
+    }).catch((err) => logger.error({ err }, 'Push failed: emergency.resolved'));
   } catch (error) {
     logger.error({ error, event: 'emergency.resolved', payload }, 'Failed to send emergency resolved notification');
   }
@@ -121,6 +152,12 @@ eventBus.on('staff.checked-in', async (payload) => {
       referenceType: 'StaffAttendance',
       societyId: payload.societyId,
     });
+
+    pushService.sendToFlat(payload.flatId, {
+      title: 'Staff arrived',
+      body: `${payload.staffName} (${payload.staffType}) has checked in`,
+      data: { screen: 'StaffAttendance', attendanceId: payload.attendanceId },
+    }).catch((err) => logger.error({ err }, 'Push failed: staff.checked-in'));
   } catch (error) {
     logger.error({ error, event: 'staff.checked-in', payload }, 'Failed to send staff check-in notification');
   }
@@ -143,6 +180,12 @@ eventBus.on('staff.checked-out', async (payload) => {
       referenceType: 'StaffAttendance',
       societyId: payload.societyId,
     });
+
+    pushService.sendToFlat(payload.flatId, {
+      title: 'Staff left',
+      body: `${payload.staffName} has checked out${payload.duration ? ` after ${payload.duration} mins` : ''}`,
+      data: { screen: 'StaffAttendance', attendanceId: payload.attendanceId },
+    }).catch((err) => logger.error({ err }, 'Push failed: staff.checked-out'));
   } catch (error) {
     logger.error({ error, event: 'staff.checked-out', payload }, 'Failed to send staff check-out notification');
   }
@@ -179,6 +222,12 @@ eventBus.on('staff.booking-accepted', async (payload) => {
       referenceType: 'StaffBooking',
       societyId: payload.societyId,
     });
+
+    pushService.sendToUser(payload.bookedById, {
+      title: 'Booking confirmed',
+      body: `${payload.staffName} confirmed your booking`,
+      data: { screen: 'StaffBooking', bookingId: payload.bookingId },
+    }).catch((err) => logger.error({ err }, 'Push failed: staff.booking-accepted'));
   } catch (error) {
     logger.error({ error, event: 'staff.booking-accepted', payload }, 'Failed to send booking accepted notification');
   }

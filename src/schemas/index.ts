@@ -87,6 +87,11 @@ export const toggleUserStatusSchema = z.object({
   isActive: z.boolean(),
 });
 
+export const updateFcmTokenSchema = z.object({
+  fcmToken: z.string().min(1),
+  deviceType: z.enum(['android', 'ios']),
+});
+
 export const createGuardSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
   phone: phoneSchema,

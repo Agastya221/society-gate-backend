@@ -5,6 +5,7 @@ import { initializeSocketIO } from './utils/socket';
 import { prisma } from './utils/Client';
 import { redis } from './config/redis';
 import logger from './utils/logger';
+import './config/firebase';
 import './jobs/expiry.job';
 import './listeners/notification.listener';
 

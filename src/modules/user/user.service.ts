@@ -354,6 +354,22 @@ export class UserService {
   }
 
   // ============================================
+  // UPDATE FCM TOKEN
+  // ============================================
+  async updateFcmToken(userId: string, fcmToken: string, deviceType: string) {
+    if (deviceType !== 'android' && deviceType !== 'ios') {
+      throw new AppError('deviceType must be "android" or "ios"', 400);
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { fcmToken, deviceType },
+    });
+
+    return { success: true };
+  }
+
+  // ============================================
   // TOGGLE USER STATUS
   // CRIT-7: Verify target user belongs to admin's society and is not SUPER_ADMIN
   // ============================================

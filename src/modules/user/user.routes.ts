@@ -15,6 +15,7 @@ import {
   createGuardSchema,
   toggleUserStatusSchema,
   bootstrapSuperAdminSchema,
+  updateFcmTokenSchema,
   idParams,
 } from '../../schemas';
 
@@ -74,6 +75,14 @@ router.get(
   userController.getGuards
 );
 
+// Update FCM Token (Resident App)
+router.patch(
+  '/resident-app/fcm-token',
+  authenticateResidentApp,
+  validate({ body: updateFcmTokenSchema }),
+  userController.updateFcmToken
+);
+
 // Admin: Toggle user active/inactive
 router.patch(
   '/resident-app/users/:id/status',
@@ -90,5 +99,13 @@ router.patch(
 
 // Get Profile
 router.get('/guard-app/profile', authenticateGuardApp, userController.getProfile);
+
+// Update FCM Token (Guard App)
+router.patch(
+  '/guard-app/fcm-token',
+  authenticateGuardApp,
+  validate({ body: updateFcmTokenSchema }),
+  userController.updateFcmToken
+);
 
 export default router;

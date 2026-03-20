@@ -207,6 +207,8 @@ export const UserScalarFieldEnum = {
   isPrimaryResident: 'isPrimaryResident',
   familyRole: 'familyRole',
   primaryResidentId: 'primaryResidentId',
+  fcmToken: 'fcmToken',
+  deviceType: 'deviceType',
   lastLogin: 'lastLogin',
   refreshToken: 'refreshToken',
   tokenVersion: 'tokenVersion',

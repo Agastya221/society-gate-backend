@@ -560,6 +560,10 @@ model User {
   createdEntryRequests  EntryRequest[] @relation("EntryRequestGuard")
   approvedEntryRequests EntryRequest[] @relation("EntryRequestApprover")
 
+  // Push notifications
+  fcmToken   String? // Device push token, updated on every login
+  deviceType String? // "android" | "ios"
+
   // Auth & Tokens
   lastLogin     DateTime?
   refreshToken  String?   @db.Text // Store current refresh token
