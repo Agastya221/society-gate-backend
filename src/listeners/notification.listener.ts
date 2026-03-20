@@ -137,6 +137,40 @@ eventBus.on('emergency.resolved', async (payload) => {
   }
 });
 
+eventBus.on('emergency.false-alarm', async (payload) => {
+  try {
+    if (payload.notifiedUsers?.length > 0) {
+      await Promise.all(
+        payload.notifiedUsers.map((userId: string) =>
+          notificationService.sendToUser(userId, {
+            type: 'EMERGENCY_ALERT',
+            title: 'False Alarm — All Clear',
+            message: `The ${payload.type} emergency alert was a false alarm. Everything is fine.`,
+            referenceId: payload.emergencyId,
+            referenceType: 'Emergency',
+            societyId: payload.societyId,
+          })
+        )
+      );
+    }
+
+    emitToSociety(payload.societyId, SOCKET_EVENTS.EMERGENCY_UPDATE, {
+      id: payload.emergencyId,
+      status: 'FALSE_ALARM',
+    });
+
+    if (payload.notifiedUsers?.length > 0) {
+      pushService.sendToUsers(payload.notifiedUsers, {
+        title: 'False Alarm — All Clear',
+        body: `The ${payload.type} alert has been cancelled. No action needed.`,
+        data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, status: 'FALSE_ALARM' },
+      }).catch((err) => logger.error({ err }, 'Push failed: emergency.false-alarm'));
+    }
+  } catch (error) {
+    logger.error({ error, event: 'emergency.false-alarm', payload }, 'Failed to send false alarm notification');
+  }
+});
+
 eventBus.on('staff.checked-in', async (payload) => {
   try {
     await notificationService.sendToFlat(payload.flatId, {

@@ -123,7 +123,8 @@ export const markAsFalseAlarm = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { notes } = req.body;
-    const emergency = await emergencyService.markAsFalseAlarm(String(id), notes);
+    const userId = req.user!.id;
+    const emergency = await emergencyService.markAsFalseAlarm(String(id), notes, userId);
 
     res.status(200).json({
       success: true,

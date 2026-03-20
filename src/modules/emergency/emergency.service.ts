@@ -182,13 +182,21 @@ export class EmergencyService {
     return updatedEmergency;
   }
 
-  async markAsFalseAlarm(emergencyId: string, notes: string) {
+  async markAsFalseAlarm(emergencyId: string, notes: string, userId: string) {
     const emergency = await prisma.emergency.findUnique({
       where: { id: emergencyId },
     });
 
     if (!emergency) {
       throw new AppError('Emergency not found', 404);
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+    const isReporter = emergency.reportedById === userId;
+    const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
+
+    if (!isReporter && !isAdmin) {
+      throw new AppError('Only the reporter or an admin can mark this as false alarm', 403);
     }
 
     const updatedEmergency = await prisma.emergency.update({
@@ -198,6 +206,14 @@ export class EmergencyService {
         resolvedAt: new Date(),
         notes,
       },
+    });
+
+    eventBus.emit('emergency.false-alarm', {
+      emergencyId,
+      societyId: emergency.societyId,
+      type: emergency.type,
+      notifiedUsers: emergency.notifiedUsers,
+      cancelledByReporter: isReporter,
     });
 
     return updatedEmergency;

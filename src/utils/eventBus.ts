@@ -34,6 +34,13 @@ export interface AppEvents {
     resolverName: string;
     societyId: string;
   };
+  'emergency.false-alarm': {
+    emergencyId: string;
+    societyId: string;
+    type: string;
+    notifiedUsers: string[];
+    cancelledByReporter: boolean;
+  };
   'staff.checked-in': {
     attendanceId: string;
     flatId: string;
