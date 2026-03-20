@@ -2,6 +2,7 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { eventBus } from '../../utils/eventBus';
 import { emitToUser, SOCKET_EVENTS } from '../../utils/socket';
+import { notificationService } from '../notification/notification.service';
 import logger from '../../utils/logger';
 import type { Prisma } from '../../types';
 import {
@@ -12,6 +13,20 @@ import {
 
 const EXPIRY_MINUTES = 15;
 
+// Map ProviderTag enum → human readable company name
+// Must match what residents store in DeliveryAutoApproveRule.companies
+// and ExpectedDelivery.companyName
+const PROVIDER_TAG_TO_COMPANY: Record<string, string> = {
+  BLINKIT: 'Blinkit',
+  SWIGGY: 'Swiggy',
+  ZOMATO: 'Zomato',
+  AMAZON: 'Amazon',
+  FLIPKART: 'Flipkart',
+  BIGBASKET: 'BigBasket',
+  DUNZO: 'Dunzo',
+  OTHER: 'Other',
+};
+
 interface CreateEntryRequestData {
   type: EntryType;
   flatId: string;
@@ -21,15 +36,31 @@ interface CreateEntryRequestData {
   photoKey?: string;
 }
 
+// Discriminated union — controller handles both cases explicitly
+export type CreateEntryRequestResult =
+  | {
+      autoApproved: false;
+      entryRequest: Awaited<ReturnType<typeof prisma.entryRequest.findUniqueOrThrow>>;
+    }
+  | {
+      autoApproved: true;
+      reason: 'STANDING_RULE' | 'EXPECTED_DELIVERY';
+      entry: Awaited<ReturnType<typeof prisma.entry.findUniqueOrThrow>>;
+    };
+
 export class EntryRequestService {
-  /**
-   * Create a new entry request (Guard action)
-   */
+  // ============================================
+  // MAIN: CREATE ENTRY REQUEST
+  // MyGate-style tiered trust system:
+  //  Tier 1 — Standing auto-approve rule match  → auto-enter, notify after
+  //  Tier 2 — Expected delivery match           → auto-enter, notify after
+  //  Tier 3 — No match                          → PENDING, guard notifies resident for approval
+  // ============================================
   async createEntryRequest(
     data: CreateEntryRequestData,
     guardId: string
-  ) {
-    // Get guard's society
+  ): Promise<CreateEntryRequestResult> {
+    // Guard validation
     const guard = await prisma.user.findUnique({
       where: { id: guardId },
       select: { societyId: true, role: true },
@@ -57,10 +88,83 @@ export class EntryRequestService {
       throw new AppError('Flat does not belong to your society', 400);
     }
 
-    // Calculate expiry time (15 minutes from now)
+    // ============================================
+    // AUTO-APPROVAL DECISION ENGINE
+    // Only runs for DELIVERY type with a known provider tag
+    // ============================================
+    if (data.type === 'DELIVERY' && data.providerTag) {
+      const autoResult = await this.checkDeliveryAutoApproval(
+        data.flatId,
+        data.providerTag
+      );
+
+      if (autoResult) {
+        // Create entry directly — no pending state, no resident interruption
+        const entry = await prisma.entry.create({
+          data: {
+            type: 'DELIVERY',
+            status: 'APPROVED',
+            visitorName:
+              data.visitorName ||
+              PROVIDER_TAG_TO_COMPANY[data.providerTag] ||
+              'Delivery',
+            visitorPhone: data.visitorPhone,
+            companyName:
+              PROVIDER_TAG_TO_COMPANY[data.providerTag] || data.providerTag,
+            visitorPhoto: data.photoKey,
+            flatId: data.flatId,
+            societyId: guard.societyId,
+            createdById: guardId,
+            wasAutoApproved: true,
+            autoApprovalReason: autoResult.reason,
+            approvedAt: new Date(),
+            checkInTime: new Date(),
+          },
+        });
+
+        // Mark expected delivery as used so it can't match again
+        if (autoResult.expectedDeliveryId) {
+          await prisma.expectedDelivery.update({
+            where: { id: autoResult.expectedDeliveryId },
+            data: { isUsed: true, usedAt: new Date() },
+          });
+        }
+
+        // Notify resident AFTER entry — informational, not approval request
+        // "Your Amazon delivery entered at 2:04 PM"
+        await this.notifyResidentAfterAutoApproval(
+          data.flatId,
+          guard.societyId,
+          data.providerTag,
+          data.visitorName,
+          entry.id
+        );
+
+        logger.info(
+          {
+            entryId: entry.id,
+            flatId: data.flatId,
+            providerTag: data.providerTag,
+            reason: autoResult.reason,
+          },
+          'Delivery auto-approved'
+        );
+
+        return {
+          autoApproved: true,
+          reason: autoResult.matchType,
+          entry,
+        };
+      }
+    }
+
+    // ============================================
+    // TIER 3 — No auto-approval match
+    // Create PENDING request, notify resident for manual approval
+    // Resident has 15 minutes to respond via app before it expires
+    // ============================================
     const expiresAt = new Date(Date.now() + EXPIRY_MINUTES * 60 * 1000);
 
-    // Create the entry request
     const entryRequest = await prisma.entryRequest.create({
       data: {
         type: data.type,
@@ -80,7 +184,8 @@ export class EntryRequestService {
       },
     });
 
-    // ARCH-3: Emit event instead of calling notification service directly
+    // ARCH-3: Emit event — listener handles push notification + in-app notification
+    // Resident sees: photo of visitor + Approve / Reject buttons
     eventBus.emit('entry-request.created', {
       entryRequestId: entryRequest.id,
       flatId: data.flatId,
@@ -90,12 +195,153 @@ export class EntryRequestService {
       type: data.type,
     });
 
-    return entryRequest;
+    return {
+      autoApproved: false,
+      entryRequest,
+    };
   }
 
-  /**
-   * Get entry requests with filters
-   */
+  // ============================================
+  // AUTO-APPROVAL DECISION ENGINE (private)
+  // Priority: Standing rule → Expected delivery → null
+  // ============================================
+  private async checkDeliveryAutoApproval(
+    flatId: string,
+    providerTag: string
+  ): Promise<{
+    reason: string;
+    matchType: 'STANDING_RULE' | 'EXPECTED_DELIVERY';
+    expectedDeliveryId?: string;
+  } | null> {
+    const now = new Date();
+
+    // Current day: "MONDAY", "TUESDAY" etc — matches DB format
+    const currentDay = now
+      .toLocaleDateString('en-US', { weekday: 'long' })
+      .toUpperCase();
+
+    // Current time as HH:MM for string comparison
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(
+      now.getMinutes()
+    ).padStart(2, '0')}`;
+
+    // Human readable name ("Amazon") to match what residents store
+    const companyName = PROVIDER_TAG_TO_COMPANY[providerTag] || providerTag;
+
+    // ---- Tier 1: Standing auto-approve rules ----
+    const rules = await prisma.deliveryAutoApproveRule.findMany({
+      where: { flatId, isActive: true },
+    });
+
+    for (const rule of rules) {
+      // Case-insensitive match against either "Amazon" or "AMAZON"
+      const companyMatch = rule.companies.some(
+        (c) =>
+          c.toLowerCase() === companyName.toLowerCase() ||
+          c.toLowerCase() === providerTag.toLowerCase()
+      );
+      if (!companyMatch) continue;
+
+      // Empty allowedDays = all days
+      const dayMatch =
+        rule.allowedDays.length === 0 || rule.allowedDays.includes(currentDay);
+      if (!dayMatch) continue;
+
+      // Missing time boundary = unrestricted
+      const afterStart = !rule.timeFrom || currentTime >= rule.timeFrom;
+      const beforeEnd = !rule.timeUntil || currentTime <= rule.timeUntil;
+
+      if (afterStart && beforeEnd) {
+        const window = rule.timeFrom
+          ? `${rule.timeFrom}–${rule.timeUntil || '23:59'}`
+          : 'anytime';
+        return {
+          reason: `Auto-approved by standing rule for ${companyName} (${window})`,
+          matchType: 'STANDING_RULE',
+        };
+      }
+    }
+
+    // ---- Tier 2: Expected delivery ----
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const expectedDeliveries = await prisma.expectedDelivery.findMany({
+      where: {
+        flatId,
+        isUsed: false,
+        expiresAt: { gt: now },
+        expectedDate: { gte: startOfDay, lte: endOfDay },
+      },
+    });
+
+    for (const expected of expectedDeliveries) {
+      const companyMatch =
+        expected.companyName.toLowerCase() === companyName.toLowerCase() ||
+        expected.companyName.toLowerCase() === providerTag.toLowerCase();
+      if (!companyMatch) continue;
+
+      const afterStart = !expected.timeFrom || currentTime >= expected.timeFrom;
+      const beforeEnd = !expected.timeUntil || currentTime <= expected.timeUntil;
+
+      if (afterStart && beforeEnd) {
+        return {
+          reason: `Matched expected delivery from ${expected.companyName}`,
+          matchType: 'EXPECTED_DELIVERY',
+          expectedDeliveryId: expected.id,
+        };
+      }
+    }
+
+    return null;
+  }
+
+  // ============================================
+  // NOTIFY RESIDENT AFTER AUTO-APPROVAL (private)
+  // Informational only — "Your delivery entered at X"
+  // Non-critical: failure is logged but never blocks the entry
+  // ============================================
+  private async notifyResidentAfterAutoApproval(
+    flatId: string,
+    societyId: string,
+    providerTag: string,
+    visitorName: string | undefined,
+    entryId: string
+  ): Promise<void> {
+    try {
+      const companyName = PROVIDER_TAG_TO_COMPANY[providerTag] || providerTag;
+      const displayName = visitorName
+        ? `${visitorName} (${companyName})`
+        : companyName;
+
+      const timeStr = new Date().toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+
+      await notificationService.sendToFlat(flatId, {
+        type: 'DELIVERY_REQUEST',
+        title: `${companyName} Delivery Entered`,
+        message: `${displayName} was auto-approved and entered at ${timeStr}`,
+        data: { entryId },
+        referenceId: entryId,
+        referenceType: 'Entry',
+        societyId,
+      });
+    } catch (error) {
+      logger.error(
+        { error, flatId, providerTag },
+        'Failed to send auto-approval notification to resident'
+      );
+    }
+  }
+
+  // ============================================
+  // GET ENTRY REQUESTS (unchanged)
+  // ============================================
   async getEntryRequests(
     userId: string,
     filters: {
@@ -107,7 +353,6 @@ export class EntryRequestService {
   ) {
     const { status, flatId, page = 1, limit = 20 } = filters;
 
-    // Get user info
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { role: true, societyId: true, flatId: true },
@@ -119,7 +364,6 @@ export class EntryRequestService {
 
     const where: Prisma.EntryRequestWhereInput = {};
 
-    // Role-based filtering
     if (user.role === 'GUARD') {
       where.guardId = userId;
     } else if (user.role === 'RESIDENT') {
@@ -128,7 +372,6 @@ export class EntryRequestService {
       if (user.societyId) where.societyId = user.societyId;
     }
 
-    // Additional filters
     if (status) where.status = status;
     if (flatId && user.role !== 'RESIDENT') where.flatId = flatId;
 
@@ -158,9 +401,9 @@ export class EntryRequestService {
     };
   }
 
-  /**
-   * Get a single entry request by ID
-   */
+  // ============================================
+  // GET SINGLE ENTRY REQUEST (unchanged)
+  // ============================================
   async getEntryRequestById(entryRequestId: string, userId: string) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
@@ -181,7 +424,6 @@ export class EntryRequestService {
       throw new AppError('Entry request not found', 404);
     }
 
-    // Get user for access check
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { role: true, societyId: true, flatId: true },
@@ -191,7 +433,6 @@ export class EntryRequestService {
       throw new AppError('User not found', 404);
     }
 
-    // Access check
     const isGuard = entryRequest.guardId === userId;
     const isFlatResident = entryRequest.flat.residents.some((r) => r.id === userId);
     const isSocietyAdmin =
@@ -205,9 +446,9 @@ export class EntryRequestService {
     return entryRequest;
   }
 
-  /**
-   * Approve an entry request (Resident action)
-   */
+  // ============================================
+  // APPROVE ENTRY REQUEST (unchanged)
+  // ============================================
   async approveEntryRequest(entryRequestId: string, userId: string) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
@@ -226,18 +467,15 @@ export class EntryRequestService {
       throw new AppError('Entry request not found', 404);
     }
 
-    // Check if user is a resident of the flat
     const isFlatResident = entryRequest.flat.residents.some((r) => r.id === userId);
     if (!isFlatResident) {
       throw new AppError('Only flat residents can approve entry requests', 403);
     }
 
-    // Check status
     if (entryRequest.status !== 'PENDING') {
       throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
     }
 
-    // Check if expired
     if (new Date() > entryRequest.expiresAt) {
       await prisma.entryRequest.update({
         where: { id: entryRequestId },
@@ -246,7 +484,6 @@ export class EntryRequestService {
       throw new AppError('Entry request has expired', 400);
     }
 
-    // Create actual Entry record
     const entry = await prisma.entry.create({
       data: {
         type: entryRequest.type,
@@ -263,7 +500,6 @@ export class EntryRequestService {
       },
     });
 
-    // Update entry request
     const updatedRequest = await prisma.entryRequest.update({
       where: { id: entryRequestId },
       data: {
@@ -279,7 +515,6 @@ export class EntryRequestService {
       },
     });
 
-    // Notify guard via Socket.IO
     emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
       id: entryRequestId,
       status: 'APPROVED',
@@ -290,9 +525,9 @@ export class EntryRequestService {
     return updatedRequest;
   }
 
-  /**
-   * Reject an entry request (Resident action)
-   */
+  // ============================================
+  // REJECT ENTRY REQUEST (unchanged)
+  // ============================================
   async rejectEntryRequest(
     entryRequestId: string,
     userId: string,
@@ -315,18 +550,15 @@ export class EntryRequestService {
       throw new AppError('Entry request not found', 404);
     }
 
-    // Check if user is a resident of the flat
     const isFlatResident = entryRequest.flat.residents.some((r) => r.id === userId);
     if (!isFlatResident) {
       throw new AppError('Only flat residents can reject entry requests', 403);
     }
 
-    // Check status
     if (entryRequest.status !== 'PENDING') {
       throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
     }
 
-    // Update entry request
     const updatedRequest = await prisma.entryRequest.update({
       where: { id: entryRequestId },
       data: {
@@ -340,7 +572,6 @@ export class EntryRequestService {
       },
     });
 
-    // Notify guard via Socket.IO
     emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
       id: entryRequestId,
       status: 'REJECTED',
@@ -351,9 +582,9 @@ export class EntryRequestService {
     return updatedRequest;
   }
 
-  /**
-   * Expire pending entry requests (called by cron job)
-   */
+  // ============================================
+  // EXPIRE PENDING REQUESTS (cron job, unchanged)
+  // ============================================
   async expirePendingRequests(): Promise<{ count: number }> {
     const result = await prisma.entryRequest.updateMany({
       where: {
@@ -363,7 +594,6 @@ export class EntryRequestService {
       data: { status: 'EXPIRED' },
     });
 
-    // Optionally notify guards about expired requests
     if (result.count > 0) {
       logger.info({ count: result.count }, 'Auto-expired entry requests');
     }
@@ -371,9 +601,9 @@ export class EntryRequestService {
     return { count: result.count };
   }
 
-  /**
-   * Get pending requests count for a guard
-   */
+  // ============================================
+  // GET PENDING COUNT FOR GUARD (unchanged)
+  // ============================================
   async getPendingCountForGuard(guardId: string): Promise<number> {
     return prisma.entryRequest.count({
       where: {

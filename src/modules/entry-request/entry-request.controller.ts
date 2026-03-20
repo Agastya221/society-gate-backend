@@ -9,6 +9,10 @@ const uploadService = new UploadService();
 
 /**
  * Create a new entry request (Guard)
+ *
+ * Returns different shapes depending on auto-approval:
+ *  - autoApproved: true  → entry created immediately, resident notified after
+ *  - autoApproved: false → PENDING request created, resident gets push to approve/reject
  */
 export const createEntryRequest = async (req: Request, res: Response) => {
   try {
@@ -22,15 +26,31 @@ export const createEntryRequest = async (req: Request, res: Response) => {
       });
     }
 
-    const entryRequest = await entryRequestService.createEntryRequest(
+    const result = await entryRequestService.createEntryRequest(
       { type, flatId, visitorName, visitorPhone, providerTag, photoKey },
       guardId
     );
 
+    if (result.autoApproved) {
+      const companyName = visitorName || providerTag || 'Delivery';
+      return res.status(201).json({
+        success: true,
+        message: `${companyName} auto-approved. Entry created, resident notified.`,
+        data: {
+          autoApproved: true,
+          reason: result.reason,
+          entry: result.entry,
+        },
+      });
+    }
+
     res.status(201).json({
       success: true,
       message: 'Entry request created. Notification sent to residents.',
-      data: entryRequest,
+      data: {
+        autoApproved: false,
+        entryRequest: result.entryRequest,
+      },
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({
@@ -41,7 +61,7 @@ export const createEntryRequest = async (req: Request, res: Response) => {
 };
 
 /**
- * Get entry requests
+ * Get entry requests (all roles, filtered by role)
  */
 export const getEntryRequests = async (req: Request, res: Response) => {
   try {
@@ -75,7 +95,10 @@ export const getEntryRequestById = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const { id } = req.params;
 
-    const entryRequest = await entryRequestService.getEntryRequestById(String(id), userId);
+    const entryRequest = await entryRequestService.getEntryRequestById(
+      String(id),
+      userId
+    );
 
     res.status(200).json({
       success: true,
@@ -119,7 +142,10 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const { id } = req.params;
 
-    const entryRequest = await entryRequestService.approveEntryRequest(String(id), userId);
+    const entryRequest = await entryRequestService.approveEntryRequest(
+      String(id),
+      userId
+    );
 
     res.status(200).json({
       success: true,
@@ -143,7 +169,11 @@ export const rejectEntryRequest = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { reason } = req.body;
 
-    const entryRequest = await entryRequestService.rejectEntryRequest(String(id), userId, reason);
+    const entryRequest = await entryRequestService.rejectEntryRequest(
+      String(id),
+      userId,
+      reason
+    );
 
     res.status(200).json({
       success: true,
