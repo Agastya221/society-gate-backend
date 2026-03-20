@@ -260,10 +260,7 @@ export type FlatWhereInput = {
   entries?: Prisma.EntryListRelationFilter
   domesticStaff?: Prisma.DomesticStaffListRelationFilter
   vehicles?: Prisma.VehicleListRelationFilter
-  preApprovals?: Prisma.PreApprovalListRelationFilter
   visitorFrequencies?: Prisma.VisitorFrequencyListRelationFilter
-  expectedDeliveries?: Prisma.ExpectedDeliveryListRelationFilter
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleListRelationFilter
   gatePasses?: Prisma.GatePassListRelationFilter
   amenityBookings?: Prisma.AmenityBookingListRelationFilter
   complaints?: Prisma.ComplaintListRelationFilter
@@ -274,6 +271,7 @@ export type FlatWhereInput = {
   staffReviews?: Prisma.StaffReviewListRelationFilter
   onboardingRequests?: Prisma.OnboardingRequestListRelationFilter
   entryRequests?: Prisma.EntryRequestListRelationFilter
+  invitePasses?: Prisma.InvitePassListRelationFilter
 }
 
 export type FlatOrderByWithRelationInput = {
@@ -297,10 +295,7 @@ export type FlatOrderByWithRelationInput = {
   entries?: Prisma.EntryOrderByRelationAggregateInput
   domesticStaff?: Prisma.DomesticStaffOrderByRelationAggregateInput
   vehicles?: Prisma.VehicleOrderByRelationAggregateInput
-  preApprovals?: Prisma.PreApprovalOrderByRelationAggregateInput
   visitorFrequencies?: Prisma.VisitorFrequencyOrderByRelationAggregateInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryOrderByRelationAggregateInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleOrderByRelationAggregateInput
   gatePasses?: Prisma.GatePassOrderByRelationAggregateInput
   amenityBookings?: Prisma.AmenityBookingOrderByRelationAggregateInput
   complaints?: Prisma.ComplaintOrderByRelationAggregateInput
@@ -311,6 +306,7 @@ export type FlatOrderByWithRelationInput = {
   staffReviews?: Prisma.StaffReviewOrderByRelationAggregateInput
   onboardingRequests?: Prisma.OnboardingRequestOrderByRelationAggregateInput
   entryRequests?: Prisma.EntryRequestOrderByRelationAggregateInput
+  invitePasses?: Prisma.InvitePassOrderByRelationAggregateInput
 }
 
 export type FlatWhereUniqueInput = Prisma.AtLeast<{
@@ -338,10 +334,7 @@ export type FlatWhereUniqueInput = Prisma.AtLeast<{
   entries?: Prisma.EntryListRelationFilter
   domesticStaff?: Prisma.DomesticStaffListRelationFilter
   vehicles?: Prisma.VehicleListRelationFilter
-  preApprovals?: Prisma.PreApprovalListRelationFilter
   visitorFrequencies?: Prisma.VisitorFrequencyListRelationFilter
-  expectedDeliveries?: Prisma.ExpectedDeliveryListRelationFilter
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleListRelationFilter
   gatePasses?: Prisma.GatePassListRelationFilter
   amenityBookings?: Prisma.AmenityBookingListRelationFilter
   complaints?: Prisma.ComplaintListRelationFilter
@@ -352,6 +345,7 @@ export type FlatWhereUniqueInput = Prisma.AtLeast<{
   staffReviews?: Prisma.StaffReviewListRelationFilter
   onboardingRequests?: Prisma.OnboardingRequestListRelationFilter
   entryRequests?: Prisma.EntryRequestListRelationFilter
+  invitePasses?: Prisma.InvitePassListRelationFilter
 }, "id" | "societyId_flatNumber">
 
 export type FlatOrderByWithAggregationInput = {
@@ -413,10 +407,7 @@ export type FlatCreateInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -427,6 +418,7 @@ export type FlatCreateInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateInput = {
@@ -448,10 +440,7 @@ export type FlatUncheckedCreateInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -462,6 +451,7 @@ export type FlatUncheckedCreateInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUpdateInput = {
@@ -483,10 +473,7 @@ export type FlatUpdateInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -497,6 +484,7 @@ export type FlatUpdateInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateInput = {
@@ -518,10 +506,7 @@ export type FlatUncheckedUpdateInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -532,6 +517,7 @@ export type FlatUncheckedUpdateInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateManyInput = {
@@ -773,46 +759,18 @@ export type FlatUpdateOneRequiredWithoutEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutEntriesInput, Prisma.FlatUpdateWithoutEntriesInput>, Prisma.FlatUncheckedUpdateWithoutEntriesInput>
 }
 
-export type FlatCreateNestedOneWithoutPreApprovalsInput = {
-  create?: Prisma.XOR<Prisma.FlatCreateWithoutPreApprovalsInput, Prisma.FlatUncheckedCreateWithoutPreApprovalsInput>
-  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutPreApprovalsInput
+export type FlatCreateNestedOneWithoutInvitePassesInput = {
+  create?: Prisma.XOR<Prisma.FlatCreateWithoutInvitePassesInput, Prisma.FlatUncheckedCreateWithoutInvitePassesInput>
+  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutInvitePassesInput
   connect?: Prisma.FlatWhereUniqueInput
 }
 
-export type FlatUpdateOneRequiredWithoutPreApprovalsNestedInput = {
-  create?: Prisma.XOR<Prisma.FlatCreateWithoutPreApprovalsInput, Prisma.FlatUncheckedCreateWithoutPreApprovalsInput>
-  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutPreApprovalsInput
-  upsert?: Prisma.FlatUpsertWithoutPreApprovalsInput
+export type FlatUpdateOneRequiredWithoutInvitePassesNestedInput = {
+  create?: Prisma.XOR<Prisma.FlatCreateWithoutInvitePassesInput, Prisma.FlatUncheckedCreateWithoutInvitePassesInput>
+  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutInvitePassesInput
+  upsert?: Prisma.FlatUpsertWithoutInvitePassesInput
   connect?: Prisma.FlatWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutPreApprovalsInput, Prisma.FlatUpdateWithoutPreApprovalsInput>, Prisma.FlatUncheckedUpdateWithoutPreApprovalsInput>
-}
-
-export type FlatCreateNestedOneWithoutExpectedDeliveriesInput = {
-  create?: Prisma.XOR<Prisma.FlatCreateWithoutExpectedDeliveriesInput, Prisma.FlatUncheckedCreateWithoutExpectedDeliveriesInput>
-  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutExpectedDeliveriesInput
-  connect?: Prisma.FlatWhereUniqueInput
-}
-
-export type FlatUpdateOneRequiredWithoutExpectedDeliveriesNestedInput = {
-  create?: Prisma.XOR<Prisma.FlatCreateWithoutExpectedDeliveriesInput, Prisma.FlatUncheckedCreateWithoutExpectedDeliveriesInput>
-  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutExpectedDeliveriesInput
-  upsert?: Prisma.FlatUpsertWithoutExpectedDeliveriesInput
-  connect?: Prisma.FlatWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutExpectedDeliveriesInput, Prisma.FlatUpdateWithoutExpectedDeliveriesInput>, Prisma.FlatUncheckedUpdateWithoutExpectedDeliveriesInput>
-}
-
-export type FlatCreateNestedOneWithoutDeliveryAutoApproveRulesInput = {
-  create?: Prisma.XOR<Prisma.FlatCreateWithoutDeliveryAutoApproveRulesInput, Prisma.FlatUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutDeliveryAutoApproveRulesInput
-  connect?: Prisma.FlatWhereUniqueInput
-}
-
-export type FlatUpdateOneRequiredWithoutDeliveryAutoApproveRulesNestedInput = {
-  create?: Prisma.XOR<Prisma.FlatCreateWithoutDeliveryAutoApproveRulesInput, Prisma.FlatUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutDeliveryAutoApproveRulesInput
-  upsert?: Prisma.FlatUpsertWithoutDeliveryAutoApproveRulesInput
-  connect?: Prisma.FlatWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutDeliveryAutoApproveRulesInput, Prisma.FlatUpdateWithoutDeliveryAutoApproveRulesInput>, Prisma.FlatUncheckedUpdateWithoutDeliveryAutoApproveRulesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutInvitePassesInput, Prisma.FlatUpdateWithoutInvitePassesInput>, Prisma.FlatUncheckedUpdateWithoutInvitePassesInput>
 }
 
 export type FlatCreateNestedOneWithoutDomesticStaffInput = {
@@ -1021,10 +979,7 @@ export type FlatCreateWithoutSocietyInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -1035,6 +990,7 @@ export type FlatCreateWithoutSocietyInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutSocietyInput = {
@@ -1055,10 +1011,7 @@ export type FlatUncheckedCreateWithoutSocietyInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -1069,6 +1022,7 @@ export type FlatUncheckedCreateWithoutSocietyInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutSocietyInput = {
@@ -1135,10 +1089,7 @@ export type FlatCreateWithoutBlockInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -1149,6 +1100,7 @@ export type FlatCreateWithoutBlockInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutBlockInput = {
@@ -1169,10 +1121,7 @@ export type FlatUncheckedCreateWithoutBlockInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -1183,6 +1132,7 @@ export type FlatUncheckedCreateWithoutBlockInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutBlockInput = {
@@ -1229,10 +1179,7 @@ export type FlatCreateWithoutResidentsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -1243,6 +1190,7 @@ export type FlatCreateWithoutResidentsInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutResidentsInput = {
@@ -1263,10 +1211,7 @@ export type FlatUncheckedCreateWithoutResidentsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -1277,6 +1222,7 @@ export type FlatUncheckedCreateWithoutResidentsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutResidentsInput = {
@@ -1313,10 +1259,7 @@ export type FlatUpdateWithoutResidentsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -1327,6 +1270,7 @@ export type FlatUpdateWithoutResidentsInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutResidentsInput = {
@@ -1347,10 +1291,7 @@ export type FlatUncheckedUpdateWithoutResidentsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -1361,6 +1302,7 @@ export type FlatUncheckedUpdateWithoutResidentsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutEntriesInput = {
@@ -1381,10 +1323,7 @@ export type FlatCreateWithoutEntriesInput = {
   residents?: Prisma.UserCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -1395,6 +1334,7 @@ export type FlatCreateWithoutEntriesInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutEntriesInput = {
@@ -1415,10 +1355,7 @@ export type FlatUncheckedCreateWithoutEntriesInput = {
   residents?: Prisma.UserUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -1429,6 +1366,7 @@ export type FlatUncheckedCreateWithoutEntriesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutEntriesInput = {
@@ -1465,10 +1403,7 @@ export type FlatUpdateWithoutEntriesInput = {
   residents?: Prisma.UserUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -1479,6 +1414,7 @@ export type FlatUpdateWithoutEntriesInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutEntriesInput = {
@@ -1499,10 +1435,7 @@ export type FlatUncheckedUpdateWithoutEntriesInput = {
   residents?: Prisma.UserUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -1513,9 +1446,10 @@ export type FlatUncheckedUpdateWithoutEntriesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
-export type FlatCreateWithoutPreApprovalsInput = {
+export type FlatCreateWithoutInvitePassesInput = {
   id?: string
   flatNumber: string
   floor?: string | null
@@ -1535,8 +1469,6 @@ export type FlatCreateWithoutPreApprovalsInput = {
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -1549,7 +1481,7 @@ export type FlatCreateWithoutPreApprovalsInput = {
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
 }
 
-export type FlatUncheckedCreateWithoutPreApprovalsInput = {
+export type FlatUncheckedCreateWithoutInvitePassesInput = {
   id?: string
   flatNumber: string
   floor?: string | null
@@ -1569,8 +1501,6 @@ export type FlatUncheckedCreateWithoutPreApprovalsInput = {
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -1583,23 +1513,23 @@ export type FlatUncheckedCreateWithoutPreApprovalsInput = {
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
 }
 
-export type FlatCreateOrConnectWithoutPreApprovalsInput = {
+export type FlatCreateOrConnectWithoutInvitePassesInput = {
   where: Prisma.FlatWhereUniqueInput
-  create: Prisma.XOR<Prisma.FlatCreateWithoutPreApprovalsInput, Prisma.FlatUncheckedCreateWithoutPreApprovalsInput>
+  create: Prisma.XOR<Prisma.FlatCreateWithoutInvitePassesInput, Prisma.FlatUncheckedCreateWithoutInvitePassesInput>
 }
 
-export type FlatUpsertWithoutPreApprovalsInput = {
-  update: Prisma.XOR<Prisma.FlatUpdateWithoutPreApprovalsInput, Prisma.FlatUncheckedUpdateWithoutPreApprovalsInput>
-  create: Prisma.XOR<Prisma.FlatCreateWithoutPreApprovalsInput, Prisma.FlatUncheckedCreateWithoutPreApprovalsInput>
+export type FlatUpsertWithoutInvitePassesInput = {
+  update: Prisma.XOR<Prisma.FlatUpdateWithoutInvitePassesInput, Prisma.FlatUncheckedUpdateWithoutInvitePassesInput>
+  create: Prisma.XOR<Prisma.FlatCreateWithoutInvitePassesInput, Prisma.FlatUncheckedCreateWithoutInvitePassesInput>
   where?: Prisma.FlatWhereInput
 }
 
-export type FlatUpdateToOneWithWhereWithoutPreApprovalsInput = {
+export type FlatUpdateToOneWithWhereWithoutInvitePassesInput = {
   where?: Prisma.FlatWhereInput
-  data: Prisma.XOR<Prisma.FlatUpdateWithoutPreApprovalsInput, Prisma.FlatUncheckedUpdateWithoutPreApprovalsInput>
+  data: Prisma.XOR<Prisma.FlatUpdateWithoutInvitePassesInput, Prisma.FlatUncheckedUpdateWithoutInvitePassesInput>
 }
 
-export type FlatUpdateWithoutPreApprovalsInput = {
+export type FlatUpdateWithoutInvitePassesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1619,8 +1549,6 @@ export type FlatUpdateWithoutPreApprovalsInput = {
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -1633,7 +1561,7 @@ export type FlatUpdateWithoutPreApprovalsInput = {
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
 }
 
-export type FlatUncheckedUpdateWithoutPreApprovalsInput = {
+export type FlatUncheckedUpdateWithoutInvitePassesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1653,312 +1581,6 @@ export type FlatUncheckedUpdateWithoutPreApprovalsInput = {
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
-  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
-  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
-  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutFlatNestedInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentUncheckedUpdateManyWithoutFlatNestedInput
-  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutFlatNestedInput
-  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutFlatNestedInput
-  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
-  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
-  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
-}
-
-export type FlatCreateWithoutExpectedDeliveriesInput = {
-  id?: string
-  flatNumber: string
-  floor?: string | null
-  ownerName?: string | null
-  ownerPhone?: string | null
-  ownerEmail?: string | null
-  isOccupied?: boolean
-  currentOwnerId?: string | null
-  currentTenantId?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  block?: Prisma.BlockCreateNestedOneWithoutFlatsInput
-  society: Prisma.SocietyCreateNestedOneWithoutFlatsInput
-  residents?: Prisma.UserCreateNestedManyWithoutFlatInput
-  entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
-  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
-  vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
-  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
-  gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
-  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
-  complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
-  emergencies?: Prisma.EmergencyCreateNestedManyWithoutFlatInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentCreateNestedManyWithoutFlatInput
-  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutFlatInput
-  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutFlatInput
-  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
-  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
-  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
-}
-
-export type FlatUncheckedCreateWithoutExpectedDeliveriesInput = {
-  id?: string
-  flatNumber: string
-  floor?: string | null
-  blockId?: string | null
-  societyId: string
-  ownerName?: string | null
-  ownerPhone?: string | null
-  ownerEmail?: string | null
-  isOccupied?: boolean
-  currentOwnerId?: string | null
-  currentTenantId?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  residents?: Prisma.UserUncheckedCreateNestedManyWithoutFlatInput
-  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
-  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
-  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
-  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
-  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
-  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
-  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutFlatInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentUncheckedCreateNestedManyWithoutFlatInput
-  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutFlatInput
-  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutFlatInput
-  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
-  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
-  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
-}
-
-export type FlatCreateOrConnectWithoutExpectedDeliveriesInput = {
-  where: Prisma.FlatWhereUniqueInput
-  create: Prisma.XOR<Prisma.FlatCreateWithoutExpectedDeliveriesInput, Prisma.FlatUncheckedCreateWithoutExpectedDeliveriesInput>
-}
-
-export type FlatUpsertWithoutExpectedDeliveriesInput = {
-  update: Prisma.XOR<Prisma.FlatUpdateWithoutExpectedDeliveriesInput, Prisma.FlatUncheckedUpdateWithoutExpectedDeliveriesInput>
-  create: Prisma.XOR<Prisma.FlatCreateWithoutExpectedDeliveriesInput, Prisma.FlatUncheckedCreateWithoutExpectedDeliveriesInput>
-  where?: Prisma.FlatWhereInput
-}
-
-export type FlatUpdateToOneWithWhereWithoutExpectedDeliveriesInput = {
-  where?: Prisma.FlatWhereInput
-  data: Prisma.XOR<Prisma.FlatUpdateWithoutExpectedDeliveriesInput, Prisma.FlatUncheckedUpdateWithoutExpectedDeliveriesInput>
-}
-
-export type FlatUpdateWithoutExpectedDeliveriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  block?: Prisma.BlockUpdateOneWithoutFlatsNestedInput
-  society?: Prisma.SocietyUpdateOneRequiredWithoutFlatsNestedInput
-  residents?: Prisma.UserUpdateManyWithoutFlatNestedInput
-  entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
-  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
-  vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
-  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
-  gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
-  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
-  complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
-  emergencies?: Prisma.EmergencyUpdateManyWithoutFlatNestedInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentUpdateManyWithoutFlatNestedInput
-  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutFlatNestedInput
-  staffBookings?: Prisma.StaffBookingUpdateManyWithoutFlatNestedInput
-  staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
-  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
-  entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
-}
-
-export type FlatUncheckedUpdateWithoutExpectedDeliveriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  blockId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  societyId?: Prisma.StringFieldUpdateOperationsInput | string
-  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  residents?: Prisma.UserUncheckedUpdateManyWithoutFlatNestedInput
-  entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
-  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
-  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
-  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
-  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
-  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
-  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutFlatNestedInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentUncheckedUpdateManyWithoutFlatNestedInput
-  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutFlatNestedInput
-  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutFlatNestedInput
-  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
-  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
-  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
-}
-
-export type FlatCreateWithoutDeliveryAutoApproveRulesInput = {
-  id?: string
-  flatNumber: string
-  floor?: string | null
-  ownerName?: string | null
-  ownerPhone?: string | null
-  ownerEmail?: string | null
-  isOccupied?: boolean
-  currentOwnerId?: string | null
-  currentTenantId?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  block?: Prisma.BlockCreateNestedOneWithoutFlatsInput
-  society: Prisma.SocietyCreateNestedOneWithoutFlatsInput
-  residents?: Prisma.UserCreateNestedManyWithoutFlatInput
-  entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
-  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
-  vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
-  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
-  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
-  complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
-  emergencies?: Prisma.EmergencyCreateNestedManyWithoutFlatInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentCreateNestedManyWithoutFlatInput
-  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutFlatInput
-  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutFlatInput
-  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
-  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
-  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
-}
-
-export type FlatUncheckedCreateWithoutDeliveryAutoApproveRulesInput = {
-  id?: string
-  flatNumber: string
-  floor?: string | null
-  blockId?: string | null
-  societyId: string
-  ownerName?: string | null
-  ownerPhone?: string | null
-  ownerEmail?: string | null
-  isOccupied?: boolean
-  currentOwnerId?: string | null
-  currentTenantId?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  residents?: Prisma.UserUncheckedCreateNestedManyWithoutFlatInput
-  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
-  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
-  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
-  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
-  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
-  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutFlatInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentUncheckedCreateNestedManyWithoutFlatInput
-  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutFlatInput
-  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutFlatInput
-  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
-  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
-  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
-}
-
-export type FlatCreateOrConnectWithoutDeliveryAutoApproveRulesInput = {
-  where: Prisma.FlatWhereUniqueInput
-  create: Prisma.XOR<Prisma.FlatCreateWithoutDeliveryAutoApproveRulesInput, Prisma.FlatUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-}
-
-export type FlatUpsertWithoutDeliveryAutoApproveRulesInput = {
-  update: Prisma.XOR<Prisma.FlatUpdateWithoutDeliveryAutoApproveRulesInput, Prisma.FlatUncheckedUpdateWithoutDeliveryAutoApproveRulesInput>
-  create: Prisma.XOR<Prisma.FlatCreateWithoutDeliveryAutoApproveRulesInput, Prisma.FlatUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-  where?: Prisma.FlatWhereInput
-}
-
-export type FlatUpdateToOneWithWhereWithoutDeliveryAutoApproveRulesInput = {
-  where?: Prisma.FlatWhereInput
-  data: Prisma.XOR<Prisma.FlatUpdateWithoutDeliveryAutoApproveRulesInput, Prisma.FlatUncheckedUpdateWithoutDeliveryAutoApproveRulesInput>
-}
-
-export type FlatUpdateWithoutDeliveryAutoApproveRulesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  block?: Prisma.BlockUpdateOneWithoutFlatsNestedInput
-  society?: Prisma.SocietyUpdateOneRequiredWithoutFlatsNestedInput
-  residents?: Prisma.UserUpdateManyWithoutFlatNestedInput
-  entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
-  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
-  vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
-  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
-  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
-  complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
-  emergencies?: Prisma.EmergencyUpdateManyWithoutFlatNestedInput
-  staffFlatAssignments?: Prisma.StaffFlatAssignmentUpdateManyWithoutFlatNestedInput
-  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutFlatNestedInput
-  staffBookings?: Prisma.StaffBookingUpdateManyWithoutFlatNestedInput
-  staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
-  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
-  entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
-}
-
-export type FlatUncheckedUpdateWithoutDeliveryAutoApproveRulesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  blockId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  societyId?: Prisma.StringFieldUpdateOperationsInput | string
-  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  residents?: Prisma.UserUncheckedUpdateManyWithoutFlatNestedInput
-  entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
-  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
-  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
-  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -1989,10 +1611,7 @@ export type FlatCreateWithoutDomesticStaffInput = {
   residents?: Prisma.UserCreateNestedManyWithoutFlatInput
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -2003,6 +1622,7 @@ export type FlatCreateWithoutDomesticStaffInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutDomesticStaffInput = {
@@ -2023,10 +1643,7 @@ export type FlatUncheckedCreateWithoutDomesticStaffInput = {
   residents?: Prisma.UserUncheckedCreateNestedManyWithoutFlatInput
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -2037,6 +1654,7 @@ export type FlatUncheckedCreateWithoutDomesticStaffInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutDomesticStaffInput = {
@@ -2073,10 +1691,7 @@ export type FlatUpdateWithoutDomesticStaffInput = {
   residents?: Prisma.UserUpdateManyWithoutFlatNestedInput
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -2087,6 +1702,7 @@ export type FlatUpdateWithoutDomesticStaffInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutDomesticStaffInput = {
@@ -2107,10 +1723,7 @@ export type FlatUncheckedUpdateWithoutDomesticStaffInput = {
   residents?: Prisma.UserUncheckedUpdateManyWithoutFlatNestedInput
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -2121,6 +1734,7 @@ export type FlatUncheckedUpdateWithoutDomesticStaffInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffFlatAssignmentsInput = {
@@ -2142,10 +1756,7 @@ export type FlatCreateWithoutStaffFlatAssignmentsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -2155,6 +1766,7 @@ export type FlatCreateWithoutStaffFlatAssignmentsInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffFlatAssignmentsInput = {
@@ -2176,10 +1788,7 @@ export type FlatUncheckedCreateWithoutStaffFlatAssignmentsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -2189,6 +1798,7 @@ export type FlatUncheckedCreateWithoutStaffFlatAssignmentsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffFlatAssignmentsInput = {
@@ -2226,10 +1836,7 @@ export type FlatUpdateWithoutStaffFlatAssignmentsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -2239,6 +1846,7 @@ export type FlatUpdateWithoutStaffFlatAssignmentsInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffFlatAssignmentsInput = {
@@ -2260,10 +1868,7 @@ export type FlatUncheckedUpdateWithoutStaffFlatAssignmentsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -2273,6 +1878,7 @@ export type FlatUncheckedUpdateWithoutStaffFlatAssignmentsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffAttendanceInput = {
@@ -2294,10 +1900,7 @@ export type FlatCreateWithoutStaffAttendanceInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -2307,6 +1910,7 @@ export type FlatCreateWithoutStaffAttendanceInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffAttendanceInput = {
@@ -2328,10 +1932,7 @@ export type FlatUncheckedCreateWithoutStaffAttendanceInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -2341,6 +1942,7 @@ export type FlatUncheckedCreateWithoutStaffAttendanceInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffAttendanceInput = {
@@ -2378,10 +1980,7 @@ export type FlatUpdateWithoutStaffAttendanceInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -2391,6 +1990,7 @@ export type FlatUpdateWithoutStaffAttendanceInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffAttendanceInput = {
@@ -2412,10 +2012,7 @@ export type FlatUncheckedUpdateWithoutStaffAttendanceInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -2425,6 +2022,7 @@ export type FlatUncheckedUpdateWithoutStaffAttendanceInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffBookingsInput = {
@@ -2446,10 +2044,7 @@ export type FlatCreateWithoutStaffBookingsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -2459,6 +2054,7 @@ export type FlatCreateWithoutStaffBookingsInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffBookingsInput = {
@@ -2480,10 +2076,7 @@ export type FlatUncheckedCreateWithoutStaffBookingsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -2493,6 +2086,7 @@ export type FlatUncheckedCreateWithoutStaffBookingsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffBookingsInput = {
@@ -2530,10 +2124,7 @@ export type FlatUpdateWithoutStaffBookingsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -2543,6 +2134,7 @@ export type FlatUpdateWithoutStaffBookingsInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffBookingsInput = {
@@ -2564,10 +2156,7 @@ export type FlatUncheckedUpdateWithoutStaffBookingsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -2577,6 +2166,7 @@ export type FlatUncheckedUpdateWithoutStaffBookingsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffReviewsInput = {
@@ -2598,10 +2188,7 @@ export type FlatCreateWithoutStaffReviewsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -2611,6 +2198,7 @@ export type FlatCreateWithoutStaffReviewsInput = {
   staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffReviewsInput = {
@@ -2632,10 +2220,7 @@ export type FlatUncheckedCreateWithoutStaffReviewsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -2645,6 +2230,7 @@ export type FlatUncheckedCreateWithoutStaffReviewsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffReviewsInput = {
@@ -2682,10 +2268,7 @@ export type FlatUpdateWithoutStaffReviewsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -2695,6 +2278,7 @@ export type FlatUpdateWithoutStaffReviewsInput = {
   staffBookings?: Prisma.StaffBookingUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffReviewsInput = {
@@ -2716,10 +2300,7 @@ export type FlatUncheckedUpdateWithoutStaffReviewsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -2729,6 +2310,7 @@ export type FlatUncheckedUpdateWithoutStaffReviewsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutVehiclesInput = {
@@ -2749,10 +2331,7 @@ export type FlatCreateWithoutVehiclesInput = {
   residents?: Prisma.UserCreateNestedManyWithoutFlatInput
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -2763,6 +2342,7 @@ export type FlatCreateWithoutVehiclesInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutVehiclesInput = {
@@ -2783,10 +2363,7 @@ export type FlatUncheckedCreateWithoutVehiclesInput = {
   residents?: Prisma.UserUncheckedCreateNestedManyWithoutFlatInput
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -2797,6 +2374,7 @@ export type FlatUncheckedCreateWithoutVehiclesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutVehiclesInput = {
@@ -2833,10 +2411,7 @@ export type FlatUpdateWithoutVehiclesInput = {
   residents?: Prisma.UserUpdateManyWithoutFlatNestedInput
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -2847,6 +2422,7 @@ export type FlatUpdateWithoutVehiclesInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutVehiclesInput = {
@@ -2867,10 +2443,7 @@ export type FlatUncheckedUpdateWithoutVehiclesInput = {
   residents?: Prisma.UserUncheckedUpdateManyWithoutFlatNestedInput
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -2881,6 +2454,7 @@ export type FlatUncheckedUpdateWithoutVehiclesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutVisitorFrequenciesInput = {
@@ -2902,9 +2476,6 @@ export type FlatCreateWithoutVisitorFrequenciesInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -2915,6 +2486,7 @@ export type FlatCreateWithoutVisitorFrequenciesInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutVisitorFrequenciesInput = {
@@ -2936,9 +2508,6 @@ export type FlatUncheckedCreateWithoutVisitorFrequenciesInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -2949,6 +2518,7 @@ export type FlatUncheckedCreateWithoutVisitorFrequenciesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutVisitorFrequenciesInput = {
@@ -2986,9 +2556,6 @@ export type FlatUpdateWithoutVisitorFrequenciesInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -2999,6 +2566,7 @@ export type FlatUpdateWithoutVisitorFrequenciesInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutVisitorFrequenciesInput = {
@@ -3020,9 +2588,6 @@ export type FlatUncheckedUpdateWithoutVisitorFrequenciesInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -3033,6 +2598,7 @@ export type FlatUncheckedUpdateWithoutVisitorFrequenciesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutGatePassesInput = {
@@ -3054,10 +2620,7 @@ export type FlatCreateWithoutGatePassesInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
   emergencies?: Prisma.EmergencyCreateNestedManyWithoutFlatInput
@@ -3067,6 +2630,7 @@ export type FlatCreateWithoutGatePassesInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutGatePassesInput = {
@@ -3088,10 +2652,7 @@ export type FlatUncheckedCreateWithoutGatePassesInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
   emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutFlatInput
@@ -3101,6 +2662,7 @@ export type FlatUncheckedCreateWithoutGatePassesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutGatePassesInput = {
@@ -3138,10 +2700,7 @@ export type FlatUpdateWithoutGatePassesInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
   emergencies?: Prisma.EmergencyUpdateManyWithoutFlatNestedInput
@@ -3151,6 +2710,7 @@ export type FlatUpdateWithoutGatePassesInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutGatePassesInput = {
@@ -3172,10 +2732,7 @@ export type FlatUncheckedUpdateWithoutGatePassesInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
   emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutFlatNestedInput
@@ -3185,6 +2742,7 @@ export type FlatUncheckedUpdateWithoutGatePassesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutAmenityBookingsInput = {
@@ -3206,10 +2764,7 @@ export type FlatCreateWithoutAmenityBookingsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
   emergencies?: Prisma.EmergencyCreateNestedManyWithoutFlatInput
@@ -3219,6 +2774,7 @@ export type FlatCreateWithoutAmenityBookingsInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutAmenityBookingsInput = {
@@ -3240,10 +2796,7 @@ export type FlatUncheckedCreateWithoutAmenityBookingsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
   emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutFlatInput
@@ -3253,6 +2806,7 @@ export type FlatUncheckedCreateWithoutAmenityBookingsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutAmenityBookingsInput = {
@@ -3290,10 +2844,7 @@ export type FlatUpdateWithoutAmenityBookingsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
   emergencies?: Prisma.EmergencyUpdateManyWithoutFlatNestedInput
@@ -3303,6 +2854,7 @@ export type FlatUpdateWithoutAmenityBookingsInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutAmenityBookingsInput = {
@@ -3324,10 +2876,7 @@ export type FlatUncheckedUpdateWithoutAmenityBookingsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
   emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutFlatNestedInput
@@ -3337,6 +2886,7 @@ export type FlatUncheckedUpdateWithoutAmenityBookingsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutComplaintsInput = {
@@ -3358,10 +2908,7 @@ export type FlatCreateWithoutComplaintsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   emergencies?: Prisma.EmergencyCreateNestedManyWithoutFlatInput
@@ -3371,6 +2918,7 @@ export type FlatCreateWithoutComplaintsInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutComplaintsInput = {
@@ -3392,10 +2940,7 @@ export type FlatUncheckedCreateWithoutComplaintsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutFlatInput
@@ -3405,6 +2950,7 @@ export type FlatUncheckedCreateWithoutComplaintsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutComplaintsInput = {
@@ -3442,10 +2988,7 @@ export type FlatUpdateWithoutComplaintsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   emergencies?: Prisma.EmergencyUpdateManyWithoutFlatNestedInput
@@ -3455,6 +2998,7 @@ export type FlatUpdateWithoutComplaintsInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutComplaintsInput = {
@@ -3476,10 +3020,7 @@ export type FlatUncheckedUpdateWithoutComplaintsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutFlatNestedInput
@@ -3489,6 +3030,7 @@ export type FlatUncheckedUpdateWithoutComplaintsInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutEmergenciesInput = {
@@ -3510,10 +3052,7 @@ export type FlatCreateWithoutEmergenciesInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -3523,6 +3062,7 @@ export type FlatCreateWithoutEmergenciesInput = {
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutEmergenciesInput = {
@@ -3544,10 +3084,7 @@ export type FlatUncheckedCreateWithoutEmergenciesInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -3557,6 +3094,7 @@ export type FlatUncheckedCreateWithoutEmergenciesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutEmergenciesInput = {
@@ -3594,10 +3132,7 @@ export type FlatUpdateWithoutEmergenciesInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -3607,6 +3142,7 @@ export type FlatUpdateWithoutEmergenciesInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutEmergenciesInput = {
@@ -3628,10 +3164,7 @@ export type FlatUncheckedUpdateWithoutEmergenciesInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -3641,6 +3174,7 @@ export type FlatUncheckedUpdateWithoutEmergenciesInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutOnboardingRequestsInput = {
@@ -3662,10 +3196,7 @@ export type FlatCreateWithoutOnboardingRequestsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -3675,6 +3206,7 @@ export type FlatCreateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutFlatInput
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutOnboardingRequestsInput = {
@@ -3696,10 +3228,7 @@ export type FlatUncheckedCreateWithoutOnboardingRequestsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -3709,6 +3238,7 @@ export type FlatUncheckedCreateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutFlatInput
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutOnboardingRequestsInput = {
@@ -3746,10 +3276,7 @@ export type FlatUpdateWithoutOnboardingRequestsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -3759,6 +3286,7 @@ export type FlatUpdateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingUpdateManyWithoutFlatNestedInput
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutOnboardingRequestsInput = {
@@ -3780,10 +3308,7 @@ export type FlatUncheckedUpdateWithoutOnboardingRequestsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -3793,6 +3318,7 @@ export type FlatUncheckedUpdateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutFlatNestedInput
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutEntryRequestsInput = {
@@ -3814,10 +3340,7 @@ export type FlatCreateWithoutEntryRequestsInput = {
   entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
@@ -3827,6 +3350,7 @@ export type FlatCreateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutFlatInput
   staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutEntryRequestsInput = {
@@ -3848,10 +3372,7 @@ export type FlatUncheckedCreateWithoutEntryRequestsInput = {
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
   domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutFlatInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutFlatInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutFlatInput
   gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
   complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
@@ -3861,6 +3382,7 @@ export type FlatUncheckedCreateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutFlatInput
   staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
+  invitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutEntryRequestsInput = {
@@ -3898,10 +3420,7 @@ export type FlatUpdateWithoutEntryRequestsInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -3911,6 +3430,7 @@ export type FlatUpdateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingUpdateManyWithoutFlatNestedInput
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutEntryRequestsInput = {
@@ -3932,10 +3452,7 @@ export type FlatUncheckedUpdateWithoutEntryRequestsInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -3945,6 +3462,7 @@ export type FlatUncheckedUpdateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutFlatNestedInput
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateManySocietyInput = {
@@ -3981,10 +3499,7 @@ export type FlatUpdateWithoutSocietyInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -3995,6 +3510,7 @@ export type FlatUpdateWithoutSocietyInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutSocietyInput = {
@@ -4015,10 +3531,7 @@ export type FlatUncheckedUpdateWithoutSocietyInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -4029,6 +3542,7 @@ export type FlatUncheckedUpdateWithoutSocietyInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateManyWithoutSocietyInput = {
@@ -4081,10 +3595,7 @@ export type FlatUpdateWithoutBlockInput = {
   entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
@@ -4095,6 +3606,7 @@ export type FlatUpdateWithoutBlockInput = {
   staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutBlockInput = {
@@ -4115,10 +3627,7 @@ export type FlatUncheckedUpdateWithoutBlockInput = {
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutFlatNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutFlatNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutFlatNestedInput
   gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
   complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
@@ -4129,6 +3638,7 @@ export type FlatUncheckedUpdateWithoutBlockInput = {
   staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  invitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateManyWithoutBlockInput = {
@@ -4157,10 +3667,7 @@ export type FlatCountOutputType = {
   entries: number
   domesticStaff: number
   vehicles: number
-  preApprovals: number
   visitorFrequencies: number
-  expectedDeliveries: number
-  deliveryAutoApproveRules: number
   gatePasses: number
   amenityBookings: number
   complaints: number
@@ -4171,6 +3678,7 @@ export type FlatCountOutputType = {
   staffReviews: number
   onboardingRequests: number
   entryRequests: number
+  invitePasses: number
 }
 
 export type FlatCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4178,10 +3686,7 @@ export type FlatCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   entries?: boolean | FlatCountOutputTypeCountEntriesArgs
   domesticStaff?: boolean | FlatCountOutputTypeCountDomesticStaffArgs
   vehicles?: boolean | FlatCountOutputTypeCountVehiclesArgs
-  preApprovals?: boolean | FlatCountOutputTypeCountPreApprovalsArgs
   visitorFrequencies?: boolean | FlatCountOutputTypeCountVisitorFrequenciesArgs
-  expectedDeliveries?: boolean | FlatCountOutputTypeCountExpectedDeliveriesArgs
-  deliveryAutoApproveRules?: boolean | FlatCountOutputTypeCountDeliveryAutoApproveRulesArgs
   gatePasses?: boolean | FlatCountOutputTypeCountGatePassesArgs
   amenityBookings?: boolean | FlatCountOutputTypeCountAmenityBookingsArgs
   complaints?: boolean | FlatCountOutputTypeCountComplaintsArgs
@@ -4192,6 +3697,7 @@ export type FlatCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   staffReviews?: boolean | FlatCountOutputTypeCountStaffReviewsArgs
   onboardingRequests?: boolean | FlatCountOutputTypeCountOnboardingRequestsArgs
   entryRequests?: boolean | FlatCountOutputTypeCountEntryRequestsArgs
+  invitePasses?: boolean | FlatCountOutputTypeCountInvitePassesArgs
 }
 
 /**
@@ -4235,29 +3741,8 @@ export type FlatCountOutputTypeCountVehiclesArgs<ExtArgs extends runtime.Types.E
 /**
  * FlatCountOutputType without action
  */
-export type FlatCountOutputTypeCountPreApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PreApprovalWhereInput
-}
-
-/**
- * FlatCountOutputType without action
- */
 export type FlatCountOutputTypeCountVisitorFrequenciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.VisitorFrequencyWhereInput
-}
-
-/**
- * FlatCountOutputType without action
- */
-export type FlatCountOutputTypeCountExpectedDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ExpectedDeliveryWhereInput
-}
-
-/**
- * FlatCountOutputType without action
- */
-export type FlatCountOutputTypeCountDeliveryAutoApproveRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DeliveryAutoApproveRuleWhereInput
 }
 
 /**
@@ -4330,6 +3815,13 @@ export type FlatCountOutputTypeCountEntryRequestsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.EntryRequestWhereInput
 }
 
+/**
+ * FlatCountOutputType without action
+ */
+export type FlatCountOutputTypeCountInvitePassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvitePassWhereInput
+}
+
 
 export type FlatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4352,10 +3844,7 @@ export type FlatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   entries?: boolean | Prisma.Flat$entriesArgs<ExtArgs>
   domesticStaff?: boolean | Prisma.Flat$domesticStaffArgs<ExtArgs>
   vehicles?: boolean | Prisma.Flat$vehiclesArgs<ExtArgs>
-  preApprovals?: boolean | Prisma.Flat$preApprovalsArgs<ExtArgs>
   visitorFrequencies?: boolean | Prisma.Flat$visitorFrequenciesArgs<ExtArgs>
-  expectedDeliveries?: boolean | Prisma.Flat$expectedDeliveriesArgs<ExtArgs>
-  deliveryAutoApproveRules?: boolean | Prisma.Flat$deliveryAutoApproveRulesArgs<ExtArgs>
   gatePasses?: boolean | Prisma.Flat$gatePassesArgs<ExtArgs>
   amenityBookings?: boolean | Prisma.Flat$amenityBookingsArgs<ExtArgs>
   complaints?: boolean | Prisma.Flat$complaintsArgs<ExtArgs>
@@ -4366,6 +3855,7 @@ export type FlatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   staffReviews?: boolean | Prisma.Flat$staffReviewsArgs<ExtArgs>
   onboardingRequests?: boolean | Prisma.Flat$onboardingRequestsArgs<ExtArgs>
   entryRequests?: boolean | Prisma.Flat$entryRequestsArgs<ExtArgs>
+  invitePasses?: boolean | Prisma.Flat$invitePassesArgs<ExtArgs>
   _count?: boolean | Prisma.FlatCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["flat"]>
 
@@ -4432,10 +3922,7 @@ export type FlatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   entries?: boolean | Prisma.Flat$entriesArgs<ExtArgs>
   domesticStaff?: boolean | Prisma.Flat$domesticStaffArgs<ExtArgs>
   vehicles?: boolean | Prisma.Flat$vehiclesArgs<ExtArgs>
-  preApprovals?: boolean | Prisma.Flat$preApprovalsArgs<ExtArgs>
   visitorFrequencies?: boolean | Prisma.Flat$visitorFrequenciesArgs<ExtArgs>
-  expectedDeliveries?: boolean | Prisma.Flat$expectedDeliveriesArgs<ExtArgs>
-  deliveryAutoApproveRules?: boolean | Prisma.Flat$deliveryAutoApproveRulesArgs<ExtArgs>
   gatePasses?: boolean | Prisma.Flat$gatePassesArgs<ExtArgs>
   amenityBookings?: boolean | Prisma.Flat$amenityBookingsArgs<ExtArgs>
   complaints?: boolean | Prisma.Flat$complaintsArgs<ExtArgs>
@@ -4446,6 +3933,7 @@ export type FlatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   staffReviews?: boolean | Prisma.Flat$staffReviewsArgs<ExtArgs>
   onboardingRequests?: boolean | Prisma.Flat$onboardingRequestsArgs<ExtArgs>
   entryRequests?: boolean | Prisma.Flat$entryRequestsArgs<ExtArgs>
+  invitePasses?: boolean | Prisma.Flat$invitePassesArgs<ExtArgs>
   _count?: boolean | Prisma.FlatCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FlatIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4466,10 +3954,7 @@ export type $FlatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     entries: Prisma.$EntryPayload<ExtArgs>[]
     domesticStaff: Prisma.$DomesticStaffPayload<ExtArgs>[]
     vehicles: Prisma.$VehiclePayload<ExtArgs>[]
-    preApprovals: Prisma.$PreApprovalPayload<ExtArgs>[]
     visitorFrequencies: Prisma.$VisitorFrequencyPayload<ExtArgs>[]
-    expectedDeliveries: Prisma.$ExpectedDeliveryPayload<ExtArgs>[]
-    deliveryAutoApproveRules: Prisma.$DeliveryAutoApproveRulePayload<ExtArgs>[]
     gatePasses: Prisma.$GatePassPayload<ExtArgs>[]
     amenityBookings: Prisma.$AmenityBookingPayload<ExtArgs>[]
     complaints: Prisma.$ComplaintPayload<ExtArgs>[]
@@ -4480,6 +3965,7 @@ export type $FlatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     staffReviews: Prisma.$StaffReviewPayload<ExtArgs>[]
     onboardingRequests: Prisma.$OnboardingRequestPayload<ExtArgs>[]
     entryRequests: Prisma.$EntryRequestPayload<ExtArgs>[]
+    invitePasses: Prisma.$InvitePassPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4896,10 +4382,7 @@ export interface Prisma__FlatClient<T, Null = never, ExtArgs extends runtime.Typ
   entries<T extends Prisma.Flat$entriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   domesticStaff<T extends Prisma.Flat$domesticStaffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$domesticStaffArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DomesticStaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vehicles<T extends Prisma.Flat$vehiclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$vehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  preApprovals<T extends Prisma.Flat$preApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$preApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PreApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   visitorFrequencies<T extends Prisma.Flat$visitorFrequenciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$visitorFrequenciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VisitorFrequencyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  expectedDeliveries<T extends Prisma.Flat$expectedDeliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$expectedDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpectedDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  deliveryAutoApproveRules<T extends Prisma.Flat$deliveryAutoApproveRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$deliveryAutoApproveRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryAutoApproveRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   gatePasses<T extends Prisma.Flat$gatePassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$gatePassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GatePassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   amenityBookings<T extends Prisma.Flat$amenityBookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$amenityBookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AmenityBookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   complaints<T extends Prisma.Flat$complaintsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$complaintsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplaintPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4910,6 +4393,7 @@ export interface Prisma__FlatClient<T, Null = never, ExtArgs extends runtime.Typ
   staffReviews<T extends Prisma.Flat$staffReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$staffReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   onboardingRequests<T extends Prisma.Flat$onboardingRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$onboardingRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   entryRequests<T extends Prisma.Flat$entryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$entryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invitePasses<T extends Prisma.Flat$invitePassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$invitePassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitePassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5464,30 +4948,6 @@ export type Flat$vehiclesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * Flat.preApprovals
- */
-export type Flat$preApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PreApproval
-   */
-  select?: Prisma.PreApprovalSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PreApproval
-   */
-  omit?: Prisma.PreApprovalOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PreApprovalInclude<ExtArgs> | null
-  where?: Prisma.PreApprovalWhereInput
-  orderBy?: Prisma.PreApprovalOrderByWithRelationInput | Prisma.PreApprovalOrderByWithRelationInput[]
-  cursor?: Prisma.PreApprovalWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PreApprovalScalarFieldEnum | Prisma.PreApprovalScalarFieldEnum[]
-}
-
-/**
  * Flat.visitorFrequencies
  */
 export type Flat$visitorFrequenciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5509,54 +4969,6 @@ export type Flat$visitorFrequenciesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.VisitorFrequencyScalarFieldEnum | Prisma.VisitorFrequencyScalarFieldEnum[]
-}
-
-/**
- * Flat.expectedDeliveries
- */
-export type Flat$expectedDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ExpectedDelivery
-   */
-  select?: Prisma.ExpectedDeliverySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ExpectedDelivery
-   */
-  omit?: Prisma.ExpectedDeliveryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ExpectedDeliveryInclude<ExtArgs> | null
-  where?: Prisma.ExpectedDeliveryWhereInput
-  orderBy?: Prisma.ExpectedDeliveryOrderByWithRelationInput | Prisma.ExpectedDeliveryOrderByWithRelationInput[]
-  cursor?: Prisma.ExpectedDeliveryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ExpectedDeliveryScalarFieldEnum | Prisma.ExpectedDeliveryScalarFieldEnum[]
-}
-
-/**
- * Flat.deliveryAutoApproveRules
- */
-export type Flat$deliveryAutoApproveRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DeliveryAutoApproveRule
-   */
-  select?: Prisma.DeliveryAutoApproveRuleSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the DeliveryAutoApproveRule
-   */
-  omit?: Prisma.DeliveryAutoApproveRuleOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DeliveryAutoApproveRuleInclude<ExtArgs> | null
-  where?: Prisma.DeliveryAutoApproveRuleWhereInput
-  orderBy?: Prisma.DeliveryAutoApproveRuleOrderByWithRelationInput | Prisma.DeliveryAutoApproveRuleOrderByWithRelationInput[]
-  cursor?: Prisma.DeliveryAutoApproveRuleWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.DeliveryAutoApproveRuleScalarFieldEnum | Prisma.DeliveryAutoApproveRuleScalarFieldEnum[]
 }
 
 /**
@@ -5797,6 +5209,30 @@ export type Flat$entryRequestsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.EntryRequestScalarFieldEnum | Prisma.EntryRequestScalarFieldEnum[]
+}
+
+/**
+ * Flat.invitePasses
+ */
+export type Flat$invitePassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InvitePass
+   */
+  select?: Prisma.InvitePassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InvitePass
+   */
+  omit?: Prisma.InvitePassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvitePassInclude<ExtArgs> | null
+  where?: Prisma.InvitePassWhereInput
+  orderBy?: Prisma.InvitePassOrderByWithRelationInput | Prisma.InvitePassOrderByWithRelationInput[]
+  cursor?: Prisma.InvitePassWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvitePassScalarFieldEnum | Prisma.InvitePassScalarFieldEnum[]
 }
 
 /**

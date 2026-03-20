@@ -50,12 +50,6 @@ enum VisitorType {
   FRIEND
 }
 
-enum PreApprovalStatus {
-  ACTIVE
-  EXPIRED
-  USED
-  CANCELLED
-}
 
 enum PaymentStatus {
   PENDING
@@ -258,6 +252,21 @@ enum ProviderTag {
   OTHER
 }
 
+enum InviteType {
+  GUEST              // One-time or recurring guest
+  DELIVERY_ONCE      // Single expected delivery
+  DELIVERY_STANDING  // Recurring delivery rule (Swiggy always allowed)
+  CAB                // Cab/taxi
+  SERVICE            // Service provider (plumber, electrician, etc.)
+}
+
+enum InviteStatus {
+  ACTIVE
+  USED
+  EXPIRED
+  CANCELLED
+}
+
 enum DomesticStaffType {
   MAID
   COOK
@@ -318,19 +327,16 @@ model Society {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users                    User[]
-  blocks                   Block[]
-  flats                    Flat[]
-  entries                  Entry[]
-  domesticStaff            DomesticStaff[]
-  preApprovals             PreApproval[]
-  vehicles                 Vehicle[]
-  gatePoints               GatePoint[]
-  visitorFrequencies       VisitorFrequency[]
-  paymentReminders         PaymentReminder[]
-  expectedDeliveries       ExpectedDelivery[]
-  deliveryAutoApproveRules DeliveryAutoApproveRule[]
-  gatePasses               GatePass[]
+  users              User[]
+  blocks             Block[]
+  flats              Flat[]
+  entries            Entry[]
+  domesticStaff      DomesticStaff[]
+  vehicles           Vehicle[]
+  gatePoints         GatePoint[]
+  visitorFrequencies VisitorFrequency[]
+  paymentReminders   PaymentReminder[]
+  gatePasses         GatePass[]
   notices                  Notice[]
   amenities                Amenity[]
   amenityBookings          AmenityBooking[]
@@ -342,6 +348,7 @@ model Society {
   onboardingRequests       OnboardingRequest[]
   notifications            Notification[]
   entryRequests            EntryRequest[]
+  invitePasses             InvitePass[]
   registrationRequest      SocietyRegistrationRequest?
 
   @@index([city, isActive])
@@ -464,15 +471,12 @@ model Flat {
   updatedAt DateTime @updatedAt
 
   // Relations
-  residents                User[]
-  entries                  Entry[]
-  domesticStaff            DomesticStaff[]
-  vehicles                 Vehicle[]
-  preApprovals             PreApproval[]
-  visitorFrequencies       VisitorFrequency[]
-  expectedDeliveries       ExpectedDelivery[]
-  deliveryAutoApproveRules DeliveryAutoApproveRule[]
-  gatePasses               GatePass[]
+  residents          User[]
+  entries            Entry[]
+  domesticStaff      DomesticStaff[]
+  vehicles           Vehicle[]
+  visitorFrequencies VisitorFrequency[]
+  gatePasses         GatePass[]
   amenityBookings          AmenityBooking[]
   complaints               Complaint[]
   emergencies              Emergency[]
@@ -482,6 +486,7 @@ model Flat {
   staffReviews             StaffReview[]
   onboardingRequests       OnboardingRequest[]
   entryRequests            EntryRequest[]
+  invitePasses             InvitePass[]
 
   @@unique([societyId, flatNumber])
   @@index([societyId])
@@ -522,12 +527,9 @@ model User {
   familyMembers     User[]      @relation("FamilyMembers")
 
   // Relations
-  createdEntries           Entry[]                   @relation("EntryCreator")
-  approvedEntries          Entry[]                   @relation("EntryApprover")
-  vehicles                 Vehicle[]
-  preApprovals             PreApproval[]
-  expectedDeliveries       ExpectedDelivery[]
-  deliveryAutoApproveRules DeliveryAutoApproveRule[]
+  createdEntries  Entry[] @relation("EntryCreator")
+  approvedEntries Entry[] @relation("EntryApprover")
+  vehicles        Vehicle[]
 
   // New module relations
   requestedGatePasses  GatePass[]       @relation("GatePassRequester")
@@ -562,6 +564,9 @@ model User {
   // Entry Request relations
   createdEntryRequests  EntryRequest[] @relation("EntryRequestGuard")
   approvedEntryRequests EntryRequest[] @relation("EntryRequestApprover")
+
+  // Invite Pass relations
+  createdInvitePasses InvitePass[] @relation("InvitePassCreator")
 
   // Push notifications
   fcmToken   String? // Device push token, updated on every login
@@ -634,10 +639,10 @@ model Entry {
   checkOutTime DateTime?
 
   // References
-  preApprovalId   String?
-  preApproval     PreApproval?   @relation(fields: [preApprovalId], references: [id])
   domesticStaffId String?
   domesticStaff   DomesticStaff? @relation(fields: [domesticStaffId], references: [id])
+  invitePassId    String?
+  invitePass      InvitePass?    @relation(fields: [invitePassId], references: [id])
 
   // Notes
   remarks         String?
@@ -657,123 +662,59 @@ model Entry {
 }
 
 // --------------------
-// PRE-APPROVALS (QR INVITES for Family/Friends)
+// INVITE PASSES (Unified gate access system)
 // --------------------
 
-model PreApproval {
-  id String @id @default(uuid())
+model InvitePass {
+  id     String        @id @default(uuid())
+  type   InviteType
+  status InviteStatus  @default(ACTIVE)
 
-  // Visitor details
-  visitorName   String
-  visitorPhone  String
-  visitorType   VisitorType
-  purpose       String?
+  // Visitor / delivery details
+  visitorName   String?   // Name of person expected (optional for deliveries)
+  visitorPhone  String?
+  companyName   String?   // "Amazon", "Swiggy", etc. — for deliveries/services
+  companies     String[]  // For DELIVERY_STANDING: multiple companies allowed
   vehicleNumber String?
+  purpose       String?   // Reason for visit (for GUEST/SERVICE)
+  visitorPhoto  String?   // S3 key for visitor photo (optional)
 
-  // QR Code / Unique token
-  qrToken String @unique
-
-  // Validity
+  // Validity window
   validFrom  DateTime
   validUntil DateTime
-  status     PreApprovalStatus @default(ACTIVE)
-  maxUses    Int               @default(1)
-  usedCount  Int               @default(0)
 
-  // Flat reference
+  // Recurring rules (used for DELIVERY_STANDING)
+  allowedDays String[]  // ["MON","TUE",...] — empty = all days
+  timeFrom    String?   // "08:00"
+  timeUntil   String?   // "22:00"
+
+  // Usage limits
+  maxUses   Int @default(1)  // -1 = unlimited (for standing rules)
+  usedCount Int @default(0)
+
+  // QR token for guard scan
+  qrToken String @unique
+
+  // Relations
   flatId String
   flat   Flat   @relation(fields: [flatId], references: [id])
 
-  // Society reference
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
-  // Created by (resident)
   createdById String
-  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdBy   User   @relation("InvitePassCreator", fields: [createdById], references: [id])
 
-  // Used entries
+  // Entries created from this pass
   entries Entry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([qrToken])
+  @@index([flatId, status, validUntil])
   @@index([societyId, status])
-  @@index([flatId, validUntil])
-}
-
-// --------------------
-// EXPECTED DELIVERIES (Smart auto-approval)
-// --------------------
-
-model ExpectedDelivery {
-  id String @id @default(uuid())
-
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
-
-  societyId String
-  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
-
-  createdById String
-  createdBy   User   @relation(fields: [createdById], references: [id])
-
-  // Delivery details
-  companyName String // "Amazon", "Flipkart", "Swiggy"
-  itemName    String? // "iPhone 15", "Food order"
-
-  // Time window
-  expectedDate DateTime // Today, Tomorrow, specific date
-  timeFrom     String? // "10:00"
-  timeUntil    String? // "20:00"
-
-  // Auto-approval
-  autoApprove Boolean @default(true)
-
-  // Status
-  isUsed Boolean   @default(false)
-  usedAt DateTime?
-
-  createdAt DateTime @default(now())
-  expiresAt DateTime // Auto-delete after this date
-
-  @@index([flatId, expectedDate, isUsed])
-  @@index([societyId, expectedDate])
-}
-
-// --------------------
-// DELIVERY AUTO-APPROVE RULES (Standing approval)
-// --------------------
-
-model DeliveryAutoApproveRule {
-  id String @id @default(uuid())
-
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
-
-  societyId String
-  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
-
-  createdById String
-  createdBy   User   @relation(fields: [createdById], references: [id])
-
-  // Rule details
-  companies String[] // ["Swiggy", "Zomato", "Amazon"]
-
-  // Time restrictions (optional)
-  allowedDays String[] // ["MON", "TUE", "WED"] - empty = all days
-  timeFrom    String? // "08:00"
-  timeUntil   String? // "23:00"
-
-  // Status
-  isActive Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([flatId, isActive])
-  @@index([societyId])
+  @@index([qrToken])
+  @@index([flatId, type, status])
 }
 
 // --------------------

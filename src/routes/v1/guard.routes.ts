@@ -4,16 +4,20 @@ import {
   createEntryRequest,
   getPendingCount,
 } from '../../modules/entry-request/entry-request.controller';
-import { PreApprovalController } from '../../modules/preapproval/preapproval.controller';
 import { scanGatePass } from '../../modules/gatepass/gatepass.controller';
 import { scanQRCode } from '../../modules/domestic-staff/domestic-staff.controller';
 import {
   respondToEmergency,
   getActiveEmergencies,
 } from '../../modules/emergency/emergency.controller';
+import {
+  scanQR,
+  getTodayEntries,
+  getEntries,
+  checkoutEntry,
+} from '../../modules/gate-scan/gate-scan.controller';
 
 const router = Router();
-const preApprovalController = new PreApprovalController();
 
 // All guard routes require guard authentication
 router.use(authenticateGuardApp);
@@ -21,28 +25,30 @@ router.use(authenticateGuardApp);
 // ============================================
 // DASHBOARD / HOME
 // ============================================
-router.get('/today', preApprovalController.getTodayEntries);
+router.get('/today', getTodayEntries);
 router.get('/pending-count', getPendingCount);
 
 // ============================================
-// ENTRY MANAGEMENT (Read-only + Checkout)
+// ENTRY MANAGEMENT
 // ============================================
-router.patch('/entries/:id/checkout', preApprovalController.checkoutEntry);
-router.get('/entries', preApprovalController.getEntries);
+router.patch('/entries/:id/checkout', checkoutEntry);
+router.get('/entries', getEntries);
 
 // ============================================
-// ENTRY REQUESTS (Visitor at gate)
+// ENTRY REQUESTS (Visitor at gate — manual approval)
 // ============================================
 router.post('/entry-requests', createEntryRequest);
 
 // ============================================
 // QR SCANNING
 // ============================================
-router.post('/scan/preapproval', preApprovalController.scanPreApprovalQR);
-router.post('/scan/gatepass', scanGatePass);
-router.post('/scan/staff', scanQRCode);
+router.post('/scan', scanQR);                  // Unified scan (preferred)
+router.post('/scan/gatepass', scanGatePass);   // Legacy
+router.post('/scan/staff', scanQRCode);        // Legacy
 
-// emergency
+// ============================================
+// EMERGENCIES
+// ============================================
 router.get('/emergencies/active', getActiveEmergencies);
 router.patch('/emergencies/:id/respond', respondToEmergency);
 

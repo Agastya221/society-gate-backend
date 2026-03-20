@@ -73,20 +73,10 @@ export type User = Prisma.UserModel
  */
 export type Entry = Prisma.EntryModel
 /**
- * Model PreApproval
+ * Model InvitePass
  * 
  */
-export type PreApproval = Prisma.PreApprovalModel
-/**
- * Model ExpectedDelivery
- * 
- */
-export type ExpectedDelivery = Prisma.ExpectedDeliveryModel
-/**
- * Model DeliveryAutoApproveRule
- * 
- */
-export type DeliveryAutoApproveRule = Prisma.DeliveryAutoApproveRuleModel
+export type InvitePass = Prisma.InvitePassModel
 /**
  * Model DomesticStaff
  * 

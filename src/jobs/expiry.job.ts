@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import { prisma } from '../utils/Client';
 import { emitToUser, SOCKET_EVENTS } from '../utils/socket';
+import { notificationService } from '../modules/notification/notification.service';
 import logger from '../utils/logger';
 
 // ARCH-4: Each job is an exported function for future worker extraction
@@ -15,6 +16,9 @@ export async function expireEntryRequests() {
       select: {
         id: true,
         guardId: true,
+        flatId: true,
+        societyId: true,
+        visitorName: true,
         flat: { select: { flatNumber: true } },
       },
     });
@@ -34,29 +38,22 @@ export async function expireEntryRequests() {
         status: 'EXPIRED',
         flatNumber: request.flat.flatNumber,
       });
+
+      notificationService.sendToFlat(request.flatId, {
+        type: 'ENTRY_REQUEST',
+        title: 'Missed visitor',
+        message: request.visitorName
+          ? `${request.visitorName} was waiting at the gate — request expired`
+          : 'Someone was waiting at the gate — request expired',
+        referenceId: request.id,
+        referenceType: 'EntryRequest',
+        societyId: request.societyId,
+      }).catch((err: unknown) => logger.error({ err }, 'Failed to send missed visitor notification'));
     }
 
     logger.info({ count: expiredRequests.length }, 'Auto-expired entry requests');
   } catch (error) {
     logger.error({ error }, 'Error expiring entry requests');
-  }
-}
-
-export async function expirePreApprovals() {
-  try {
-    const result = await prisma.preApproval.updateMany({
-      where: {
-        status: 'ACTIVE',
-        validUntil: { lt: new Date() },
-      },
-      data: { status: 'EXPIRED' },
-    });
-
-    if (result.count > 0) {
-      logger.info({ count: result.count }, 'Auto-expired pre-approvals');
-    }
-  } catch (error) {
-    logger.error({ error }, 'Error expiring pre-approvals');
   }
 }
 
@@ -75,6 +72,24 @@ export async function expireGatePasses() {
     }
   } catch (error) {
     logger.error({ error }, 'Error expiring gate passes');
+  }
+}
+
+export async function expireInvitePasses() {
+  try {
+    const result = await prisma.invitePass.updateMany({
+      where: {
+        status: 'ACTIVE',
+        validUntil: { lt: new Date() },
+      },
+      data: { status: 'EXPIRED' },
+    });
+
+    if (result.count > 0) {
+      logger.info({ count: result.count }, 'Auto-expired invite passes');
+    }
+  } catch (error) {
+    logger.error({ error }, 'Error expiring invite passes');
   }
 }
 
@@ -100,8 +115,8 @@ export async function cleanupOldNotifications() {
 
 // Schedule jobs
 cron.schedule('* * * * *', expireEntryRequests);
-cron.schedule('*/5 * * * *', expirePreApprovals);
 cron.schedule('*/5 * * * *', expireGatePasses);
+cron.schedule('*/5 * * * *', expireInvitePasses);
 cron.schedule('0 3 * * *', cleanupOldNotifications);
 
 logger.info('Cron jobs scheduled');

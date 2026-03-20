@@ -359,9 +359,6 @@ export type UserWhereInput = {
   createdEntries?: Prisma.EntryListRelationFilter
   approvedEntries?: Prisma.EntryListRelationFilter
   vehicles?: Prisma.VehicleListRelationFilter
-  preApprovals?: Prisma.PreApprovalListRelationFilter
-  expectedDeliveries?: Prisma.ExpectedDeliveryListRelationFilter
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleListRelationFilter
   requestedGatePasses?: Prisma.GatePassListRelationFilter
   approvedGatePasses?: Prisma.GatePassListRelationFilter
   createdNotices?: Prisma.NoticeListRelationFilter
@@ -384,6 +381,7 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   createdEntryRequests?: Prisma.EntryRequestListRelationFilter
   approvedEntryRequests?: Prisma.EntryRequestListRelationFilter
+  createdInvitePasses?: Prisma.InvitePassListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -416,9 +414,6 @@ export type UserOrderByWithRelationInput = {
   createdEntries?: Prisma.EntryOrderByRelationAggregateInput
   approvedEntries?: Prisma.EntryOrderByRelationAggregateInput
   vehicles?: Prisma.VehicleOrderByRelationAggregateInput
-  preApprovals?: Prisma.PreApprovalOrderByRelationAggregateInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryOrderByRelationAggregateInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleOrderByRelationAggregateInput
   requestedGatePasses?: Prisma.GatePassOrderByRelationAggregateInput
   approvedGatePasses?: Prisma.GatePassOrderByRelationAggregateInput
   createdNotices?: Prisma.NoticeOrderByRelationAggregateInput
@@ -441,6 +436,7 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   createdEntryRequests?: Prisma.EntryRequestOrderByRelationAggregateInput
   approvedEntryRequests?: Prisma.EntryRequestOrderByRelationAggregateInput
+  createdInvitePasses?: Prisma.InvitePassOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -476,9 +472,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdEntries?: Prisma.EntryListRelationFilter
   approvedEntries?: Prisma.EntryListRelationFilter
   vehicles?: Prisma.VehicleListRelationFilter
-  preApprovals?: Prisma.PreApprovalListRelationFilter
-  expectedDeliveries?: Prisma.ExpectedDeliveryListRelationFilter
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleListRelationFilter
   requestedGatePasses?: Prisma.GatePassListRelationFilter
   approvedGatePasses?: Prisma.GatePassListRelationFilter
   createdNotices?: Prisma.NoticeListRelationFilter
@@ -501,6 +494,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   createdEntryRequests?: Prisma.EntryRequestListRelationFilter
   approvedEntryRequests?: Prisma.EntryRequestListRelationFilter
+  createdInvitePasses?: Prisma.InvitePassListRelationFilter
 }, "id" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -588,9 +582,6 @@ export type UserCreateInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -613,6 +604,7 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -642,9 +634,6 @@ export type UserUncheckedCreateInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -667,6 +656,7 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -696,9 +686,6 @@ export type UserUpdateInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -721,6 +708,7 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -750,9 +738,6 @@ export type UserUncheckedUpdateInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -775,6 +760,7 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1162,46 +1148,18 @@ export type UserUpdateOneWithoutApprovedEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApprovedEntriesInput, Prisma.UserUpdateWithoutApprovedEntriesInput>, Prisma.UserUncheckedUpdateWithoutApprovedEntriesInput>
 }
 
-export type UserCreateNestedOneWithoutPreApprovalsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPreApprovalsInput, Prisma.UserUncheckedCreateWithoutPreApprovalsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPreApprovalsInput
+export type UserCreateNestedOneWithoutCreatedInvitePassesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitePassesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitePassesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedInvitePassesInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutPreApprovalsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPreApprovalsInput, Prisma.UserUncheckedCreateWithoutPreApprovalsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPreApprovalsInput
-  upsert?: Prisma.UserUpsertWithoutPreApprovalsInput
+export type UserUpdateOneRequiredWithoutCreatedInvitePassesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitePassesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitePassesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedInvitePassesInput
+  upsert?: Prisma.UserUpsertWithoutCreatedInvitePassesInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPreApprovalsInput, Prisma.UserUpdateWithoutPreApprovalsInput>, Prisma.UserUncheckedUpdateWithoutPreApprovalsInput>
-}
-
-export type UserCreateNestedOneWithoutExpectedDeliveriesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutExpectedDeliveriesInput, Prisma.UserUncheckedCreateWithoutExpectedDeliveriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExpectedDeliveriesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutExpectedDeliveriesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutExpectedDeliveriesInput, Prisma.UserUncheckedCreateWithoutExpectedDeliveriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExpectedDeliveriesInput
-  upsert?: Prisma.UserUpsertWithoutExpectedDeliveriesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExpectedDeliveriesInput, Prisma.UserUpdateWithoutExpectedDeliveriesInput>, Prisma.UserUncheckedUpdateWithoutExpectedDeliveriesInput>
-}
-
-export type UserCreateNestedOneWithoutDeliveryAutoApproveRulesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutDeliveryAutoApproveRulesInput, Prisma.UserUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDeliveryAutoApproveRulesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutDeliveryAutoApproveRulesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutDeliveryAutoApproveRulesInput, Prisma.UserUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDeliveryAutoApproveRulesInput
-  upsert?: Prisma.UserUpsertWithoutDeliveryAutoApproveRulesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDeliveryAutoApproveRulesInput, Prisma.UserUpdateWithoutDeliveryAutoApproveRulesInput>, Prisma.UserUncheckedUpdateWithoutDeliveryAutoApproveRulesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedInvitePassesInput, Prisma.UserUpdateWithoutCreatedInvitePassesInput>, Prisma.UserUncheckedUpdateWithoutCreatedInvitePassesInput>
 }
 
 export type UserCreateNestedOneWithoutAddedDomesticStaffInput = {
@@ -1538,9 +1496,6 @@ export type UserCreateWithoutSocietyInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -1563,6 +1518,7 @@ export type UserCreateWithoutSocietyInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSocietyInput = {
@@ -1591,9 +1547,6 @@ export type UserUncheckedCreateWithoutSocietyInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1616,6 +1569,7 @@ export type UserUncheckedCreateWithoutSocietyInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSocietyInput = {
@@ -1699,9 +1653,6 @@ export type UserCreateWithoutSocietyRegistrationRequestsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -1723,6 +1674,7 @@ export type UserCreateWithoutSocietyRegistrationRequestsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSocietyRegistrationRequestsInput = {
@@ -1752,9 +1704,6 @@ export type UserUncheckedCreateWithoutSocietyRegistrationRequestsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1776,6 +1725,7 @@ export type UserUncheckedCreateWithoutSocietyRegistrationRequestsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSocietyRegistrationRequestsInput = {
@@ -1810,9 +1760,6 @@ export type UserCreateWithoutSocietyRegistrationReviewsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -1834,6 +1781,7 @@ export type UserCreateWithoutSocietyRegistrationReviewsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSocietyRegistrationReviewsInput = {
@@ -1863,9 +1811,6 @@ export type UserUncheckedCreateWithoutSocietyRegistrationReviewsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1887,6 +1832,7 @@ export type UserUncheckedCreateWithoutSocietyRegistrationReviewsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSocietyRegistrationReviewsInput = {
@@ -1932,9 +1878,6 @@ export type UserUpdateWithoutSocietyRegistrationRequestsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -1956,6 +1899,7 @@ export type UserUpdateWithoutSocietyRegistrationRequestsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput = {
@@ -1985,9 +1929,6 @@ export type UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2009,6 +1950,7 @@ export type UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutSocietyRegistrationReviewsInput = {
@@ -2049,9 +1991,6 @@ export type UserUpdateWithoutSocietyRegistrationReviewsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -2073,6 +2012,7 @@ export type UserUpdateWithoutSocietyRegistrationReviewsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput = {
@@ -2102,9 +2042,6 @@ export type UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2126,6 +2063,7 @@ export type UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutFlatInput = {
@@ -2154,9 +2092,6 @@ export type UserCreateWithoutFlatInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -2179,6 +2114,7 @@ export type UserCreateWithoutFlatInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutFlatInput = {
@@ -2207,9 +2143,6 @@ export type UserUncheckedCreateWithoutFlatInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2232,6 +2165,7 @@ export type UserUncheckedCreateWithoutFlatInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFlatInput = {
@@ -2286,9 +2220,6 @@ export type UserCreateWithoutFamilyMembersInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -2311,6 +2242,7 @@ export type UserCreateWithoutFamilyMembersInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutFamilyMembersInput = {
@@ -2339,9 +2271,6 @@ export type UserUncheckedCreateWithoutFamilyMembersInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2364,6 +2293,7 @@ export type UserUncheckedCreateWithoutFamilyMembersInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFamilyMembersInput = {
@@ -2397,9 +2327,6 @@ export type UserCreateWithoutPrimaryResidentInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -2422,6 +2349,7 @@ export type UserCreateWithoutPrimaryResidentInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutPrimaryResidentInput = {
@@ -2450,9 +2378,6 @@ export type UserUncheckedCreateWithoutPrimaryResidentInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2475,6 +2400,7 @@ export type UserUncheckedCreateWithoutPrimaryResidentInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutPrimaryResidentInput = {
@@ -2524,9 +2450,6 @@ export type UserUpdateWithoutFamilyMembersInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -2549,6 +2472,7 @@ export type UserUpdateWithoutFamilyMembersInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFamilyMembersInput = {
@@ -2577,9 +2501,6 @@ export type UserUncheckedUpdateWithoutFamilyMembersInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2602,6 +2523,7 @@ export type UserUncheckedUpdateWithoutFamilyMembersInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutPrimaryResidentInput = {
@@ -2646,9 +2568,6 @@ export type UserCreateWithoutCreatedEntriesInput = {
   familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -2671,6 +2590,7 @@ export type UserCreateWithoutCreatedEntriesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedEntriesInput = {
@@ -2699,9 +2619,6 @@ export type UserUncheckedCreateWithoutCreatedEntriesInput = {
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2724,6 +2641,7 @@ export type UserUncheckedCreateWithoutCreatedEntriesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedEntriesInput = {
@@ -2757,9 +2675,6 @@ export type UserCreateWithoutApprovedEntriesInput = {
   familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -2782,6 +2697,7 @@ export type UserCreateWithoutApprovedEntriesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedEntriesInput = {
@@ -2810,9 +2726,6 @@ export type UserUncheckedCreateWithoutApprovedEntriesInput = {
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2835,6 +2748,7 @@ export type UserUncheckedCreateWithoutApprovedEntriesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedEntriesInput = {
@@ -2879,9 +2793,6 @@ export type UserUpdateWithoutCreatedEntriesInput = {
   familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -2904,6 +2815,7 @@ export type UserUpdateWithoutCreatedEntriesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedEntriesInput = {
@@ -2932,9 +2844,6 @@ export type UserUncheckedUpdateWithoutCreatedEntriesInput = {
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2957,6 +2866,7 @@ export type UserUncheckedUpdateWithoutCreatedEntriesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedEntriesInput = {
@@ -2996,9 +2906,6 @@ export type UserUpdateWithoutApprovedEntriesInput = {
   familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -3021,6 +2928,7 @@ export type UserUpdateWithoutApprovedEntriesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedEntriesInput = {
@@ -3049,9 +2957,6 @@ export type UserUncheckedUpdateWithoutApprovedEntriesInput = {
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3074,9 +2979,10 @@ export type UserUncheckedUpdateWithoutApprovedEntriesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
-export type UserCreateWithoutPreApprovalsInput = {
+export type UserCreateWithoutCreatedInvitePassesInput = {
   id?: string
   name?: string
   phone: string
@@ -3103,8 +3009,6 @@ export type UserCreateWithoutPreApprovalsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -3129,7 +3033,7 @@ export type UserCreateWithoutPreApprovalsInput = {
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
 }
 
-export type UserUncheckedCreateWithoutPreApprovalsInput = {
+export type UserUncheckedCreateWithoutCreatedInvitePassesInput = {
   id?: string
   name?: string
   phone: string
@@ -3156,8 +3060,6 @@ export type UserUncheckedCreateWithoutPreApprovalsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3182,23 +3084,23 @@ export type UserUncheckedCreateWithoutPreApprovalsInput = {
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
-export type UserCreateOrConnectWithoutPreApprovalsInput = {
+export type UserCreateOrConnectWithoutCreatedInvitePassesInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPreApprovalsInput, Prisma.UserUncheckedCreateWithoutPreApprovalsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitePassesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitePassesInput>
 }
 
-export type UserUpsertWithoutPreApprovalsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPreApprovalsInput, Prisma.UserUncheckedUpdateWithoutPreApprovalsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPreApprovalsInput, Prisma.UserUncheckedCreateWithoutPreApprovalsInput>
+export type UserUpsertWithoutCreatedInvitePassesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedInvitePassesInput, Prisma.UserUncheckedUpdateWithoutCreatedInvitePassesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitePassesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitePassesInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutPreApprovalsInput = {
+export type UserUpdateToOneWithWhereWithoutCreatedInvitePassesInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPreApprovalsInput, Prisma.UserUncheckedUpdateWithoutPreApprovalsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedInvitePassesInput, Prisma.UserUncheckedUpdateWithoutCreatedInvitePassesInput>
 }
 
-export type UserUpdateWithoutPreApprovalsInput = {
+export type UserUpdateWithoutCreatedInvitePassesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3225,8 +3127,6 @@ export type UserUpdateWithoutPreApprovalsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -3251,7 +3151,7 @@ export type UserUpdateWithoutPreApprovalsInput = {
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
 }
 
-export type UserUncheckedUpdateWithoutPreApprovalsInput = {
+export type UserUncheckedUpdateWithoutCreatedInvitePassesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3278,464 +3178,6 @@ export type UserUncheckedUpdateWithoutPreApprovalsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
-  requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
-  approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
-  createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
-  reportedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutReportedByNestedInput
-  assignedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutAssignedToNestedInput
-  resolvedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
-  reportedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutReportedByNestedInput
-  respondedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutRespondedByNestedInput
-  addedVendors?: Prisma.VendorUncheckedUpdateManyWithoutAddedByNestedInput
-  addedDomesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutAddedByNestedInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutVerifiedByGuardNestedInput
-  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutBookedByNestedInput
-  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
-  onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
-  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
-  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
-  createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
-  approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
-}
-
-export type UserCreateWithoutExpectedDeliveriesInput = {
-  id?: string
-  name?: string
-  phone: string
-  email?: string | null
-  password?: string
-  role: $Enums.Role
-  photoUrl?: string | null
-  isActive?: boolean
-  isOwner?: boolean
-  isPrimaryResident?: boolean
-  familyRole?: $Enums.FamilyRole | null
-  fcmToken?: string | null
-  deviceType?: string | null
-  lastLogin?: Date | string | null
-  refreshToken?: string | null
-  tokenVersion?: number
-  lastTokenRefresh?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
-  society?: Prisma.SocietyCreateNestedOneWithoutUsersInput
-  primaryResident?: Prisma.UserCreateNestedOneWithoutFamilyMembersInput
-  familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
-  createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
-  approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
-  vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
-  requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
-  approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
-  createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
-  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
-  reportedComplaints?: Prisma.ComplaintCreateNestedManyWithoutReportedByInput
-  assignedComplaints?: Prisma.ComplaintCreateNestedManyWithoutAssignedToInput
-  resolvedComplaints?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
-  reportedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutReportedByInput
-  respondedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutRespondedByInput
-  addedVendors?: Prisma.VendorCreateNestedManyWithoutAddedByInput
-  addedDomesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutAddedByInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutVerifiedByGuardInput
-  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutBookedByInput
-  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
-  onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
-  reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
-  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
-  createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
-  approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
-}
-
-export type UserUncheckedCreateWithoutExpectedDeliveriesInput = {
-  id?: string
-  name?: string
-  phone: string
-  email?: string | null
-  password?: string
-  role: $Enums.Role
-  photoUrl?: string | null
-  isActive?: boolean
-  flatId?: string | null
-  isOwner?: boolean
-  societyId?: string | null
-  isPrimaryResident?: boolean
-  familyRole?: $Enums.FamilyRole | null
-  primaryResidentId?: string | null
-  fcmToken?: string | null
-  deviceType?: string | null
-  lastLogin?: Date | string | null
-  refreshToken?: string | null
-  tokenVersion?: number
-  lastTokenRefresh?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
-  createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
-  approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
-  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
-  requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
-  approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
-  createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
-  reportedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutReportedByInput
-  assignedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutAssignedToInput
-  resolvedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
-  reportedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutReportedByInput
-  respondedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutRespondedByInput
-  addedVendors?: Prisma.VendorUncheckedCreateNestedManyWithoutAddedByInput
-  addedDomesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutAddedByInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutVerifiedByGuardInput
-  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutBookedByInput
-  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
-  onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
-  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
-  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
-  createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
-  approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
-}
-
-export type UserCreateOrConnectWithoutExpectedDeliveriesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutExpectedDeliveriesInput, Prisma.UserUncheckedCreateWithoutExpectedDeliveriesInput>
-}
-
-export type UserUpsertWithoutExpectedDeliveriesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutExpectedDeliveriesInput, Prisma.UserUncheckedUpdateWithoutExpectedDeliveriesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutExpectedDeliveriesInput, Prisma.UserUncheckedCreateWithoutExpectedDeliveriesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutExpectedDeliveriesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutExpectedDeliveriesInput, Prisma.UserUncheckedUpdateWithoutExpectedDeliveriesInput>
-}
-
-export type UserUpdateWithoutExpectedDeliveriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
-  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
-  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
-  society?: Prisma.SocietyUpdateOneWithoutUsersNestedInput
-  primaryResident?: Prisma.UserUpdateOneWithoutFamilyMembersNestedInput
-  familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
-  createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
-  approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
-  vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
-  requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
-  approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
-  createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
-  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
-  reportedComplaints?: Prisma.ComplaintUpdateManyWithoutReportedByNestedInput
-  assignedComplaints?: Prisma.ComplaintUpdateManyWithoutAssignedToNestedInput
-  resolvedComplaints?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
-  reportedEmergencies?: Prisma.EmergencyUpdateManyWithoutReportedByNestedInput
-  respondedEmergencies?: Prisma.EmergencyUpdateManyWithoutRespondedByNestedInput
-  addedVendors?: Prisma.VendorUpdateManyWithoutAddedByNestedInput
-  addedDomesticStaff?: Prisma.DomesticStaffUpdateManyWithoutAddedByNestedInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutVerifiedByGuardNestedInput
-  staffBookings?: Prisma.StaffBookingUpdateManyWithoutBookedByNestedInput
-  staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
-  onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
-  reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
-  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
-  createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
-  approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutExpectedDeliveriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  societyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
-  primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
-  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
-  createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
-  approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
-  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
-  requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
-  approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
-  createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
-  reportedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutReportedByNestedInput
-  assignedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutAssignedToNestedInput
-  resolvedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
-  reportedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutReportedByNestedInput
-  respondedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutRespondedByNestedInput
-  addedVendors?: Prisma.VendorUncheckedUpdateManyWithoutAddedByNestedInput
-  addedDomesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutAddedByNestedInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutVerifiedByGuardNestedInput
-  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutBookedByNestedInput
-  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
-  onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
-  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
-  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
-  createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
-  approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
-}
-
-export type UserCreateWithoutDeliveryAutoApproveRulesInput = {
-  id?: string
-  name?: string
-  phone: string
-  email?: string | null
-  password?: string
-  role: $Enums.Role
-  photoUrl?: string | null
-  isActive?: boolean
-  isOwner?: boolean
-  isPrimaryResident?: boolean
-  familyRole?: $Enums.FamilyRole | null
-  fcmToken?: string | null
-  deviceType?: string | null
-  lastLogin?: Date | string | null
-  refreshToken?: string | null
-  tokenVersion?: number
-  lastTokenRefresh?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
-  society?: Prisma.SocietyCreateNestedOneWithoutUsersInput
-  primaryResident?: Prisma.UserCreateNestedOneWithoutFamilyMembersInput
-  familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
-  createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
-  approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
-  vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
-  approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
-  createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
-  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
-  reportedComplaints?: Prisma.ComplaintCreateNestedManyWithoutReportedByInput
-  assignedComplaints?: Prisma.ComplaintCreateNestedManyWithoutAssignedToInput
-  resolvedComplaints?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
-  reportedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutReportedByInput
-  respondedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutRespondedByInput
-  addedVendors?: Prisma.VendorCreateNestedManyWithoutAddedByInput
-  addedDomesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutAddedByInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutVerifiedByGuardInput
-  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutBookedByInput
-  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
-  onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
-  reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
-  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
-  createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
-  approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
-}
-
-export type UserUncheckedCreateWithoutDeliveryAutoApproveRulesInput = {
-  id?: string
-  name?: string
-  phone: string
-  email?: string | null
-  password?: string
-  role: $Enums.Role
-  photoUrl?: string | null
-  isActive?: boolean
-  flatId?: string | null
-  isOwner?: boolean
-  societyId?: string | null
-  isPrimaryResident?: boolean
-  familyRole?: $Enums.FamilyRole | null
-  primaryResidentId?: string | null
-  fcmToken?: string | null
-  deviceType?: string | null
-  lastLogin?: Date | string | null
-  refreshToken?: string | null
-  tokenVersion?: number
-  lastTokenRefresh?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
-  createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
-  approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
-  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
-  approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
-  createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
-  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
-  reportedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutReportedByInput
-  assignedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutAssignedToInput
-  resolvedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
-  reportedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutReportedByInput
-  respondedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutRespondedByInput
-  addedVendors?: Prisma.VendorUncheckedCreateNestedManyWithoutAddedByInput
-  addedDomesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutAddedByInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutVerifiedByGuardInput
-  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutBookedByInput
-  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
-  onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
-  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
-  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
-  createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
-  approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
-}
-
-export type UserCreateOrConnectWithoutDeliveryAutoApproveRulesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutDeliveryAutoApproveRulesInput, Prisma.UserUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-}
-
-export type UserUpsertWithoutDeliveryAutoApproveRulesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutDeliveryAutoApproveRulesInput, Prisma.UserUncheckedUpdateWithoutDeliveryAutoApproveRulesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutDeliveryAutoApproveRulesInput, Prisma.UserUncheckedCreateWithoutDeliveryAutoApproveRulesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutDeliveryAutoApproveRulesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutDeliveryAutoApproveRulesInput, Prisma.UserUncheckedUpdateWithoutDeliveryAutoApproveRulesInput>
-}
-
-export type UserUpdateWithoutDeliveryAutoApproveRulesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
-  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
-  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
-  society?: Prisma.SocietyUpdateOneWithoutUsersNestedInput
-  primaryResident?: Prisma.UserUpdateOneWithoutFamilyMembersNestedInput
-  familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
-  createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
-  approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
-  vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
-  approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
-  createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
-  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
-  reportedComplaints?: Prisma.ComplaintUpdateManyWithoutReportedByNestedInput
-  assignedComplaints?: Prisma.ComplaintUpdateManyWithoutAssignedToNestedInput
-  resolvedComplaints?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
-  reportedEmergencies?: Prisma.EmergencyUpdateManyWithoutReportedByNestedInput
-  respondedEmergencies?: Prisma.EmergencyUpdateManyWithoutRespondedByNestedInput
-  addedVendors?: Prisma.VendorUpdateManyWithoutAddedByNestedInput
-  addedDomesticStaff?: Prisma.DomesticStaffUpdateManyWithoutAddedByNestedInput
-  verifiedStaffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutVerifiedByGuardNestedInput
-  staffBookings?: Prisma.StaffBookingUpdateManyWithoutBookedByNestedInput
-  staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
-  onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
-  reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
-  onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
-  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
-  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
-  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
-  createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
-  approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutDeliveryAutoApproveRulesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  societyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
-  primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
-  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
-  createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
-  approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
-  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3787,9 +3229,6 @@ export type UserCreateWithoutAddedDomesticStaffInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -3811,6 +3250,7 @@ export type UserCreateWithoutAddedDomesticStaffInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAddedDomesticStaffInput = {
@@ -3840,9 +3280,6 @@ export type UserUncheckedCreateWithoutAddedDomesticStaffInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3864,6 +3301,7 @@ export type UserUncheckedCreateWithoutAddedDomesticStaffInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAddedDomesticStaffInput = {
@@ -3909,9 +3347,6 @@ export type UserUpdateWithoutAddedDomesticStaffInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -3933,6 +3368,7 @@ export type UserUpdateWithoutAddedDomesticStaffInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAddedDomesticStaffInput = {
@@ -3962,9 +3398,6 @@ export type UserUncheckedUpdateWithoutAddedDomesticStaffInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -3986,6 +3419,7 @@ export type UserUncheckedUpdateWithoutAddedDomesticStaffInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutVerifiedStaffAttendanceInput = {
@@ -4015,9 +3449,6 @@ export type UserCreateWithoutVerifiedStaffAttendanceInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -4039,6 +3470,7 @@ export type UserCreateWithoutVerifiedStaffAttendanceInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutVerifiedStaffAttendanceInput = {
@@ -4068,9 +3500,6 @@ export type UserUncheckedCreateWithoutVerifiedStaffAttendanceInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -4092,6 +3521,7 @@ export type UserUncheckedCreateWithoutVerifiedStaffAttendanceInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutVerifiedStaffAttendanceInput = {
@@ -4137,9 +3567,6 @@ export type UserUpdateWithoutVerifiedStaffAttendanceInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -4161,6 +3588,7 @@ export type UserUpdateWithoutVerifiedStaffAttendanceInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerifiedStaffAttendanceInput = {
@@ -4190,9 +3618,6 @@ export type UserUncheckedUpdateWithoutVerifiedStaffAttendanceInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4214,6 +3639,7 @@ export type UserUncheckedUpdateWithoutVerifiedStaffAttendanceInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutStaffBookingsInput = {
@@ -4243,9 +3669,6 @@ export type UserCreateWithoutStaffBookingsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -4267,6 +3690,7 @@ export type UserCreateWithoutStaffBookingsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutStaffBookingsInput = {
@@ -4296,9 +3720,6 @@ export type UserUncheckedCreateWithoutStaffBookingsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -4320,6 +3741,7 @@ export type UserUncheckedCreateWithoutStaffBookingsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutStaffBookingsInput = {
@@ -4365,9 +3787,6 @@ export type UserUpdateWithoutStaffBookingsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -4389,6 +3808,7 @@ export type UserUpdateWithoutStaffBookingsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStaffBookingsInput = {
@@ -4418,9 +3838,6 @@ export type UserUncheckedUpdateWithoutStaffBookingsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4442,6 +3859,7 @@ export type UserUncheckedUpdateWithoutStaffBookingsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutStaffReviewsInput = {
@@ -4471,9 +3889,6 @@ export type UserCreateWithoutStaffReviewsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -4495,6 +3910,7 @@ export type UserCreateWithoutStaffReviewsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutStaffReviewsInput = {
@@ -4524,9 +3940,6 @@ export type UserUncheckedCreateWithoutStaffReviewsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -4548,6 +3961,7 @@ export type UserUncheckedCreateWithoutStaffReviewsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutStaffReviewsInput = {
@@ -4593,9 +4007,6 @@ export type UserUpdateWithoutStaffReviewsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -4617,6 +4028,7 @@ export type UserUpdateWithoutStaffReviewsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStaffReviewsInput = {
@@ -4646,9 +4058,6 @@ export type UserUncheckedUpdateWithoutStaffReviewsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4670,6 +4079,7 @@ export type UserUncheckedUpdateWithoutStaffReviewsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutVehiclesInput = {
@@ -4698,9 +4108,6 @@ export type UserCreateWithoutVehiclesInput = {
   familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -4723,6 +4130,7 @@ export type UserCreateWithoutVehiclesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutVehiclesInput = {
@@ -4751,9 +4159,6 @@ export type UserUncheckedCreateWithoutVehiclesInput = {
   familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -4776,6 +4181,7 @@ export type UserUncheckedCreateWithoutVehiclesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutVehiclesInput = {
@@ -4820,9 +4226,6 @@ export type UserUpdateWithoutVehiclesInput = {
   familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -4845,6 +4248,7 @@ export type UserUpdateWithoutVehiclesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVehiclesInput = {
@@ -4873,9 +4277,6 @@ export type UserUncheckedUpdateWithoutVehiclesInput = {
   familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4898,6 +4299,7 @@ export type UserUncheckedUpdateWithoutVehiclesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutRequestedGatePassesInput = {
@@ -4927,9 +4329,6 @@ export type UserCreateWithoutRequestedGatePassesInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
@@ -4951,6 +4350,7 @@ export type UserCreateWithoutRequestedGatePassesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutRequestedGatePassesInput = {
@@ -4980,9 +4380,6 @@ export type UserUncheckedCreateWithoutRequestedGatePassesInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
@@ -5004,6 +4401,7 @@ export type UserUncheckedCreateWithoutRequestedGatePassesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutRequestedGatePassesInput = {
@@ -5038,9 +4436,6 @@ export type UserCreateWithoutApprovedGatePassesInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
@@ -5062,6 +4457,7 @@ export type UserCreateWithoutApprovedGatePassesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedGatePassesInput = {
@@ -5091,9 +4487,6 @@ export type UserUncheckedCreateWithoutApprovedGatePassesInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
@@ -5115,6 +4508,7 @@ export type UserUncheckedCreateWithoutApprovedGatePassesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedGatePassesInput = {
@@ -5160,9 +4554,6 @@ export type UserUpdateWithoutRequestedGatePassesInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
@@ -5184,6 +4575,7 @@ export type UserUpdateWithoutRequestedGatePassesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRequestedGatePassesInput = {
@@ -5213,9 +4605,6 @@ export type UserUncheckedUpdateWithoutRequestedGatePassesInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
@@ -5237,6 +4626,7 @@ export type UserUncheckedUpdateWithoutRequestedGatePassesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedGatePassesInput = {
@@ -5277,9 +4667,6 @@ export type UserUpdateWithoutApprovedGatePassesInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
@@ -5301,6 +4688,7 @@ export type UserUpdateWithoutApprovedGatePassesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedGatePassesInput = {
@@ -5330,9 +4718,6 @@ export type UserUncheckedUpdateWithoutApprovedGatePassesInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
@@ -5354,6 +4739,7 @@ export type UserUncheckedUpdateWithoutApprovedGatePassesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCreatedNoticesInput = {
@@ -5383,9 +4769,6 @@ export type UserCreateWithoutCreatedNoticesInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
@@ -5407,6 +4790,7 @@ export type UserCreateWithoutCreatedNoticesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedNoticesInput = {
@@ -5436,9 +4820,6 @@ export type UserUncheckedCreateWithoutCreatedNoticesInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
@@ -5460,6 +4841,7 @@ export type UserUncheckedCreateWithoutCreatedNoticesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedNoticesInput = {
@@ -5505,9 +4887,6 @@ export type UserUpdateWithoutCreatedNoticesInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
@@ -5529,6 +4908,7 @@ export type UserUpdateWithoutCreatedNoticesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedNoticesInput = {
@@ -5558,9 +4938,6 @@ export type UserUncheckedUpdateWithoutCreatedNoticesInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
@@ -5582,6 +4959,7 @@ export type UserUncheckedUpdateWithoutCreatedNoticesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAmenityBookingsInput = {
@@ -5611,9 +4989,6 @@ export type UserCreateWithoutAmenityBookingsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -5635,6 +5010,7 @@ export type UserCreateWithoutAmenityBookingsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAmenityBookingsInput = {
@@ -5664,9 +5040,6 @@ export type UserUncheckedCreateWithoutAmenityBookingsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -5688,6 +5061,7 @@ export type UserUncheckedCreateWithoutAmenityBookingsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAmenityBookingsInput = {
@@ -5733,9 +5107,6 @@ export type UserUpdateWithoutAmenityBookingsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -5757,6 +5128,7 @@ export type UserUpdateWithoutAmenityBookingsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAmenityBookingsInput = {
@@ -5786,9 +5158,6 @@ export type UserUncheckedUpdateWithoutAmenityBookingsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -5810,6 +5179,7 @@ export type UserUncheckedUpdateWithoutAmenityBookingsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutReportedComplaintsInput = {
@@ -5839,9 +5209,6 @@ export type UserCreateWithoutReportedComplaintsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -5863,6 +5230,7 @@ export type UserCreateWithoutReportedComplaintsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutReportedComplaintsInput = {
@@ -5892,9 +5260,6 @@ export type UserUncheckedCreateWithoutReportedComplaintsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -5916,6 +5281,7 @@ export type UserUncheckedCreateWithoutReportedComplaintsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutReportedComplaintsInput = {
@@ -5950,9 +5316,6 @@ export type UserCreateWithoutAssignedComplaintsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -5974,6 +5337,7 @@ export type UserCreateWithoutAssignedComplaintsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedComplaintsInput = {
@@ -6003,9 +5367,6 @@ export type UserUncheckedCreateWithoutAssignedComplaintsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -6027,6 +5388,7 @@ export type UserUncheckedCreateWithoutAssignedComplaintsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedComplaintsInput = {
@@ -6061,9 +5423,6 @@ export type UserCreateWithoutResolvedComplaintsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -6085,6 +5444,7 @@ export type UserCreateWithoutResolvedComplaintsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutResolvedComplaintsInput = {
@@ -6114,9 +5474,6 @@ export type UserUncheckedCreateWithoutResolvedComplaintsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -6138,6 +5495,7 @@ export type UserUncheckedCreateWithoutResolvedComplaintsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutResolvedComplaintsInput = {
@@ -6183,9 +5541,6 @@ export type UserUpdateWithoutReportedComplaintsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -6207,6 +5562,7 @@ export type UserUpdateWithoutReportedComplaintsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedComplaintsInput = {
@@ -6236,9 +5592,6 @@ export type UserUncheckedUpdateWithoutReportedComplaintsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6260,6 +5613,7 @@ export type UserUncheckedUpdateWithoutReportedComplaintsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutAssignedComplaintsInput = {
@@ -6300,9 +5654,6 @@ export type UserUpdateWithoutAssignedComplaintsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -6324,6 +5675,7 @@ export type UserUpdateWithoutAssignedComplaintsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedComplaintsInput = {
@@ -6353,9 +5705,6 @@ export type UserUncheckedUpdateWithoutAssignedComplaintsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6377,6 +5726,7 @@ export type UserUncheckedUpdateWithoutAssignedComplaintsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutResolvedComplaintsInput = {
@@ -6417,9 +5767,6 @@ export type UserUpdateWithoutResolvedComplaintsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -6441,6 +5788,7 @@ export type UserUpdateWithoutResolvedComplaintsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResolvedComplaintsInput = {
@@ -6470,9 +5818,6 @@ export type UserUncheckedUpdateWithoutResolvedComplaintsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6494,6 +5839,7 @@ export type UserUncheckedUpdateWithoutResolvedComplaintsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutReportedEmergenciesInput = {
@@ -6523,9 +5869,6 @@ export type UserCreateWithoutReportedEmergenciesInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -6547,6 +5890,7 @@ export type UserCreateWithoutReportedEmergenciesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutReportedEmergenciesInput = {
@@ -6576,9 +5920,6 @@ export type UserUncheckedCreateWithoutReportedEmergenciesInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -6600,6 +5941,7 @@ export type UserUncheckedCreateWithoutReportedEmergenciesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutReportedEmergenciesInput = {
@@ -6634,9 +5976,6 @@ export type UserCreateWithoutRespondedEmergenciesInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -6658,6 +5997,7 @@ export type UserCreateWithoutRespondedEmergenciesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutRespondedEmergenciesInput = {
@@ -6687,9 +6027,6 @@ export type UserUncheckedCreateWithoutRespondedEmergenciesInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -6711,6 +6048,7 @@ export type UserUncheckedCreateWithoutRespondedEmergenciesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutRespondedEmergenciesInput = {
@@ -6756,9 +6094,6 @@ export type UserUpdateWithoutReportedEmergenciesInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -6780,6 +6115,7 @@ export type UserUpdateWithoutReportedEmergenciesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedEmergenciesInput = {
@@ -6809,9 +6145,6 @@ export type UserUncheckedUpdateWithoutReportedEmergenciesInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6833,6 +6166,7 @@ export type UserUncheckedUpdateWithoutReportedEmergenciesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutRespondedEmergenciesInput = {
@@ -6873,9 +6207,6 @@ export type UserUpdateWithoutRespondedEmergenciesInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -6897,6 +6228,7 @@ export type UserUpdateWithoutRespondedEmergenciesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRespondedEmergenciesInput = {
@@ -6926,9 +6258,6 @@ export type UserUncheckedUpdateWithoutRespondedEmergenciesInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6950,6 +6279,7 @@ export type UserUncheckedUpdateWithoutRespondedEmergenciesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAddedVendorsInput = {
@@ -6979,9 +6309,6 @@ export type UserCreateWithoutAddedVendorsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -7003,6 +6330,7 @@ export type UserCreateWithoutAddedVendorsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAddedVendorsInput = {
@@ -7032,9 +6360,6 @@ export type UserUncheckedCreateWithoutAddedVendorsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -7056,6 +6381,7 @@ export type UserUncheckedCreateWithoutAddedVendorsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAddedVendorsInput = {
@@ -7101,9 +6427,6 @@ export type UserUpdateWithoutAddedVendorsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -7125,6 +6448,7 @@ export type UserUpdateWithoutAddedVendorsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAddedVendorsInput = {
@@ -7154,9 +6478,6 @@ export type UserUncheckedUpdateWithoutAddedVendorsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -7178,6 +6499,7 @@ export type UserUncheckedUpdateWithoutAddedVendorsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOnboardingRequestInput = {
@@ -7207,9 +6529,6 @@ export type UserCreateWithoutOnboardingRequestInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -7231,6 +6550,7 @@ export type UserCreateWithoutOnboardingRequestInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingRequestInput = {
@@ -7260,9 +6580,6 @@ export type UserUncheckedCreateWithoutOnboardingRequestInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -7284,6 +6601,7 @@ export type UserUncheckedCreateWithoutOnboardingRequestInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingRequestInput = {
@@ -7318,9 +6636,6 @@ export type UserCreateWithoutReviewedOnboardingsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -7342,6 +6657,7 @@ export type UserCreateWithoutReviewedOnboardingsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutReviewedOnboardingsInput = {
@@ -7371,9 +6687,6 @@ export type UserUncheckedCreateWithoutReviewedOnboardingsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -7395,6 +6708,7 @@ export type UserUncheckedCreateWithoutReviewedOnboardingsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutReviewedOnboardingsInput = {
@@ -7440,9 +6754,6 @@ export type UserUpdateWithoutOnboardingRequestInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -7464,6 +6775,7 @@ export type UserUpdateWithoutOnboardingRequestInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingRequestInput = {
@@ -7493,9 +6805,6 @@ export type UserUncheckedUpdateWithoutOnboardingRequestInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -7517,6 +6826,7 @@ export type UserUncheckedUpdateWithoutOnboardingRequestInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutReviewedOnboardingsInput = {
@@ -7557,9 +6867,6 @@ export type UserUpdateWithoutReviewedOnboardingsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -7581,6 +6888,7 @@ export type UserUpdateWithoutReviewedOnboardingsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedOnboardingsInput = {
@@ -7610,9 +6918,6 @@ export type UserUncheckedUpdateWithoutReviewedOnboardingsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -7634,6 +6939,7 @@ export type UserUncheckedUpdateWithoutReviewedOnboardingsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOnboardingAuditLogsInput = {
@@ -7663,9 +6969,6 @@ export type UserCreateWithoutOnboardingAuditLogsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -7687,6 +6990,7 @@ export type UserCreateWithoutOnboardingAuditLogsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingAuditLogsInput = {
@@ -7716,9 +7020,6 @@ export type UserUncheckedCreateWithoutOnboardingAuditLogsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -7740,6 +7041,7 @@ export type UserUncheckedCreateWithoutOnboardingAuditLogsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingAuditLogsInput = {
@@ -7785,9 +7087,6 @@ export type UserUpdateWithoutOnboardingAuditLogsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -7809,6 +7108,7 @@ export type UserUpdateWithoutOnboardingAuditLogsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingAuditLogsInput = {
@@ -7838,9 +7138,6 @@ export type UserUncheckedUpdateWithoutOnboardingAuditLogsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -7862,6 +7159,7 @@ export type UserUncheckedUpdateWithoutOnboardingAuditLogsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -7891,9 +7189,6 @@ export type UserCreateWithoutNotificationsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -7915,6 +7210,7 @@ export type UserCreateWithoutNotificationsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -7944,9 +7240,6 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -7968,6 +7261,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -8013,9 +7307,6 @@ export type UserUpdateWithoutNotificationsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -8037,6 +7328,7 @@ export type UserUpdateWithoutNotificationsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -8066,9 +7358,6 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8090,6 +7379,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCreatedEntryRequestsInput = {
@@ -8119,9 +7409,6 @@ export type UserCreateWithoutCreatedEntryRequestsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -8143,6 +7430,7 @@ export type UserCreateWithoutCreatedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedEntryRequestsInput = {
@@ -8172,9 +7460,6 @@ export type UserUncheckedCreateWithoutCreatedEntryRequestsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -8196,6 +7481,7 @@ export type UserUncheckedCreateWithoutCreatedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedEntryRequestsInput = {
@@ -8230,9 +7516,6 @@ export type UserCreateWithoutApprovedEntryRequestsInput = {
   createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
@@ -8254,6 +7537,7 @@ export type UserCreateWithoutApprovedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
+  createdInvitePasses?: Prisma.InvitePassCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedEntryRequestsInput = {
@@ -8283,9 +7567,6 @@ export type UserUncheckedCreateWithoutApprovedEntryRequestsInput = {
   createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
   approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
-  preApprovals?: Prisma.PreApprovalUncheckedCreateNestedManyWithoutCreatedByInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedCreateNestedManyWithoutCreatedByInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedCreateNestedManyWithoutCreatedByInput
   requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
   approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
   createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
@@ -8307,6 +7588,7 @@ export type UserUncheckedCreateWithoutApprovedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedEntryRequestsInput = {
@@ -8352,9 +7634,6 @@ export type UserUpdateWithoutCreatedEntryRequestsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -8376,6 +7655,7 @@ export type UserUpdateWithoutCreatedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedEntryRequestsInput = {
@@ -8405,9 +7685,6 @@ export type UserUncheckedUpdateWithoutCreatedEntryRequestsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8429,6 +7706,7 @@ export type UserUncheckedUpdateWithoutCreatedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedEntryRequestsInput = {
@@ -8469,9 +7747,6 @@ export type UserUpdateWithoutApprovedEntryRequestsInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -8493,6 +7768,7 @@ export type UserUpdateWithoutApprovedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedEntryRequestsInput = {
@@ -8522,9 +7798,6 @@ export type UserUncheckedUpdateWithoutApprovedEntryRequestsInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8546,6 +7819,7 @@ export type UserUncheckedUpdateWithoutApprovedEntryRequestsInput = {
   societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManySocietyInput = {
@@ -8598,9 +7872,6 @@ export type UserUpdateWithoutSocietyInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -8623,6 +7894,7 @@ export type UserUpdateWithoutSocietyInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocietyInput = {
@@ -8651,9 +7923,6 @@ export type UserUncheckedUpdateWithoutSocietyInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8676,6 +7945,7 @@ export type UserUncheckedUpdateWithoutSocietyInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutSocietyInput = {
@@ -8752,9 +8022,6 @@ export type UserUpdateWithoutFlatInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -8777,6 +8044,7 @@ export type UserUpdateWithoutFlatInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFlatInput = {
@@ -8805,9 +8073,6 @@ export type UserUncheckedUpdateWithoutFlatInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8830,6 +8095,7 @@ export type UserUncheckedUpdateWithoutFlatInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutFlatInput = {
@@ -8906,9 +8172,6 @@ export type UserUpdateWithoutPrimaryResidentInput = {
   createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
@@ -8931,6 +8194,7 @@ export type UserUpdateWithoutPrimaryResidentInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPrimaryResidentInput = {
@@ -8959,9 +8223,6 @@ export type UserUncheckedUpdateWithoutPrimaryResidentInput = {
   createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
-  preApprovals?: Prisma.PreApprovalUncheckedUpdateManyWithoutCreatedByNestedInput
-  expectedDeliveries?: Prisma.ExpectedDeliveryUncheckedUpdateManyWithoutCreatedByNestedInput
-  deliveryAutoApproveRules?: Prisma.DeliveryAutoApproveRuleUncheckedUpdateManyWithoutCreatedByNestedInput
   requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
   createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8984,6 +8245,7 @@ export type UserUncheckedUpdateWithoutPrimaryResidentInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
   approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdInvitePasses?: Prisma.InvitePassUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPrimaryResidentInput = {
@@ -9020,9 +8282,6 @@ export type UserCountOutputType = {
   createdEntries: number
   approvedEntries: number
   vehicles: number
-  preApprovals: number
-  expectedDeliveries: number
-  deliveryAutoApproveRules: number
   requestedGatePasses: number
   approvedGatePasses: number
   createdNotices: number
@@ -9044,6 +8303,7 @@ export type UserCountOutputType = {
   notifications: number
   createdEntryRequests: number
   approvedEntryRequests: number
+  createdInvitePasses: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -9051,9 +8311,6 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   createdEntries?: boolean | UserCountOutputTypeCountCreatedEntriesArgs
   approvedEntries?: boolean | UserCountOutputTypeCountApprovedEntriesArgs
   vehicles?: boolean | UserCountOutputTypeCountVehiclesArgs
-  preApprovals?: boolean | UserCountOutputTypeCountPreApprovalsArgs
-  expectedDeliveries?: boolean | UserCountOutputTypeCountExpectedDeliveriesArgs
-  deliveryAutoApproveRules?: boolean | UserCountOutputTypeCountDeliveryAutoApproveRulesArgs
   requestedGatePasses?: boolean | UserCountOutputTypeCountRequestedGatePassesArgs
   approvedGatePasses?: boolean | UserCountOutputTypeCountApprovedGatePassesArgs
   createdNotices?: boolean | UserCountOutputTypeCountCreatedNoticesArgs
@@ -9075,6 +8332,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   createdEntryRequests?: boolean | UserCountOutputTypeCountCreatedEntryRequestsArgs
   approvedEntryRequests?: boolean | UserCountOutputTypeCountApprovedEntryRequestsArgs
+  createdInvitePasses?: boolean | UserCountOutputTypeCountCreatedInvitePassesArgs
 }
 
 /**
@@ -9113,27 +8371,6 @@ export type UserCountOutputTypeCountApprovedEntriesArgs<ExtArgs extends runtime.
  */
 export type UserCountOutputTypeCountVehiclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.VehicleWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountPreApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PreApprovalWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountExpectedDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ExpectedDeliveryWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountDeliveryAutoApproveRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DeliveryAutoApproveRuleWhereInput
 }
 
 /**
@@ -9283,6 +8520,13 @@ export type UserCountOutputTypeCountApprovedEntryRequestsArgs<ExtArgs extends ru
   where?: Prisma.EntryRequestWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedInvitePassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvitePassWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -9314,9 +8558,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdEntries?: boolean | Prisma.User$createdEntriesArgs<ExtArgs>
   approvedEntries?: boolean | Prisma.User$approvedEntriesArgs<ExtArgs>
   vehicles?: boolean | Prisma.User$vehiclesArgs<ExtArgs>
-  preApprovals?: boolean | Prisma.User$preApprovalsArgs<ExtArgs>
-  expectedDeliveries?: boolean | Prisma.User$expectedDeliveriesArgs<ExtArgs>
-  deliveryAutoApproveRules?: boolean | Prisma.User$deliveryAutoApproveRulesArgs<ExtArgs>
   requestedGatePasses?: boolean | Prisma.User$requestedGatePassesArgs<ExtArgs>
   approvedGatePasses?: boolean | Prisma.User$approvedGatePassesArgs<ExtArgs>
   createdNotices?: boolean | Prisma.User$createdNoticesArgs<ExtArgs>
@@ -9339,6 +8580,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   createdEntryRequests?: boolean | Prisma.User$createdEntryRequestsArgs<ExtArgs>
   approvedEntryRequests?: boolean | Prisma.User$approvedEntryRequestsArgs<ExtArgs>
+  createdInvitePasses?: boolean | Prisma.User$createdInvitePassesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -9432,9 +8674,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdEntries?: boolean | Prisma.User$createdEntriesArgs<ExtArgs>
   approvedEntries?: boolean | Prisma.User$approvedEntriesArgs<ExtArgs>
   vehicles?: boolean | Prisma.User$vehiclesArgs<ExtArgs>
-  preApprovals?: boolean | Prisma.User$preApprovalsArgs<ExtArgs>
-  expectedDeliveries?: boolean | Prisma.User$expectedDeliveriesArgs<ExtArgs>
-  deliveryAutoApproveRules?: boolean | Prisma.User$deliveryAutoApproveRulesArgs<ExtArgs>
   requestedGatePasses?: boolean | Prisma.User$requestedGatePassesArgs<ExtArgs>
   approvedGatePasses?: boolean | Prisma.User$approvedGatePassesArgs<ExtArgs>
   createdNotices?: boolean | Prisma.User$createdNoticesArgs<ExtArgs>
@@ -9457,6 +8696,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   createdEntryRequests?: boolean | Prisma.User$createdEntryRequestsArgs<ExtArgs>
   approvedEntryRequests?: boolean | Prisma.User$approvedEntryRequestsArgs<ExtArgs>
+  createdInvitePasses?: boolean | Prisma.User$createdInvitePassesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -9480,9 +8720,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdEntries: Prisma.$EntryPayload<ExtArgs>[]
     approvedEntries: Prisma.$EntryPayload<ExtArgs>[]
     vehicles: Prisma.$VehiclePayload<ExtArgs>[]
-    preApprovals: Prisma.$PreApprovalPayload<ExtArgs>[]
-    expectedDeliveries: Prisma.$ExpectedDeliveryPayload<ExtArgs>[]
-    deliveryAutoApproveRules: Prisma.$DeliveryAutoApproveRulePayload<ExtArgs>[]
     requestedGatePasses: Prisma.$GatePassPayload<ExtArgs>[]
     approvedGatePasses: Prisma.$GatePassPayload<ExtArgs>[]
     createdNotices: Prisma.$NoticePayload<ExtArgs>[]
@@ -9505,6 +8742,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     createdEntryRequests: Prisma.$EntryRequestPayload<ExtArgs>[]
     approvedEntryRequests: Prisma.$EntryRequestPayload<ExtArgs>[]
+    createdInvitePasses: Prisma.$InvitePassPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -9930,9 +9168,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   createdEntries<T extends Prisma.User$createdEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvedEntries<T extends Prisma.User$approvedEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vehicles<T extends Prisma.User$vehiclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  preApprovals<T extends Prisma.User$preApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$preApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PreApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  expectedDeliveries<T extends Prisma.User$expectedDeliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$expectedDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpectedDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  deliveryAutoApproveRules<T extends Prisma.User$deliveryAutoApproveRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$deliveryAutoApproveRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryAutoApproveRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   requestedGatePasses<T extends Prisma.User$requestedGatePassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$requestedGatePassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GatePassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvedGatePasses<T extends Prisma.User$approvedGatePassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedGatePassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GatePassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdNotices<T extends Prisma.User$createdNoticesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdNoticesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NoticePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9955,6 +9190,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdEntryRequests<T extends Prisma.User$createdEntryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdEntryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvedEntryRequests<T extends Prisma.User$approvedEntryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedEntryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdInvitePasses<T extends Prisma.User$createdInvitePassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdInvitePassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitePassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10555,78 +9791,6 @@ export type User$vehiclesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User.preApprovals
- */
-export type User$preApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PreApproval
-   */
-  select?: Prisma.PreApprovalSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PreApproval
-   */
-  omit?: Prisma.PreApprovalOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PreApprovalInclude<ExtArgs> | null
-  where?: Prisma.PreApprovalWhereInput
-  orderBy?: Prisma.PreApprovalOrderByWithRelationInput | Prisma.PreApprovalOrderByWithRelationInput[]
-  cursor?: Prisma.PreApprovalWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PreApprovalScalarFieldEnum | Prisma.PreApprovalScalarFieldEnum[]
-}
-
-/**
- * User.expectedDeliveries
- */
-export type User$expectedDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ExpectedDelivery
-   */
-  select?: Prisma.ExpectedDeliverySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ExpectedDelivery
-   */
-  omit?: Prisma.ExpectedDeliveryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ExpectedDeliveryInclude<ExtArgs> | null
-  where?: Prisma.ExpectedDeliveryWhereInput
-  orderBy?: Prisma.ExpectedDeliveryOrderByWithRelationInput | Prisma.ExpectedDeliveryOrderByWithRelationInput[]
-  cursor?: Prisma.ExpectedDeliveryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ExpectedDeliveryScalarFieldEnum | Prisma.ExpectedDeliveryScalarFieldEnum[]
-}
-
-/**
- * User.deliveryAutoApproveRules
- */
-export type User$deliveryAutoApproveRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DeliveryAutoApproveRule
-   */
-  select?: Prisma.DeliveryAutoApproveRuleSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the DeliveryAutoApproveRule
-   */
-  omit?: Prisma.DeliveryAutoApproveRuleOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DeliveryAutoApproveRuleInclude<ExtArgs> | null
-  where?: Prisma.DeliveryAutoApproveRuleWhereInput
-  orderBy?: Prisma.DeliveryAutoApproveRuleOrderByWithRelationInput | Prisma.DeliveryAutoApproveRuleOrderByWithRelationInput[]
-  cursor?: Prisma.DeliveryAutoApproveRuleWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.DeliveryAutoApproveRuleScalarFieldEnum | Prisma.DeliveryAutoApproveRuleScalarFieldEnum[]
-}
-
-/**
  * User.requestedGatePasses
  */
 export type User$requestedGatePassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -11147,6 +10311,30 @@ export type User$approvedEntryRequestsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.EntryRequestScalarFieldEnum | Prisma.EntryRequestScalarFieldEnum[]
+}
+
+/**
+ * User.createdInvitePasses
+ */
+export type User$createdInvitePassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InvitePass
+   */
+  select?: Prisma.InvitePassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InvitePass
+   */
+  omit?: Prisma.InvitePassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvitePassInclude<ExtArgs> | null
+  where?: Prisma.InvitePassWhereInput
+  orderBy?: Prisma.InvitePassOrderByWithRelationInput | Prisma.InvitePassOrderByWithRelationInput[]
+  cursor?: Prisma.InvitePassWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvitePassScalarFieldEnum | Prisma.InvitePassScalarFieldEnum[]
 }
 
 /**

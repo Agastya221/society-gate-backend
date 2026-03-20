@@ -54,16 +54,6 @@ export const VisitorType = {
 export type VisitorType = (typeof VisitorType)[keyof typeof VisitorType]
 
 
-export const PreApprovalStatus = {
-  ACTIVE: 'ACTIVE',
-  EXPIRED: 'EXPIRED',
-  USED: 'USED',
-  CANCELLED: 'CANCELLED'
-} as const
-
-export type PreApprovalStatus = (typeof PreApprovalStatus)[keyof typeof PreApprovalStatus]
-
-
 export const PaymentStatus = {
   PENDING: 'PENDING',
   PAID: 'PAID',
@@ -322,6 +312,27 @@ export const ProviderTag = {
 } as const
 
 export type ProviderTag = (typeof ProviderTag)[keyof typeof ProviderTag]
+
+
+export const InviteType = {
+  GUEST: 'GUEST',
+  DELIVERY_ONCE: 'DELIVERY_ONCE',
+  DELIVERY_STANDING: 'DELIVERY_STANDING',
+  CAB: 'CAB',
+  SERVICE: 'SERVICE'
+} as const
+
+export type InviteType = (typeof InviteType)[keyof typeof InviteType]
+
+
+export const InviteStatus = {
+  ACTIVE: 'ACTIVE',
+  USED: 'USED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type InviteStatus = (typeof InviteStatus)[keyof typeof InviteStatus]
 
 
 export const DomesticStaffType = {

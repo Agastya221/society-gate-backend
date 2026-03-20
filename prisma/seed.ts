@@ -47,10 +47,7 @@ async function main() {
   await prisma.visitorFrequency.deleteMany();
   await prisma.vehicle.deleteMany();
   await prisma.entry.deleteMany();
-  await prisma.preApproval.deleteMany();
   await prisma.gatePass.deleteMany();
-  await prisma.expectedDelivery.deleteMany();
-  await prisma.deliveryAutoApproveRule.deleteMany();
   await prisma.vendor.deleteMany();
   await prisma.paymentReminder.deleteMany();
   await prisma.onboardingAuditLog.deleteMany();
@@ -980,80 +977,6 @@ async function main() {
   console.log('✅ 2 staff bookings\n');
 
   // ============================================
-  // PRE-APPROVALS
-  // ============================================
-  console.log('✅ Creating pre-approvals...');
-  await prisma.preApproval.create({
-    data: {
-      visitorName: 'Rohit Patil',
-      visitorPhone: '9830000001',
-      visitorType: 'FRIEND',
-      purpose: 'Weekend visits — college friend',
-      qrToken: 'PRE_GF_001',
-      validFrom: daysAgo(3),
-      validUntil: daysFromNow(25),
-      maxUses: 10,
-      usedCount: 3,
-      status: 'ACTIVE',
-      flatId: flat('A101').id,
-      societyId: society.id,
-      createdById: res1.id,
-    },
-  });
-  await prisma.preApproval.create({
-    data: {
-      visitorName: 'Dr. Anjali Menon',
-      visitorPhone: '9830000002',
-      visitorType: 'SERVICE_PROVIDER',
-      purpose: 'Physiotherapy sessions 3x/week for Mr. Joshi',
-      qrToken: 'PRE_GF_002',
-      validFrom: new Date(),
-      validUntil: daysFromNow(30),
-      maxUses: 15,
-      usedCount: 0,
-      status: 'ACTIVE',
-      flatId: flat('B401').id,
-      societyId: society.id,
-      createdById: res4.id,
-    },
-  });
-  await prisma.preApproval.create({
-    data: {
-      visitorName: 'Meena Kulkarni',
-      visitorPhone: '9830000003',
-      visitorType: 'FAMILY_MEMBER',
-      purpose: 'Mother visiting from Nagpur — staying 2 weeks',
-      qrToken: 'PRE_GF_003',
-      validFrom: daysFromNow(2),
-      validUntil: daysFromNow(16),
-      maxUses: 20,
-      usedCount: 0,
-      status: 'ACTIVE',
-      flatId: flat('A301').id,
-      societyId: society.id,
-      createdById: res2.id,
-    },
-  });
-  await prisma.preApproval.create({
-    data: {
-      visitorName: 'Mohan Electrician',
-      visitorPhone: '9830000004',
-      visitorType: 'SERVICE_PROVIDER',
-      purpose: 'Electrical work — completed',
-      qrToken: 'PRE_GF_004',
-      validFrom: daysAgo(15),
-      validUntil: daysAgo(2),
-      maxUses: 5,
-      usedCount: 4,
-      status: 'EXPIRED',
-      flatId: flat('B102').id,
-      societyId: society.id,
-      createdById: res3.id,
-    },
-  });
-  console.log('✅ 4 pre-approvals\n');
-
-  // ============================================
   // GATE PASSES
   // ============================================
   console.log('🎫 Creating gate passes...');
@@ -1092,62 +1015,6 @@ async function main() {
     },
   });
   console.log('✅ 2 gate passes\n');
-
-  // ============================================
-  // DELIVERY AUTO-APPROVE RULES
-  // ============================================
-  console.log('📦 Creating auto-approve rules...');
-  await prisma.deliveryAutoApproveRule.create({
-    data: {
-      flatId: flat('A101').id,
-      societyId: society.id,
-      isActive: true,
-      timeFrom: '08:00',
-      timeUntil: '23:00',
-      createdById: res1.id,
-    },
-  });
-  await prisma.deliveryAutoApproveRule.create({
-    data: {
-      flatId: flat('C201').id,
-      societyId: society.id,
-      isActive: true,
-      createdById: res5.id,
-    },
-  });
-  console.log('✅ 2 auto-approve rules\n');
-
-  // ============================================
-  // EXPECTED DELIVERIES
-  // ============================================
-  console.log('📦 Creating expected deliveries...');
-  await prisma.expectedDelivery.create({
-    data: {
-      flatId: flat('A101').id,
-      societyId: society.id,
-      companyName: 'Amazon',
-      itemName: 'Laptop stand and webcam',
-      expectedDate: daysFromNow(1),
-      expiresAt: daysFromNow(2),
-      autoApprove: true,
-      isUsed: false,
-      createdById: res1.id,
-    },
-  });
-  await prisma.expectedDelivery.create({
-    data: {
-      flatId: flat('B102').id,
-      societyId: society.id,
-      companyName: 'Flipkart',
-      itemName: 'Air purifier',
-      expectedDate: daysFromNow(2),
-      expiresAt: daysFromNow(3),
-      autoApprove: true,
-      isUsed: false,
-      createdById: res3.id,
-    },
-  });
-  console.log('✅ 2 expected deliveries\n');
 
   // ============================================
   // ENTRIES (gate log)

@@ -391,9 +391,7 @@ export const ModelName = {
   Flat: 'Flat',
   User: 'User',
   Entry: 'Entry',
-  PreApproval: 'PreApproval',
-  ExpectedDelivery: 'ExpectedDelivery',
-  DeliveryAutoApproveRule: 'DeliveryAutoApproveRule',
+  InvitePass: 'InvitePass',
   DomesticStaff: 'DomesticStaff',
   StaffFlatAssignment: 'StaffFlatAssignment',
   StaffAttendance: 'StaffAttendance',
@@ -429,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "preApproval" | "expectedDelivery" | "deliveryAutoApproveRule" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest"
+    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "invitePass" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -951,225 +949,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    PreApproval: {
-      payload: Prisma.$PreApprovalPayload<ExtArgs>
-      fields: Prisma.PreApprovalFieldRefs
+    InvitePass: {
+      payload: Prisma.$InvitePassPayload<ExtArgs>
+      fields: Prisma.InvitePassFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.PreApprovalFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload> | null
+          args: Prisma.InvitePassFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.PreApprovalFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>
+          args: Prisma.InvitePassFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
         }
         findFirst: {
-          args: Prisma.PreApprovalFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload> | null
+          args: Prisma.InvitePassFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.PreApprovalFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>
+          args: Prisma.InvitePassFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
         }
         findMany: {
-          args: Prisma.PreApprovalFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>[]
+          args: Prisma.InvitePassFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>[]
         }
         create: {
-          args: Prisma.PreApprovalCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>
+          args: Prisma.InvitePassCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
         }
         createMany: {
-          args: Prisma.PreApprovalCreateManyArgs<ExtArgs>
+          args: Prisma.InvitePassCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.PreApprovalCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>[]
+          args: Prisma.InvitePassCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>[]
         }
         delete: {
-          args: Prisma.PreApprovalDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>
+          args: Prisma.InvitePassDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
         }
         update: {
-          args: Prisma.PreApprovalUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>
+          args: Prisma.InvitePassUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
         }
         deleteMany: {
-          args: Prisma.PreApprovalDeleteManyArgs<ExtArgs>
+          args: Prisma.InvitePassDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.PreApprovalUpdateManyArgs<ExtArgs>
+          args: Prisma.InvitePassUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.PreApprovalUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>[]
+          args: Prisma.InvitePassUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>[]
         }
         upsert: {
-          args: Prisma.PreApprovalUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovalPayload>
+          args: Prisma.InvitePassUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
         }
         aggregate: {
-          args: Prisma.PreApprovalAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePreApproval>
+          args: Prisma.InvitePassAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInvitePass>
         }
         groupBy: {
-          args: Prisma.PreApprovalGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PreApprovalGroupByOutputType>[]
+          args: Prisma.InvitePassGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InvitePassGroupByOutputType>[]
         }
         count: {
-          args: Prisma.PreApprovalCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PreApprovalCountAggregateOutputType> | number
-        }
-      }
-    }
-    ExpectedDelivery: {
-      payload: Prisma.$ExpectedDeliveryPayload<ExtArgs>
-      fields: Prisma.ExpectedDeliveryFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ExpectedDeliveryFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ExpectedDeliveryFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>
-        }
-        findFirst: {
-          args: Prisma.ExpectedDeliveryFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ExpectedDeliveryFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>
-        }
-        findMany: {
-          args: Prisma.ExpectedDeliveryFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>[]
-        }
-        create: {
-          args: Prisma.ExpectedDeliveryCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>
-        }
-        createMany: {
-          args: Prisma.ExpectedDeliveryCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ExpectedDeliveryCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>[]
-        }
-        delete: {
-          args: Prisma.ExpectedDeliveryDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>
-        }
-        update: {
-          args: Prisma.ExpectedDeliveryUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>
-        }
-        deleteMany: {
-          args: Prisma.ExpectedDeliveryDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ExpectedDeliveryUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ExpectedDeliveryUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>[]
-        }
-        upsert: {
-          args: Prisma.ExpectedDeliveryUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpectedDeliveryPayload>
-        }
-        aggregate: {
-          args: Prisma.ExpectedDeliveryAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateExpectedDelivery>
-        }
-        groupBy: {
-          args: Prisma.ExpectedDeliveryGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ExpectedDeliveryGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ExpectedDeliveryCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ExpectedDeliveryCountAggregateOutputType> | number
-        }
-      }
-    }
-    DeliveryAutoApproveRule: {
-      payload: Prisma.$DeliveryAutoApproveRulePayload<ExtArgs>
-      fields: Prisma.DeliveryAutoApproveRuleFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.DeliveryAutoApproveRuleFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.DeliveryAutoApproveRuleFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>
-        }
-        findFirst: {
-          args: Prisma.DeliveryAutoApproveRuleFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.DeliveryAutoApproveRuleFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>
-        }
-        findMany: {
-          args: Prisma.DeliveryAutoApproveRuleFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>[]
-        }
-        create: {
-          args: Prisma.DeliveryAutoApproveRuleCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>
-        }
-        createMany: {
-          args: Prisma.DeliveryAutoApproveRuleCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.DeliveryAutoApproveRuleCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>[]
-        }
-        delete: {
-          args: Prisma.DeliveryAutoApproveRuleDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>
-        }
-        update: {
-          args: Prisma.DeliveryAutoApproveRuleUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>
-        }
-        deleteMany: {
-          args: Prisma.DeliveryAutoApproveRuleDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.DeliveryAutoApproveRuleUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.DeliveryAutoApproveRuleUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>[]
-        }
-        upsert: {
-          args: Prisma.DeliveryAutoApproveRuleUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryAutoApproveRulePayload>
-        }
-        aggregate: {
-          args: Prisma.DeliveryAutoApproveRuleAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateDeliveryAutoApproveRule>
-        }
-        groupBy: {
-          args: Prisma.DeliveryAutoApproveRuleGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DeliveryAutoApproveRuleGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.DeliveryAutoApproveRuleCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DeliveryAutoApproveRuleCountAggregateOutputType> | number
+          args: Prisma.InvitePassCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InvitePassCountAggregateOutputType> | number
         }
       }
     }
@@ -2835,8 +2685,8 @@ export const EntryScalarFieldEnum = {
   approvedAt: 'approvedAt',
   checkInTime: 'checkInTime',
   checkOutTime: 'checkOutTime',
-  preApprovalId: 'preApprovalId',
   domesticStaffId: 'domesticStaffId',
+  invitePassId: 'invitePassId',
   remarks: 'remarks',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
@@ -2846,64 +2696,33 @@ export const EntryScalarFieldEnum = {
 export type EntryScalarFieldEnum = (typeof EntryScalarFieldEnum)[keyof typeof EntryScalarFieldEnum]
 
 
-export const PreApprovalScalarFieldEnum = {
+export const InvitePassScalarFieldEnum = {
   id: 'id',
+  type: 'type',
+  status: 'status',
   visitorName: 'visitorName',
   visitorPhone: 'visitorPhone',
-  visitorType: 'visitorType',
-  purpose: 'purpose',
+  companyName: 'companyName',
+  companies: 'companies',
   vehicleNumber: 'vehicleNumber',
-  qrToken: 'qrToken',
+  purpose: 'purpose',
+  visitorPhoto: 'visitorPhoto',
   validFrom: 'validFrom',
   validUntil: 'validUntil',
-  status: 'status',
-  maxUses: 'maxUses',
-  usedCount: 'usedCount',
-  flatId: 'flatId',
-  societyId: 'societyId',
-  createdById: 'createdById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PreApprovalScalarFieldEnum = (typeof PreApprovalScalarFieldEnum)[keyof typeof PreApprovalScalarFieldEnum]
-
-
-export const ExpectedDeliveryScalarFieldEnum = {
-  id: 'id',
-  flatId: 'flatId',
-  societyId: 'societyId',
-  createdById: 'createdById',
-  companyName: 'companyName',
-  itemName: 'itemName',
-  expectedDate: 'expectedDate',
-  timeFrom: 'timeFrom',
-  timeUntil: 'timeUntil',
-  autoApprove: 'autoApprove',
-  isUsed: 'isUsed',
-  usedAt: 'usedAt',
-  createdAt: 'createdAt',
-  expiresAt: 'expiresAt'
-} as const
-
-export type ExpectedDeliveryScalarFieldEnum = (typeof ExpectedDeliveryScalarFieldEnum)[keyof typeof ExpectedDeliveryScalarFieldEnum]
-
-
-export const DeliveryAutoApproveRuleScalarFieldEnum = {
-  id: 'id',
-  flatId: 'flatId',
-  societyId: 'societyId',
-  createdById: 'createdById',
-  companies: 'companies',
   allowedDays: 'allowedDays',
   timeFrom: 'timeFrom',
   timeUntil: 'timeUntil',
-  isActive: 'isActive',
+  maxUses: 'maxUses',
+  usedCount: 'usedCount',
+  qrToken: 'qrToken',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type DeliveryAutoApproveRuleScalarFieldEnum = (typeof DeliveryAutoApproveRuleScalarFieldEnum)[keyof typeof DeliveryAutoApproveRuleScalarFieldEnum]
+export type InvitePassScalarFieldEnum = (typeof InvitePassScalarFieldEnum)[keyof typeof InvitePassScalarFieldEnum]
 
 
 export const DomesticStaffScalarFieldEnum = {
@@ -3567,16 +3386,30 @@ export type ListEnumVisitorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
- * Reference to a field of type 'PreApprovalStatus'
+ * Reference to a field of type 'InviteType'
  */
-export type EnumPreApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovalStatus'>
+export type EnumInviteTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteType'>
     
 
 
 /**
- * Reference to a field of type 'PreApprovalStatus[]'
+ * Reference to a field of type 'InviteType[]'
  */
-export type ListEnumPreApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovalStatus[]'>
+export type ListEnumInviteTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InviteStatus'
+ */
+export type EnumInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'InviteStatus[]'
+ */
+export type ListEnumInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteStatus[]'>
     
 
 
@@ -4003,9 +3836,7 @@ export type GlobalOmitConfig = {
   flat?: Prisma.FlatOmit
   user?: Prisma.UserOmit
   entry?: Prisma.EntryOmit
-  preApproval?: Prisma.PreApprovalOmit
-  expectedDelivery?: Prisma.ExpectedDeliveryOmit
-  deliveryAutoApproveRule?: Prisma.DeliveryAutoApproveRuleOmit
+  invitePass?: Prisma.InvitePassOmit
   domesticStaff?: Prisma.DomesticStaffOmit
   staffFlatAssignment?: Prisma.StaffFlatAssignmentOmit
   staffAttendance?: Prisma.StaffAttendanceOmit

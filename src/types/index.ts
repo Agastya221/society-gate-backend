@@ -8,7 +8,6 @@ import {
   EntryType,
   EntryStatus,
   VisitorType,
-  PreApprovalStatus,
   PaymentStatus,
   FamilyRole,
   GatePassType,
@@ -32,6 +31,8 @@ import {
   DomesticStaffType,
   StaffAvailabilityStatus,
   StaffBookingStatus,
+  InviteType,
+  InviteStatus,
 } from '../../prisma/generated/prisma/client';
 
 import type {
@@ -41,7 +42,6 @@ import type {
   Block,
   Entry,
   EntryRequest,
-  PreApproval,
   GatePass,
   Notice,
   Amenity,
@@ -54,11 +54,10 @@ import type {
   StaffAttendance,
   StaffBooking,
   StaffReview,
-  ExpectedDelivery,
-  DeliveryAutoApproveRule,
   OnboardingRequest,
   ResidentDocument,
   Notification,
+  InvitePass,
   Prisma,
 } from '../../prisma/generated/prisma/client';
 
@@ -68,7 +67,6 @@ export {
   EntryType,
   EntryStatus,
   VisitorType,
-  PreApprovalStatus,
   PaymentStatus,
   FamilyRole,
   GatePassType,
@@ -92,6 +90,8 @@ export {
   DomesticStaffType,
   StaffAvailabilityStatus,
   StaffBookingStatus,
+  InviteType,
+  InviteStatus,
 };
 
 // Re-export model types and Prisma namespace
@@ -102,7 +102,6 @@ export type {
   Block,
   Entry,
   EntryRequest,
-  PreApproval,
   GatePass,
   Notice,
   Amenity,
@@ -115,11 +114,10 @@ export type {
   StaffAttendance,
   StaffBooking,
   StaffReview,
-  ExpectedDelivery,
-  DeliveryAutoApproveRule,
   OnboardingRequest,
   ResidentDocument,
   Notification,
+  InvitePass,
   Prisma,
 };
 
@@ -418,23 +416,6 @@ export interface GatePassFilters extends PaginationParams {
 // PRE-APPROVAL & ENTRY TYPES
 // ============================================
 
-export interface CreatePreApprovalDTO {
-  societyId?: string;
-  flatId: string;
-  visitorName: string;
-  visitorPhone: string;
-  visitorType?: VisitorType;
-  purpose?: string;
-  vehicleNumber?: string;
-  validFrom: Date;
-  validUntil: Date;
-  maxUses?: number;
-}
-
-export interface PreApprovalFilters {
-  status?: PreApprovalStatus;
-}
-
 export interface EntryFilters extends PaginationParams {
   societyId: string;
   flatId?: string;
@@ -462,27 +443,28 @@ export interface EntryRequestFilters extends PaginationParams {
 }
 
 // ============================================
-// DELIVERY TYPES
+// INVITE PASS TYPES
 // ============================================
 
-export interface CreateExpectedDeliveryDTO {
-  flatId: string;
-  societyId: string;
-  companyName: string;
-  itemName?: string;
-  expectedDate: Date;
-  timeFrom?: string;
-  timeUntil?: string;
-  autoApprove?: boolean;
-}
-
-export interface CreateAutoApproveRuleDTO {
-  flatId: string;
-  societyId: string;
-  companies: string[];
+export interface CreateInviteDTO {
+  type: 'GUEST' | 'DELIVERY_ONCE' | 'DELIVERY_STANDING' | 'CAB' | 'SERVICE';
+  visitorName?: string;
+  visitorPhone?: string;
+  companyName?: string;
+  companies?: string[];
+  vehicleNumber?: string;
+  purpose?: string;
+  validFrom: Date;
+  validUntil: Date;
   allowedDays?: string[];
   timeFrom?: string;
   timeUntil?: string;
+  maxUses?: number;
+}
+
+export interface GateScanDTO {
+  qrToken: string;
+  gatePointId?: string;
 }
 
 // ============================================

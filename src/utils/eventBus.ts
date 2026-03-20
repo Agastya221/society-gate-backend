@@ -75,6 +75,15 @@ export interface AppEvents {
     staffType: string;
     societyId: string;
   };
+  'invite-pass.scanned': {
+    invitePassId: string;
+    entryId: string;
+    flatId: string;
+    societyId: string;
+    visitorName: string;
+    type: string;
+    guardId: string;
+  };
 }
 
 class AppEventBus extends EventEmitter {

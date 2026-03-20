@@ -31,26 +31,10 @@ export const createEntryRequest = async (req: Request, res: Response) => {
       guardId
     );
 
-    if (result.autoApproved) {
-      const companyName = visitorName || providerTag || 'Delivery';
-      return res.status(201).json({
-        success: true,
-        message: `${companyName} auto-approved. Entry created, resident notified.`,
-        data: {
-          autoApproved: true,
-          reason: result.reason,
-          entry: result.entry,
-        },
-      });
-    }
-
     res.status(201).json({
       success: true,
       message: 'Entry request created. Notification sent to residents.',
-      data: {
-        autoApproved: false,
-        entryRequest: result.entryRequest,
-      },
+      data: { entryRequest: result.entryRequest },
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({

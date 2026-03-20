@@ -360,23 +360,7 @@ export const createVendorSchema = z.object({
   photos: z.array(z.string()).optional(),
 });
 
-// ============================================
-// PRE-APPROVAL SCHEMAS
-// ============================================
-
-const visitorTypeEnum = z.enum(['GUEST', 'DELIVERY_PERSON', 'CAB_DRIVER', 'SERVICE_PROVIDER', 'OTHER', 'FAMILY_MEMBER', 'FRIEND']);
-
-export const createPreApprovalSchema = z.object({
-  flatId: uuidSchema,
-  visitorName: z.string().min(1, 'Visitor name is required').max(100),
-  visitorPhone: phoneSchema,
-  visitorType: visitorTypeEnum.optional(),
-  purpose: z.string().max(200).optional(),
-  vehicleNumber: z.string().max(20).optional(),
-  validFrom: z.string().datetime(),
-  validUntil: z.string().datetime(),
-  maxUses: z.number().int().positive().optional(),
-});
+// (Pre-approval schemas removed — replaced by InvitePass system)
 
 // ============================================
 // ONBOARDING SCHEMAS
@@ -452,6 +436,34 @@ export const submitSocietyRegistrationSchema = z.object({
 
 export const rejectSocietyRegistrationSchema = z.object({
   rejectionReason: z.string().min(10, 'Rejection reason must be at least 10 characters'),
+});
+
+// ============================================
+// INVITE PASS SCHEMAS
+// ============================================
+
+const inviteTypeEnum = z.enum(['GUEST', 'DELIVERY_ONCE', 'DELIVERY_STANDING', 'CAB', 'SERVICE']);
+
+export const createInvitePassSchema = z.object({
+  flatId: uuidSchema,
+  type: inviteTypeEnum,
+  visitorName: z.string().max(100).optional(),
+  visitorPhone: phoneSchema.optional(),
+  companyName: z.string().max(100).optional(),
+  companies: z.array(z.string().max(100)).optional(),
+  vehicleNumber: z.string().max(20).optional(),
+  purpose: z.string().max(200).optional(),
+  validFrom: z.string().datetime(),
+  validUntil: z.string().datetime(),
+  allowedDays: z.array(z.enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'])).optional(),
+  timeFrom: timeFormatSchema.optional(),
+  timeUntil: timeFormatSchema.optional(),
+  maxUses: z.number().int().min(-1).optional(),
+});
+
+export const scanQRSchema = z.object({
+  qrToken: z.string().min(1, 'QR token is required'),
+  gatePointId: uuidSchema.optional(),
 });
 
 // ============================================

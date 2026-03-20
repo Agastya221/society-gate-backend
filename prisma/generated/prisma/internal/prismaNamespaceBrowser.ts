@@ -58,9 +58,7 @@ export const ModelName = {
   Flat: 'Flat',
   User: 'User',
   Entry: 'Entry',
-  PreApproval: 'PreApproval',
-  ExpectedDelivery: 'ExpectedDelivery',
-  DeliveryAutoApproveRule: 'DeliveryAutoApproveRule',
+  InvitePass: 'InvitePass',
   DomesticStaff: 'DomesticStaff',
   StaffFlatAssignment: 'StaffFlatAssignment',
   StaffAttendance: 'StaffAttendance',
@@ -242,8 +240,8 @@ export const EntryScalarFieldEnum = {
   approvedAt: 'approvedAt',
   checkInTime: 'checkInTime',
   checkOutTime: 'checkOutTime',
-  preApprovalId: 'preApprovalId',
   domesticStaffId: 'domesticStaffId',
+  invitePassId: 'invitePassId',
   remarks: 'remarks',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
@@ -253,64 +251,33 @@ export const EntryScalarFieldEnum = {
 export type EntryScalarFieldEnum = (typeof EntryScalarFieldEnum)[keyof typeof EntryScalarFieldEnum]
 
 
-export const PreApprovalScalarFieldEnum = {
+export const InvitePassScalarFieldEnum = {
   id: 'id',
+  type: 'type',
+  status: 'status',
   visitorName: 'visitorName',
   visitorPhone: 'visitorPhone',
-  visitorType: 'visitorType',
-  purpose: 'purpose',
+  companyName: 'companyName',
+  companies: 'companies',
   vehicleNumber: 'vehicleNumber',
-  qrToken: 'qrToken',
+  purpose: 'purpose',
+  visitorPhoto: 'visitorPhoto',
   validFrom: 'validFrom',
   validUntil: 'validUntil',
-  status: 'status',
-  maxUses: 'maxUses',
-  usedCount: 'usedCount',
-  flatId: 'flatId',
-  societyId: 'societyId',
-  createdById: 'createdById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PreApprovalScalarFieldEnum = (typeof PreApprovalScalarFieldEnum)[keyof typeof PreApprovalScalarFieldEnum]
-
-
-export const ExpectedDeliveryScalarFieldEnum = {
-  id: 'id',
-  flatId: 'flatId',
-  societyId: 'societyId',
-  createdById: 'createdById',
-  companyName: 'companyName',
-  itemName: 'itemName',
-  expectedDate: 'expectedDate',
-  timeFrom: 'timeFrom',
-  timeUntil: 'timeUntil',
-  autoApprove: 'autoApprove',
-  isUsed: 'isUsed',
-  usedAt: 'usedAt',
-  createdAt: 'createdAt',
-  expiresAt: 'expiresAt'
-} as const
-
-export type ExpectedDeliveryScalarFieldEnum = (typeof ExpectedDeliveryScalarFieldEnum)[keyof typeof ExpectedDeliveryScalarFieldEnum]
-
-
-export const DeliveryAutoApproveRuleScalarFieldEnum = {
-  id: 'id',
-  flatId: 'flatId',
-  societyId: 'societyId',
-  createdById: 'createdById',
-  companies: 'companies',
   allowedDays: 'allowedDays',
   timeFrom: 'timeFrom',
   timeUntil: 'timeUntil',
-  isActive: 'isActive',
+  maxUses: 'maxUses',
+  usedCount: 'usedCount',
+  qrToken: 'qrToken',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type DeliveryAutoApproveRuleScalarFieldEnum = (typeof DeliveryAutoApproveRuleScalarFieldEnum)[keyof typeof DeliveryAutoApproveRuleScalarFieldEnum]
+export type InvitePassScalarFieldEnum = (typeof InvitePassScalarFieldEnum)[keyof typeof InvitePassScalarFieldEnum]
 
 
 export const DomesticStaffScalarFieldEnum = {
