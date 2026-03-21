@@ -9,7 +9,7 @@
 1. [Authentication](#1-authentication)
 2. [Gate Management](#2-gate-management)
    - [Entry Requests](#21-entry-requests)
-   - [Pre-Approvals & Entries](#22-pre-approvals--entries)
+   - [Invite Passes](#22-invite-passes)
    - [Gate Passes](#23-gate-passes)
 3. [Guard App](#3-guard-app)
 4. [Community](#4-community)
@@ -47,9 +47,9 @@ Content-Type: application/json
 ## 1. Authentication
 
 The backend uses MSG91 OTP Widget for all authentication.
-The widget handles phone entry, OTP delivery, and verification on the 
+The widget handles phone entry, OTP delivery, and verification on the
 frontend. On success it gives your app a short-lived `widgetToken`.
-You send that token to the backend — the backend verifies it with 
+You send that token to the backend — the backend verifies it with
 MSG91 and issues your accessToken + refreshToken.
 
 **Token lifetimes:**
@@ -226,7 +226,7 @@ Does NOT create new users.
 }
 ```
 
-Note: `redirectTo` is either `ADMIN_PANEL` (for ADMIN/SUPER_ADMIN) or 
+Note: `redirectTo` is either `ADMIN_PANEL` (for ADMIN/SUPER_ADMIN) or
 `RESIDENT_PANEL` (for RESIDENT). Use this to decide which screen to show.
 
 **Errors:** 404 no account found | 403 wrong app | 403 account inactive
@@ -292,7 +292,7 @@ POST /auth/refresh-token
 }
 ```
 
-Note: Token rotation — every refresh returns a NEW refreshToken. 
+Note: Token rotation — every refresh returns a NEW refreshToken.
 Store the new one, discard the old one.
 
 ---
@@ -318,7 +318,7 @@ Authorization: Bearer <access_token>
 }
 ```
 
-What happens: accessToken blacklisted in Redis, refreshToken cleared 
+What happens: accessToken blacklisted in Redis, refreshToken cleared
 from database. Both tokens are dead immediately.
 
 ---
@@ -343,6 +343,51 @@ Authorization: Bearer <access_token>
   "name": "Updated Name",
   "email": "new@example.com",
   "photoUrl": "https://s3.../photo.jpg"
+}
+```
+
+---
+
+### Register FCM Token (Resident App)
+```http
+PATCH /auth/resident-app/fcm-token
+Authorization: Bearer <access_token>
+```
+
+Call this after login and whenever the device FCM token changes.
+Required for push notifications (entry requests, emergencies, etc.).
+
+**Request Body:**
+```json
+{
+  "fcmToken": "fcm-device-token-from-firebase",
+  "deviceType": "android"
+}
+```
+
+**deviceType options:** `android`, `ios`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "message": "FCM token updated"
+}
+```
+
+---
+
+### Register FCM Token (Guard App)
+```http
+PATCH /auth/guard-app/fcm-token
+Authorization: Bearer <guard_token>
+```
+
+**Request Body:**
+```json
+{
+  "fcmToken": "fcm-device-token-from-firebase",
+  "deviceType": "android"
 }
 ```
 
@@ -401,7 +446,12 @@ Authorization: Bearer <guard_token>
 
 ### 2.1 Entry Requests
 
-Entry requests are created by guards when unknown visitors arrive at the gate. Residents receive a notification to approve/reject.
+Entry requests are created by guards when unknown visitors arrive at the gate.
+Residents receive a push notification with a photo to approve or reject.
+Requests expire automatically after **15 minutes** if not responded to.
+
+Auto-approval via InvitePass happens at scan time (`POST /guard/scan`), not here.
+This endpoint is only for unknown visitors with no pre-existing pass.
 
 #### Create Entry Request (Guard)
 ```http
@@ -414,7 +464,7 @@ Authorization: Bearer <guard_token>
 {
   "type": "VISITOR",
   "flatId": "uuid",
-  "visitorName": "Delivery Person",
+  "visitorName": "Rahul Kumar",
   "visitorPhone": "9876543212",
   "providerTag": "AMAZON",
   "photoKey": "s3-key-from-upload"
@@ -423,7 +473,25 @@ Authorization: Bearer <guard_token>
 
 **type options:** `VISITOR`, `DELIVERY`, `DOMESTIC_STAFF`, `CAB`, `VENDOR`
 
-**providerTag options:** `BLINKIT`, `SWIGGY`, `ZOMATO`, `AMAZON`, `FLIPKART`, `BIGBASKET`, `DUNZO`, `OTHER`
+**providerTag options (for DELIVERY type):** `BLINKIT`, `SWIGGY`, `ZOMATO`, `AMAZON`, `FLIPKART`, `BIGBASKET`, `DUNZO`, `OTHER`
+
+**Response 201:**
+```json
+{
+  "success": true,
+  "message": "Entry request created. Notification sent to residents.",
+  "data": {
+    "entryRequest": {
+      "id": "uuid",
+      "type": "VISITOR",
+      "status": "PENDING",
+      "visitorName": "Rahul Kumar",
+      "expiresAt": "2024-01-15T10:15:00Z",
+      "flat": { "id": "uuid", "flatNumber": "A-101" }
+    }
+  }
+}
+```
 
 ---
 
@@ -440,6 +508,11 @@ Authorization: Bearer <access_token>
 | flatId | string | Filter by flat ID |
 | page | number | Page number (default: 1) |
 | limit | number | Items per page (default: 20) |
+
+Access by role:
+- **GUARD**: sees only their own requests
+- **RESIDENT**: sees requests for their flat
+- **ADMIN**: sees all requests in their society
 
 ---
 
@@ -466,6 +539,8 @@ Authorization: Bearer <access_token>
 PATCH /gate/requests/:id/approve
 Authorization: Bearer <access_token>
 ```
+
+What happens: Creates an approved `Entry` record, notifies the guard via socket with "APPROVED" status.
 
 ---
 
@@ -502,242 +577,159 @@ Authorization: Bearer <guard_token>
 
 ---
 
-### 2.2 Pre-Approvals & Entries
+### 2.2 Invite Passes
 
-Pre-approvals let residents generate QR codes for expected visitors.
+Invite Passes are the unified system for all pre-authorized gate access.
+They replace pre-approvals, expected deliveries, and auto-approve rules.
 
-#### Create Pre-Approval (Resident)
+**Pass types:**
+| Type | Use case |
+|------|----------|
+| `GUEST` | One-time or recurring guest (family, friends) — QR based |
+| `DELIVERY_ONCE` | Single expected delivery from one company |
+| `DELIVERY_STANDING` | Recurring delivery auto-approval (e.g. always allow Swiggy) |
+| `CAB` | Cab/ride-share entry |
+| `SERVICE` | Service provider (plumber, electrician, etc.) |
+
+**How guards use them:**
+Guard scans the QR code at `POST /guard/scan`. The system resolves the pass and creates an `Entry` automatically if valid.
+
+---
+
+#### Create Invite Pass (Resident)
 ```http
-POST /gate/
+POST /gate/invites
 Authorization: Bearer <resident_token>
 ```
 
-**Request Body:**
+**Request Body — Guest (one-time visit):**
 ```json
 {
-  "visitorName": "Guest Name",
-  "visitorPhone": "9876543213",
+  "type": "GUEST",
   "flatId": "uuid",
-  "validFrom": "2024-01-15T09:00:00Z",
-  "validUntil": "2024-01-15T18:00:00Z",
-  "visitorType": "GUEST"
+  "visitorName": "Rohit Patil",
+  "visitorPhone": "9876543213",
+  "purpose": "Birthday dinner",
+  "vehicleNumber": "MH12AB1234",
+  "validFrom": "2024-01-20T18:00:00Z",
+  "validUntil": "2024-01-20T23:59:00Z",
+  "maxUses": 1
 }
 ```
 
-**visitorType options:** `GUEST`, `DELIVERY_PERSON`, `CAB_DRIVER`, `SERVICE_PROVIDER`, `FAMILY_MEMBER`, `FRIEND`, `OTHER`
+**Request Body — Expected Delivery (single):**
+```json
+{
+  "type": "DELIVERY_ONCE",
+  "flatId": "uuid",
+  "companyName": "Amazon",
+  "purpose": "Laptop stand order",
+  "validFrom": "2024-01-20T10:00:00Z",
+  "validUntil": "2024-01-20T20:00:00Z"
+}
+```
 
-**Response:**
+**Request Body — Standing Delivery Rule:**
+```json
+{
+  "type": "DELIVERY_STANDING",
+  "flatId": "uuid",
+  "companies": ["Swiggy", "Zomato", "Blinkit"],
+  "allowedDays": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
+  "timeFrom": "08:00",
+  "timeUntil": "23:00",
+  "validFrom": "2024-01-01T00:00:00Z",
+  "validUntil": "2024-12-31T23:59:59Z",
+  "maxUses": -1
+}
+```
+
+Note: `maxUses: -1` means unlimited. For `DELIVERY_STANDING` this is set automatically.
+`allowedDays` empty array or omitted = all days allowed.
+
+**Request Body — Cab:**
+```json
+{
+  "type": "CAB",
+  "flatId": "uuid",
+  "visitorName": "Ola/Uber Driver",
+  "vehicleNumber": "MH12XY9876",
+  "validFrom": "2024-01-20T14:00:00Z",
+  "validUntil": "2024-01-20T15:00:00Z"
+}
+```
+
+**Request Body — Service Provider:**
+```json
+{
+  "type": "SERVICE",
+  "flatId": "uuid",
+  "visitorName": "Suresh Electrician",
+  "visitorPhone": "9876543214",
+  "purpose": "AC servicing",
+  "validFrom": "2024-01-21T10:00:00Z",
+  "validUntil": "2024-01-21T16:00:00Z"
+}
+```
+
+**Response 201:**
 ```json
 {
   "success": true,
-  "message": "Pre-approval created successfully. Share QR code with your guest.",
+  "message": "Invite pass created",
   "data": {
     "id": "uuid",
-    "qrToken": "unique-qr-token"
+    "type": "GUEST",
+    "status": "ACTIVE",
+    "visitorName": "Rohit Patil",
+    "qrToken": "eyJ...",
+    "validFrom": "2024-01-20T18:00:00Z",
+    "validUntil": "2024-01-20T23:59:00Z",
+    "maxUses": 1,
+    "usedCount": 0,
+    "createdAt": "2024-01-19T10:00:00Z"
   }
 }
 ```
 
+Share the `qrToken` with the visitor. They show it at the gate.
+
 ---
 
-#### Get My Pre-Approvals
+#### Get My Invite Passes
 ```http
-GET /gate/?status=ACTIVE
+GET /gate/invites?status=ACTIVE
 Authorization: Bearer <resident_token>
-```
-
-**status options:** `ACTIVE`, `EXPIRED`, `USED`, `CANCELLED`
-
----
-
-#### Get Pre-Approval QR Code
-```http
-GET /gate/:id/qr
-Authorization: Bearer <resident_token>
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "qrToken": "unique-qr-token",
-    "qrCodeImage": "data:image/png;base64,..."
-  }
-}
-```
-
----
-
-#### Cancel Pre-Approval
-```http
-DELETE /gate/:id
-Authorization: Bearer <resident_token>
-```
-
----
-
-#### Scan Pre-Approval QR (Guard)
-```http
-POST /gate/scan
-Authorization: Bearer <guard_token>
-```
-
-**Request Body:**
-```json
-{
-  "qrToken": "unique-qr-token"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "John Doe pre-approved. Entry created for flat A-101.",
-  "data": {
-    "preApproval": {
-      "visitorName": "John Doe",
-      "flatNumber": "A-101"
-    },
-    "entry": {
-      "id": "uuid",
-      "status": "CHECKED_IN"
-    }
-  }
-}
-```
-
----
-
-#### Create Expected Delivery
-```http
-POST /gate/deliveries/expected
-Authorization: Bearer <access_token>
-```
-
-**Request Body:**
-```json
-{
-  "flatId": "uuid",
-  "company": "Amazon",
-  "expectedDate": "2024-01-15",
-  "trackingId": "AMZN123456"
-}
-```
-
----
-
-#### Get Expected Deliveries
-```http
-GET /gate/deliveries/expected
-Authorization: Bearer <access_token>
-```
-
----
-
-#### Create Auto-Approve Rule
-```http
-POST /gate/deliveries/auto-approve
-Authorization: Bearer <access_token>
-```
-
-**Request Body:**
-```json
-{
-  "company": "Swiggy",
-  "autoApprove": true
-}
-```
-
----
-
-#### Get Auto-Approve Rules
-```http
-GET /gate/deliveries/auto-approve
-Authorization: Bearer <access_token>
-```
-
----
-
-#### Toggle Auto-Approve Rule
-```http
-PATCH /gate/deliveries/auto-approve/:id
-Authorization: Bearer <access_token>
-```
-
-**Request Body:**
-```json
-{
-  "isActive": false
-}
-```
-
----
-
-#### Delete Auto-Approve Rule
-```http
-DELETE /gate/deliveries/auto-approve/:id
-Authorization: Bearer <access_token>
-```
-
----
-
-#### Get Popular Delivery Companies
-```http
-GET /gate/deliveries/companies
-Authorization: Bearer <access_token>
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "companies": ["Amazon", "Flipkart", "Swiggy", "Zomato", "Blinkit", "BigBasket", "Dunzo"]
-  }
-}
-```
-
----
-
-#### Get All Entries
-```http
-GET /gate/entries?flatId=uuid&status=CHECKED_IN&type=DELIVERY&page=1&limit=20
-Authorization: Bearer <access_token>
 ```
 
 **Query Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| flatId | string | Filter by flat |
-| status | string | `PENDING`, `APPROVED`, `REJECTED`, `CHECKED_IN`, `CHECKED_OUT` |
-| type | string | `VISITOR`, `DELIVERY`, `DOMESTIC_STAFF`, `CAB`, `VENDOR` |
-| page | number | Page number |
-| limit | number | Items per page |
+| status | string | Filter: `ACTIVE`, `USED`, `EXPIRED`, `CANCELLED` |
 
 ---
 
-#### Get Pending Approvals
+#### Get Invite Pass by ID
 ```http
-GET /gate/entries/pending
-Authorization: Bearer <access_token>
+GET /gate/invites/:id
+Authorization: Bearer <resident_token>
 ```
 
 ---
 
-#### Get Today's Entries (Guard)
+#### Cancel Invite Pass
 ```http
-GET /gate/entries/today
-Authorization: Bearer <guard_token>
+PATCH /gate/invites/:id/cancel
+Authorization: Bearer <resident_token>
 ```
 
----
-
-#### Checkout Entry (Guard)
-```http
-PATCH /gate/entries/:id/checkout
-Authorization: Bearer <guard_token>
+**Response 200:**
+```json
+{
+  "success": true,
+  "message": "Invite cancelled",
+  "data": { "id": "uuid", "status": "CANCELLED" }
+}
 ```
 
 ---
@@ -745,6 +737,7 @@ Authorization: Bearer <guard_token>
 ### 2.3 Gate Passes
 
 Gate passes are for material movement, vehicle entry, move-in/move-out, and maintenance.
+Unlike Invite Passes (resident-created), Gate Passes go through admin approval.
 
 #### Create Gate Pass
 ```http
@@ -840,12 +833,47 @@ Authorization: Bearer <guard_token>
 
 ## 3. Guard App
 
-All guard endpoints require guard authentication.
+All guard endpoints require guard authentication (`Authorization: Bearer <guard_token>`).
+Base path: `/guard`
+
+---
 
 ### Get Today's Dashboard
 ```http
 GET /guard/today
 Authorization: Bearer <guard_token>
+```
+
+Returns all entries for the current day with summary stats.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "entries": [
+      {
+        "id": "uuid",
+        "type": "DELIVERY",
+        "status": "APPROVED",
+        "visitorName": "Swiggy Delivery",
+        "checkInTime": "2024-01-20T13:05:00Z",
+        "flat": { "id": "uuid", "flatNumber": "A-101" },
+        "invitePass": { "type": "DELIVERY_STANDING", "visitorName": null },
+        "createdBy": { "id": "uuid", "name": "Guard Name", "role": "GUARD" }
+      }
+    ],
+    "stats": {
+      "total": 28,
+      "pending": 2,
+      "approved": 22,
+      "checkedOut": 4,
+      "delivery": 10,
+      "visitor": 15,
+      "domesticStaff": 3
+    }
+  }
+}
 ```
 
 ---
@@ -856,29 +884,67 @@ GET /guard/pending-count
 Authorization: Bearer <guard_token>
 ```
 
----
-
-### Get Entries
-```http
-GET /guard/entries
-Authorization: Bearer <guard_token>
+**Response:**
+```json
+{
+  "success": true,
+  "data": { "pendingCount": 3 }
+}
 ```
 
 ---
 
-### Checkout Entry
+### Get All Entries (with filters)
+```http
+GET /guard/entries?status=APPROVED&type=DELIVERY&flatId=uuid&page=1&limit=20
+Authorization: Bearer <guard_token>
+```
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| status | string | `PENDING`, `APPROVED`, `REJECTED`, `CHECKED_IN`, `CHECKED_OUT` |
+| type | string | `VISITOR`, `DELIVERY`, `DOMESTIC_STAFF`, `CAB`, `VENDOR` |
+| flatId | string | Filter by flat |
+| page | number | Default: 1 |
+| limit | number | Default: 20 |
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "entries": [...],
+    "pagination": {
+      "total": 150,
+      "page": 1,
+      "limit": 20,
+      "pages": 8
+    }
+  }
+}
+```
+
+---
+
+### Checkout Entry (Guard)
 ```http
 PATCH /guard/entries/:id/checkout
 Authorization: Bearer <guard_token>
 ```
 
+Marks the entry as `CHECKED_OUT` and records the checkout time.
+
 ---
 
-### Create Entry Request
+### Create Entry Request (Unknown Visitor)
 ```http
 POST /guard/entry-requests
 Authorization: Bearer <guard_token>
 ```
+
+Use this when a visitor arrives with no InvitePass QR.
+The resident receives a push notification with the photo to approve or reject.
 
 **Request Body:**
 ```json
@@ -887,28 +953,98 @@ Authorization: Bearer <guard_token>
   "flatId": "uuid",
   "visitorName": "Visitor Name",
   "visitorPhone": "9876543214",
+  "providerTag": "AMAZON",
   "photoKey": "s3-photo-key"
 }
 ```
 
----
-
-### Scan Pre-Approval QR
-```http
-POST /guard/scan/preapproval
-Authorization: Bearer <guard_token>
-```
-
-**Request Body:**
+**Response 201:**
 ```json
 {
-  "qrToken": "preapproval-qr-token"
+  "success": true,
+  "message": "Entry request created. Notification sent to residents.",
+  "data": {
+    "entryRequest": {
+      "id": "uuid",
+      "type": "VISITOR",
+      "status": "PENDING",
+      "expiresAt": "2024-01-20T14:20:00Z"
+    }
+  }
 }
 ```
 
 ---
 
-### Scan Gate Pass QR
+### Unified QR Scan (Preferred)
+```http
+POST /guard/scan
+Authorization: Bearer <guard_token>
+```
+
+**The primary scan endpoint.** Accepts any QR code and automatically detects the pass type:
+- InvitePass QR (GUEST, DELIVERY_ONCE, DELIVERY_STANDING, CAB, SERVICE)
+- Gate Pass QR
+
+**Request Body:**
+```json
+{
+  "qrToken": "eyJ...",
+  "gatePointId": "uuid"
+}
+```
+
+`gatePointId` is optional. Used when the society has multiple gates.
+
+**Response — Access Granted (200):**
+```json
+{
+  "success": true,
+  "message": "Access granted via GUEST invite",
+  "data": {
+    "type": "INVITE_PASS",
+    "allowed": true,
+    "entry": {
+      "id": "uuid",
+      "type": "VISITOR",
+      "status": "APPROVED",
+      "visitorName": "Rohit Patil",
+      "flatId": "uuid",
+      "checkInTime": "2024-01-20T18:05:00Z"
+    },
+    "pass": {
+      "id": "uuid",
+      "type": "GUEST",
+      "visitorName": "Rohit Patil",
+      "usedCount": 1,
+      "maxUses": 1
+    }
+  }
+}
+```
+
+**Response — Access Denied (403):**
+```json
+{
+  "success": false,
+  "message": "Invite has expired",
+  "data": {
+    "type": "INVITE_PASS",
+    "allowed": false,
+    "pass": { "id": "uuid", "status": "EXPIRED" }
+  }
+}
+```
+
+**Why access can be denied:**
+- Pass is CANCELLED, EXPIRED, or USED (maxUses reached)
+- Current time is outside `validFrom`–`validUntil` window
+- Current day not in `allowedDays`
+- Current time not in `timeFrom`–`timeUntil` window
+
+---
+
+### Scan Gate Pass QR (Legacy)
 ```http
 POST /guard/scan/gatepass
 Authorization: Bearer <guard_token>
@@ -923,7 +1059,7 @@ Authorization: Bearer <guard_token>
 
 ---
 
-### Scan Staff QR
+### Scan Staff QR (Check-In/Out)
 ```http
 POST /guard/scan/staff
 Authorization: Bearer <guard_token>
@@ -936,6 +1072,22 @@ Authorization: Bearer <guard_token>
   "flatId": "uuid",
   "societyId": "uuid"
 }
+```
+
+---
+
+### Get Active Emergencies (Guard)
+```http
+GET /guard/emergencies/active
+Authorization: Bearer <guard_token>
+```
+
+---
+
+### Respond to Emergency (Guard)
+```http
+PATCH /guard/emergencies/:id/respond
+Authorization: Bearer <guard_token>
 ```
 
 ---
@@ -1215,6 +1367,10 @@ POST /community/emergencies
 Authorization: Bearer <access_token>
 ```
 
+When created, push notifications are sent automatically:
+- `FIRE` and `LIFT_STUCK`: alert ALL residents + all guards + admin
+- All other types: alert guards + admin only
+
 **Request Body:**
 ```json
 {
@@ -1224,7 +1380,7 @@ Authorization: Bearer <access_token>
 }
 ```
 
-**type options:** `MEDICAL`, `FIRE`, `THEFT`, `VIOLENCE`, `ACCIDENT`, `OTHER`
+**type options:** `MEDICAL`, `FIRE`, `SECURITY`, `LIFT_STUCK`, `ANIMAL_THREAT`, `THEFT`, `VIOLENCE`, `ACCIDENT`, `OTHER`
 
 ---
 
@@ -1250,6 +1406,8 @@ GET /community/emergencies/active
 Authorization: Bearer <admin_or_guard_token>
 ```
 
+Also available at `GET /guard/emergencies/active` for the guard app.
+
 ---
 
 #### Get Emergency by ID
@@ -1265,6 +1423,8 @@ Authorization: Bearer <access_token>
 PATCH /community/emergencies/:id/respond
 Authorization: Bearer <admin_or_guard_token>
 ```
+
+Also available at `PATCH /guard/emergencies/:id/respond` for the guard app.
 
 ---
 
@@ -1283,11 +1443,17 @@ Authorization: Bearer <admin_or_guard_token>
 
 ---
 
-#### Mark as False Alarm (Admin)
+#### Mark as False Alarm
 ```http
 PATCH /community/emergencies/:id/false-alarm
-Authorization: Bearer <admin_token>
+Authorization: Bearer <access_token>
 ```
+
+Can be called by:
+- The **reporter** who created the alert (to cancel their own)
+- Any **ADMIN** or **SUPER_ADMIN**
+
+All originally-notified users receive an "All Clear" push notification and in-app notification.
 
 **Request Body:**
 ```json
@@ -1295,6 +1461,8 @@ Authorization: Bearer <admin_token>
   "notes": "Accidental trigger. No actual emergency."
 }
 ```
+
+**Errors:** 403 if caller is neither reporter nor admin
 
 ---
 
@@ -2152,8 +2320,8 @@ Authorization: Bearer <access_token>
 
 ## 9. Society Registration
 
-A RESIDENT submits a request to register their society. SUPER_ADMIN 
-reviews and approves or rejects. On approval the society is created 
+A RESIDENT submits a request to register their society. SUPER_ADMIN
+reviews and approves or rejects. On approval the society is created
 and the requestor becomes ADMIN automatically.
 
 ---
@@ -2284,18 +2452,27 @@ Authorization: Bearer <super_admin_token>
 ### Entry Request Status
 | Value | Description |
 |-------|-------------|
-| `PENDING` | Awaiting resident response |
+| `PENDING` | Awaiting resident response (15 min window) |
 | `APPROVED` | Resident approved |
 | `REJECTED` | Resident rejected |
-| `EXPIRED` | Request expired (15 min) |
+| `EXPIRED` | Request expired — no response in 15 minutes |
 
-### Pre-Approval Status
+### Invite Type
 | Value | Description |
 |-------|-------------|
-| `ACTIVE` | Can be used |
-| `EXPIRED` | Time expired |
-| `USED` | Already scanned |
-| `CANCELLED` | Cancelled by resident |
+| `GUEST` | Guest invite with QR code — family, friends |
+| `DELIVERY_ONCE` | Single expected delivery |
+| `DELIVERY_STANDING` | Recurring delivery rule (e.g. always allow Swiggy) |
+| `CAB` | Cab/ride-share |
+| `SERVICE` | Service provider (electrician, plumber, etc.) |
+
+### Invite Status
+| Value | Description |
+|-------|-------------|
+| `ACTIVE` | Valid and can be used |
+| `USED` | Max uses reached |
+| `EXPIRED` | Past `validUntil` date |
+| `CANCELLED` | Manually cancelled by resident |
 
 ### Visitor Type
 | Value | Description |
@@ -2412,7 +2589,10 @@ Authorization: Bearer <super_admin_token>
 | Value | Description |
 |-------|-------------|
 | `MEDICAL` | Medical emergency |
-| `FIRE` | Fire emergency |
+| `FIRE` | Fire emergency — alerts ALL residents |
+| `SECURITY` | Security breach |
+| `LIFT_STUCK` | Lift/elevator stuck — alerts ALL residents |
+| `ANIMAL_THREAT` | Animal threat (snake, stray dog, etc.) |
 | `THEFT` | Theft/robbery |
 | `VIOLENCE` | Violence |
 | `ACCIDENT` | Accident |
@@ -2423,7 +2603,7 @@ Authorization: Bearer <super_admin_token>
 |-------|-------------|
 | `ACTIVE` | Active/ongoing |
 | `RESOLVED` | Resolved |
-| `FALSE_ALARM` | False alarm |
+| `FALSE_ALARM` | Marked as false alarm |
 
 ### Vendor Category
 | Value | Description |
@@ -2523,59 +2703,6 @@ Authorization: Bearer <super_admin_token>
 | `PENDING` | Payment pending |
 | `PAID` | Paid |
 | `OVERDUE` | Payment overdue |
-
----
-
-## Testing with cURL
-
-### Login as Admin
-```bash
-curl -X POST http://localhost:4000/api/v1/auth/admin-app/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "admin@society.com", "password": "password123"}'
-```
-
-### Create Entry Request (Guard)
-```bash
-curl -X POST http://localhost:4000/api/v1/gate/requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <guard_token>" \
-  -d '{
-    "type": "DELIVERY",
-    "flatId": "flat-uuid",
-    "visitorName": "Amazon Delivery",
-    "visitorPhone": "9876543210",
-    "providerTag": "AMAZON"
-  }'
-```
-
-### Create Pre-Approval (Resident)
-```bash
-curl -X POST http://localhost:4000/api/v1/gate/ \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <resident_token>" \
-  -d '{
-    "visitorName": "John Friend",
-    "visitorPhone": "9876543211",
-    "flatId": "flat-uuid",
-    "validFrom": "2024-01-15T09:00:00Z",
-    "validUntil": "2024-01-15T18:00:00Z",
-    "visitorType": "FRIEND"
-  }'
-```
-
-### Create Complaint
-```bash
-curl -X POST http://localhost:4000/api/v1/community/complaints \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <access_token>" \
-  -d '{
-    "category": "PLUMBING",
-    "subject": "Bathroom leak",
-    "description": "Water leaking from bathroom pipe",
-    "priority": "HIGH"
-  }'
-```
 
 ---
 

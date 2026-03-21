@@ -453,12 +453,34 @@ export const createInvitePassSchema = z.object({
   companies: z.array(z.string().max(100)).optional(),
   vehicleNumber: z.string().max(20).optional(),
   purpose: z.string().max(200).optional(),
+  visitorPhoto: z.string().optional(),
   validFrom: z.string().datetime(),
   validUntil: z.string().datetime(),
   allowedDays: z.array(z.enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'])).optional(),
   timeFrom: timeFormatSchema.optional(),
   timeUntil: timeFormatSchema.optional(),
   maxUses: z.number().int().min(-1).optional(),
+}).superRefine((data, ctx) => {
+  // GUEST & SERVICE require visitorName
+  if ((data.type === 'GUEST' || data.type === 'SERVICE') && !data.visitorName) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'visitorName is required for GUEST and SERVICE passes', path: ['visitorName'] });
+  }
+  // CAB requires visitorName + vehicleNumber
+  if (data.type === 'CAB') {
+    if (!data.visitorName) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'visitorName is required for CAB passes', path: ['visitorName'] });
+    if (!data.vehicleNumber) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'vehicleNumber is required for CAB passes', path: ['vehicleNumber'] });
+  }
+  // DELIVERY_ONCE requires companyName
+  if (data.type === 'DELIVERY_ONCE' && !data.companyName) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'companyName is required for DELIVERY_ONCE passes', path: ['companyName'] });
+  }
+  // DELIVERY_STANDING requires companies[], allowedDays[], timeFrom, timeUntil
+  if (data.type === 'DELIVERY_STANDING') {
+    if (!data.companies?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'companies[] is required for DELIVERY_STANDING passes', path: ['companies'] });
+    if (!data.allowedDays?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'allowedDays[] is required for DELIVERY_STANDING passes', path: ['allowedDays'] });
+    if (!data.timeFrom) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'timeFrom is required for DELIVERY_STANDING passes', path: ['timeFrom'] });
+    if (!data.timeUntil) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'timeUntil is required for DELIVERY_STANDING passes', path: ['timeUntil'] });
+  }
 });
 
 export const scanQRSchema = z.object({
