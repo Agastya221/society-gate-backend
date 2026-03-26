@@ -252,19 +252,33 @@ enum ProviderTag {
   OTHER
 }
 
-enum InviteType {
-  GUEST              // One-time or recurring guest
-  DELIVERY_ONCE      // Single expected delivery
-  DELIVERY_STANDING  // Recurring delivery rule (Swiggy always allowed)
-  CAB                // Cab/taxi
-  SERVICE            // Service provider (plumber, electrician, etc.)
+enum GuestInviteType {
+  QUICK              // One-time guest invite
+  FREQUENT           // Permanent passcode, recurring visits
+  PRIVATE            // Silent entry — guard lets in without calling resident
 }
 
-enum InviteStatus {
+enum GuestInviteStatus {
   ACTIVE
-  USED
+  EXPIRED
+  REVOKED
+}
+
+enum PartyInviteStatus {
+  ACTIVE
   EXPIRED
   CANCELLED
+}
+
+enum GuestEntryResult {
+  ALLOWED
+  DENIED
+  OUTSIDE_WINDOW
+}
+
+enum InviteRefType {
+  GUEST_INVITE
+  PARTY_INVITE
 }
 
 enum DomesticStaffType {
@@ -348,7 +362,9 @@ model Society {
   onboardingRequests       OnboardingRequest[]
   notifications            Notification[]
   entryRequests            EntryRequest[]
-  invitePasses             InvitePass[]
+  guestInvites             GuestInvite[]
+  partyInvites             PartyInvite[]
+  guestEntryLogs           GuestEntryLog[]
   registrationRequest      SocietyRegistrationRequest?
 
   @@index([city, isActive])
@@ -486,7 +502,8 @@ model Flat {
   staffReviews             StaffReview[]
   onboardingRequests       OnboardingRequest[]
   entryRequests            EntryRequest[]
-  invitePasses             InvitePass[]
+  guestInvites             GuestInvite[]
+  partyInvites             PartyInvite[]
 
   @@unique([societyId, flatNumber])
   @@index([societyId])
@@ -565,8 +582,10 @@ model User {
   createdEntryRequests  EntryRequest[] @relation("EntryRequestGuard")
   approvedEntryRequests EntryRequest[] @relation("EntryRequestApprover")
 
-  // Invite Pass relations
-  createdInvitePasses InvitePass[] @relation("InvitePassCreator")
+  // Guest Invite relations
+  createdGuestInvites  GuestInvite[] @relation("GuestInviteCreator")
+  createdPartyInvites  PartyInvite[] @relation("PartyInviteCreator")
+  guardEntryLogs       GuestEntryLog[] @relation("GuestEntryGuard")
 
   // Push notifications
   fcmToken   String? // Device push token, updated on every login
@@ -641,8 +660,7 @@ model Entry {
   // References
   domesticStaffId String?
   domesticStaff   DomesticStaff? @relation(fields: [domesticStaffId], references: [id])
-  invitePassId    String?
-  invitePass      InvitePass?    @relation(fields: [invitePassId], references: [id])
+
 
   // Notes
   remarks         String?
@@ -662,59 +680,158 @@ model Entry {
 }
 
 // --------------------
-// INVITE PASSES (Unified gate access system)
+// GUEST INVITES (Quick / Frequent / Private)
 // --------------------
 
-model InvitePass {
-  id     String        @id @default(uuid())
-  type   InviteType
-  status InviteStatus  @default(ACTIVE)
+model GuestInvite {
+  id           String            @id @default(uuid())
+  type         GuestInviteType
+  status       GuestInviteStatus @default(ACTIVE)
 
-  // Visitor / delivery details
-  visitorName   String?   // Name of person expected (optional for deliveries)
-  visitorPhone  String?
-  companyName   String?   // "Amazon", "Swiggy", etc. — for deliveries/services
-  companies     String[]  // For DELIVERY_STANDING: multiple companies allowed
-  vehicleNumber String?
-  purpose       String?   // Reason for visit (for GUEST/SERVICE)
-  visitorPhoto  String?   // S3 key for visitor photo (optional)
+  // Guest details
+  visitorName  String
+  visitorPhone String
 
-  // Validity window
-  validFrom  DateTime
-  validUntil DateTime
+  // Schedule
+  validFrom    DateTime
+  validUntil   DateTime
+  allowedDays  String[]          // ["MON","TUE",...] — for FREQUENT
+  timeFrom     String?           // "08:00" — 24h format, for FREQUENT
+  timeUntil    String?           // "20:00" — 24h format, for FREQUENT
 
-  // Recurring rules (used for DELIVERY_STANDING)
-  allowedDays String[]  // ["MON","TUE",...] — empty = all days
-  timeFrom    String?   // "08:00"
-  timeUntil   String?   // "22:00"
+  // Access code
+  passcode     String            @unique // 6-char alphanumeric OTP
+  maxUses      Int?              // 1 for QUICK/PRIVATE, NULL for FREQUENT (unlimited)
+  usedCount    Int               @default(0)
 
-  // Usage limits
-  maxUses   Int @default(1)  // -1 = unlimited (for standing rules)
-  usedCount Int @default(0)
-
-  // QR token for guard scan
-  qrToken String @unique
+  // Metadata
+  note         String?
+  isPrivate    Boolean           @default(false) // true for PRIVATE type (silent entry)
 
   // Relations
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
+  flatId       String
+  flat         Flat              @relation(fields: [flatId], references: [id])
 
-  societyId String
-  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  societyId    String
+  society      Society           @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
-  createdById String
-  createdBy   User   @relation("InvitePassCreator", fields: [createdById], references: [id])
+  residentId   String
+  resident     User              @relation("GuestInviteCreator", fields: [residentId], references: [id])
 
-  // Entries created from this pass
-  entries Entry[]
+  guestEntryLogs GuestEntryLog[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
-  @@index([flatId, status, validUntil])
+  @@index([passcode])
+  @@index([flatId, status])
+  @@index([residentId, status])
   @@index([societyId, status])
-  @@index([qrToken])
-  @@index([flatId, type, status])
+  @@index([status, validUntil])
+}
+
+// --------------------
+// PARTY INVITES (Group invites with shareable link)
+// --------------------
+
+model PartyInvite {
+  id           String             @id @default(uuid())
+  hostName     String
+
+  // Event details
+  validFrom    DateTime
+  validUntil   DateTime
+  venue        String?
+  note         String?
+  theme        Int                @default(0) // 0-5, maps to frontend illustration
+
+  // Slot config
+  maxGuests    Int
+  usedSlots    Int                @default(0)
+
+  // Shareable link
+  inviteCode   String             @unique // e.g. "GRP-A1B2"
+  inviteLink   String             // "https://sgate.app/grp-a1b2"
+
+  status       PartyInviteStatus  @default(ACTIVE)
+
+  // Relations
+  flatId       String
+  flat         Flat               @relation(fields: [flatId], references: [id])
+
+  societyId    String
+  society      Society            @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  residentId   String
+  resident     User               @relation("PartyInviteCreator", fields: [residentId], references: [id])
+
+  slots        PartySlot[]
+  guestEntryLogs GuestEntryLog[]
+
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@index([inviteCode])
+  @@index([flatId, status])
+  @@index([residentId, status])
+  @@index([societyId, status])
+  @@index([status, validUntil])
+}
+
+// --------------------
+// PARTY SLOTS (one row per guest slot)
+// --------------------
+
+model PartySlot {
+  id              String       @id @default(uuid())
+  partyInviteId   String
+  partyInvite     PartyInvite  @relation(fields: [partyInviteId], references: [id], onDelete: Cascade)
+
+  code            String       @unique // 6-char alphanumeric OTP
+  phone           String?              // NULL = unclaimed
+  name            String?
+  addedByResident Boolean      @default(false)
+  claimedAt       DateTime?
+
+  @@index([code])
+  @@index([partyInviteId])
+  @@index([phone])
+}
+
+// --------------------
+// GUEST ENTRY LOG (audit trail for passcode verification)
+// --------------------
+
+model GuestEntryLog {
+  id             String          @id @default(uuid())
+
+  // Polymorphic FK — one of these will be set
+  guestInviteId  String?
+  guestInvite    GuestInvite?    @relation(fields: [guestInviteId], references: [id])
+  partyInviteId  String?
+  partyInvite    PartyInvite?    @relation(fields: [partyInviteId], references: [id])
+  inviteType     InviteRefType
+
+  flatId         String
+  guardId        String
+  guard          User            @relation("GuestEntryGuard", fields: [guardId], references: [id])
+
+  visitorName    String
+  visitorPhone   String?
+  passcode       String          // The code that was used
+  entryTime      DateTime        @default(now())
+
+  status         GuestEntryResult
+  denyReason     String?
+
+  societyId      String
+  society        Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@index([guestInviteId])
+  @@index([partyInviteId])
+  @@index([flatId, entryTime(sort: Desc)])
+  @@index([societyId, entryTime(sort: Desc)])
+  @@index([guardId])
 }
 
 // --------------------

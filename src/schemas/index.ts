@@ -439,48 +439,66 @@ export const rejectSocietyRegistrationSchema = z.object({
 });
 
 // ============================================
-// INVITE PASS SCHEMAS
+// GUEST INVITE SCHEMAS
 // ============================================
 
-const inviteTypeEnum = z.enum(['GUEST', 'DELIVERY_ONCE', 'DELIVERY_STANDING', 'CAB', 'SERVICE']);
+const guestInviteTypeEnum = z.enum(['QUICK', 'FREQUENT', 'PRIVATE']);
 
-export const createInvitePassSchema = z.object({
-  flatId: uuidSchema,
-  type: inviteTypeEnum,
-  visitorName: z.string().max(100).optional(),
-  visitorPhone: phoneSchema.optional(),
-  companyName: z.string().max(100).optional(),
-  companies: z.array(z.string().max(100)).optional(),
-  vehicleNumber: z.string().max(20).optional(),
-  purpose: z.string().max(200).optional(),
-  visitorPhoto: z.string().optional(),
+export const createGuestInviteSchema = z.object({
+  type: guestInviteTypeEnum,
+  visitorName: z.string().min(1, 'Visitor name is required').max(100),
+  visitorPhone: phoneSchema,
   validFrom: z.string().datetime(),
   validUntil: z.string().datetime(),
   allowedDays: z.array(z.enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'])).optional(),
   timeFrom: timeFormatSchema.optional(),
   timeUntil: timeFormatSchema.optional(),
-  maxUses: z.number().int().min(-1).optional(),
+  isPrivate: z.boolean().optional(),
+  note: z.string().max(500).optional(),
 }).superRefine((data, ctx) => {
-  // GUEST & SERVICE require visitorName
-  if ((data.type === 'GUEST' || data.type === 'SERVICE') && !data.visitorName) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'visitorName is required for GUEST and SERVICE passes', path: ['visitorName'] });
+  // FREQUENT requires allowedDays, timeFrom, timeUntil
+  if (data.type === 'FREQUENT') {
+    if (!data.allowedDays?.length) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'allowedDays required for FREQUENT invites', path: ['allowedDays'] });
+    }
+    if (!data.timeFrom) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'timeFrom required for FREQUENT invites', path: ['timeFrom'] });
+    }
+    if (!data.timeUntil) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'timeUntil required for FREQUENT invites', path: ['timeUntil'] });
+    }
   }
-  // CAB requires visitorName + vehicleNumber
-  if (data.type === 'CAB') {
-    if (!data.visitorName) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'visitorName is required for CAB passes', path: ['visitorName'] });
-    if (!data.vehicleNumber) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'vehicleNumber is required for CAB passes', path: ['vehicleNumber'] });
-  }
-  // DELIVERY_ONCE requires companyName
-  if (data.type === 'DELIVERY_ONCE' && !data.companyName) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'companyName is required for DELIVERY_ONCE passes', path: ['companyName'] });
-  }
-  // DELIVERY_STANDING requires companies[], allowedDays[], timeFrom, timeUntil
-  if (data.type === 'DELIVERY_STANDING') {
-    if (!data.companies?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'companies[] is required for DELIVERY_STANDING passes', path: ['companies'] });
-    if (!data.allowedDays?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'allowedDays[] is required for DELIVERY_STANDING passes', path: ['allowedDays'] });
-    if (!data.timeFrom) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'timeFrom is required for DELIVERY_STANDING passes', path: ['timeFrom'] });
-    if (!data.timeUntil) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'timeUntil is required for DELIVERY_STANDING passes', path: ['timeUntil'] });
-  }
+});
+
+// ============================================
+// PARTY INVITE SCHEMAS
+// ============================================
+
+export const createPartyInviteSchema = z.object({
+  hostName: z.string().min(1, 'Host name is required').max(100),
+  validFrom: z.string().datetime(),
+  validUntil: z.string().datetime(),
+  venue: z.string().max(200).optional(),
+  maxGuests: z.number().int().positive().max(200),
+  theme: z.number().int().min(0).max(5).optional(),
+  note: z.string().max(500).optional(),
+});
+
+export const addPartyGuestSchema = z.object({
+  name: z.string().min(1, 'Guest name is required').max(100),
+  phone: phoneSchema,
+});
+
+export const claimPartySlotSchema = z.object({
+  phone: phoneSchema,
+});
+
+// ============================================
+// GATE VERIFICATION SCHEMAS
+// ============================================
+
+export const verifyCodeSchema = z.object({
+  code: z.string().min(1, 'Code is required').max(10),
 });
 
 export const scanQRSchema = z.object({

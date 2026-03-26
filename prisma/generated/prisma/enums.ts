@@ -314,25 +314,48 @@ export const ProviderTag = {
 export type ProviderTag = (typeof ProviderTag)[keyof typeof ProviderTag]
 
 
-export const InviteType = {
-  GUEST: 'GUEST',
-  DELIVERY_ONCE: 'DELIVERY_ONCE',
-  DELIVERY_STANDING: 'DELIVERY_STANDING',
-  CAB: 'CAB',
-  SERVICE: 'SERVICE'
+export const GuestInviteType = {
+  QUICK: 'QUICK',
+  FREQUENT: 'FREQUENT',
+  PRIVATE: 'PRIVATE'
 } as const
 
-export type InviteType = (typeof InviteType)[keyof typeof InviteType]
+export type GuestInviteType = (typeof GuestInviteType)[keyof typeof GuestInviteType]
 
 
-export const InviteStatus = {
+export const GuestInviteStatus = {
   ACTIVE: 'ACTIVE',
-  USED: 'USED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type GuestInviteStatus = (typeof GuestInviteStatus)[keyof typeof GuestInviteStatus]
+
+
+export const PartyInviteStatus = {
+  ACTIVE: 'ACTIVE',
   EXPIRED: 'EXPIRED',
   CANCELLED: 'CANCELLED'
 } as const
 
-export type InviteStatus = (typeof InviteStatus)[keyof typeof InviteStatus]
+export type PartyInviteStatus = (typeof PartyInviteStatus)[keyof typeof PartyInviteStatus]
+
+
+export const GuestEntryResult = {
+  ALLOWED: 'ALLOWED',
+  DENIED: 'DENIED',
+  OUTSIDE_WINDOW: 'OUTSIDE_WINDOW'
+} as const
+
+export type GuestEntryResult = (typeof GuestEntryResult)[keyof typeof GuestEntryResult]
+
+
+export const InviteRefType = {
+  GUEST_INVITE: 'GUEST_INVITE',
+  PARTY_INVITE: 'PARTY_INVITE'
+} as const
+
+export type InviteRefType = (typeof InviteRefType)[keyof typeof InviteRefType]
 
 
 export const DomesticStaffType = {

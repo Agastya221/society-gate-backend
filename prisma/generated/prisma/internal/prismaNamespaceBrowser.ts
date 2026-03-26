@@ -58,7 +58,10 @@ export const ModelName = {
   Flat: 'Flat',
   User: 'User',
   Entry: 'Entry',
-  InvitePass: 'InvitePass',
+  GuestInvite: 'GuestInvite',
+  PartyInvite: 'PartyInvite',
+  PartySlot: 'PartySlot',
+  GuestEntryLog: 'GuestEntryLog',
   DomesticStaff: 'DomesticStaff',
   StaffFlatAssignment: 'StaffFlatAssignment',
   StaffAttendance: 'StaffAttendance',
@@ -241,7 +244,6 @@ export const EntryScalarFieldEnum = {
   checkInTime: 'checkInTime',
   checkOutTime: 'checkOutTime',
   domesticStaffId: 'domesticStaffId',
-  invitePassId: 'invitePassId',
   remarks: 'remarks',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
@@ -251,33 +253,85 @@ export const EntryScalarFieldEnum = {
 export type EntryScalarFieldEnum = (typeof EntryScalarFieldEnum)[keyof typeof EntryScalarFieldEnum]
 
 
-export const InvitePassScalarFieldEnum = {
+export const GuestInviteScalarFieldEnum = {
   id: 'id',
   type: 'type',
   status: 'status',
   visitorName: 'visitorName',
   visitorPhone: 'visitorPhone',
-  companyName: 'companyName',
-  companies: 'companies',
-  vehicleNumber: 'vehicleNumber',
-  purpose: 'purpose',
-  visitorPhoto: 'visitorPhoto',
   validFrom: 'validFrom',
   validUntil: 'validUntil',
   allowedDays: 'allowedDays',
   timeFrom: 'timeFrom',
   timeUntil: 'timeUntil',
+  passcode: 'passcode',
   maxUses: 'maxUses',
   usedCount: 'usedCount',
-  qrToken: 'qrToken',
+  note: 'note',
+  isPrivate: 'isPrivate',
   flatId: 'flatId',
   societyId: 'societyId',
-  createdById: 'createdById',
+  residentId: 'residentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type InvitePassScalarFieldEnum = (typeof InvitePassScalarFieldEnum)[keyof typeof InvitePassScalarFieldEnum]
+export type GuestInviteScalarFieldEnum = (typeof GuestInviteScalarFieldEnum)[keyof typeof GuestInviteScalarFieldEnum]
+
+
+export const PartyInviteScalarFieldEnum = {
+  id: 'id',
+  hostName: 'hostName',
+  validFrom: 'validFrom',
+  validUntil: 'validUntil',
+  venue: 'venue',
+  note: 'note',
+  theme: 'theme',
+  maxGuests: 'maxGuests',
+  usedSlots: 'usedSlots',
+  inviteCode: 'inviteCode',
+  inviteLink: 'inviteLink',
+  status: 'status',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  residentId: 'residentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PartyInviteScalarFieldEnum = (typeof PartyInviteScalarFieldEnum)[keyof typeof PartyInviteScalarFieldEnum]
+
+
+export const PartySlotScalarFieldEnum = {
+  id: 'id',
+  partyInviteId: 'partyInviteId',
+  code: 'code',
+  phone: 'phone',
+  name: 'name',
+  addedByResident: 'addedByResident',
+  claimedAt: 'claimedAt'
+} as const
+
+export type PartySlotScalarFieldEnum = (typeof PartySlotScalarFieldEnum)[keyof typeof PartySlotScalarFieldEnum]
+
+
+export const GuestEntryLogScalarFieldEnum = {
+  id: 'id',
+  guestInviteId: 'guestInviteId',
+  partyInviteId: 'partyInviteId',
+  inviteType: 'inviteType',
+  flatId: 'flatId',
+  guardId: 'guardId',
+  visitorName: 'visitorName',
+  visitorPhone: 'visitorPhone',
+  passcode: 'passcode',
+  entryTime: 'entryTime',
+  status: 'status',
+  denyReason: 'denyReason',
+  societyId: 'societyId'
+} as const
+
+export type GuestEntryLogScalarFieldEnum = (typeof GuestEntryLogScalarFieldEnum)[keyof typeof GuestEntryLogScalarFieldEnum]
 
 
 export const DomesticStaffScalarFieldEnum = {

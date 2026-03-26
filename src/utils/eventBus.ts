@@ -75,14 +75,13 @@ export interface AppEvents {
     staffType: string;
     societyId: string;
   };
-  'invite-pass.scanned': {
-    invitePassId: string;
-    entryId: string;
+  'guest-invite.verified': {
+    inviteType: string;
     flatId: string;
     societyId: string;
     visitorName: string;
-    type: string;
     guardId: string;
+    allowed: boolean;
   };
 }
 

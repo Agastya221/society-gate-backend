@@ -75,9 +75,9 @@ export async function expireGatePasses() {
   }
 }
 
-export async function expireInvitePasses() {
+export async function expireGuestInvites() {
   try {
-    const result = await prisma.invitePass.updateMany({
+    const result = await prisma.guestInvite.updateMany({
       where: {
         status: 'ACTIVE',
         validUntil: { lt: new Date() },
@@ -86,10 +86,28 @@ export async function expireInvitePasses() {
     });
 
     if (result.count > 0) {
-      logger.info({ count: result.count }, 'Auto-expired invite passes');
+      logger.info({ count: result.count }, 'Auto-expired guest invites');
     }
   } catch (error) {
-    logger.error({ error }, 'Error expiring invite passes');
+    logger.error({ error }, 'Error expiring guest invites');
+  }
+}
+
+export async function expirePartyInvites() {
+  try {
+    const result = await prisma.partyInvite.updateMany({
+      where: {
+        status: 'ACTIVE',
+        validUntil: { lt: new Date() },
+      },
+      data: { status: 'EXPIRED' },
+    });
+
+    if (result.count > 0) {
+      logger.info({ count: result.count }, 'Auto-expired party invites');
+    }
+  } catch (error) {
+    logger.error({ error }, 'Error expiring party invites');
   }
 }
 
@@ -116,7 +134,8 @@ export async function cleanupOldNotifications() {
 // Schedule jobs
 cron.schedule('* * * * *', expireEntryRequests);
 cron.schedule('*/5 * * * *', expireGatePasses);
-cron.schedule('*/5 * * * *', expireInvitePasses);
+cron.schedule('*/5 * * * *', expireGuestInvites);
+cron.schedule('*/5 * * * *', expirePartyInvites);
 cron.schedule('0 3 * * *', cleanupOldNotifications);
 
 logger.info('Cron jobs scheduled');

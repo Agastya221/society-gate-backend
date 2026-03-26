@@ -391,7 +391,10 @@ export const ModelName = {
   Flat: 'Flat',
   User: 'User',
   Entry: 'Entry',
-  InvitePass: 'InvitePass',
+  GuestInvite: 'GuestInvite',
+  PartyInvite: 'PartyInvite',
+  PartySlot: 'PartySlot',
+  GuestEntryLog: 'GuestEntryLog',
   DomesticStaff: 'DomesticStaff',
   StaffFlatAssignment: 'StaffFlatAssignment',
   StaffAttendance: 'StaffAttendance',
@@ -427,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "invitePass" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest"
+    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -949,77 +952,299 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    InvitePass: {
-      payload: Prisma.$InvitePassPayload<ExtArgs>
-      fields: Prisma.InvitePassFieldRefs
+    GuestInvite: {
+      payload: Prisma.$GuestInvitePayload<ExtArgs>
+      fields: Prisma.GuestInviteFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.InvitePassFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload> | null
+          args: Prisma.GuestInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.InvitePassFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
+          args: Prisma.GuestInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>
         }
         findFirst: {
-          args: Prisma.InvitePassFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload> | null
+          args: Prisma.GuestInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.InvitePassFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
+          args: Prisma.GuestInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>
         }
         findMany: {
-          args: Prisma.InvitePassFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>[]
+          args: Prisma.GuestInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>[]
         }
         create: {
-          args: Prisma.InvitePassCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
+          args: Prisma.GuestInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>
         }
         createMany: {
-          args: Prisma.InvitePassCreateManyArgs<ExtArgs>
+          args: Prisma.GuestInviteCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.InvitePassCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>[]
+          args: Prisma.GuestInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>[]
         }
         delete: {
-          args: Prisma.InvitePassDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
+          args: Prisma.GuestInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>
         }
         update: {
-          args: Prisma.InvitePassUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
+          args: Prisma.GuestInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>
         }
         deleteMany: {
-          args: Prisma.InvitePassDeleteManyArgs<ExtArgs>
+          args: Prisma.GuestInviteDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.InvitePassUpdateManyArgs<ExtArgs>
+          args: Prisma.GuestInviteUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.InvitePassUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>[]
+          args: Prisma.GuestInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>[]
         }
         upsert: {
-          args: Prisma.InvitePassUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePassPayload>
+          args: Prisma.GuestInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestInvitePayload>
         }
         aggregate: {
-          args: Prisma.InvitePassAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateInvitePass>
+          args: Prisma.GuestInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGuestInvite>
         }
         groupBy: {
-          args: Prisma.InvitePassGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.InvitePassGroupByOutputType>[]
+          args: Prisma.GuestInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GuestInviteGroupByOutputType>[]
         }
         count: {
-          args: Prisma.InvitePassCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.InvitePassCountAggregateOutputType> | number
+          args: Prisma.GuestInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GuestInviteCountAggregateOutputType> | number
+        }
+      }
+    }
+    PartyInvite: {
+      payload: Prisma.$PartyInvitePayload<ExtArgs>
+      fields: Prisma.PartyInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PartyInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PartyInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.PartyInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PartyInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>
+        }
+        findMany: {
+          args: Prisma.PartyInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>[]
+        }
+        create: {
+          args: Prisma.PartyInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>
+        }
+        createMany: {
+          args: Prisma.PartyInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PartyInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.PartyInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>
+        }
+        update: {
+          args: Prisma.PartyInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.PartyInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PartyInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PartyInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.PartyInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartyInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.PartyInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePartyInvite>
+        }
+        groupBy: {
+          args: Prisma.PartyInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PartyInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PartyInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PartyInviteCountAggregateOutputType> | number
+        }
+      }
+    }
+    PartySlot: {
+      payload: Prisma.$PartySlotPayload<ExtArgs>
+      fields: Prisma.PartySlotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PartySlotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PartySlotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>
+        }
+        findFirst: {
+          args: Prisma.PartySlotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PartySlotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>
+        }
+        findMany: {
+          args: Prisma.PartySlotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>[]
+        }
+        create: {
+          args: Prisma.PartySlotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>
+        }
+        createMany: {
+          args: Prisma.PartySlotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PartySlotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>[]
+        }
+        delete: {
+          args: Prisma.PartySlotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>
+        }
+        update: {
+          args: Prisma.PartySlotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>
+        }
+        deleteMany: {
+          args: Prisma.PartySlotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PartySlotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PartySlotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>[]
+        }
+        upsert: {
+          args: Prisma.PartySlotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PartySlotPayload>
+        }
+        aggregate: {
+          args: Prisma.PartySlotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePartySlot>
+        }
+        groupBy: {
+          args: Prisma.PartySlotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PartySlotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PartySlotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PartySlotCountAggregateOutputType> | number
+        }
+      }
+    }
+    GuestEntryLog: {
+      payload: Prisma.$GuestEntryLogPayload<ExtArgs>
+      fields: Prisma.GuestEntryLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GuestEntryLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GuestEntryLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>
+        }
+        findFirst: {
+          args: Prisma.GuestEntryLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GuestEntryLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>
+        }
+        findMany: {
+          args: Prisma.GuestEntryLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>[]
+        }
+        create: {
+          args: Prisma.GuestEntryLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>
+        }
+        createMany: {
+          args: Prisma.GuestEntryLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GuestEntryLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>[]
+        }
+        delete: {
+          args: Prisma.GuestEntryLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>
+        }
+        update: {
+          args: Prisma.GuestEntryLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.GuestEntryLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GuestEntryLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GuestEntryLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.GuestEntryLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestEntryLogPayload>
+        }
+        aggregate: {
+          args: Prisma.GuestEntryLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGuestEntryLog>
+        }
+        groupBy: {
+          args: Prisma.GuestEntryLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GuestEntryLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GuestEntryLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GuestEntryLogCountAggregateOutputType> | number
         }
       }
     }
@@ -2686,7 +2911,6 @@ export const EntryScalarFieldEnum = {
   checkInTime: 'checkInTime',
   checkOutTime: 'checkOutTime',
   domesticStaffId: 'domesticStaffId',
-  invitePassId: 'invitePassId',
   remarks: 'remarks',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
@@ -2696,33 +2920,85 @@ export const EntryScalarFieldEnum = {
 export type EntryScalarFieldEnum = (typeof EntryScalarFieldEnum)[keyof typeof EntryScalarFieldEnum]
 
 
-export const InvitePassScalarFieldEnum = {
+export const GuestInviteScalarFieldEnum = {
   id: 'id',
   type: 'type',
   status: 'status',
   visitorName: 'visitorName',
   visitorPhone: 'visitorPhone',
-  companyName: 'companyName',
-  companies: 'companies',
-  vehicleNumber: 'vehicleNumber',
-  purpose: 'purpose',
-  visitorPhoto: 'visitorPhoto',
   validFrom: 'validFrom',
   validUntil: 'validUntil',
   allowedDays: 'allowedDays',
   timeFrom: 'timeFrom',
   timeUntil: 'timeUntil',
+  passcode: 'passcode',
   maxUses: 'maxUses',
   usedCount: 'usedCount',
-  qrToken: 'qrToken',
+  note: 'note',
+  isPrivate: 'isPrivate',
   flatId: 'flatId',
   societyId: 'societyId',
-  createdById: 'createdById',
+  residentId: 'residentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type InvitePassScalarFieldEnum = (typeof InvitePassScalarFieldEnum)[keyof typeof InvitePassScalarFieldEnum]
+export type GuestInviteScalarFieldEnum = (typeof GuestInviteScalarFieldEnum)[keyof typeof GuestInviteScalarFieldEnum]
+
+
+export const PartyInviteScalarFieldEnum = {
+  id: 'id',
+  hostName: 'hostName',
+  validFrom: 'validFrom',
+  validUntil: 'validUntil',
+  venue: 'venue',
+  note: 'note',
+  theme: 'theme',
+  maxGuests: 'maxGuests',
+  usedSlots: 'usedSlots',
+  inviteCode: 'inviteCode',
+  inviteLink: 'inviteLink',
+  status: 'status',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  residentId: 'residentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PartyInviteScalarFieldEnum = (typeof PartyInviteScalarFieldEnum)[keyof typeof PartyInviteScalarFieldEnum]
+
+
+export const PartySlotScalarFieldEnum = {
+  id: 'id',
+  partyInviteId: 'partyInviteId',
+  code: 'code',
+  phone: 'phone',
+  name: 'name',
+  addedByResident: 'addedByResident',
+  claimedAt: 'claimedAt'
+} as const
+
+export type PartySlotScalarFieldEnum = (typeof PartySlotScalarFieldEnum)[keyof typeof PartySlotScalarFieldEnum]
+
+
+export const GuestEntryLogScalarFieldEnum = {
+  id: 'id',
+  guestInviteId: 'guestInviteId',
+  partyInviteId: 'partyInviteId',
+  inviteType: 'inviteType',
+  flatId: 'flatId',
+  guardId: 'guardId',
+  visitorName: 'visitorName',
+  visitorPhone: 'visitorPhone',
+  passcode: 'passcode',
+  entryTime: 'entryTime',
+  status: 'status',
+  denyReason: 'denyReason',
+  societyId: 'societyId'
+} as const
+
+export type GuestEntryLogScalarFieldEnum = (typeof GuestEntryLogScalarFieldEnum)[keyof typeof GuestEntryLogScalarFieldEnum]
 
 
 export const DomesticStaffScalarFieldEnum = {
@@ -3386,30 +3662,72 @@ export type ListEnumVisitorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
- * Reference to a field of type 'InviteType'
+ * Reference to a field of type 'GuestInviteType'
  */
-export type EnumInviteTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteType'>
+export type EnumGuestInviteTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestInviteType'>
     
 
 
 /**
- * Reference to a field of type 'InviteType[]'
+ * Reference to a field of type 'GuestInviteType[]'
  */
-export type ListEnumInviteTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteType[]'>
+export type ListEnumGuestInviteTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestInviteType[]'>
     
 
 
 /**
- * Reference to a field of type 'InviteStatus'
+ * Reference to a field of type 'GuestInviteStatus'
  */
-export type EnumInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteStatus'>
+export type EnumGuestInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestInviteStatus'>
     
 
 
 /**
- * Reference to a field of type 'InviteStatus[]'
+ * Reference to a field of type 'GuestInviteStatus[]'
  */
-export type ListEnumInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteStatus[]'>
+export type ListEnumGuestInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestInviteStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PartyInviteStatus'
+ */
+export type EnumPartyInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PartyInviteStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PartyInviteStatus[]'
+ */
+export type ListEnumPartyInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PartyInviteStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InviteRefType'
+ */
+export type EnumInviteRefTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteRefType'>
+    
+
+
+/**
+ * Reference to a field of type 'InviteRefType[]'
+ */
+export type ListEnumInviteRefTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteRefType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GuestEntryResult'
+ */
+export type EnumGuestEntryResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestEntryResult'>
+    
+
+
+/**
+ * Reference to a field of type 'GuestEntryResult[]'
+ */
+export type ListEnumGuestEntryResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestEntryResult[]'>
     
 
 
@@ -3836,7 +4154,10 @@ export type GlobalOmitConfig = {
   flat?: Prisma.FlatOmit
   user?: Prisma.UserOmit
   entry?: Prisma.EntryOmit
-  invitePass?: Prisma.InvitePassOmit
+  guestInvite?: Prisma.GuestInviteOmit
+  partyInvite?: Prisma.PartyInviteOmit
+  partySlot?: Prisma.PartySlotOmit
+  guestEntryLog?: Prisma.GuestEntryLogOmit
   domesticStaff?: Prisma.DomesticStaffOmit
   staffFlatAssignment?: Prisma.StaffFlatAssignmentOmit
   staffAttendance?: Prisma.StaffAttendanceOmit

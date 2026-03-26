@@ -12,6 +12,8 @@ import {
 } from '../../modules/emergency/emergency.controller';
 import {
   scanQR,
+  verifyCode,
+  getEntryLog,
   getTodayEntries,
   getEntries,
   checkoutEntry,
@@ -42,9 +44,15 @@ router.post('/entry-requests', createEntryRequest);
 // ============================================
 // QR SCANNING
 // ============================================
-router.post('/scan', scanQR);                  // Unified scan (preferred)
+router.post('/scan', scanQR);                  // Unified QR scan (GatePass + Staff)
 router.post('/scan/gatepass', scanGatePass);   // Legacy
 router.post('/scan/staff', scanQRCode);        // Legacy
+router.post('/verify-code', verifyCode);       // Passcode verification (Guest/Party invites)
+
+// ============================================
+// ENTRY LOG
+// ============================================
+router.get('/entry-log', getEntryLog);
 
 // ============================================
 // EMERGENCIES

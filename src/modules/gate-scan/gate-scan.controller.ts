@@ -9,7 +9,7 @@ const gateScanService = new GateScanService();
 
 /**
  * POST /guard-app/scan
- * Universal QR scan endpoint for guards.
+ * Universal QR scan endpoint for guards (GatePass + DomesticStaff).
  */
 export const scanQR = async (req: Request, res: Response) => {
   try {
@@ -39,6 +39,49 @@ export const scanQR = async (req: Request, res: Response) => {
 };
 
 /**
+ * POST /gate/verify-code
+ * Universal passcode verification — works for all invite types.
+ */
+export const verifyCode = async (req: Request, res: Response) => {
+  try {
+    const guardId = req.user!.id;
+    const { code } = req.body;
+
+    if (!code) {
+      return res.status(400).json({ success: false, message: 'code is required' });
+    }
+
+    const result = await gateScanService.verifyCode(code, guardId);
+
+    const statusCode = result.allowed ? 200 : 403;
+    res.status(statusCode).json({
+      success: result.allowed,
+      message: result.allowed ? 'Access granted' : result.message,
+      data: result,
+    });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
+  }
+};
+
+/**
+ * GET /gate/entry-log
+ * View entry history for guard/admin.
+ */
+export const getEntryLog = asyncHandler(async (req: Request, res: Response) => {
+  const societyId = req.user!.societyId!;
+  const { page = '1', limit = '30' } = req.query;
+
+  const result = await gateScanService.getEntryLog(
+    societyId,
+    parseInt(page as string, 10),
+    parseInt(limit as string, 10),
+  );
+
+  res.json({ success: true, data: result });
+});
+
+/**
  * GET /guard-app/today
  * Today's entries for guard dashboard.
  */
@@ -53,7 +96,6 @@ export const getTodayEntries = asyncHandler(async (req: Request, res: Response) 
     where: { societyId, checkInTime: { gte: today, lt: tomorrow } },
     include: {
       flat: true,
-      invitePass: { select: { type: true, visitorName: true } },
       createdBy: { select: { id: true, name: true, role: true } },
     },
     orderBy: { checkInTime: 'desc' },
@@ -99,7 +141,6 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
       where,
       include: {
         flat: true,
-        invitePass: { select: { type: true, visitorName: true } },
         createdBy: { select: { id: true, name: true, role: true } },
         approvedBy: { select: { id: true, name: true, role: true } },
       },

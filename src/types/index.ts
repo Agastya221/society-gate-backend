@@ -31,8 +31,11 @@ import {
   DomesticStaffType,
   StaffAvailabilityStatus,
   StaffBookingStatus,
-  InviteType,
-  InviteStatus,
+  GuestInviteType,
+  GuestInviteStatus,
+  PartyInviteStatus,
+  GuestEntryResult,
+  InviteRefType,
 } from '../../prisma/generated/prisma/client';
 
 import type {
@@ -57,7 +60,10 @@ import type {
   OnboardingRequest,
   ResidentDocument,
   Notification,
-  InvitePass,
+  GuestInvite,
+  PartyInvite,
+  PartySlot,
+  GuestEntryLog,
   Prisma,
 } from '../../prisma/generated/prisma/client';
 
@@ -90,8 +96,11 @@ export {
   DomesticStaffType,
   StaffAvailabilityStatus,
   StaffBookingStatus,
-  InviteType,
-  InviteStatus,
+  GuestInviteType,
+  GuestInviteStatus,
+  PartyInviteStatus,
+  GuestEntryResult,
+  InviteRefType,
 };
 
 // Re-export model types and Prisma namespace
@@ -117,7 +126,10 @@ export type {
   OnboardingRequest,
   ResidentDocument,
   Notification,
-  InvitePass,
+  GuestInvite,
+  PartyInvite,
+  PartySlot,
+  GuestEntryLog,
   Prisma,
 };
 
@@ -447,19 +459,16 @@ export interface EntryRequestFilters extends PaginationParams {
 // ============================================
 
 export interface CreateInviteDTO {
-  type: 'GUEST' | 'DELIVERY_ONCE' | 'DELIVERY_STANDING' | 'CAB' | 'SERVICE';
-  visitorName?: string;
-  visitorPhone?: string;
-  companyName?: string;
-  companies?: string[];
-  vehicleNumber?: string;
-  purpose?: string;
+  type: 'QUICK' | 'FREQUENT' | 'PRIVATE';
+  visitorName: string;
+  visitorPhone: string;
   validFrom: Date;
   validUntil: Date;
   allowedDays?: string[];
   timeFrom?: string;
   timeUntil?: string;
-  maxUses?: number;
+  isPrivate?: boolean;
+  note?: string;
 }
 
 export interface GateScanDTO {

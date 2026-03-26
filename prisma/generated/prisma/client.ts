@@ -73,10 +73,25 @@ export type User = Prisma.UserModel
  */
 export type Entry = Prisma.EntryModel
 /**
- * Model InvitePass
+ * Model GuestInvite
  * 
  */
-export type InvitePass = Prisma.InvitePassModel
+export type GuestInvite = Prisma.GuestInviteModel
+/**
+ * Model PartyInvite
+ * 
+ */
+export type PartyInvite = Prisma.PartyInviteModel
+/**
+ * Model PartySlot
+ * 
+ */
+export type PartySlot = Prisma.PartySlotModel
+/**
+ * Model GuestEntryLog
+ * 
+ */
+export type GuestEntryLog = Prisma.GuestEntryLogModel
 /**
  * Model DomesticStaff
  * 
