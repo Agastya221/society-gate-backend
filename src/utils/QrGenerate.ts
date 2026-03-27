@@ -2,6 +2,22 @@ import QRCode from 'qrcode';
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';
 
 // ============================================
+// ARCHITECTURE NOTE
+// ============================================
+// qrToken is the single source of truth.
+//
+// Normal App Flow (frontend):
+//   - API returns `qrToken` in the response
+//   - Frontend renders the QR code using react-qr-code or similar
+//   - No image is generated server-side
+//
+// External Delivery (backend only — email / WhatsApp / PDF):
+//   - Use generateQRImage() → returns base64 data URL
+//   - Use generateQRBuffer() → returns Buffer for attachments
+//   - Generate in-memory on demand; do NOT store permanently
+// ============================================
+
+// ============================================
 // GENERATE QR TOKEN (JWT)
 // ============================================
 export const generateQRToken = (

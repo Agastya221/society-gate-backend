@@ -1,6 +1,5 @@
 import type { Response, Request } from 'express';
 import { GatePassService } from './gatepass.service';
-import { generateQRImage } from '../../utils/QrGenerate';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { GatePassFilters, GatePassType, GatePassStatus } from '../../types';
 
@@ -131,15 +130,11 @@ export const getGatePassQR = async (req: Request, res: Response) => {
     const { id } = req.params;
     const gatePassData = await gatePassService.getGatePassQR(String(id));
 
-    // Generate QR code image
-    const qrCodeImage = await generateQRImage(gatePassData.qrToken);
-
+    // Return only the token — frontend renders the QR code
+    // Backend generates QR image on-demand only for emails/WhatsApp/PDF
     res.status(200).json({
       success: true,
-      data: {
-        ...gatePassData,
-        qrCodeImage, // Base64 encoded image
-      },
+      data: gatePassData,
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({

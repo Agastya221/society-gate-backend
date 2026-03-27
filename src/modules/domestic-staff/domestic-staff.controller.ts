@@ -1,6 +1,5 @@
 import type { Response, Request } from 'express';
 import { DomesticStaffService } from './domestic-staff.service';
-import { generateQRImage } from '../../utils/QrGenerate';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { StaffFilters, StaffBookingFilters, DomesticStaffType, StaffAvailabilityStatus, StaffBookingStatus } from '../../types';
 
@@ -130,8 +129,8 @@ export const getStaffQRCode = async (req: Request, res: Response) => {
     const { id } = req.params;
     const staff = await staffService.getStaffById(String(id));
 
-    const qrCodeImage = await generateQRImage(staff.qrToken);
-
+    // Return only the token — frontend renders the QR code
+    // Backend generates QR image on-demand only for emails/WhatsApp/PDF
     res.status(200).json({
       success: true,
       data: {
@@ -139,7 +138,6 @@ export const getStaffQRCode = async (req: Request, res: Response) => {
         name: staff.name,
         staffType: staff.staffType,
         qrToken: staff.qrToken,
-        qrCodeImage,
       },
     });
   } catch (error: unknown) {
