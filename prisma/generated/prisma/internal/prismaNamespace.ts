@@ -414,7 +414,12 @@ export const ModelName = {
   ResidentDocument: 'ResidentDocument',
   OnboardingAuditLog: 'OnboardingAuditLog',
   Notification: 'Notification',
-  EntryRequest: 'EntryRequest'
+  EntryRequest: 'EntryRequest',
+  PreApprovedEntry: 'PreApprovedEntry',
+  PreApprovedSchedule: 'PreApprovedSchedule',
+  PreApprovedMeta: 'PreApprovedMeta',
+  PreApprovedVerification: 'PreApprovedVerification',
+  PreApprovedUsage: 'PreApprovedUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -430,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest"
+    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2728,6 +2733,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PreApprovedEntry: {
+      payload: Prisma.$PreApprovedEntryPayload<ExtArgs>
+      fields: Prisma.PreApprovedEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PreApprovedEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PreApprovedEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.PreApprovedEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PreApprovedEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>
+        }
+        findMany: {
+          args: Prisma.PreApprovedEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>[]
+        }
+        create: {
+          args: Prisma.PreApprovedEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>
+        }
+        createMany: {
+          args: Prisma.PreApprovedEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PreApprovedEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.PreApprovedEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>
+        }
+        update: {
+          args: Prisma.PreApprovedEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.PreApprovedEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PreApprovedEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PreApprovedEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.PreApprovedEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.PreApprovedEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePreApprovedEntry>
+        }
+        groupBy: {
+          args: Prisma.PreApprovedEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PreApprovedEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedEntryCountAggregateOutputType> | number
+        }
+      }
+    }
+    PreApprovedSchedule: {
+      payload: Prisma.$PreApprovedSchedulePayload<ExtArgs>
+      fields: Prisma.PreApprovedScheduleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PreApprovedScheduleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PreApprovedScheduleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>
+        }
+        findFirst: {
+          args: Prisma.PreApprovedScheduleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PreApprovedScheduleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>
+        }
+        findMany: {
+          args: Prisma.PreApprovedScheduleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>[]
+        }
+        create: {
+          args: Prisma.PreApprovedScheduleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>
+        }
+        createMany: {
+          args: Prisma.PreApprovedScheduleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PreApprovedScheduleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>[]
+        }
+        delete: {
+          args: Prisma.PreApprovedScheduleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>
+        }
+        update: {
+          args: Prisma.PreApprovedScheduleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>
+        }
+        deleteMany: {
+          args: Prisma.PreApprovedScheduleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PreApprovedScheduleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PreApprovedScheduleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>[]
+        }
+        upsert: {
+          args: Prisma.PreApprovedScheduleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedSchedulePayload>
+        }
+        aggregate: {
+          args: Prisma.PreApprovedScheduleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePreApprovedSchedule>
+        }
+        groupBy: {
+          args: Prisma.PreApprovedScheduleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedScheduleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PreApprovedScheduleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedScheduleCountAggregateOutputType> | number
+        }
+      }
+    }
+    PreApprovedMeta: {
+      payload: Prisma.$PreApprovedMetaPayload<ExtArgs>
+      fields: Prisma.PreApprovedMetaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PreApprovedMetaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PreApprovedMetaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>
+        }
+        findFirst: {
+          args: Prisma.PreApprovedMetaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PreApprovedMetaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>
+        }
+        findMany: {
+          args: Prisma.PreApprovedMetaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>[]
+        }
+        create: {
+          args: Prisma.PreApprovedMetaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>
+        }
+        createMany: {
+          args: Prisma.PreApprovedMetaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PreApprovedMetaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>[]
+        }
+        delete: {
+          args: Prisma.PreApprovedMetaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>
+        }
+        update: {
+          args: Prisma.PreApprovedMetaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>
+        }
+        deleteMany: {
+          args: Prisma.PreApprovedMetaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PreApprovedMetaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PreApprovedMetaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>[]
+        }
+        upsert: {
+          args: Prisma.PreApprovedMetaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedMetaPayload>
+        }
+        aggregate: {
+          args: Prisma.PreApprovedMetaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePreApprovedMeta>
+        }
+        groupBy: {
+          args: Prisma.PreApprovedMetaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedMetaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PreApprovedMetaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedMetaCountAggregateOutputType> | number
+        }
+      }
+    }
+    PreApprovedVerification: {
+      payload: Prisma.$PreApprovedVerificationPayload<ExtArgs>
+      fields: Prisma.PreApprovedVerificationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PreApprovedVerificationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PreApprovedVerificationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>
+        }
+        findFirst: {
+          args: Prisma.PreApprovedVerificationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PreApprovedVerificationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>
+        }
+        findMany: {
+          args: Prisma.PreApprovedVerificationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>[]
+        }
+        create: {
+          args: Prisma.PreApprovedVerificationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>
+        }
+        createMany: {
+          args: Prisma.PreApprovedVerificationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PreApprovedVerificationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>[]
+        }
+        delete: {
+          args: Prisma.PreApprovedVerificationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>
+        }
+        update: {
+          args: Prisma.PreApprovedVerificationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>
+        }
+        deleteMany: {
+          args: Prisma.PreApprovedVerificationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PreApprovedVerificationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PreApprovedVerificationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>[]
+        }
+        upsert: {
+          args: Prisma.PreApprovedVerificationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedVerificationPayload>
+        }
+        aggregate: {
+          args: Prisma.PreApprovedVerificationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePreApprovedVerification>
+        }
+        groupBy: {
+          args: Prisma.PreApprovedVerificationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedVerificationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PreApprovedVerificationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedVerificationCountAggregateOutputType> | number
+        }
+      }
+    }
+    PreApprovedUsage: {
+      payload: Prisma.$PreApprovedUsagePayload<ExtArgs>
+      fields: Prisma.PreApprovedUsageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PreApprovedUsageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PreApprovedUsageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>
+        }
+        findFirst: {
+          args: Prisma.PreApprovedUsageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PreApprovedUsageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>
+        }
+        findMany: {
+          args: Prisma.PreApprovedUsageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>[]
+        }
+        create: {
+          args: Prisma.PreApprovedUsageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>
+        }
+        createMany: {
+          args: Prisma.PreApprovedUsageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PreApprovedUsageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>[]
+        }
+        delete: {
+          args: Prisma.PreApprovedUsageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>
+        }
+        update: {
+          args: Prisma.PreApprovedUsageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>
+        }
+        deleteMany: {
+          args: Prisma.PreApprovedUsageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PreApprovedUsageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PreApprovedUsageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>[]
+        }
+        upsert: {
+          args: Prisma.PreApprovedUsageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PreApprovedUsagePayload>
+        }
+        aggregate: {
+          args: Prisma.PreApprovedUsageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePreApprovedUsage>
+        }
+        groupBy: {
+          args: Prisma.PreApprovedUsageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedUsageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PreApprovedUsageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PreApprovedUsageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2911,6 +3286,7 @@ export const EntryScalarFieldEnum = {
   checkInTime: 'checkInTime',
   checkOutTime: 'checkOutTime',
   domesticStaffId: 'domesticStaffId',
+  preApprovedEntryId: 'preApprovedEntryId',
   remarks: 'remarks',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
@@ -3451,6 +3827,86 @@ export const EntryRequestScalarFieldEnum = {
 } as const
 
 export type EntryRequestScalarFieldEnum = (typeof EntryRequestScalarFieldEnum)[keyof typeof EntryRequestScalarFieldEnum]
+
+
+export const PreApprovedEntryScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  mode: 'mode',
+  scheduleType: 'scheduleType',
+  status: 'status',
+  visitorName: 'visitorName',
+  visitorPhone: 'visitorPhone',
+  isLocked: 'isLocked',
+  lockedAt: 'lockedAt',
+  lockedByGuardId: 'lockedByGuardId',
+  userId: 'userId',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PreApprovedEntryScalarFieldEnum = (typeof PreApprovedEntryScalarFieldEnum)[keyof typeof PreApprovedEntryScalarFieldEnum]
+
+
+export const PreApprovedScheduleScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  date: 'date',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  validFrom: 'validFrom',
+  validUntil: 'validUntil',
+  daysOfWeek: 'daysOfWeek',
+  timeFrom: 'timeFrom',
+  timeTo: 'timeTo',
+  entriesPerDay: 'entriesPerDay',
+  graceBeforeMinutes: 'graceBeforeMinutes',
+  graceAfterMinutes: 'graceAfterMinutes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PreApprovedScheduleScalarFieldEnum = (typeof PreApprovedScheduleScalarFieldEnum)[keyof typeof PreApprovedScheduleScalarFieldEnum]
+
+
+export const PreApprovedMetaScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  vehicleLast4Digits: 'vehicleLast4Digits',
+  companyName: 'companyName',
+  isSurprise: 'isSurprise',
+  category: 'category',
+  customCategory: 'customCategory',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PreApprovedMetaScalarFieldEnum = (typeof PreApprovedMetaScalarFieldEnum)[keyof typeof PreApprovedMetaScalarFieldEnum]
+
+
+export const PreApprovedVerificationScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  verificationType: 'verificationType',
+  verificationValue: 'verificationValue',
+  createdAt: 'createdAt'
+} as const
+
+export type PreApprovedVerificationScalarFieldEnum = (typeof PreApprovedVerificationScalarFieldEnum)[keyof typeof PreApprovedVerificationScalarFieldEnum]
+
+
+export const PreApprovedUsageScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  guardId: 'guardId',
+  gatePointId: 'gatePointId',
+  notes: 'notes',
+  usedAt: 'usedAt'
+} as const
+
+export type PreApprovedUsageScalarFieldEnum = (typeof PreApprovedUsageScalarFieldEnum)[keyof typeof PreApprovedUsageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -4052,6 +4508,90 @@ export type EnumProviderTagFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
 export type ListEnumProviderTagFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderTag[]'>
     
 
+
+/**
+ * Reference to a field of type 'PreApprovedEntryType'
+ */
+export type EnumPreApprovedEntryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedEntryType'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedEntryType[]'
+ */
+export type ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedEntryType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedEntryMode'
+ */
+export type EnumPreApprovedEntryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedEntryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedEntryMode[]'
+ */
+export type ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedEntryMode[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedScheduleType'
+ */
+export type EnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedScheduleType'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedScheduleType[]'
+ */
+export type ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedScheduleType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedEntryStatus'
+ */
+export type EnumPreApprovedEntryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedEntryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedEntryStatus[]'
+ */
+export type ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedEntryStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'HelpCategory'
+ */
+export type EnumHelpCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HelpCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'HelpCategory[]'
+ */
+export type ListEnumHelpCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HelpCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedVerificationType'
+ */
+export type EnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedVerificationType'>
+    
+
+
+/**
+ * Reference to a field of type 'PreApprovedVerificationType[]'
+ */
+export type ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreApprovedVerificationType[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4178,6 +4718,11 @@ export type GlobalOmitConfig = {
   onboardingAuditLog?: Prisma.OnboardingAuditLogOmit
   notification?: Prisma.NotificationOmit
   entryRequest?: Prisma.EntryRequestOmit
+  preApprovedEntry?: Prisma.PreApprovedEntryOmit
+  preApprovedSchedule?: Prisma.PreApprovedScheduleOmit
+  preApprovedMeta?: Prisma.PreApprovedMetaOmit
+  preApprovedVerification?: Prisma.PreApprovedVerificationOmit
+  preApprovedUsage?: Prisma.PreApprovedUsageOmit
 }
 
 /* Types for Logging */

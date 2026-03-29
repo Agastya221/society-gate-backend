@@ -18,6 +18,20 @@ import {
   getEntries,
   checkoutEntry,
 } from '../../modules/gate-scan/gate-scan.controller';
+import {
+  validateEntry,
+  markEntryUsed,
+  listForGuard,
+  searchForGuard,
+} from '../../modules/pre-approved-entry/pre-approved-entry.controller';
+import { validate } from '../../middlewares/validate.middleware';
+import {
+  idParams,
+  validatePreApprovedEntrySchema,
+  markEntryUsedSchema,
+  guardPreApprovedSearchSchema,
+  preApprovedEntryQuerySchema,
+} from '../../schemas';
 
 const router = Router();
 
@@ -53,6 +67,14 @@ router.post('/verify-code', verifyCode);       // Passcode verification (Guest/P
 // ENTRY LOG
 // ============================================
 router.get('/entry-log', getEntryLog);
+
+// ============================================
+// PRE-APPROVED ENTRIES
+// ============================================
+router.post('/pre-approved/validate', validate({ body: validatePreApprovedEntrySchema }), validateEntry);
+router.post('/pre-approved/:id/use', validate({ params: idParams, body: markEntryUsedSchema }), markEntryUsed);
+router.get('/pre-approved', validate({ query: preApprovedEntryQuerySchema }), listForGuard);
+router.get('/pre-approved/search', validate({ query: guardPreApprovedSearchSchema }), searchForGuard);
 
 // ============================================
 // EMERGENCIES

@@ -192,3 +192,28 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type EntryRequest = Prisma.EntryRequestModel
+/**
+ * Model PreApprovedEntry
+ * 
+ */
+export type PreApprovedEntry = Prisma.PreApprovedEntryModel
+/**
+ * Model PreApprovedSchedule
+ * 
+ */
+export type PreApprovedSchedule = Prisma.PreApprovedScheduleModel
+/**
+ * Model PreApprovedMeta
+ * 
+ */
+export type PreApprovedMeta = Prisma.PreApprovedMetaModel
+/**
+ * Model PreApprovedVerification
+ * 
+ */
+export type PreApprovedVerification = Prisma.PreApprovedVerificationModel
+/**
+ * Model PreApprovedUsage
+ * 
+ */
+export type PreApprovedUsage = Prisma.PreApprovedUsageModel

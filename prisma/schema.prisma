@@ -50,7 +50,6 @@ enum VisitorType {
   FRIEND
 }
 
-
 enum PaymentStatus {
   PENDING
   PAID
@@ -173,6 +172,7 @@ enum VendorCategory {
   APPLIANCE_REPAIR
   OTHER
 }
+
 enum SocietyRegistrationStatus {
   PENDING
   APPROVED
@@ -180,12 +180,12 @@ enum SocietyRegistrationStatus {
 }
 
 enum OnboardingStatus {
-  DRAFT              // User created profile, not submitted yet
-  PENDING_DOCS       // Awaiting document upload
-  PENDING_APPROVAL   // Documents uploaded, awaiting admin review
+  DRAFT // User created profile, not submitted yet
+  PENDING_DOCS // Awaiting document upload
+  PENDING_APPROVAL // Documents uploaded, awaiting admin review
   RESUBMIT_REQUESTED // Admin requested document resubmission
-  APPROVED           // Admin approved, full access granted
-  REJECTED           // Admin rejected the request
+  APPROVED // Admin approved, full access granted
+  REJECTED // Admin rejected the request
 }
 
 enum ResidentType {
@@ -194,8 +194,8 @@ enum ResidentType {
 }
 
 enum DocumentType {
-  OWNERSHIP_PROOF    // Property deed, sale agreement
-  TENANT_AGREEMENT   // Rental agreement
+  OWNERSHIP_PROOF // Property deed, sale agreement
+  TENANT_AGREEMENT // Rental agreement
   AADHAR_CARD
   PAN_CARD
   PASSPORT
@@ -253,9 +253,9 @@ enum ProviderTag {
 }
 
 enum GuestInviteType {
-  QUICK              // One-time guest invite
-  FREQUENT           // Permanent passcode, recurring visits
-  PRIVATE            // Silent entry — guard lets in without calling resident
+  QUICK // One-time guest invite
+  FREQUENT // Permanent passcode, recurring visits
+  PRIVATE // Silent entry — guard lets in without calling resident
 }
 
 enum GuestInviteStatus {
@@ -310,6 +310,56 @@ enum StaffBookingStatus {
 }
 
 // --------------------
+// PRE-APPROVED ENTRY SYSTEM
+// --------------------
+
+enum PreApprovedEntryType {
+  CAB
+  DELIVERY
+  HELP
+}
+
+enum PreApprovedEntryMode {
+  SAFE // Cab: flat details hidden from guard, vehicle digits verification
+  NORMAL // Standard entry
+  SURPRISE // Delivery: no resident notification
+}
+
+enum PreApprovedScheduleType {
+  ONCE
+  RECURRING
+}
+
+enum PreApprovedEntryStatus {
+  ACTIVE
+  EXPIRED
+  USED // ONCE entries after usage
+  CANCELLED
+}
+
+enum PreApprovedVerificationType {
+  NONE
+  VEHICLE_LAST4
+  OTP
+  QR
+}
+
+enum HelpCategory {
+  PLUMBER
+  ELECTRICIAN
+  CARPENTER
+  PAINTER
+  TUTOR
+  BEAUTICIAN
+  FITNESS_TRAINER
+  PHYSIOTHERAPIST
+  COOK
+  PEST_CONTROL
+  APPLIANCE_REPAIR
+  OTHER
+}
+
+// --------------------
 // SOCIETY (Multi-tenant)
 // --------------------
 
@@ -341,31 +391,32 @@ model Society {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users              User[]
-  blocks             Block[]
-  flats              Flat[]
-  entries            Entry[]
-  domesticStaff      DomesticStaff[]
-  vehicles           Vehicle[]
-  gatePoints         GatePoint[]
-  visitorFrequencies VisitorFrequency[]
-  paymentReminders   PaymentReminder[]
-  gatePasses         GatePass[]
-  notices                  Notice[]
-  amenities                Amenity[]
-  amenityBookings          AmenityBooking[]
-  complaints               Complaint[]
-  emergencies              Emergency[]
-  vendors                  Vendor[]
-  staffAttendance          StaffAttendance[]
-  staffBookings            StaffBooking[]
-  onboardingRequests       OnboardingRequest[]
-  notifications            Notification[]
-  entryRequests            EntryRequest[]
-  guestInvites             GuestInvite[]
-  partyInvites             PartyInvite[]
-  guestEntryLogs           GuestEntryLog[]
-  registrationRequest      SocietyRegistrationRequest?
+  users               User[]
+  blocks              Block[]
+  flats               Flat[]
+  entries             Entry[]
+  domesticStaff       DomesticStaff[]
+  vehicles            Vehicle[]
+  gatePoints          GatePoint[]
+  visitorFrequencies  VisitorFrequency[]
+  paymentReminders    PaymentReminder[]
+  gatePasses          GatePass[]
+  notices             Notice[]
+  amenities           Amenity[]
+  amenityBookings     AmenityBooking[]
+  complaints          Complaint[]
+  emergencies         Emergency[]
+  vendors             Vendor[]
+  staffAttendance     StaffAttendance[]
+  staffBookings       StaffBooking[]
+  onboardingRequests  OnboardingRequest[]
+  notifications       Notification[]
+  entryRequests       EntryRequest[]
+  guestInvites        GuestInvite[]
+  partyInvites        PartyInvite[]
+  guestEntryLogs      GuestEntryLog[]
+  registrationRequest SocietyRegistrationRequest?
+  preApprovedEntries  PreApprovedEntry[]
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
@@ -395,7 +446,7 @@ model SocietyRegistrationRequest {
   // Review tracking
   status          SocietyRegistrationStatus @default(PENDING)
   reviewedById    String?
-  reviewedBy      User?    @relation("SocietyRegistrationReviews", fields: [reviewedById], references: [id])
+  reviewedBy      User?                     @relation("SocietyRegistrationReviews", fields: [reviewedById], references: [id])
   reviewedAt      DateTime?
   rejectionReason String?
 
@@ -487,30 +538,30 @@ model Flat {
   updatedAt DateTime @updatedAt
 
   // Relations
-  residents          User[]
-  entries            Entry[]
-  domesticStaff      DomesticStaff[]
-  vehicles           Vehicle[]
-  visitorFrequencies VisitorFrequency[]
-  gatePasses         GatePass[]
-  amenityBookings          AmenityBooking[]
-  complaints               Complaint[]
-  emergencies              Emergency[]
-  staffFlatAssignments     StaffFlatAssignment[]
-  staffAttendance          StaffAttendance[]
-  staffBookings            StaffBooking[]
-  staffReviews             StaffReview[]
-  onboardingRequests       OnboardingRequest[]
-  entryRequests            EntryRequest[]
-  guestInvites             GuestInvite[]
-  partyInvites             PartyInvite[]
+  residents            User[]
+  entries              Entry[]
+  domesticStaff        DomesticStaff[]
+  vehicles             Vehicle[]
+  visitorFrequencies   VisitorFrequency[]
+  gatePasses           GatePass[]
+  amenityBookings      AmenityBooking[]
+  complaints           Complaint[]
+  emergencies          Emergency[]
+  staffFlatAssignments StaffFlatAssignment[]
+  staffAttendance      StaffAttendance[]
+  staffBookings        StaffBooking[]
+  staffReviews         StaffReview[]
+  onboardingRequests   OnboardingRequest[]
+  entryRequests        EntryRequest[]
+  guestInvites         GuestInvite[]
+  partyInvites         PartyInvite[]
+  preApprovedEntries   PreApprovedEntry[]
 
   @@unique([societyId, flatNumber])
   @@index([societyId])
   @@index([blockId])
   @@index([isOccupied])
 }
-
 
 // --------------------
 // USERS
@@ -544,8 +595,8 @@ model User {
   familyMembers     User[]      @relation("FamilyMembers")
 
   // Relations
-  createdEntries  Entry[] @relation("EntryCreator")
-  approvedEntries Entry[] @relation("EntryApprover")
+  createdEntries  Entry[]   @relation("EntryCreator")
+  approvedEntries Entry[]   @relation("EntryApprover")
   vehicles        Vehicle[]
 
   // New module relations
@@ -567,9 +618,9 @@ model User {
   staffReviews            StaffReview[]
 
   // Onboarding relations
-  onboardingRequest    OnboardingRequest?  @relation("ResidentOnboarding")
-  reviewedOnboardings  OnboardingRequest[] @relation("OnboardingReviewer")
-  onboardingAuditLogs  OnboardingAuditLog[]
+  onboardingRequest   OnboardingRequest?   @relation("ResidentOnboarding")
+  reviewedOnboardings OnboardingRequest[]  @relation("OnboardingReviewer")
+  onboardingAuditLogs OnboardingAuditLog[]
 
   // Society Registration
   societyRegistrationRequests SocietyRegistrationRequest[] @relation("SocietyRegistrationRequests")
@@ -583,18 +634,22 @@ model User {
   approvedEntryRequests EntryRequest[] @relation("EntryRequestApprover")
 
   // Guest Invite relations
-  createdGuestInvites  GuestInvite[] @relation("GuestInviteCreator")
-  createdPartyInvites  PartyInvite[] @relation("PartyInviteCreator")
-  guardEntryLogs       GuestEntryLog[] @relation("GuestEntryGuard")
+  createdGuestInvites GuestInvite[]   @relation("GuestInviteCreator")
+  createdPartyInvites PartyInvite[]   @relation("PartyInviteCreator")
+  guardEntryLogs      GuestEntryLog[] @relation("GuestEntryGuard")
+
+  // Pre-approved entry relations
+  preApprovedEntries PreApprovedEntry[] @relation("PreApprovedEntryCreator")
+  preApprovedUsages  PreApprovedUsage[] @relation("PreApprovedUsageGuard")
 
   // Push notifications
   fcmToken   String? // Device push token, updated on every login
   deviceType String? // "android" | "ios"
 
   // Auth & Tokens
-  lastLogin     DateTime?
-  refreshToken  String?   @db.Text // Store current refresh token
-  tokenVersion  Int       @default(0) // Increment to invalidate all tokens
+  lastLogin        DateTime?
+  refreshToken     String?   @db.Text // Store current refresh token
+  tokenVersion     Int       @default(0) // Increment to invalidate all tokens
   lastTokenRefresh DateTime? // Track when token was last refreshed
 
   createdAt DateTime @default(now())
@@ -661,6 +716,9 @@ model Entry {
   domesticStaffId String?
   domesticStaff   DomesticStaff? @relation(fields: [domesticStaffId], references: [id])
 
+  // Pre-approved entry reference (if created from pre-approved entry usage)
+  preApprovedEntryId String?
+  preApprovedEntry   PreApprovedEntry? @relation(fields: [preApprovedEntryId], references: [id])
 
   // Notes
   remarks         String?
@@ -684,44 +742,44 @@ model Entry {
 // --------------------
 
 model GuestInvite {
-  id           String            @id @default(uuid())
-  type         GuestInviteType
-  status       GuestInviteStatus @default(ACTIVE)
+  id     String            @id @default(uuid())
+  type   GuestInviteType
+  status GuestInviteStatus @default(ACTIVE)
 
   // Guest details
   visitorName  String
   visitorPhone String
 
   // Schedule
-  validFrom    DateTime
-  validUntil   DateTime
-  allowedDays  String[]          // ["MON","TUE",...] — for FREQUENT
-  timeFrom     String?           // "08:00" — 24h format, for FREQUENT
-  timeUntil    String?           // "20:00" — 24h format, for FREQUENT
+  validFrom   DateTime
+  validUntil  DateTime
+  allowedDays String[] // ["MON","TUE",...] — for FREQUENT
+  timeFrom    String? // "08:00" — 24h format, for FREQUENT
+  timeUntil   String? // "20:00" — 24h format, for FREQUENT
 
   // Access code
-  passcode     String            @unique // 6-char alphanumeric OTP
-  maxUses      Int?              // 1 for QUICK/PRIVATE, NULL for FREQUENT (unlimited)
-  usedCount    Int               @default(0)
+  passcode  String @unique // 6-char alphanumeric OTP
+  maxUses   Int? // 1 for QUICK/PRIVATE, NULL for FREQUENT (unlimited)
+  usedCount Int    @default(0)
 
   // Metadata
-  note         String?
-  isPrivate    Boolean           @default(false) // true for PRIVATE type (silent entry)
+  note      String?
+  isPrivate Boolean @default(false) // true for PRIVATE type (silent entry)
 
   // Relations
-  flatId       String
-  flat         Flat              @relation(fields: [flatId], references: [id])
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
 
-  societyId    String
-  society      Society           @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
-  residentId   String
-  resident     User              @relation("GuestInviteCreator", fields: [residentId], references: [id])
+  residentId String
+  resident   User   @relation("GuestInviteCreator", fields: [residentId], references: [id])
 
   guestEntryLogs GuestEntryLog[]
 
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([passcode])
   @@index([flatId, status])
@@ -735,41 +793,41 @@ model GuestInvite {
 // --------------------
 
 model PartyInvite {
-  id           String             @id @default(uuid())
-  hostName     String
+  id       String @id @default(uuid())
+  hostName String
 
   // Event details
-  validFrom    DateTime
-  validUntil   DateTime
-  venue        String?
-  note         String?
-  theme        Int                @default(0) // 0-5, maps to frontend illustration
+  validFrom  DateTime
+  validUntil DateTime
+  venue      String?
+  note       String?
+  theme      Int      @default(0) // 0-5, maps to frontend illustration
 
   // Slot config
-  maxGuests    Int
-  usedSlots    Int                @default(0)
+  maxGuests Int
+  usedSlots Int @default(0)
 
   // Shareable link
-  inviteCode   String             @unique // e.g. "GRP-A1B2"
-  inviteLink   String             // "https://sgate.app/grp-a1b2"
+  inviteCode String @unique // e.g. "GRP-A1B2"
+  inviteLink String // "https://sgate.app/grp-a1b2"
 
-  status       PartyInviteStatus  @default(ACTIVE)
+  status PartyInviteStatus @default(ACTIVE)
 
   // Relations
-  flatId       String
-  flat         Flat               @relation(fields: [flatId], references: [id])
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id])
 
-  societyId    String
-  society      Society            @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
-  residentId   String
-  resident     User               @relation("PartyInviteCreator", fields: [residentId], references: [id])
+  residentId String
+  resident   User   @relation("PartyInviteCreator", fields: [residentId], references: [id])
 
-  slots        PartySlot[]
+  slots          PartySlot[]
   guestEntryLogs GuestEntryLog[]
 
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([inviteCode])
   @@index([flatId, status])
@@ -783,14 +841,14 @@ model PartyInvite {
 // --------------------
 
 model PartySlot {
-  id              String       @id @default(uuid())
-  partyInviteId   String
-  partyInvite     PartyInvite  @relation(fields: [partyInviteId], references: [id], onDelete: Cascade)
+  id            String      @id @default(uuid())
+  partyInviteId String
+  partyInvite   PartyInvite @relation(fields: [partyInviteId], references: [id], onDelete: Cascade)
 
-  code            String       @unique // 6-char alphanumeric OTP
-  phone           String?              // NULL = unclaimed
+  code            String    @unique // 6-char alphanumeric OTP
+  phone           String? // NULL = unclaimed
   name            String?
-  addedByResident Boolean      @default(false)
+  addedByResident Boolean   @default(false)
   claimedAt       DateTime?
 
   @@index([code])
@@ -803,29 +861,29 @@ model PartySlot {
 // --------------------
 
 model GuestEntryLog {
-  id             String          @id @default(uuid())
+  id String @id @default(uuid())
 
   // Polymorphic FK — one of these will be set
-  guestInviteId  String?
-  guestInvite    GuestInvite?    @relation(fields: [guestInviteId], references: [id])
-  partyInviteId  String?
-  partyInvite    PartyInvite?    @relation(fields: [partyInviteId], references: [id])
-  inviteType     InviteRefType
+  guestInviteId String?
+  guestInvite   GuestInvite?  @relation(fields: [guestInviteId], references: [id])
+  partyInviteId String?
+  partyInvite   PartyInvite?  @relation(fields: [partyInviteId], references: [id])
+  inviteType    InviteRefType
 
-  flatId         String
-  guardId        String
-  guard          User            @relation("GuestEntryGuard", fields: [guardId], references: [id])
+  flatId  String
+  guardId String
+  guard   User   @relation("GuestEntryGuard", fields: [guardId], references: [id])
 
-  visitorName    String
-  visitorPhone   String?
-  passcode       String          // The code that was used
-  entryTime      DateTime        @default(now())
+  visitorName  String
+  visitorPhone String?
+  passcode     String // The code that was used
+  entryTime    DateTime @default(now())
 
-  status         GuestEntryResult
-  denyReason     String?
+  status     GuestEntryResult
+  denyReason String?
 
-  societyId      String
-  society        Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
   @@index([guestInviteId])
   @@index([partyInviteId])
@@ -1585,10 +1643,10 @@ model ResidentDocument {
 
   // Document details
   documentType DocumentType
-  documentUrl  String       // S3/Cloudinary URL
+  documentUrl  String // S3/Cloudinary URL
   fileName     String
-  fileSize     Int          // Bytes
-  mimeType     String       // application/pdf, image/jpeg, etc.
+  fileSize     Int // Bytes
+  mimeType     String // application/pdf, image/jpeg, etc.
 
   // Metadata
   uploadedAt DateTime @default(now())
@@ -1611,7 +1669,7 @@ model OnboardingAuditLog {
 
   // Action details
   action      OnboardingAction
-  performedBy String           // User ID
+  performedBy String // User ID
   performer   User             @relation(fields: [performedBy], references: [id])
 
   // Previous and new status
@@ -1712,3 +1770,121 @@ model EntryRequest {
   @@index([status, expiresAt])
 }
 
+// --------------------
+// PRE-APPROVED ENTRIES (Cab / Delivery / Help)
+// --------------------
+
+model PreApprovedEntry {
+  id           String                  @id @default(uuid())
+  type         PreApprovedEntryType
+  mode         PreApprovedEntryMode    @default(NORMAL)
+  scheduleType PreApprovedScheduleType @default(ONCE)
+  status       PreApprovedEntryStatus  @default(ACTIVE)
+
+  // Visitor/service info
+  visitorName  String?
+  visitorPhone String?
+
+  // Locking (prevent concurrent usage by multiple guards)
+  isLocked        Boolean   @default(false)
+  lockedAt        DateTime?
+  lockedByGuardId String?
+
+  // Relations
+  userId    String
+  user      User    @relation("PreApprovedEntryCreator", fields: [userId], references: [id])
+  flatId    String
+  flat      Flat    @relation(fields: [flatId], references: [id])
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Sub-records
+  schedule     PreApprovedSchedule?
+  meta         PreApprovedMeta?
+  verification PreApprovedVerification?
+  usages       PreApprovedUsage[]
+  entries      Entry[] // Linked Entry records created on usage
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status, type])
+  @@index([flatId, status])
+  @@index([userId, status])
+  @@index([status, type, mode])
+}
+
+model PreApprovedSchedule {
+  id      String           @id @default(uuid())
+  entryId String           @unique
+  entry   PreApprovedEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  // ONCE schedule
+  date      DateTime? // Specific date for one-time entry
+  startTime String? // "HH:MM"
+  endTime   String? // "HH:MM"
+
+  // RECURRING schedule
+  validFrom     DateTime?
+  validUntil    DateTime?
+  daysOfWeek    String[] // ["MON","TUE","WED"]
+  timeFrom      String? // "HH:MM"
+  timeTo        String? // "HH:MM"
+  entriesPerDay Int?      @default(1)
+
+  // Configurable grace periods (minutes)
+  graceBeforeMinutes Int @default(15)
+  graceAfterMinutes  Int @default(30)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PreApprovedMeta {
+  id      String           @id @default(uuid())
+  entryId String           @unique
+  entry   PreApprovedEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  // Cab-specific
+  vehicleLast4Digits String? // Last 4 digits for SAFE pickup
+
+  // Delivery-specific
+  companyName String?
+  isSurprise  Boolean @default(false)
+
+  // Help-specific
+  category       HelpCategory? // Enum category
+  customCategory String? // For "OTHER" category
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vehicleLast4Digits])
+}
+
+model PreApprovedVerification {
+  id      String           @id @default(uuid())
+  entryId String           @unique
+  entry   PreApprovedEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  verificationType  PreApprovedVerificationType @default(NONE)
+  verificationValue String? // Stored value to match against
+
+  createdAt DateTime @default(now())
+}
+
+model PreApprovedUsage {
+  id      String           @id @default(uuid())
+  entryId String
+  entry   PreApprovedEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  guardId     String
+  guard       User    @relation("PreApprovedUsageGuard", fields: [guardId], references: [id])
+  gatePointId String?
+  notes       String?
+
+  usedAt DateTime @default(now())
+
+  @@index([entryId, usedAt(sort: Desc)])
+  @@index([guardId])
+}

@@ -83,6 +83,44 @@ export interface AppEvents {
     guardId: string;
     allowed: boolean;
   };
+  'pre-approved.created': {
+    entryId: string;
+    flatId: string;
+    societyId: string;
+    type: string;
+    mode: string;
+    displayLabel: string;
+    createdByUserId: string;
+    createdByName: string;
+  };
+  'pre-approved.entry-used': {
+    entryId: string;
+    flatId: string;
+    societyId: string;
+    type: string;
+    mode: string;
+    displayLabel: string;
+    visitorName?: string;
+    companyName?: string;
+    category?: string;
+    guardId: string;
+  };
+  'pre-approved.cancelled-by-admin': {
+    entryId: string;
+    flatId: string;
+    societyId: string;
+    displayLabel: string;
+    adminName: string;
+    reason?: string;
+    createdByUserId: string;
+  };
+  'pre-approved.expiring-soon': {
+    entryId: string;
+    flatId: string;
+    societyId: string;
+    displayLabel: string;
+    expiresAt: Date;
+  };
 }
 
 class AppEventBus extends EventEmitter {

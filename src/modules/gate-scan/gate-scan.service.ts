@@ -1,9 +1,10 @@
 import { prisma } from '../../utils/Client';
 import { verifyQRToken } from '../../utils/QrGenerate';
 import { AppError } from '../../utils/ResponseHandler';
+import { preApprovedEntryService } from '../pre-approved-entry/pre-approved-entry.service';
 
 interface ScanResult {
-  type: 'GATE_PASS' | 'DOMESTIC_STAFF';
+  type: 'GATE_PASS' | 'DOMESTIC_STAFF' | 'PRE_APPROVED';
   allowed: boolean;
   reason: string;
   entry?: object;
@@ -40,6 +41,20 @@ export class GateScanService {
 
     if (payload.staffId) {
       return this._scanDomesticStaff(qrToken, guardId);
+    }
+
+    // Pre-approved entry QR
+    if (payload.type === 'pre_approved' && payload.entryId) {
+      const result = await preApprovedEntryService.validate(
+        { qrToken },
+        guardId,
+      );
+      return {
+        type: 'PRE_APPROVED',
+        allowed: result.allowed,
+        reason: result.allowed ? 'Pre-approved entry validated' : (result.reason || 'Validation failed'),
+        data: result,
+      };
     }
 
     const gatePass = await prisma.gatePass.findUnique({ where: { qrToken } });

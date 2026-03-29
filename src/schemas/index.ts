@@ -507,6 +507,137 @@ export const scanQRSchema = z.object({
 });
 
 // ============================================
+// PRE-APPROVED ENTRY SCHEMAS
+// ============================================
+
+const preApprovedEntryTypeEnum = z.enum(['CAB', 'DELIVERY', 'HELP']);
+const preApprovedEntryModeEnum = z.enum(['SAFE', 'NORMAL', 'SURPRISE']);
+const preApprovedScheduleTypeEnum = z.enum(['ONCE', 'RECURRING']);
+const helpCategoryEnum = z.enum([
+  'PLUMBER', 'ELECTRICIAN', 'CARPENTER', 'PAINTER', 'TUTOR',
+  'BEAUTICIAN', 'FITNESS_TRAINER', 'PHYSIOTHERAPIST', 'COOK',
+  'PEST_CONTROL', 'APPLIANCE_REPAIR', 'OTHER',
+]);
+const timeFormatRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+const timeFormat = z.string().regex(timeFormatRegex, 'Invalid time format (HH:MM)');
+const dayOfWeekEnum = z.enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']);
+
+export const createPreApprovedEntrySchema = z.object({
+  type: preApprovedEntryTypeEnum,
+  mode: preApprovedEntryModeEnum.optional().default('NORMAL'),
+  scheduleType: preApprovedScheduleTypeEnum.optional().default('ONCE'),
+  visitorName: z.string().max(100).optional(),
+  visitorPhone: phoneSchema.optional(),
+  skipDuplicateCheck: z.boolean().optional(),
+  // ONCE schedule
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD').optional(),
+  startTime: timeFormat.optional(),
+  endTime: timeFormat.optional(),
+  // RECURRING schedule
+  validFrom: z.string().datetime().optional(),
+  validUntil: z.string().datetime().optional(),
+  daysOfWeek: z.array(dayOfWeekEnum).optional(),
+  timeFrom: timeFormat.optional(),
+  timeTo: timeFormat.optional(),
+  entriesPerDay: z.number().int().positive().max(10).optional(),
+  // Grace periods
+  graceBeforeMinutes: z.number().int().min(0).max(60).optional(),
+  graceAfterMinutes: z.number().int().min(0).max(120).optional(),
+  // Meta
+  vehicleLast4Digits: z.string().length(4).regex(/^\d{4}$/, 'Must be exactly 4 digits').optional(),
+  companyName: z.string().max(100).optional(),
+  isSurprise: z.boolean().optional(),
+  category: helpCategoryEnum.optional(),
+  customCategory: z.string().max(100).optional(),
+}).superRefine((data, ctx) => {
+  // SAFE mode only for CAB
+  if (data.mode === 'SAFE' && data.type !== 'CAB') {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'SAFE mode is only available for CAB entries', path: ['mode'] });
+  }
+  // SAFE mode requires vehicleLast4Digits
+  if (data.mode === 'SAFE' && !data.vehicleLast4Digits) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Vehicle last 4 digits required for SAFE mode', path: ['vehicleLast4Digits'] });
+  }
+  // SURPRISE mode only for DELIVERY
+  if (data.mode === 'SURPRISE' && data.type !== 'DELIVERY') {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'SURPRISE mode is only available for DELIVERY entries', path: ['mode'] });
+  }
+  // ONCE schedule validation
+  if (data.scheduleType === 'ONCE') {
+    if (!data.date) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Date is required for one-time entries', path: ['date'] });
+    if (!data.startTime) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Start time is required for one-time entries', path: ['startTime'] });
+    if (!data.endTime) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'End time is required for one-time entries', path: ['endTime'] });
+  }
+  // RECURRING schedule validation
+  if (data.scheduleType === 'RECURRING') {
+    if (!data.daysOfWeek?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Days of week required for recurring entries', path: ['daysOfWeek'] });
+    if (!data.validFrom) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid from date required for recurring entries', path: ['validFrom'] });
+    if (!data.validUntil) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid until date required for recurring entries', path: ['validUntil'] });
+    if (!data.timeFrom) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Time from required for recurring entries', path: ['timeFrom'] });
+    if (!data.timeTo) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Time to required for recurring entries', path: ['timeTo'] });
+  }
+  // HELP type requires category
+  if (data.type === 'HELP' && !data.category) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Category is required for HELP entries', path: ['category'] });
+  }
+  // OTHER category requires customCategory
+  if (data.category === 'OTHER' && !data.customCategory) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Custom category is required when category is OTHER', path: ['customCategory'] });
+  }
+});
+
+export const updatePreApprovedEntrySchema = z.object({
+  visitorName: z.string().max(100).optional(),
+  visitorPhone: phoneSchema.optional(),
+  startTime: timeFormat.optional(),
+  endTime: timeFormat.optional(),
+  timeFrom: timeFormat.optional(),
+  timeTo: timeFormat.optional(),
+  daysOfWeek: z.array(dayOfWeekEnum).optional(),
+  entriesPerDay: z.number().int().positive().max(10).optional(),
+  vehicleLast4Digits: z.string().length(4).regex(/^\d{4}$/).optional(),
+  graceBeforeMinutes: z.number().int().min(0).max(60).optional(),
+  graceAfterMinutes: z.number().int().min(0).max(120).optional(),
+});
+
+export const validatePreApprovedEntrySchema = z.object({
+  vehicleLast4: z.string().length(4).regex(/^\d{4}$/).optional(),
+  otp: z.string().length(6).optional(),
+  qrToken: z.string().optional(),
+  flatId: uuidSchema.optional(),
+  type: preApprovedEntryTypeEnum.optional(),
+}).refine(
+  (data) => data.vehicleLast4 || data.otp || data.qrToken || (data.flatId && data.type),
+  { message: 'At least one verification method is required (vehicleLast4, otp, qrToken, or flatId+type)' },
+);
+
+export const preApprovedEntryQuerySchema = paginationQuery.extend({
+  type: preApprovedEntryTypeEnum.optional(),
+  status: z.enum(['ACTIVE', 'EXPIRED', 'USED', 'CANCELLED']).optional(),
+});
+
+export const adminPreApprovedQuerySchema = paginationQuery.extend({
+  type: preApprovedEntryTypeEnum.optional(),
+  status: z.enum(['ACTIVE', 'EXPIRED', 'USED', 'CANCELLED']).optional(),
+  flatId: uuidSchema.optional(),
+  dateFrom: z.string().datetime().optional(),
+  dateTo: z.string().datetime().optional(),
+});
+
+export const guardPreApprovedSearchSchema = z.object({
+  q: z.string().min(1).max(100),
+});
+
+export const markEntryUsedSchema = z.object({
+  gatePointId: uuidSchema.optional(),
+  notes: z.string().max(500).optional(),
+});
+
+export const adminCancelEntrySchema = z.object({
+  reason: z.string().max(500).optional(),
+});
+
+// ============================================
 // SHARED EXPORTS
 // ============================================
 

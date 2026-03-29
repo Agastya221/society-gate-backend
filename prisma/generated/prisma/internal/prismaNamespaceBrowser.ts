@@ -81,7 +81,12 @@ export const ModelName = {
   ResidentDocument: 'ResidentDocument',
   OnboardingAuditLog: 'OnboardingAuditLog',
   Notification: 'Notification',
-  EntryRequest: 'EntryRequest'
+  EntryRequest: 'EntryRequest',
+  PreApprovedEntry: 'PreApprovedEntry',
+  PreApprovedSchedule: 'PreApprovedSchedule',
+  PreApprovedMeta: 'PreApprovedMeta',
+  PreApprovedVerification: 'PreApprovedVerification',
+  PreApprovedUsage: 'PreApprovedUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -244,6 +249,7 @@ export const EntryScalarFieldEnum = {
   checkInTime: 'checkInTime',
   checkOutTime: 'checkOutTime',
   domesticStaffId: 'domesticStaffId',
+  preApprovedEntryId: 'preApprovedEntryId',
   remarks: 'remarks',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
@@ -784,6 +790,86 @@ export const EntryRequestScalarFieldEnum = {
 } as const
 
 export type EntryRequestScalarFieldEnum = (typeof EntryRequestScalarFieldEnum)[keyof typeof EntryRequestScalarFieldEnum]
+
+
+export const PreApprovedEntryScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  mode: 'mode',
+  scheduleType: 'scheduleType',
+  status: 'status',
+  visitorName: 'visitorName',
+  visitorPhone: 'visitorPhone',
+  isLocked: 'isLocked',
+  lockedAt: 'lockedAt',
+  lockedByGuardId: 'lockedByGuardId',
+  userId: 'userId',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PreApprovedEntryScalarFieldEnum = (typeof PreApprovedEntryScalarFieldEnum)[keyof typeof PreApprovedEntryScalarFieldEnum]
+
+
+export const PreApprovedScheduleScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  date: 'date',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  validFrom: 'validFrom',
+  validUntil: 'validUntil',
+  daysOfWeek: 'daysOfWeek',
+  timeFrom: 'timeFrom',
+  timeTo: 'timeTo',
+  entriesPerDay: 'entriesPerDay',
+  graceBeforeMinutes: 'graceBeforeMinutes',
+  graceAfterMinutes: 'graceAfterMinutes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PreApprovedScheduleScalarFieldEnum = (typeof PreApprovedScheduleScalarFieldEnum)[keyof typeof PreApprovedScheduleScalarFieldEnum]
+
+
+export const PreApprovedMetaScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  vehicleLast4Digits: 'vehicleLast4Digits',
+  companyName: 'companyName',
+  isSurprise: 'isSurprise',
+  category: 'category',
+  customCategory: 'customCategory',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PreApprovedMetaScalarFieldEnum = (typeof PreApprovedMetaScalarFieldEnum)[keyof typeof PreApprovedMetaScalarFieldEnum]
+
+
+export const PreApprovedVerificationScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  verificationType: 'verificationType',
+  verificationValue: 'verificationValue',
+  createdAt: 'createdAt'
+} as const
+
+export type PreApprovedVerificationScalarFieldEnum = (typeof PreApprovedVerificationScalarFieldEnum)[keyof typeof PreApprovedVerificationScalarFieldEnum]
+
+
+export const PreApprovedUsageScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  guardId: 'guardId',
+  gatePointId: 'gatePointId',
+  notes: 'notes',
+  usedAt: 'usedAt'
+} as const
+
+export type PreApprovedUsageScalarFieldEnum = (typeof PreApprovedUsageScalarFieldEnum)[keyof typeof PreApprovedUsageScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -268,4 +268,94 @@ eventBus.on('staff.booking-accepted', async (payload) => {
   }
 });
 
+// ============================================
+// PRE-APPROVED ENTRY EVENTS
+// ============================================
+
+eventBus.on('pre-approved.created', async (payload) => {
+  try {
+    // Notify other flat members (not the creator)
+    const flatResidents = await prisma.user.findMany({
+      where: { flatId: payload.flatId, isActive: true, role: 'RESIDENT', id: { not: payload.createdByUserId } },
+      select: { id: true },
+    });
+
+    await Promise.all(
+      flatResidents.map((resident) =>
+        notificationService.sendToUser(resident.id, {
+          type: 'SYSTEM',
+          title: 'New pre-approved entry',
+          message: `${payload.createdByName} added a ${payload.displayLabel} entry`,
+          data: { preApprovedEntryId: payload.entryId },
+          referenceId: payload.entryId,
+          referenceType: 'PreApprovedEntry',
+          societyId: payload.societyId,
+        })
+      )
+    );
+  } catch (error) {
+    logger.error({ error, event: 'pre-approved.created', payload }, 'Failed to send pre-approved created notification');
+  }
+});
+
+eventBus.on('pre-approved.entry-used', async (payload) => {
+  try {
+    if (payload.mode === 'SURPRISE') return;
+
+    await notificationService.sendToFlat(payload.flatId, {
+      type: 'ENTRY_REQUEST',
+      title: `${payload.displayLabel} arrived`,
+      message: `${payload.displayLabel} has entered the society`,
+      data: { preApprovedEntryId: payload.entryId },
+      referenceId: payload.entryId,
+      referenceType: 'PreApprovedEntry',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToFlat(payload.flatId, {
+      title: `${payload.displayLabel} arrived`,
+      body: `${payload.displayLabel} has entered the society`,
+      data: { screen: 'PreApprovedEntry', entryId: payload.entryId },
+    }).catch((err) => logger.error({ err }, 'Push failed: pre-approved.entry-used'));
+  } catch (error) {
+    logger.error({ error, event: 'pre-approved.entry-used', payload }, 'Failed to send entry-used notification');
+  }
+});
+
+eventBus.on('pre-approved.cancelled-by-admin', async (payload) => {
+  try {
+    await notificationService.sendToUser(payload.createdByUserId, {
+      type: 'SYSTEM',
+      title: 'Entry cancelled by admin',
+      message: `Your ${payload.displayLabel} entry was cancelled by ${payload.adminName}${payload.reason ? ': ' + payload.reason : ''}`,
+      referenceId: payload.entryId,
+      referenceType: 'PreApprovedEntry',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToUser(payload.createdByUserId, {
+      title: 'Entry cancelled',
+      body: `Your ${payload.displayLabel} entry was cancelled by admin`,
+      data: { screen: 'PreApprovedEntry', entryId: payload.entryId },
+    }).catch((err) => logger.error({ err }, 'Push failed: pre-approved.cancelled-by-admin'));
+  } catch (error) {
+    logger.error({ error, event: 'pre-approved.cancelled-by-admin', payload }, 'Failed to send admin cancel notification');
+  }
+});
+
+eventBus.on('pre-approved.expiring-soon', async (payload) => {
+  try {
+    await notificationService.sendToFlat(payload.flatId, {
+      type: 'SYSTEM',
+      title: 'Entry expiring soon',
+      message: `Your ${payload.displayLabel} entry expires in 1 hour`,
+      referenceId: payload.entryId,
+      referenceType: 'PreApprovedEntry',
+      societyId: payload.societyId,
+    });
+  } catch (error) {
+    logger.error({ error, event: 'pre-approved.expiring-soon', payload }, 'Failed to send expiry notification');
+  }
+});
+
 logger.info('Notification event listeners registered');

@@ -36,6 +36,12 @@ import {
   PartyInviteStatus,
   GuestEntryResult,
   InviteRefType,
+  PreApprovedEntryType,
+  PreApprovedEntryMode,
+  PreApprovedScheduleType,
+  PreApprovedEntryStatus,
+  PreApprovedVerificationType,
+  HelpCategory,
 } from '../../prisma/generated/prisma/client';
 
 import type {
@@ -64,6 +70,11 @@ import type {
   PartyInvite,
   PartySlot,
   GuestEntryLog,
+  PreApprovedEntry,
+  PreApprovedSchedule,
+  PreApprovedMeta,
+  PreApprovedVerification,
+  PreApprovedUsage,
   Prisma,
 } from '../../prisma/generated/prisma/client';
 
@@ -101,6 +112,12 @@ export {
   PartyInviteStatus,
   GuestEntryResult,
   InviteRefType,
+  PreApprovedEntryType,
+  PreApprovedEntryMode,
+  PreApprovedScheduleType,
+  PreApprovedEntryStatus,
+  PreApprovedVerificationType,
+  HelpCategory,
 };
 
 // Re-export model types and Prisma namespace
@@ -130,6 +147,11 @@ export type {
   PartyInvite,
   PartySlot,
   GuestEntryLog,
+  PreApprovedEntry,
+  PreApprovedSchedule,
+  PreApprovedMeta,
+  PreApprovedVerification,
+  PreApprovedUsage,
   Prisma,
 };
 
@@ -855,6 +877,126 @@ export interface SubmitSocietyRegistrationDTO {
 
 export interface SocietyRegistrationFilters {
   status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+  page?: number;
+  limit?: number;
+}
+
+// ============================================
+// PRE-APPROVED ENTRY TYPES
+// ============================================
+
+export interface CreatePreApprovedEntryDTO {
+  type: PreApprovedEntryType;
+  mode?: PreApprovedEntryMode;
+  scheduleType?: PreApprovedScheduleType;
+  visitorName?: string;
+  visitorPhone?: string;
+  skipDuplicateCheck?: boolean;
+  // ONCE schedule
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  // RECURRING schedule
+  validFrom?: string;
+  validUntil?: string;
+  daysOfWeek?: string[];
+  timeFrom?: string;
+  timeTo?: string;
+  entriesPerDay?: number;
+  // Grace periods
+  graceBeforeMinutes?: number;
+  graceAfterMinutes?: number;
+  // Meta
+  vehicleLast4Digits?: string;
+  companyName?: string;
+  isSurprise?: boolean;
+  category?: HelpCategory;
+  customCategory?: string;
+}
+
+export interface UpdatePreApprovedEntryDTO {
+  visitorName?: string;
+  visitorPhone?: string;
+  startTime?: string;
+  endTime?: string;
+  timeFrom?: string;
+  timeTo?: string;
+  daysOfWeek?: string[];
+  entriesPerDay?: number;
+  vehicleLast4Digits?: string;
+  graceBeforeMinutes?: number;
+  graceAfterMinutes?: number;
+}
+
+export interface PreApprovedEntryFilters {
+  type?: PreApprovedEntryType;
+  status?: PreApprovedEntryStatus;
+  page?: number;
+  limit?: number;
+}
+
+export interface ValidatePreApprovedDTO {
+  vehicleLast4?: string;
+  otp?: string;
+  qrToken?: string;
+  flatId?: string;
+  type?: PreApprovedEntryType;
+}
+
+export interface PreApprovedValidationResult {
+  allowed: boolean;
+  entryId?: string;
+  type?: string;
+  mode?: string;
+  displayLabel?: string;
+  isPrivate: boolean;
+  // Only present when isPrivate = false
+  flatId?: string;
+  flatNumber?: string;
+  residentName?: string;
+  // Denial info
+  reason?: string;
+  message?: string;
+  suggestion?: string;
+  // Multiple matches
+  matches?: PreApprovedValidationResult[];
+}
+
+export interface AccessControlContext {
+  now: Date;
+  istNow: Date;
+  currentDay: string;
+  currentTime: string;
+  guardId: string;
+  societyId: string;
+}
+
+export interface ScheduleCheckResult {
+  valid: boolean;
+  reason?: string;
+  message?: string;
+}
+
+export interface PreApprovedEntryWithRelations extends PreApprovedEntry {
+  schedule: PreApprovedSchedule | null;
+  meta: PreApprovedMeta | null;
+  verification: PreApprovedVerification | null;
+  flat: { id: string; flatNumber: string };
+  user: { id: string; name: string };
+}
+
+export interface GuardPreApprovedFilters {
+  type?: PreApprovedEntryType;
+  page?: number;
+  limit?: number;
+}
+
+export interface AdminPreApprovedFilters {
+  type?: PreApprovedEntryType;
+  status?: PreApprovedEntryStatus;
+  flatId?: string;
+  dateFrom?: string;
+  dateTo?: string;
   page?: number;
   limit?: number;
 }

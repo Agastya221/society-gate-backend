@@ -902,6 +902,108 @@ export type EnumProviderTagNullableWithAggregatesFilter<$PrismaModel = never> = 
   _max?: Prisma.NestedEnumProviderTagNullableFilter<$PrismaModel>
 }
 
+export type EnumPreApprovedEntryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryType | Prisma.EnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryTypeFilter<$PrismaModel> | $Enums.PreApprovedEntryType
+}
+
+export type EnumPreApprovedEntryModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryMode | Prisma.EnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryModeFilter<$PrismaModel> | $Enums.PreApprovedEntryMode
+}
+
+export type EnumPreApprovedScheduleTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedScheduleType | Prisma.EnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedScheduleTypeFilter<$PrismaModel> | $Enums.PreApprovedScheduleType
+}
+
+export type EnumPreApprovedEntryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryStatus | Prisma.EnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryStatusFilter<$PrismaModel> | $Enums.PreApprovedEntryStatus
+}
+
+export type EnumPreApprovedEntryTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryType | Prisma.EnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryTypeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedEntryType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedEntryTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedEntryTypeFilter<$PrismaModel>
+}
+
+export type EnumPreApprovedEntryModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryMode | Prisma.EnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryModeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedEntryMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedEntryModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedEntryModeFilter<$PrismaModel>
+}
+
+export type EnumPreApprovedScheduleTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedScheduleType | Prisma.EnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedScheduleTypeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedScheduleType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedScheduleTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedScheduleTypeFilter<$PrismaModel>
+}
+
+export type EnumPreApprovedEntryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryStatus | Prisma.EnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryStatusWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedEntryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedEntryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedEntryStatusFilter<$PrismaModel>
+}
+
+export type EnumHelpCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.HelpCategory | Prisma.EnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumHelpCategoryNullableFilter<$PrismaModel> | $Enums.HelpCategory | null
+}
+
+export type EnumHelpCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.HelpCategory | Prisma.EnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumHelpCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.HelpCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumHelpCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumHelpCategoryNullableFilter<$PrismaModel>
+}
+
+export type EnumPreApprovedVerificationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedVerificationType | Prisma.EnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedVerificationTypeFilter<$PrismaModel> | $Enums.PreApprovedVerificationType
+}
+
+export type EnumPreApprovedVerificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedVerificationType | Prisma.EnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedVerificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedVerificationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedVerificationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedVerificationTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1752,6 +1854,108 @@ export type NestedEnumProviderTagNullableWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumProviderTagNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumProviderTagNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumPreApprovedEntryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryType | Prisma.EnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryTypeFilter<$PrismaModel> | $Enums.PreApprovedEntryType
+}
+
+export type NestedEnumPreApprovedEntryModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryMode | Prisma.EnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryModeFilter<$PrismaModel> | $Enums.PreApprovedEntryMode
+}
+
+export type NestedEnumPreApprovedScheduleTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedScheduleType | Prisma.EnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedScheduleTypeFilter<$PrismaModel> | $Enums.PreApprovedScheduleType
+}
+
+export type NestedEnumPreApprovedEntryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryStatus | Prisma.EnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryStatusFilter<$PrismaModel> | $Enums.PreApprovedEntryStatus
+}
+
+export type NestedEnumPreApprovedEntryTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryType | Prisma.EnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryType[] | Prisma.ListEnumPreApprovedEntryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryTypeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedEntryType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedEntryTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedEntryTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumPreApprovedEntryModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryMode | Prisma.EnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryMode[] | Prisma.ListEnumPreApprovedEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryModeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedEntryMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedEntryModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedEntryModeFilter<$PrismaModel>
+}
+
+export type NestedEnumPreApprovedScheduleTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedScheduleType | Prisma.EnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedScheduleType[] | Prisma.ListEnumPreApprovedScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedScheduleTypeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedScheduleType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedScheduleTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedScheduleTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumPreApprovedEntryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedEntryStatus | Prisma.EnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedEntryStatus[] | Prisma.ListEnumPreApprovedEntryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedEntryStatusWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedEntryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedEntryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedEntryStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumHelpCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.HelpCategory | Prisma.EnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumHelpCategoryNullableFilter<$PrismaModel> | $Enums.HelpCategory | null
+}
+
+export type NestedEnumHelpCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.HelpCategory | Prisma.EnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.HelpCategory[] | Prisma.ListEnumHelpCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumHelpCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.HelpCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumHelpCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumHelpCategoryNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumPreApprovedVerificationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedVerificationType | Prisma.EnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedVerificationTypeFilter<$PrismaModel> | $Enums.PreApprovedVerificationType
+}
+
+export type NestedEnumPreApprovedVerificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreApprovedVerificationType | Prisma.EnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreApprovedVerificationType[] | Prisma.ListEnumPreApprovedVerificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreApprovedVerificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.PreApprovedVerificationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreApprovedVerificationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreApprovedVerificationTypeFilter<$PrismaModel>
 }
 
 

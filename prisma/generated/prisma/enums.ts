@@ -393,3 +393,67 @@ export const StaffBookingStatus = {
 } as const
 
 export type StaffBookingStatus = (typeof StaffBookingStatus)[keyof typeof StaffBookingStatus]
+
+
+export const PreApprovedEntryType = {
+  CAB: 'CAB',
+  DELIVERY: 'DELIVERY',
+  HELP: 'HELP'
+} as const
+
+export type PreApprovedEntryType = (typeof PreApprovedEntryType)[keyof typeof PreApprovedEntryType]
+
+
+export const PreApprovedEntryMode = {
+  SAFE: 'SAFE',
+  NORMAL: 'NORMAL',
+  SURPRISE: 'SURPRISE'
+} as const
+
+export type PreApprovedEntryMode = (typeof PreApprovedEntryMode)[keyof typeof PreApprovedEntryMode]
+
+
+export const PreApprovedScheduleType = {
+  ONCE: 'ONCE',
+  RECURRING: 'RECURRING'
+} as const
+
+export type PreApprovedScheduleType = (typeof PreApprovedScheduleType)[keyof typeof PreApprovedScheduleType]
+
+
+export const PreApprovedEntryStatus = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  USED: 'USED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PreApprovedEntryStatus = (typeof PreApprovedEntryStatus)[keyof typeof PreApprovedEntryStatus]
+
+
+export const PreApprovedVerificationType = {
+  NONE: 'NONE',
+  VEHICLE_LAST4: 'VEHICLE_LAST4',
+  OTP: 'OTP',
+  QR: 'QR'
+} as const
+
+export type PreApprovedVerificationType = (typeof PreApprovedVerificationType)[keyof typeof PreApprovedVerificationType]
+
+
+export const HelpCategory = {
+  PLUMBER: 'PLUMBER',
+  ELECTRICIAN: 'ELECTRICIAN',
+  CARPENTER: 'CARPENTER',
+  PAINTER: 'PAINTER',
+  TUTOR: 'TUTOR',
+  BEAUTICIAN: 'BEAUTICIAN',
+  FITNESS_TRAINER: 'FITNESS_TRAINER',
+  PHYSIOTHERAPIST: 'PHYSIOTHERAPIST',
+  COOK: 'COOK',
+  PEST_CONTROL: 'PEST_CONTROL',
+  APPLIANCE_REPAIR: 'APPLIANCE_REPAIR',
+  OTHER: 'OTHER'
+} as const
+
+export type HelpCategory = (typeof HelpCategory)[keyof typeof HelpCategory]
