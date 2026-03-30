@@ -1643,6 +1643,10 @@ enum PostCategory {
   APPRECIATION
   HELP
   EVENT
+  MAINTENANCE
+  LOST_FOUND
+  SAFETY
+  FOR_SALE
 }
 
 model CommunityPost {

@@ -475,7 +475,11 @@ export const PostCategory = {
   ISSUE: 'ISSUE',
   APPRECIATION: 'APPRECIATION',
   HELP: 'HELP',
-  EVENT: 'EVENT'
+  EVENT: 'EVENT',
+  MAINTENANCE: 'MAINTENANCE',
+  LOST_FOUND: 'LOST_FOUND',
+  SAFETY: 'SAFETY',
+  FOR_SALE: 'FOR_SALE'
 } as const
 
 export type PostCategory = (typeof PostCategory)[keyof typeof PostCategory]

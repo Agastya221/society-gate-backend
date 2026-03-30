@@ -155,13 +155,13 @@ async function main() {
   });
 
   const guard1 = await prisma.user.create({
-    data: { name: 'Rajendra Singh', phone: '9800000001', role: 'GUARD', societyId: society.id, isActive: true },
+    data: { name: 'Rajendra Singh', phone: '9800000001', email: 'rajendra.singh@greenfieldheights.in', role: 'GUARD', societyId: society.id, isActive: true },
   });
   const guard2 = await prisma.user.create({
-    data: { name: 'Sunil Yadav', phone: '9800000002', role: 'GUARD', societyId: society.id, isActive: true },
+    data: { name: 'Sunil Yadav', phone: '9800000002', email: 'sunil.yadav@greenfieldheights.in', role: 'GUARD', societyId: society.id, isActive: true },
   });
   const guard3 = await prisma.user.create({
-    data: { name: 'Bhola Prasad', phone: '9800000003', role: 'GUARD', societyId: society.id, isActive: true },
+    data: { name: 'Bhola Prasad', phone: '9800000003', email: 'bhola.prasad@greenfieldheights.in', role: 'GUARD', societyId: society.id, isActive: true },
   });
 
   // Resident 1 — Amit Sharma, A101, IT professional (owner)
@@ -221,12 +221,17 @@ async function main() {
   // ONBOARDING (all 6 primary residents approved)
   // ============================================
   console.log('📋 Creating onboarding records...');
+  const residentBlockMap: Record<string, string> = {
+    [res1.id]: towerA.id, [res2.id]: towerA.id,
+    [res3.id]: towerB.id, [res4.id]: towerB.id,
+    [res5.id]: towerC.id, [res6.id]: towerC.id,
+  };
   for (const r of [res1, res2, res3, res4, res5, res6]) {
     await prisma.onboardingRequest.create({
       data: {
         userId: r.id,
         societyId: society.id,
-        blockId: towerA.id,
+        blockId: residentBlockMap[r.id],
         flatId: r.flatId!,
         residentType: r.isOwner ? 'OWNER' : 'TENANT',
         status: 'APPROVED',
@@ -252,6 +257,7 @@ async function main() {
     data: {
       vehicleNumber: 'MH12CD5678', vehicleType: 'Bike', model: 'Royal Enfield Classic 350', color: 'Stealth Black',
       status: 'ACTIVE', parkingSlot: 'A-B1', stickerNumber: 'GH-2024-002',
+      lastSeen: daysAgo(1),
       userId: res1.id, flatId: flat('A101').id, societyId: society.id,
     },
   });
@@ -273,6 +279,7 @@ async function main() {
     data: {
       vehicleNumber: 'MH12JK7890', vehicleType: 'Bike', model: 'Honda Activa 6G', color: 'Matte Grey',
       status: 'ACTIVE', parkingSlot: 'B-B2', stickerNumber: 'GH-2024-005',
+      lastSeen: daysAgo(2),
       userId: res3Spouse.id, flatId: flat('B102').id, societyId: society.id,
     },
   });
@@ -350,13 +357,13 @@ async function main() {
     data: { name: 'Shankar Patil', phone: '9820000003', staffType: 'DRIVER', qrToken: 'STAFF_DRIVER_001', isVerified: true, verifiedAt: daysAgo(90), verifiedBy: admin.id, isActive: true, rating: 4.5, totalReviews: 7, societyId: society.id, addedById: admin.id, experienceYears: 15, languages: ['Hindi', 'Marathi', 'English'] },
   });
   const gardener1 = await prisma.domesticStaff.create({
-    data: { name: 'Gopal Reddy', phone: '9820000004', staffType: 'GARDENER', qrToken: 'STAFF_GARDENER_001', isVerified: true, verifiedAt: daysAgo(250), verifiedBy: admin.id, isActive: true, rating: 4.6, totalReviews: 10, societyId: society.id, addedById: admin.id, experienceYears: 9 },
+    data: { name: 'Gopal Reddy', phone: '9820000004', staffType: 'GARDENER', qrToken: 'STAFF_GARDENER_001', isVerified: true, verifiedAt: daysAgo(250), verifiedBy: admin.id, isActive: true, rating: 4.6, totalReviews: 10, societyId: society.id, addedById: admin.id, experienceYears: 9, languages: ['Telugu', 'Hindi'] },
   });
   const nanny1 = await prisma.domesticStaff.create({
     data: { name: 'Savita Patil', phone: '9820000005', staffType: 'NANNY', qrToken: 'STAFF_NANNY_001', isVerified: true, verifiedAt: daysAgo(120), verifiedBy: admin.id, isActive: true, rating: 4.8, totalReviews: 11, societyId: society.id, addedById: admin.id, experienceYears: 5, languages: ['Hindi', 'Marathi'] },
   });
   const maid2 = await prisma.domesticStaff.create({
-    data: { name: 'Kavita Singh', phone: '9820000006', staffType: 'MAID', qrToken: 'STAFF_MAID_002', isVerified: false, isActive: true, rating: 0, totalReviews: 0, societyId: society.id, addedById: res5.id, experienceYears: 2 },
+    data: { name: 'Kavita Singh', phone: '9820000006', staffType: 'MAID', qrToken: 'STAFF_MAID_002', isVerified: false, isActive: true, rating: 0, totalReviews: 0, societyId: society.id, addedById: res5.id, experienceYears: 2, languages: ['Hindi'] },
   });
   console.log('✅ 6 domestic staff\n');
 
@@ -491,7 +498,7 @@ async function main() {
   await prisma.vendor.create({ data: { name: 'QuickFix Carpenters', category: 'CARPENTER', phone: '9860000004', email: 'work@quickfix.com', description: 'Custom furniture, door/window repairs, modular kitchen. Free estimates.', isVerified: true, isActive: true, rating: 4.4, totalReviews: 12, likesCount: 4, workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI'], workingHours: '10:00 AM - 6:00 PM', societyId: society.id, addedById: admin.id } });
   await prisma.vendor.create({ data: { name: 'HomePaint Solutions', category: 'PAINTER', phone: '9860000005', email: 'paint@homepaint.in', description: 'Interior/exterior painting, texture work, waterproofing. Asian Paints authorized applicators.', isVerified: true, isActive: true, rating: 4.7, totalReviews: 9, likesCount: 11, workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'], workingHours: '8:00 AM - 6:00 PM', societyId: society.id, addedById: res1.id } });
   await prisma.vendor.create({ data: { name: 'PestGuard Services', category: 'PEST_CONTROL', phone: '9860000006', email: 'info@pestguard.in', description: 'Eco-friendly pest control — cockroaches, termites, bedbugs, rodents. Safe for kids & pets. AMC available.', isVerified: true, isActive: true, rating: 4.3, totalReviews: 15, likesCount: 5, workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'], workingHours: '8:00 AM - 5:00 PM', societyId: society.id, addedById: admin.id } });
-  await prisma.vendor.create({ data: { name: 'CleanHome Pro', category: 'CLEANER', phone: '9860000007', email: 'book@cleanhome.in', description: 'Deep cleaning, sofa cleaning, bathroom sanitization, move-in/out cleaning. Trained staff.', isVerified: false, isActive: true, rating: 4.1, totalReviews: 7, likesCount: 2, societyId: society.id, addedById: res5.id } });
+  await prisma.vendor.create({ data: { name: 'CleanHome Pro', category: 'CLEANER', phone: '9860000007', email: 'book@cleanhome.in', description: 'Deep cleaning, sofa cleaning, bathroom sanitization, move-in/out cleaning. Trained staff.', isVerified: false, isActive: true, rating: 4.1, totalReviews: 7, likesCount: 2, workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'], workingHours: '8:00 AM - 6:00 PM', societyId: society.id, addedById: res5.id } });
   await prisma.vendor.create({ data: { name: 'GreenThumb Landscaping', category: 'GARDENER', phone: '9860000008', email: 'hello@greenthumb.in', description: 'Garden maintenance, plant care, landscape design, terrace garden setup. Monthly plans available.', isVerified: true, isActive: true, rating: 4.9, totalReviews: 8, likesCount: 9, workingDays: ['MON', 'WED', 'FRI', 'SAT'], workingHours: '7:00 AM - 1:00 PM', societyId: society.id, addedById: admin.id } });
 
   // Vendor likes
@@ -522,7 +529,7 @@ async function main() {
     data: {
       title: 'Lost — Black Labrador puppy "Bruno" near Tower C',
       content: 'Our black lab puppy Bruno (6 months, collar with phone number) went missing yesterday evening near Tower C parking. He is very friendly. Please check your cameras or WhatsApp 9811000010 if you spot him. Offering reward.',
-      category: 'HELP',
+      category: 'LOST_FOUND',
       isAnonymous: false,
       authorId: res5.id,
       societyId: society.id,
@@ -575,7 +582,7 @@ async function main() {
     data: {
       title: 'Selling: Barely used kitchen appliances — moving out',
       content: 'Moving to Bangalore next month. Selling: Philips Air Fryer (6 months old, ₹2500), Bosch Mixer (₹1800), Prestige Induction Cooker (₹1200). All in excellent condition. Whatsapp 9811000006.',
-      category: 'GENERAL',
+      category: 'FOR_SALE',
       isAnonymous: false,
       authorId: res3.id,
       societyId: society.id,
@@ -597,6 +604,32 @@ async function main() {
     },
   });
 
+  const post7 = await prisma.communityPost.create({
+    data: {
+      title: 'Water leakage from terrace — B-Block 4th floor corridor',
+      content: 'There is a persistent water seepage from the terrace into the B-Block 4th floor corridor. The paint is peeling and the floor is slippery — safety hazard during rains. Reported to the office 2 weeks ago but no update. Requesting urgent maintenance.',
+      category: 'MAINTENANCE',
+      isAnonymous: false,
+      authorId: res4.id,
+      societyId: society.id,
+      likesCount: 15,
+      commentsCount: 3,
+    },
+  });
+
+  const post8 = await prisma.communityPost.create({
+    data: {
+      title: 'Unknown vehicles parking near main gate — safety alert',
+      content: 'For the past 3 days I have noticed 2 unregistered bikes parked near the main gate entrance late at night (after 11 PM). Guards seem unaware. Flagging this as a safety concern — can management ask guards to verify and log all overnight vehicles?',
+      category: 'SAFETY',
+      isAnonymous: true,
+      authorId: res2.id,
+      societyId: society.id,
+      likesCount: 19,
+      commentsCount: 2,
+    },
+  });
+
   // Post likes
   await prisma.postLike.createMany({ data: [
     { postId: post1.id, userId: res1.id },
@@ -608,6 +641,10 @@ async function main() {
     { postId: post3.id, userId: res4.id },
     { postId: post4.id, userId: res1.id },
     { postId: post6.id, userId: res5.id },
+    { postId: post7.id, userId: res1.id },
+    { postId: post7.id, userId: res3.id },
+    { postId: post8.id, userId: res4.id },
+    { postId: post8.id, userId: res6.id },
   ]});
 
   // Post comments
@@ -623,9 +660,14 @@ async function main() {
     { postId: post4.id, content: 'I\'m in too! Should we create a WhatsApp group?', authorId: res5.id, societyId: society.id },
     { postId: post6.id, content: 'Great idea! I\'d also contribute to the installation cost. Let\'s poll the residents.', authorId: res5.id, societyId: society.id },
     { postId: post6.id, content: 'Looking into the costs and feasibility. Will share a proposal with the committee.', authorId: admin.id, societyId: society.id },
+    { postId: post7.id, content: 'Same issue on floor 3 too. Please escalate this urgently before monsoon.', authorId: res1.id, societyId: society.id },
+    { postId: post7.id, content: 'Terrace waterproofing is scheduled for next month. Will prioritize B-Block.', authorId: admin.id, societyId: society.id },
+    { postId: post7.id, content: 'Please put a wet floor sign in the meantime — it\'s really slippery.', authorId: res6.id, societyId: society.id },
+    { postId: post8.id, content: 'Guards have been instructed to log all vehicles parked overnight. Thank you for flagging.', authorId: admin.id, societyId: society.id },
+    { postId: post8.id, content: 'Good catch. We should also consider installing boom barriers at the entrance.', authorId: res5.id, societyId: society.id },
   ]});
 
-  console.log('✅ 6 posts + 9 likes + 11 comments\n');
+  console.log('✅ 8 posts + 13 likes + 16 comments\n');
 
   // ============================================
   // SOCIETY DOCUMENTS
@@ -790,7 +832,7 @@ async function main() {
   console.log('  Complaints:       7');
   console.log('  Emergencies:      2');
   console.log('  Vendors:          8 + 6 likes');
-  console.log('  Community Posts:  6 + 9 likes + 11 comments');
+  console.log('  Community Posts:  8 + 13 likes + 16 comments');
   console.log('  Documents:        6 (4 admin, 2 personal)');
   console.log('  Polls:            3 (2 active, 1 closed) + votes');
   console.log('  Visitor Freq:     3');
