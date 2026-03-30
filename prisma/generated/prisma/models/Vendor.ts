@@ -29,6 +29,7 @@ export type AggregateVendor = {
 export type VendorAvgAggregateOutputType = {
   rating: number | null
   totalReviews: number | null
+  likesCount: number | null
   hourlyRate: number | null
   minCharge: number | null
 }
@@ -36,6 +37,7 @@ export type VendorAvgAggregateOutputType = {
 export type VendorSumAggregateOutputType = {
   rating: number | null
   totalReviews: number | null
+  likesCount: number | null
   hourlyRate: number | null
   minCharge: number | null
 }
@@ -54,6 +56,7 @@ export type VendorMinAggregateOutputType = {
   verifiedAt: Date | null
   rating: number | null
   totalReviews: number | null
+  likesCount: number | null
   isActive: boolean | null
   workingHours: string | null
   hourlyRate: number | null
@@ -79,6 +82,7 @@ export type VendorMaxAggregateOutputType = {
   verifiedAt: Date | null
   rating: number | null
   totalReviews: number | null
+  likesCount: number | null
   isActive: boolean | null
   workingHours: string | null
   hourlyRate: number | null
@@ -104,6 +108,7 @@ export type VendorCountAggregateOutputType = {
   verifiedAt: number
   rating: number
   totalReviews: number
+  likesCount: number
   isActive: number
   workingDays: number
   workingHours: number
@@ -122,6 +127,7 @@ export type VendorCountAggregateOutputType = {
 export type VendorAvgAggregateInputType = {
   rating?: true
   totalReviews?: true
+  likesCount?: true
   hourlyRate?: true
   minCharge?: true
 }
@@ -129,6 +135,7 @@ export type VendorAvgAggregateInputType = {
 export type VendorSumAggregateInputType = {
   rating?: true
   totalReviews?: true
+  likesCount?: true
   hourlyRate?: true
   minCharge?: true
 }
@@ -147,6 +154,7 @@ export type VendorMinAggregateInputType = {
   verifiedAt?: true
   rating?: true
   totalReviews?: true
+  likesCount?: true
   isActive?: true
   workingHours?: true
   hourlyRate?: true
@@ -172,6 +180,7 @@ export type VendorMaxAggregateInputType = {
   verifiedAt?: true
   rating?: true
   totalReviews?: true
+  likesCount?: true
   isActive?: true
   workingHours?: true
   hourlyRate?: true
@@ -197,6 +206,7 @@ export type VendorCountAggregateInputType = {
   verifiedAt?: true
   rating?: true
   totalReviews?: true
+  likesCount?: true
   isActive?: true
   workingDays?: true
   workingHours?: true
@@ -311,6 +321,7 @@ export type VendorGroupByOutputType = {
   verifiedAt: Date | null
   rating: number | null
   totalReviews: number
+  likesCount: number
   isActive: boolean
   workingDays: string[]
   workingHours: string | null
@@ -361,6 +372,7 @@ export type VendorWhereInput = {
   verifiedAt?: Prisma.DateTimeNullableFilter<"Vendor"> | Date | string | null
   rating?: Prisma.FloatNullableFilter<"Vendor"> | number | null
   totalReviews?: Prisma.IntFilter<"Vendor"> | number
+  likesCount?: Prisma.IntFilter<"Vendor"> | number
   isActive?: Prisma.BoolFilter<"Vendor"> | boolean
   workingDays?: Prisma.StringNullableListFilter<"Vendor">
   workingHours?: Prisma.StringNullableFilter<"Vendor"> | string | null
@@ -374,6 +386,7 @@ export type VendorWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Vendor"> | Date | string
   addedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
+  likes?: Prisma.VendorLikeListRelationFilter
 }
 
 export type VendorOrderByWithRelationInput = {
@@ -390,6 +403,7 @@ export type VendorOrderByWithRelationInput = {
   verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrderInput | Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   workingDays?: Prisma.SortOrder
   workingHours?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -403,6 +417,7 @@ export type VendorOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   addedBy?: Prisma.UserOrderByWithRelationInput
   society?: Prisma.SocietyOrderByWithRelationInput
+  likes?: Prisma.VendorLikeOrderByRelationAggregateInput
 }
 
 export type VendorWhereUniqueInput = Prisma.AtLeast<{
@@ -422,6 +437,7 @@ export type VendorWhereUniqueInput = Prisma.AtLeast<{
   verifiedAt?: Prisma.DateTimeNullableFilter<"Vendor"> | Date | string | null
   rating?: Prisma.FloatNullableFilter<"Vendor"> | number | null
   totalReviews?: Prisma.IntFilter<"Vendor"> | number
+  likesCount?: Prisma.IntFilter<"Vendor"> | number
   isActive?: Prisma.BoolFilter<"Vendor"> | boolean
   workingDays?: Prisma.StringNullableListFilter<"Vendor">
   workingHours?: Prisma.StringNullableFilter<"Vendor"> | string | null
@@ -435,6 +451,7 @@ export type VendorWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Vendor"> | Date | string
   addedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
+  likes?: Prisma.VendorLikeListRelationFilter
 }, "id">
 
 export type VendorOrderByWithAggregationInput = {
@@ -451,6 +468,7 @@ export type VendorOrderByWithAggregationInput = {
   verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrderInput | Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   workingDays?: Prisma.SortOrder
   workingHours?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -486,6 +504,7 @@ export type VendorScalarWhereWithAggregatesInput = {
   verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Vendor"> | Date | string | null
   rating?: Prisma.FloatNullableWithAggregatesFilter<"Vendor"> | number | null
   totalReviews?: Prisma.IntWithAggregatesFilter<"Vendor"> | number
+  likesCount?: Prisma.IntWithAggregatesFilter<"Vendor"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Vendor"> | boolean
   workingDays?: Prisma.StringNullableListFilter<"Vendor">
   workingHours?: Prisma.StringNullableWithAggregatesFilter<"Vendor"> | string | null
@@ -513,6 +532,7 @@ export type VendorCreateInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -524,6 +544,7 @@ export type VendorCreateInput = {
   updatedAt?: Date | string
   addedBy: Prisma.UserCreateNestedOneWithoutAddedVendorsInput
   society: Prisma.SocietyCreateNestedOneWithoutVendorsInput
+  likes?: Prisma.VendorLikeCreateNestedManyWithoutVendorInput
 }
 
 export type VendorUncheckedCreateInput = {
@@ -540,6 +561,7 @@ export type VendorUncheckedCreateInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -551,6 +573,7 @@ export type VendorUncheckedCreateInput = {
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  likes?: Prisma.VendorLikeUncheckedCreateNestedManyWithoutVendorInput
 }
 
 export type VendorUpdateInput = {
@@ -567,6 +590,7 @@ export type VendorUpdateInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -578,6 +602,7 @@ export type VendorUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   addedBy?: Prisma.UserUpdateOneRequiredWithoutAddedVendorsNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutVendorsNestedInput
+  likes?: Prisma.VendorLikeUpdateManyWithoutVendorNestedInput
 }
 
 export type VendorUncheckedUpdateInput = {
@@ -594,6 +619,7 @@ export type VendorUncheckedUpdateInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -605,6 +631,7 @@ export type VendorUncheckedUpdateInput = {
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.VendorLikeUncheckedUpdateManyWithoutVendorNestedInput
 }
 
 export type VendorCreateManyInput = {
@@ -621,6 +648,7 @@ export type VendorCreateManyInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -648,6 +676,7 @@ export type VendorUpdateManyMutationInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -673,6 +702,7 @@ export type VendorUncheckedUpdateManyInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -710,6 +740,7 @@ export type VendorCountOrderByAggregateInput = {
   verifiedAt?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   workingDays?: Prisma.SortOrder
   workingHours?: Prisma.SortOrder
@@ -726,6 +757,7 @@ export type VendorCountOrderByAggregateInput = {
 export type VendorAvgOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
   minCharge?: Prisma.SortOrder
 }
@@ -744,6 +776,7 @@ export type VendorMaxOrderByAggregateInput = {
   verifiedAt?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   workingHours?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
@@ -769,6 +802,7 @@ export type VendorMinOrderByAggregateInput = {
   verifiedAt?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   workingHours?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
@@ -783,8 +817,14 @@ export type VendorMinOrderByAggregateInput = {
 export type VendorSumOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
   minCharge?: Prisma.SortOrder
+}
+
+export type VendorScalarRelationFilter = {
+  is?: Prisma.VendorWhereInput
+  isNot?: Prisma.VendorWhereInput
 }
 
 export type VendorCreateNestedManyWithoutSocietyInput = {
@@ -893,6 +933,20 @@ export type VendorUpdatephotosInput = {
   push?: string | string[]
 }
 
+export type VendorCreateNestedOneWithoutLikesInput = {
+  create?: Prisma.XOR<Prisma.VendorCreateWithoutLikesInput, Prisma.VendorUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.VendorCreateOrConnectWithoutLikesInput
+  connect?: Prisma.VendorWhereUniqueInput
+}
+
+export type VendorUpdateOneRequiredWithoutLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.VendorCreateWithoutLikesInput, Prisma.VendorUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.VendorCreateOrConnectWithoutLikesInput
+  upsert?: Prisma.VendorUpsertWithoutLikesInput
+  connect?: Prisma.VendorWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VendorUpdateToOneWithWhereWithoutLikesInput, Prisma.VendorUpdateWithoutLikesInput>, Prisma.VendorUncheckedUpdateWithoutLikesInput>
+}
+
 export type VendorCreateWithoutSocietyInput = {
   id?: string
   name: string
@@ -907,6 +961,7 @@ export type VendorCreateWithoutSocietyInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -917,6 +972,7 @@ export type VendorCreateWithoutSocietyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   addedBy: Prisma.UserCreateNestedOneWithoutAddedVendorsInput
+  likes?: Prisma.VendorLikeCreateNestedManyWithoutVendorInput
 }
 
 export type VendorUncheckedCreateWithoutSocietyInput = {
@@ -933,6 +989,7 @@ export type VendorUncheckedCreateWithoutSocietyInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -943,6 +1000,7 @@ export type VendorUncheckedCreateWithoutSocietyInput = {
   addedById: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  likes?: Prisma.VendorLikeUncheckedCreateNestedManyWithoutVendorInput
 }
 
 export type VendorCreateOrConnectWithoutSocietyInput = {
@@ -988,6 +1046,7 @@ export type VendorScalarWhereInput = {
   verifiedAt?: Prisma.DateTimeNullableFilter<"Vendor"> | Date | string | null
   rating?: Prisma.FloatNullableFilter<"Vendor"> | number | null
   totalReviews?: Prisma.IntFilter<"Vendor"> | number
+  likesCount?: Prisma.IntFilter<"Vendor"> | number
   isActive?: Prisma.BoolFilter<"Vendor"> | boolean
   workingDays?: Prisma.StringNullableListFilter<"Vendor">
   workingHours?: Prisma.StringNullableFilter<"Vendor"> | string | null
@@ -1015,6 +1074,7 @@ export type VendorCreateWithoutAddedByInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -1025,6 +1085,7 @@ export type VendorCreateWithoutAddedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   society: Prisma.SocietyCreateNestedOneWithoutVendorsInput
+  likes?: Prisma.VendorLikeCreateNestedManyWithoutVendorInput
 }
 
 export type VendorUncheckedCreateWithoutAddedByInput = {
@@ -1041,6 +1102,7 @@ export type VendorUncheckedCreateWithoutAddedByInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -1051,6 +1113,7 @@ export type VendorUncheckedCreateWithoutAddedByInput = {
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  likes?: Prisma.VendorLikeUncheckedCreateNestedManyWithoutVendorInput
 }
 
 export type VendorCreateOrConnectWithoutAddedByInput = {
@@ -1079,6 +1142,134 @@ export type VendorUpdateManyWithWhereWithoutAddedByInput = {
   data: Prisma.XOR<Prisma.VendorUpdateManyMutationInput, Prisma.VendorUncheckedUpdateManyWithoutAddedByInput>
 }
 
+export type VendorCreateWithoutLikesInput = {
+  id?: string
+  name: string
+  category: $Enums.VendorCategory
+  phone: string
+  email?: string | null
+  alternatePhone?: string | null
+  companyName?: string | null
+  description?: string | null
+  address?: string | null
+  isVerified?: boolean
+  verifiedAt?: Date | string | null
+  rating?: number | null
+  totalReviews?: number
+  likesCount?: number
+  isActive?: boolean
+  workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
+  workingHours?: string | null
+  hourlyRate?: number | null
+  minCharge?: number | null
+  idProof?: string | null
+  photos?: Prisma.VendorCreatephotosInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  addedBy: Prisma.UserCreateNestedOneWithoutAddedVendorsInput
+  society: Prisma.SocietyCreateNestedOneWithoutVendorsInput
+}
+
+export type VendorUncheckedCreateWithoutLikesInput = {
+  id?: string
+  name: string
+  category: $Enums.VendorCategory
+  phone: string
+  email?: string | null
+  alternatePhone?: string | null
+  companyName?: string | null
+  description?: string | null
+  address?: string | null
+  isVerified?: boolean
+  verifiedAt?: Date | string | null
+  rating?: number | null
+  totalReviews?: number
+  likesCount?: number
+  isActive?: boolean
+  workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
+  workingHours?: string | null
+  hourlyRate?: number | null
+  minCharge?: number | null
+  idProof?: string | null
+  photos?: Prisma.VendorCreatephotosInput | string[]
+  addedById: string
+  societyId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VendorCreateOrConnectWithoutLikesInput = {
+  where: Prisma.VendorWhereUniqueInput
+  create: Prisma.XOR<Prisma.VendorCreateWithoutLikesInput, Prisma.VendorUncheckedCreateWithoutLikesInput>
+}
+
+export type VendorUpsertWithoutLikesInput = {
+  update: Prisma.XOR<Prisma.VendorUpdateWithoutLikesInput, Prisma.VendorUncheckedUpdateWithoutLikesInput>
+  create: Prisma.XOR<Prisma.VendorCreateWithoutLikesInput, Prisma.VendorUncheckedCreateWithoutLikesInput>
+  where?: Prisma.VendorWhereInput
+}
+
+export type VendorUpdateToOneWithWhereWithoutLikesInput = {
+  where?: Prisma.VendorWhereInput
+  data: Prisma.XOR<Prisma.VendorUpdateWithoutLikesInput, Prisma.VendorUncheckedUpdateWithoutLikesInput>
+}
+
+export type VendorUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumVendorCategoryFieldUpdateOperationsInput | $Enums.VendorCategory
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alternatePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
+  workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  minCharge?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  idProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photos?: Prisma.VendorUpdatephotosInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  addedBy?: Prisma.UserUpdateOneRequiredWithoutAddedVendorsNestedInput
+  society?: Prisma.SocietyUpdateOneRequiredWithoutVendorsNestedInput
+}
+
+export type VendorUncheckedUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumVendorCategoryFieldUpdateOperationsInput | $Enums.VendorCategory
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alternatePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
+  workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  minCharge?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  idProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photos?: Prisma.VendorUpdatephotosInput | string[]
+  addedById?: Prisma.StringFieldUpdateOperationsInput | string
+  societyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type VendorCreateManySocietyInput = {
   id?: string
   name: string
@@ -1093,6 +1284,7 @@ export type VendorCreateManySocietyInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -1119,6 +1311,7 @@ export type VendorUpdateWithoutSocietyInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1129,6 +1322,7 @@ export type VendorUpdateWithoutSocietyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   addedBy?: Prisma.UserUpdateOneRequiredWithoutAddedVendorsNestedInput
+  likes?: Prisma.VendorLikeUpdateManyWithoutVendorNestedInput
 }
 
 export type VendorUncheckedUpdateWithoutSocietyInput = {
@@ -1145,6 +1339,7 @@ export type VendorUncheckedUpdateWithoutSocietyInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1155,6 +1350,7 @@ export type VendorUncheckedUpdateWithoutSocietyInput = {
   addedById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.VendorLikeUncheckedUpdateManyWithoutVendorNestedInput
 }
 
 export type VendorUncheckedUpdateManyWithoutSocietyInput = {
@@ -1171,6 +1367,7 @@ export type VendorUncheckedUpdateManyWithoutSocietyInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1197,6 +1394,7 @@ export type VendorCreateManyAddedByInput = {
   verifiedAt?: Date | string | null
   rating?: number | null
   totalReviews?: number
+  likesCount?: number
   isActive?: boolean
   workingDays?: Prisma.VendorCreateworkingDaysInput | string[]
   workingHours?: string | null
@@ -1223,6 +1421,7 @@ export type VendorUpdateWithoutAddedByInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1233,6 +1432,7 @@ export type VendorUpdateWithoutAddedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   society?: Prisma.SocietyUpdateOneRequiredWithoutVendorsNestedInput
+  likes?: Prisma.VendorLikeUpdateManyWithoutVendorNestedInput
 }
 
 export type VendorUncheckedUpdateWithoutAddedByInput = {
@@ -1249,6 +1449,7 @@ export type VendorUncheckedUpdateWithoutAddedByInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1259,6 +1460,7 @@ export type VendorUncheckedUpdateWithoutAddedByInput = {
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.VendorLikeUncheckedUpdateManyWithoutVendorNestedInput
 }
 
 export type VendorUncheckedUpdateManyWithoutAddedByInput = {
@@ -1275,6 +1477,7 @@ export type VendorUncheckedUpdateManyWithoutAddedByInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   workingDays?: Prisma.VendorUpdateworkingDaysInput | string[]
   workingHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1287,6 +1490,35 @@ export type VendorUncheckedUpdateManyWithoutAddedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type VendorCountOutputType
+ */
+
+export type VendorCountOutputType = {
+  likes: number
+}
+
+export type VendorCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  likes?: boolean | VendorCountOutputTypeCountLikesArgs
+}
+
+/**
+ * VendorCountOutputType without action
+ */
+export type VendorCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCountOutputType
+   */
+  select?: Prisma.VendorCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * VendorCountOutputType without action
+ */
+export type VendorCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorLikeWhereInput
+}
 
 
 export type VendorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1303,6 +1535,7 @@ export type VendorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   verifiedAt?: boolean
   rating?: boolean
   totalReviews?: boolean
+  likesCount?: boolean
   isActive?: boolean
   workingDays?: boolean
   workingHours?: boolean
@@ -1316,6 +1549,8 @@ export type VendorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   addedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
+  likes?: boolean | Prisma.Vendor$likesArgs<ExtArgs>
+  _count?: boolean | Prisma.VendorCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendor"]>
 
 export type VendorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1332,6 +1567,7 @@ export type VendorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   verifiedAt?: boolean
   rating?: boolean
   totalReviews?: boolean
+  likesCount?: boolean
   isActive?: boolean
   workingDays?: boolean
   workingHours?: boolean
@@ -1361,6 +1597,7 @@ export type VendorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   verifiedAt?: boolean
   rating?: boolean
   totalReviews?: boolean
+  likesCount?: boolean
   isActive?: boolean
   workingDays?: boolean
   workingHours?: boolean
@@ -1390,6 +1627,7 @@ export type VendorSelectScalar = {
   verifiedAt?: boolean
   rating?: boolean
   totalReviews?: boolean
+  likesCount?: boolean
   isActive?: boolean
   workingDays?: boolean
   workingHours?: boolean
@@ -1403,10 +1641,12 @@ export type VendorSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VendorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "phone" | "email" | "alternatePhone" | "companyName" | "description" | "address" | "isVerified" | "verifiedAt" | "rating" | "totalReviews" | "isActive" | "workingDays" | "workingHours" | "hourlyRate" | "minCharge" | "idProof" | "photos" | "addedById" | "societyId" | "createdAt" | "updatedAt", ExtArgs["result"]["vendor"]>
+export type VendorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "phone" | "email" | "alternatePhone" | "companyName" | "description" | "address" | "isVerified" | "verifiedAt" | "rating" | "totalReviews" | "likesCount" | "isActive" | "workingDays" | "workingHours" | "hourlyRate" | "minCharge" | "idProof" | "photos" | "addedById" | "societyId" | "createdAt" | "updatedAt", ExtArgs["result"]["vendor"]>
 export type VendorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   addedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
+  likes?: boolean | Prisma.Vendor$likesArgs<ExtArgs>
+  _count?: boolean | Prisma.VendorCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VendorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   addedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1422,6 +1662,7 @@ export type $VendorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     addedBy: Prisma.$UserPayload<ExtArgs>
     society: Prisma.$SocietyPayload<ExtArgs>
+    likes: Prisma.$VendorLikePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1437,6 +1678,7 @@ export type $VendorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     verifiedAt: Date | null
     rating: number | null
     totalReviews: number
+    likesCount: number
     isActive: boolean
     workingDays: string[]
     workingHours: string | null
@@ -1844,6 +2086,7 @@ export interface Prisma__VendorClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   addedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   society<T extends Prisma.SocietyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SocietyDefaultArgs<ExtArgs>>): Prisma.Prisma__SocietyClient<runtime.Types.Result.GetResult<Prisma.$SocietyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  likes<T extends Prisma.Vendor$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vendor$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1886,6 +2129,7 @@ export interface VendorFieldRefs {
   readonly verifiedAt: Prisma.FieldRef<"Vendor", 'DateTime'>
   readonly rating: Prisma.FieldRef<"Vendor", 'Float'>
   readonly totalReviews: Prisma.FieldRef<"Vendor", 'Int'>
+  readonly likesCount: Prisma.FieldRef<"Vendor", 'Int'>
   readonly isActive: Prisma.FieldRef<"Vendor", 'Boolean'>
   readonly workingDays: Prisma.FieldRef<"Vendor", 'String[]'>
   readonly workingHours: Prisma.FieldRef<"Vendor", 'String'>
@@ -2290,6 +2534,30 @@ export type VendorDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Vendors to delete.
    */
   limit?: number
+}
+
+/**
+ * Vendor.likes
+ */
+export type Vendor$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorLike
+   */
+  select?: Prisma.VendorLikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorLike
+   */
+  omit?: Prisma.VendorLikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorLikeInclude<ExtArgs> | null
+  where?: Prisma.VendorLikeWhereInput
+  orderBy?: Prisma.VendorLikeOrderByWithRelationInput | Prisma.VendorLikeOrderByWithRelationInput[]
+  cursor?: Prisma.VendorLikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorLikeScalarFieldEnum | Prisma.VendorLikeScalarFieldEnum[]
 }
 
 /**

@@ -499,3 +499,20 @@ export const updateAvailabilityStatus = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getTypeSummary = async (req: Request, res: Response) => {
+  try {
+    const societyId = req.user!.societyId!;
+    const types = await staffService.getTypeSummary(societyId);
+
+    res.status(200).json({
+      success: true,
+      data: types,
+    });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};

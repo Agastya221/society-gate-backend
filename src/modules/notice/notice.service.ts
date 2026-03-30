@@ -7,6 +7,26 @@ import type {
   Prisma,
 } from '../../types';
 
+// Maps internal role enum to a display label shown to residents
+function roleToPostedBy(role: string): string {
+  const labels: Record<string, string> = {
+    ADMIN: 'Society Manager',
+    SUPER_ADMIN: 'Platform Admin',
+  };
+  return labels[role] ?? 'Management';
+}
+
+function formatNotice(notice: {
+  createdBy?: { id: string; name: string; role: string } | null;
+  [key: string]: unknown;
+}) {
+  const { createdBy, ...rest } = notice;
+  return {
+    ...rest,
+    postedBy: createdBy ? roleToPostedBy(createdBy.role) : 'Management',
+  };
+}
+
 export class NoticeService {
   async createNotice(data: CreateNoticeDTO, createdById: string) {
     const notice = await prisma.notice.create({
@@ -52,7 +72,7 @@ export class NoticeService {
     ]);
 
     return {
-      notices,
+      notices: notices.map(formatNotice),
       pagination: {
         total,
         page,
@@ -81,7 +101,7 @@ export class NoticeService {
       data: { viewCount: { increment: 1 } },
     });
 
-    return notice;
+    return formatNotice(notice);
   }
 
   async updateNotice(noticeId: string, data: UpdateNoticeDTO, userId: string) {

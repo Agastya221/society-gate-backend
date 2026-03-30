@@ -30,6 +30,11 @@ export type VehicleMinAggregateOutputType = {
   vehicleType: string | null
   model: string | null
   color: string | null
+  status: $Enums.VehicleStatus | null
+  rejectionNote: string | null
+  parkingSlot: string | null
+  stickerNumber: string | null
+  lastSeen: Date | null
   userId: string | null
   flatId: string | null
   societyId: string | null
@@ -44,6 +49,11 @@ export type VehicleMaxAggregateOutputType = {
   vehicleType: string | null
   model: string | null
   color: string | null
+  status: $Enums.VehicleStatus | null
+  rejectionNote: string | null
+  parkingSlot: string | null
+  stickerNumber: string | null
+  lastSeen: Date | null
   userId: string | null
   flatId: string | null
   societyId: string | null
@@ -58,6 +68,11 @@ export type VehicleCountAggregateOutputType = {
   vehicleType: number
   model: number
   color: number
+  status: number
+  rejectionNote: number
+  parkingSlot: number
+  stickerNumber: number
+  lastSeen: number
   userId: number
   flatId: number
   societyId: number
@@ -74,6 +89,11 @@ export type VehicleMinAggregateInputType = {
   vehicleType?: true
   model?: true
   color?: true
+  status?: true
+  rejectionNote?: true
+  parkingSlot?: true
+  stickerNumber?: true
+  lastSeen?: true
   userId?: true
   flatId?: true
   societyId?: true
@@ -88,6 +108,11 @@ export type VehicleMaxAggregateInputType = {
   vehicleType?: true
   model?: true
   color?: true
+  status?: true
+  rejectionNote?: true
+  parkingSlot?: true
+  stickerNumber?: true
+  lastSeen?: true
   userId?: true
   flatId?: true
   societyId?: true
@@ -102,6 +127,11 @@ export type VehicleCountAggregateInputType = {
   vehicleType?: true
   model?: true
   color?: true
+  status?: true
+  rejectionNote?: true
+  parkingSlot?: true
+  stickerNumber?: true
+  lastSeen?: true
   userId?: true
   flatId?: true
   societyId?: true
@@ -189,6 +219,11 @@ export type VehicleGroupByOutputType = {
   vehicleType: string
   model: string | null
   color: string | null
+  status: $Enums.VehicleStatus
+  rejectionNote: string | null
+  parkingSlot: string | null
+  stickerNumber: string | null
+  lastSeen: Date | null
   userId: string
   flatId: string
   societyId: string
@@ -224,6 +259,11 @@ export type VehicleWhereInput = {
   vehicleType?: Prisma.StringFilter<"Vehicle"> | string
   model?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   color?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  status?: Prisma.EnumVehicleStatusFilter<"Vehicle"> | $Enums.VehicleStatus
+  rejectionNote?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  parkingSlot?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  stickerNumber?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  lastSeen?: Prisma.DateTimeNullableFilter<"Vehicle"> | Date | string | null
   userId?: Prisma.StringFilter<"Vehicle"> | string
   flatId?: Prisma.StringFilter<"Vehicle"> | string
   societyId?: Prisma.StringFilter<"Vehicle"> | string
@@ -241,6 +281,11 @@ export type VehicleOrderByWithRelationInput = {
   vehicleType?: Prisma.SortOrder
   model?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  parkingSlot?: Prisma.SortOrderInput | Prisma.SortOrder
+  stickerNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeen?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   societyId?: Prisma.SortOrder
@@ -262,6 +307,11 @@ export type VehicleWhereUniqueInput = Prisma.AtLeast<{
   vehicleType?: Prisma.StringFilter<"Vehicle"> | string
   model?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   color?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  status?: Prisma.EnumVehicleStatusFilter<"Vehicle"> | $Enums.VehicleStatus
+  rejectionNote?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  parkingSlot?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  stickerNumber?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  lastSeen?: Prisma.DateTimeNullableFilter<"Vehicle"> | Date | string | null
   userId?: Prisma.StringFilter<"Vehicle"> | string
   flatId?: Prisma.StringFilter<"Vehicle"> | string
   societyId?: Prisma.StringFilter<"Vehicle"> | string
@@ -279,6 +329,11 @@ export type VehicleOrderByWithAggregationInput = {
   vehicleType?: Prisma.SortOrder
   model?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  parkingSlot?: Prisma.SortOrderInput | Prisma.SortOrder
+  stickerNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeen?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   societyId?: Prisma.SortOrder
@@ -299,6 +354,11 @@ export type VehicleScalarWhereWithAggregatesInput = {
   vehicleType?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   model?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
   color?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
+  status?: Prisma.EnumVehicleStatusWithAggregatesFilter<"Vehicle"> | $Enums.VehicleStatus
+  rejectionNote?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
+  parkingSlot?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
+  stickerNumber?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
+  lastSeen?: Prisma.DateTimeNullableWithAggregatesFilter<"Vehicle"> | Date | string | null
   userId?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   flatId?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   societyId?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
@@ -313,6 +373,11 @@ export type VehicleCreateInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -327,6 +392,11 @@ export type VehicleUncheckedCreateInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   userId: string
   flatId: string
   societyId: string
@@ -341,6 +411,11 @@ export type VehicleUpdateInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -355,6 +430,11 @@ export type VehicleUncheckedUpdateInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -369,6 +449,11 @@ export type VehicleCreateManyInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   userId: string
   flatId: string
   societyId: string
@@ -383,6 +468,11 @@ export type VehicleUpdateManyMutationInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -394,6 +484,11 @@ export type VehicleUncheckedUpdateManyInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -423,6 +518,11 @@ export type VehicleCountOrderByAggregateInput = {
   vehicleType?: Prisma.SortOrder
   model?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrder
+  parkingSlot?: Prisma.SortOrder
+  stickerNumber?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   societyId?: Prisma.SortOrder
@@ -437,6 +537,11 @@ export type VehicleMaxOrderByAggregateInput = {
   vehicleType?: Prisma.SortOrder
   model?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrder
+  parkingSlot?: Prisma.SortOrder
+  stickerNumber?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   societyId?: Prisma.SortOrder
@@ -451,6 +556,11 @@ export type VehicleMinOrderByAggregateInput = {
   vehicleType?: Prisma.SortOrder
   model?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrder
+  parkingSlot?: Prisma.SortOrder
+  stickerNumber?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   societyId?: Prisma.SortOrder
@@ -585,12 +695,21 @@ export type VehicleUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.VehicleScalarWhereInput | Prisma.VehicleScalarWhereInput[]
 }
 
+export type EnumVehicleStatusFieldUpdateOperationsInput = {
+  set?: $Enums.VehicleStatus
+}
+
 export type VehicleCreateWithoutSocietyInput = {
   id?: string
   vehicleNumber: string
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -604,6 +723,11 @@ export type VehicleUncheckedCreateWithoutSocietyInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   userId: string
   flatId: string
   isActive?: boolean
@@ -646,6 +770,11 @@ export type VehicleScalarWhereInput = {
   vehicleType?: Prisma.StringFilter<"Vehicle"> | string
   model?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   color?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  status?: Prisma.EnumVehicleStatusFilter<"Vehicle"> | $Enums.VehicleStatus
+  rejectionNote?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  parkingSlot?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  stickerNumber?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  lastSeen?: Prisma.DateTimeNullableFilter<"Vehicle"> | Date | string | null
   userId?: Prisma.StringFilter<"Vehicle"> | string
   flatId?: Prisma.StringFilter<"Vehicle"> | string
   societyId?: Prisma.StringFilter<"Vehicle"> | string
@@ -660,6 +789,11 @@ export type VehicleCreateWithoutFlatInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -673,6 +807,11 @@ export type VehicleUncheckedCreateWithoutFlatInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   userId: string
   societyId: string
   isActive?: boolean
@@ -712,6 +851,11 @@ export type VehicleCreateWithoutUserInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -725,6 +869,11 @@ export type VehicleUncheckedCreateWithoutUserInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   flatId: string
   societyId: string
   isActive?: boolean
@@ -764,6 +913,11 @@ export type VehicleCreateManySocietyInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   userId: string
   flatId: string
   isActive?: boolean
@@ -777,6 +931,11 @@ export type VehicleUpdateWithoutSocietyInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -790,6 +949,11 @@ export type VehicleUncheckedUpdateWithoutSocietyInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -803,6 +967,11 @@ export type VehicleUncheckedUpdateManyWithoutSocietyInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -816,6 +985,11 @@ export type VehicleCreateManyFlatInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   userId: string
   societyId: string
   isActive?: boolean
@@ -829,6 +1003,11 @@ export type VehicleUpdateWithoutFlatInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -842,6 +1021,11 @@ export type VehicleUncheckedUpdateWithoutFlatInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -855,6 +1039,11 @@ export type VehicleUncheckedUpdateManyWithoutFlatInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -868,6 +1057,11 @@ export type VehicleCreateManyUserInput = {
   vehicleType: string
   model?: string | null
   color?: string | null
+  status?: $Enums.VehicleStatus
+  rejectionNote?: string | null
+  parkingSlot?: string | null
+  stickerNumber?: string | null
+  lastSeen?: Date | string | null
   flatId: string
   societyId: string
   isActive?: boolean
@@ -881,6 +1075,11 @@ export type VehicleUpdateWithoutUserInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -894,6 +1093,11 @@ export type VehicleUncheckedUpdateWithoutUserInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -907,6 +1111,11 @@ export type VehicleUncheckedUpdateManyWithoutUserInput = {
   vehicleType?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parkingSlot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stickerNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeen?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -922,6 +1131,11 @@ export type VehicleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   vehicleType?: boolean
   model?: boolean
   color?: boolean
+  status?: boolean
+  rejectionNote?: boolean
+  parkingSlot?: boolean
+  stickerNumber?: boolean
+  lastSeen?: boolean
   userId?: boolean
   flatId?: boolean
   societyId?: boolean
@@ -939,6 +1153,11 @@ export type VehicleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   vehicleType?: boolean
   model?: boolean
   color?: boolean
+  status?: boolean
+  rejectionNote?: boolean
+  parkingSlot?: boolean
+  stickerNumber?: boolean
+  lastSeen?: boolean
   userId?: boolean
   flatId?: boolean
   societyId?: boolean
@@ -956,6 +1175,11 @@ export type VehicleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   vehicleType?: boolean
   model?: boolean
   color?: boolean
+  status?: boolean
+  rejectionNote?: boolean
+  parkingSlot?: boolean
+  stickerNumber?: boolean
+  lastSeen?: boolean
   userId?: boolean
   flatId?: boolean
   societyId?: boolean
@@ -973,6 +1197,11 @@ export type VehicleSelectScalar = {
   vehicleType?: boolean
   model?: boolean
   color?: boolean
+  status?: boolean
+  rejectionNote?: boolean
+  parkingSlot?: boolean
+  stickerNumber?: boolean
+  lastSeen?: boolean
   userId?: boolean
   flatId?: boolean
   societyId?: boolean
@@ -981,7 +1210,7 @@ export type VehicleSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VehicleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleNumber" | "vehicleType" | "model" | "color" | "userId" | "flatId" | "societyId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
+export type VehicleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vehicleNumber" | "vehicleType" | "model" | "color" | "status" | "rejectionNote" | "parkingSlot" | "stickerNumber" | "lastSeen" | "userId" | "flatId" | "societyId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
 export type VehicleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
@@ -1011,6 +1240,11 @@ export type $VehiclePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     vehicleType: string
     model: string | null
     color: string | null
+    status: $Enums.VehicleStatus
+    rejectionNote: string | null
+    parkingSlot: string | null
+    stickerNumber: string | null
+    lastSeen: Date | null
     userId: string
     flatId: string
     societyId: string
@@ -1448,6 +1682,11 @@ export interface VehicleFieldRefs {
   readonly vehicleType: Prisma.FieldRef<"Vehicle", 'String'>
   readonly model: Prisma.FieldRef<"Vehicle", 'String'>
   readonly color: Prisma.FieldRef<"Vehicle", 'String'>
+  readonly status: Prisma.FieldRef<"Vehicle", 'VehicleStatus'>
+  readonly rejectionNote: Prisma.FieldRef<"Vehicle", 'String'>
+  readonly parkingSlot: Prisma.FieldRef<"Vehicle", 'String'>
+  readonly stickerNumber: Prisma.FieldRef<"Vehicle", 'String'>
+  readonly lastSeen: Prisma.FieldRef<"Vehicle", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Vehicle", 'String'>
   readonly flatId: Prisma.FieldRef<"Vehicle", 'String'>
   readonly societyId: Prisma.FieldRef<"Vehicle", 'String'>

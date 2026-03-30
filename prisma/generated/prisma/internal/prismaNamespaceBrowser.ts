@@ -77,6 +77,14 @@ export const ModelName = {
   Complaint: 'Complaint',
   Emergency: 'Emergency',
   Vendor: 'Vendor',
+  VendorLike: 'VendorLike',
+  CommunityPost: 'CommunityPost',
+  PostLike: 'PostLike',
+  PostComment: 'PostComment',
+  SocietyDocument: 'SocietyDocument',
+  Poll: 'Poll',
+  PollOption: 'PollOption',
+  PollVote: 'PollVote',
   OnboardingRequest: 'OnboardingRequest',
   ResidentDocument: 'ResidentDocument',
   OnboardingAuditLog: 'OnboardingAuditLog',
@@ -476,6 +484,11 @@ export const VehicleScalarFieldEnum = {
   vehicleType: 'vehicleType',
   model: 'model',
   color: 'color',
+  status: 'status',
+  rejectionNote: 'rejectionNote',
+  parkingSlot: 'parkingSlot',
+  stickerNumber: 'stickerNumber',
+  lastSeen: 'lastSeen',
   userId: 'userId',
   flatId: 'flatId',
   societyId: 'societyId',
@@ -679,6 +692,7 @@ export const VendorScalarFieldEnum = {
   verifiedAt: 'verifiedAt',
   rating: 'rating',
   totalReviews: 'totalReviews',
+  likesCount: 'likesCount',
   isActive: 'isActive',
   workingDays: 'workingDays',
   workingHours: 'workingHours',
@@ -693,6 +707,116 @@ export const VendorScalarFieldEnum = {
 } as const
 
 export type VendorScalarFieldEnum = (typeof VendorScalarFieldEnum)[keyof typeof VendorScalarFieldEnum]
+
+
+export const VendorLikeScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type VendorLikeScalarFieldEnum = (typeof VendorLikeScalarFieldEnum)[keyof typeof VendorLikeScalarFieldEnum]
+
+
+export const CommunityPostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  category: 'category',
+  isAnonymous: 'isAnonymous',
+  isPinned: 'isPinned',
+  isActive: 'isActive',
+  likesCount: 'likesCount',
+  commentsCount: 'commentsCount',
+  authorId: 'authorId',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommunityPostScalarFieldEnum = (typeof CommunityPostScalarFieldEnum)[keyof typeof CommunityPostScalarFieldEnum]
+
+
+export const PostLikeScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type PostLikeScalarFieldEnum = (typeof PostLikeScalarFieldEnum)[keyof typeof PostLikeScalarFieldEnum]
+
+
+export const PostCommentScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  isAnonymous: 'isAnonymous',
+  postId: 'postId',
+  authorId: 'authorId',
+  societyId: 'societyId',
+  createdAt: 'createdAt'
+} as const
+
+export type PostCommentScalarFieldEnum = (typeof PostCommentScalarFieldEnum)[keyof typeof PostCommentScalarFieldEnum]
+
+
+export const SocietyDocumentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  fileUrl: 'fileUrl',
+  fileKey: 'fileKey',
+  fileName: 'fileName',
+  fileSizeMB: 'fileSizeMB',
+  fileType: 'fileType',
+  isAdminDoc: 'isAdminDoc',
+  uploadedById: 'uploadedById',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyDocumentScalarFieldEnum = (typeof SocietyDocumentScalarFieldEnum)[keyof typeof SocietyDocumentScalarFieldEnum]
+
+
+export const PollScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  isAnonymous: 'isAnonymous',
+  allowMultiple: 'allowMultiple',
+  votingEndsAt: 'votingEndsAt',
+  createdById: 'createdById',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PollScalarFieldEnum = (typeof PollScalarFieldEnum)[keyof typeof PollScalarFieldEnum]
+
+
+export const PollOptionScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  text: 'text',
+  votes: 'votes'
+} as const
+
+export type PollOptionScalarFieldEnum = (typeof PollOptionScalarFieldEnum)[keyof typeof PollOptionScalarFieldEnum]
+
+
+export const PollVoteScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  optionId: 'optionId',
+  votedById: 'votedById',
+  votedAt: 'votedAt'
+} as const
+
+export type PollVoteScalarFieldEnum = (typeof PollVoteScalarFieldEnum)[keyof typeof PollVoteScalarFieldEnum]
 
 
 export const OnboardingRequestScalarFieldEnum = {

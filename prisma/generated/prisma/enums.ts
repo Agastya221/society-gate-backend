@@ -457,3 +457,48 @@ export const HelpCategory = {
 } as const
 
 export type HelpCategory = (typeof HelpCategory)[keyof typeof HelpCategory]
+
+
+export const VehicleStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  REJECTED: 'REJECTED'
+} as const
+
+export type VehicleStatus = (typeof VehicleStatus)[keyof typeof VehicleStatus]
+
+
+export const PostCategory = {
+  GENERAL: 'GENERAL',
+  ANNOUNCEMENT: 'ANNOUNCEMENT',
+  QUESTION: 'QUESTION',
+  ISSUE: 'ISSUE',
+  APPRECIATION: 'APPRECIATION',
+  HELP: 'HELP',
+  EVENT: 'EVENT'
+} as const
+
+export type PostCategory = (typeof PostCategory)[keyof typeof PostCategory]
+
+
+export const DocumentCategory = {
+  RULES_AND_BYLAWS: 'RULES_AND_BYLAWS',
+  MEETING_MINUTES: 'MEETING_MINUTES',
+  FINANCIAL: 'FINANCIAL',
+  CIRCULAR: 'CIRCULAR',
+  MAINTENANCE: 'MAINTENANCE',
+  LEGAL: 'LEGAL',
+  PERSONAL: 'PERSONAL',
+  OTHER: 'OTHER'
+} as const
+
+export type DocumentCategory = (typeof DocumentCategory)[keyof typeof DocumentCategory]
+
+
+export const PollStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED'
+} as const
+
+export type PollStatus = (typeof PollStatus)[keyof typeof PollStatus]

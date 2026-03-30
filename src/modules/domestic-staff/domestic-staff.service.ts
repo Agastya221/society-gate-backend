@@ -91,14 +91,23 @@ export class DomesticStaffService {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(Math.max(1, limit), 100);
 
-    const [staff, total] = await Promise.all([
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const [staffRows, total] = await Promise.all([
       prisma.domesticStaff.findMany({
         where,
         include: {
           assignedFlats: {
-            include: {
-              flat: true,
-            },
+            where: { isActive: true },
+            include: { flat: { select: { id: true, flatNumber: true } } },
+          },
+          reviews: { select: { rating: true } },
+          attendanceRecords: {
+            where: { checkInTime: { gte: thirtyDaysAgo } },
+            select: { id: true, checkInTime: true },
+            orderBy: { checkInTime: 'desc' },
           },
         },
         orderBy: [
@@ -112,6 +121,8 @@ export class DomesticStaffService {
       prisma.domesticStaff.count({ where }),
     ]);
 
+    const staff = staffRows.map((s) => this._formatStaffListItem(s, now));
+
     return {
       staff,
       pagination: {
@@ -124,14 +135,17 @@ export class DomesticStaffService {
   }
 
   async getStaffById(staffId: string) {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
     const staff = await prisma.domesticStaff.findUnique({
       where: { id: staffId },
       include: {
         addedBy: { select: { id: true, name: true, role: true } },
         assignedFlats: {
-          include: {
-            flat: true,
-          },
+          where: { isActive: true },
+          include: { flat: { select: { id: true, flatNumber: true } } },
         },
         reviews: {
           include: {
@@ -140,6 +154,11 @@ export class DomesticStaffService {
           orderBy: { createdAt: 'desc' },
           take: 10,
         },
+        attendanceRecords: {
+          where: { checkInTime: { gte: thirtyDaysAgo } },
+          select: { id: true, checkInTime: true },
+          orderBy: { checkInTime: 'desc' },
+        },
       },
     });
 
@@ -147,7 +166,81 @@ export class DomesticStaffService {
       throw new AppError('Staff not found', 404);
     }
 
-    return staff;
+    return this._formatStaffListItem(staff, now);
+  }
+
+  // Returns count of active staff per type for the society
+  async getTypeSummary(societyId: string) {
+    const counts = await prisma.domesticStaff.groupBy({
+      by: ['staffType'],
+      where: { societyId, isActive: true },
+      _count: { id: true },
+      orderBy: { staffType: 'asc' },
+    });
+
+    return counts.map((c) => ({
+      type: c.staffType,
+      count: c._count.id,
+    }));
+  }
+
+  // Shapes a staff record into the frontend-expected shape
+  private _formatStaffListItem<T extends {
+    phone: string;
+    createdAt: Date;
+    isCurrentlyWorking: boolean;
+    assignedFlats: Array<{ flat: { id: string; flatNumber: string }; createdAt: Date }>;
+    reviews: Array<{ rating: number }>;
+    attendanceRecords: Array<{ id: string; checkInTime: Date }>;
+  }>(staff: T, now: Date) {
+    const { phone, createdAt, assignedFlats, reviews, attendanceRecords, ...rest } = staff;
+
+    // Phone masking: show only last 4 digits
+    const maskedPhone = phone.length > 4
+      ? `${'*'.repeat(phone.length - 4)}${phone.slice(-4)}`
+      : phone;
+
+    // Years in society since staff was added
+    const yearsInSociety = Math.floor(
+      (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24 * 365)
+    );
+
+    // Attendance score for current 30-day window: unique days with check-in
+    const uniqueDays = new Set(
+      attendanceRecords.map((a) => a.checkInTime.toISOString().slice(0, 10))
+    );
+    const attendanceScore = `${uniqueDays.size}/30`;
+
+    // worksIn: flats this staff is assigned to, with duration in months since assignment
+    const worksIn = assignedFlats.map((a) => ({
+      flat: a.flat.flatNumber,
+      flatId: a.flat.id,
+      durationMonths: Math.floor(
+        (now.getTime() - new Date(a.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 30)
+      ),
+    }));
+
+    // Aggregated ratings: count per star (1–5)
+    const ratingCounts: Record<string, number> = { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0 };
+    for (const r of reviews) {
+      const key = String(Math.round(r.rating));
+      if (ratingCounts[key] !== undefined) ratingCounts[key]++;
+    }
+    const ratings = Object.entries(ratingCounts).map(([label, count]) => ({
+      label: `${label} star`,
+      count,
+    }));
+
+    return {
+      ...rest,
+      phone: maskedPhone,
+      createdAt,
+      yearsInSociety,
+      attendanceScore,
+      housesCount: assignedFlats.length,
+      worksIn,
+      ratings,
+    };
   }
 
   async updateStaff(staffId: string, data: UpdateStaffDTO) {

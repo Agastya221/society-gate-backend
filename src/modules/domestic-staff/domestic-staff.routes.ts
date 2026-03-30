@@ -35,6 +35,9 @@ import {
   // Availability
   getAvailableStaff,
   updateAvailabilityStatus,
+
+  // Summary
+  getTypeSummary,
 } from './domestic-staff.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
@@ -57,6 +60,7 @@ router.use(ensureSameSociety);
 // All users can view staff list and available staff (cached)
 router.get('/', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffList);
 router.get('/available', cache({ ttl: 60, keyPrefix: 'staff', varyBy: ['societyId'] }), getAvailableStaff);
+router.get('/types', cache({ ttl: 300, keyPrefix: 'staff', varyBy: ['societyId'] }), getTypeSummary);
 
 // Residents can add staff
 router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), createStaff);

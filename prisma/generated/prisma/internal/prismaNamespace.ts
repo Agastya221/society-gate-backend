@@ -410,6 +410,14 @@ export const ModelName = {
   Complaint: 'Complaint',
   Emergency: 'Emergency',
   Vendor: 'Vendor',
+  VendorLike: 'VendorLike',
+  CommunityPost: 'CommunityPost',
+  PostLike: 'PostLike',
+  PostComment: 'PostComment',
+  SocietyDocument: 'SocietyDocument',
+  Poll: 'Poll',
+  PollOption: 'PollOption',
+  PollVote: 'PollVote',
   OnboardingRequest: 'OnboardingRequest',
   ResidentDocument: 'ResidentDocument',
   OnboardingAuditLog: 'OnboardingAuditLog',
@@ -435,7 +443,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
+    modelProps: "society" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2363,6 +2371,598 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VendorLike: {
+      payload: Prisma.$VendorLikePayload<ExtArgs>
+      fields: Prisma.VendorLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>
+        }
+        findFirst: {
+          args: Prisma.VendorLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>
+        }
+        findMany: {
+          args: Prisma.VendorLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>[]
+        }
+        create: {
+          args: Prisma.VendorLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>
+        }
+        createMany: {
+          args: Prisma.VendorLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VendorLikeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>[]
+        }
+        delete: {
+          args: Prisma.VendorLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>
+        }
+        update: {
+          args: Prisma.VendorLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VendorLikeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>[]
+        }
+        upsert: {
+          args: Prisma.VendorLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorLikePayload>
+        }
+        aggregate: {
+          args: Prisma.VendorLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorLike>
+        }
+        groupBy: {
+          args: Prisma.VendorLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorLikeCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommunityPost: {
+      payload: Prisma.$CommunityPostPayload<ExtArgs>
+      fields: Prisma.CommunityPostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommunityPostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommunityPostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>
+        }
+        findFirst: {
+          args: Prisma.CommunityPostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommunityPostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>
+        }
+        findMany: {
+          args: Prisma.CommunityPostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>[]
+        }
+        create: {
+          args: Prisma.CommunityPostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>
+        }
+        createMany: {
+          args: Prisma.CommunityPostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommunityPostCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>[]
+        }
+        delete: {
+          args: Prisma.CommunityPostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>
+        }
+        update: {
+          args: Prisma.CommunityPostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommunityPostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommunityPostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommunityPostUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommunityPostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommunityPostPayload>
+        }
+        aggregate: {
+          args: Prisma.CommunityPostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommunityPost>
+        }
+        groupBy: {
+          args: Prisma.CommunityPostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommunityPostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommunityPostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommunityPostCountAggregateOutputType> | number
+        }
+      }
+    }
+    PostLike: {
+      payload: Prisma.$PostLikePayload<ExtArgs>
+      fields: Prisma.PostLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>
+        }
+        findFirst: {
+          args: Prisma.PostLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>
+        }
+        findMany: {
+          args: Prisma.PostLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>[]
+        }
+        create: {
+          args: Prisma.PostLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>
+        }
+        createMany: {
+          args: Prisma.PostLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostLikeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>[]
+        }
+        delete: {
+          args: Prisma.PostLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>
+        }
+        update: {
+          args: Prisma.PostLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.PostLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostLikeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>[]
+        }
+        upsert: {
+          args: Prisma.PostLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostLikePayload>
+        }
+        aggregate: {
+          args: Prisma.PostLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostLike>
+        }
+        groupBy: {
+          args: Prisma.PostLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostLikeCountAggregateOutputType> | number
+        }
+      }
+    }
+    PostComment: {
+      payload: Prisma.$PostCommentPayload<ExtArgs>
+      fields: Prisma.PostCommentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostCommentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostCommentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        findFirst: {
+          args: Prisma.PostCommentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostCommentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        findMany: {
+          args: Prisma.PostCommentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>[]
+        }
+        create: {
+          args: Prisma.PostCommentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        createMany: {
+          args: Prisma.PostCommentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostCommentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>[]
+        }
+        delete: {
+          args: Prisma.PostCommentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        update: {
+          args: Prisma.PostCommentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostCommentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostCommentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostCommentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>[]
+        }
+        upsert: {
+          args: Prisma.PostCommentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostCommentPayload>
+        }
+        aggregate: {
+          args: Prisma.PostCommentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostComment>
+        }
+        groupBy: {
+          args: Prisma.PostCommentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostCommentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostCommentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostCommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    SocietyDocument: {
+      payload: Prisma.$SocietyDocumentPayload<ExtArgs>
+      fields: Prisma.SocietyDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SocietyDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SocietyDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.SocietyDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SocietyDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.SocietyDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.SocietyDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.SocietyDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SocietyDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.SocietyDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>
+        }
+        update: {
+          args: Prisma.SocietyDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.SocietyDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SocietyDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SocietyDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.SocietyDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.SocietyDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSocietyDocument>
+        }
+        groupBy: {
+          args: Prisma.SocietyDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SocietyDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
+    Poll: {
+      payload: Prisma.$PollPayload<ExtArgs>
+      fields: Prisma.PollFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PollFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PollFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>
+        }
+        findFirst: {
+          args: Prisma.PollFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PollFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>
+        }
+        findMany: {
+          args: Prisma.PollFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>[]
+        }
+        create: {
+          args: Prisma.PollCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>
+        }
+        createMany: {
+          args: Prisma.PollCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PollCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>[]
+        }
+        delete: {
+          args: Prisma.PollDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>
+        }
+        update: {
+          args: Prisma.PollUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>
+        }
+        deleteMany: {
+          args: Prisma.PollDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PollUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PollUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>[]
+        }
+        upsert: {
+          args: Prisma.PollUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollPayload>
+        }
+        aggregate: {
+          args: Prisma.PollAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePoll>
+        }
+        groupBy: {
+          args: Prisma.PollGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PollGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PollCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PollCountAggregateOutputType> | number
+        }
+      }
+    }
+    PollOption: {
+      payload: Prisma.$PollOptionPayload<ExtArgs>
+      fields: Prisma.PollOptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PollOptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PollOptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>
+        }
+        findFirst: {
+          args: Prisma.PollOptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PollOptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>
+        }
+        findMany: {
+          args: Prisma.PollOptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>[]
+        }
+        create: {
+          args: Prisma.PollOptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>
+        }
+        createMany: {
+          args: Prisma.PollOptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PollOptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>[]
+        }
+        delete: {
+          args: Prisma.PollOptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>
+        }
+        update: {
+          args: Prisma.PollOptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.PollOptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PollOptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PollOptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.PollOptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollOptionPayload>
+        }
+        aggregate: {
+          args: Prisma.PollOptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePollOption>
+        }
+        groupBy: {
+          args: Prisma.PollOptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PollOptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PollOptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PollOptionCountAggregateOutputType> | number
+        }
+      }
+    }
+    PollVote: {
+      payload: Prisma.$PollVotePayload<ExtArgs>
+      fields: Prisma.PollVoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PollVoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PollVoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>
+        }
+        findFirst: {
+          args: Prisma.PollVoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PollVoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>
+        }
+        findMany: {
+          args: Prisma.PollVoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>[]
+        }
+        create: {
+          args: Prisma.PollVoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>
+        }
+        createMany: {
+          args: Prisma.PollVoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PollVoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>[]
+        }
+        delete: {
+          args: Prisma.PollVoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>
+        }
+        update: {
+          args: Prisma.PollVoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>
+        }
+        deleteMany: {
+          args: Prisma.PollVoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PollVoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PollVoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>[]
+        }
+        upsert: {
+          args: Prisma.PollVoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PollVotePayload>
+        }
+        aggregate: {
+          args: Prisma.PollVoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePollVote>
+        }
+        groupBy: {
+          args: Prisma.PollVoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PollVoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PollVoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PollVoteCountAggregateOutputType> | number
+        }
+      }
+    }
     OnboardingRequest: {
       payload: Prisma.$OnboardingRequestPayload<ExtArgs>
       fields: Prisma.OnboardingRequestFieldRefs
@@ -3513,6 +4113,11 @@ export const VehicleScalarFieldEnum = {
   vehicleType: 'vehicleType',
   model: 'model',
   color: 'color',
+  status: 'status',
+  rejectionNote: 'rejectionNote',
+  parkingSlot: 'parkingSlot',
+  stickerNumber: 'stickerNumber',
+  lastSeen: 'lastSeen',
   userId: 'userId',
   flatId: 'flatId',
   societyId: 'societyId',
@@ -3716,6 +4321,7 @@ export const VendorScalarFieldEnum = {
   verifiedAt: 'verifiedAt',
   rating: 'rating',
   totalReviews: 'totalReviews',
+  likesCount: 'likesCount',
   isActive: 'isActive',
   workingDays: 'workingDays',
   workingHours: 'workingHours',
@@ -3730,6 +4336,116 @@ export const VendorScalarFieldEnum = {
 } as const
 
 export type VendorScalarFieldEnum = (typeof VendorScalarFieldEnum)[keyof typeof VendorScalarFieldEnum]
+
+
+export const VendorLikeScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type VendorLikeScalarFieldEnum = (typeof VendorLikeScalarFieldEnum)[keyof typeof VendorLikeScalarFieldEnum]
+
+
+export const CommunityPostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  category: 'category',
+  isAnonymous: 'isAnonymous',
+  isPinned: 'isPinned',
+  isActive: 'isActive',
+  likesCount: 'likesCount',
+  commentsCount: 'commentsCount',
+  authorId: 'authorId',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommunityPostScalarFieldEnum = (typeof CommunityPostScalarFieldEnum)[keyof typeof CommunityPostScalarFieldEnum]
+
+
+export const PostLikeScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type PostLikeScalarFieldEnum = (typeof PostLikeScalarFieldEnum)[keyof typeof PostLikeScalarFieldEnum]
+
+
+export const PostCommentScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  isAnonymous: 'isAnonymous',
+  postId: 'postId',
+  authorId: 'authorId',
+  societyId: 'societyId',
+  createdAt: 'createdAt'
+} as const
+
+export type PostCommentScalarFieldEnum = (typeof PostCommentScalarFieldEnum)[keyof typeof PostCommentScalarFieldEnum]
+
+
+export const SocietyDocumentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  fileUrl: 'fileUrl',
+  fileKey: 'fileKey',
+  fileName: 'fileName',
+  fileSizeMB: 'fileSizeMB',
+  fileType: 'fileType',
+  isAdminDoc: 'isAdminDoc',
+  uploadedById: 'uploadedById',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyDocumentScalarFieldEnum = (typeof SocietyDocumentScalarFieldEnum)[keyof typeof SocietyDocumentScalarFieldEnum]
+
+
+export const PollScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  isAnonymous: 'isAnonymous',
+  allowMultiple: 'allowMultiple',
+  votingEndsAt: 'votingEndsAt',
+  createdById: 'createdById',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PollScalarFieldEnum = (typeof PollScalarFieldEnum)[keyof typeof PollScalarFieldEnum]
+
+
+export const PollOptionScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  text: 'text',
+  votes: 'votes'
+} as const
+
+export type PollOptionScalarFieldEnum = (typeof PollOptionScalarFieldEnum)[keyof typeof PollOptionScalarFieldEnum]
+
+
+export const PollVoteScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  optionId: 'optionId',
+  votedById: 'votedById',
+  votedAt: 'votedAt'
+} as const
+
+export type PollVoteScalarFieldEnum = (typeof PollVoteScalarFieldEnum)[keyof typeof PollVoteScalarFieldEnum]
 
 
 export const OnboardingRequestScalarFieldEnum = {
@@ -4230,6 +4946,20 @@ export type ListEnumStaffBookingStatusFieldRefInput<$PrismaModel> = FieldRefInpu
 
 
 /**
+ * Reference to a field of type 'VehicleStatus'
+ */
+export type EnumVehicleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VehicleStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'VehicleStatus[]'
+ */
+export type ListEnumVehicleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VehicleStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'GatePassType'
  */
 export type EnumGatePassTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GatePassType'>
@@ -4394,6 +5124,48 @@ export type EnumVendorCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'VendorCategory[]'
  */
 export type ListEnumVendorCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VendorCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PostCategory'
+ */
+export type EnumPostCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'PostCategory[]'
+ */
+export type ListEnumPostCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentCategory'
+ */
+export type EnumDocumentCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentCategory[]'
+ */
+export type ListEnumDocumentCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PollStatus'
+ */
+export type EnumPollStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PollStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PollStatus[]'
+ */
+export type ListEnumPollStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PollStatus[]'>
     
 
 
@@ -4713,6 +5485,14 @@ export type GlobalOmitConfig = {
   complaint?: Prisma.ComplaintOmit
   emergency?: Prisma.EmergencyOmit
   vendor?: Prisma.VendorOmit
+  vendorLike?: Prisma.VendorLikeOmit
+  communityPost?: Prisma.CommunityPostOmit
+  postLike?: Prisma.PostLikeOmit
+  postComment?: Prisma.PostCommentOmit
+  societyDocument?: Prisma.SocietyDocumentOmit
+  poll?: Prisma.PollOmit
+  pollOption?: Prisma.PollOptionOmit
+  pollVote?: Prisma.PollVoteOmit
   onboardingRequest?: Prisma.OnboardingRequestOmit
   residentDocument?: Prisma.ResidentDocumentOmit
   onboardingAuditLog?: Prisma.OnboardingAuditLogOmit

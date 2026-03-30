@@ -25,13 +25,14 @@ export const createVendor = async (req: Request, res: Response) => {
 
 export const getVendors = async (req: Request, res: Response) => {
   try {
-    const filters: VendorFilters = {
+    const filters: VendorFilters & { requestingUserId?: string } = {
       societyId: req.user!.societyId!,
       category: req.query.category as VendorCategory | undefined,
       isVerified: req.query.isVerified === 'true' ? true : req.query.isVerified === 'false' ? false : undefined,
       isActive: req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined,
       page: req.query.page ? Number(req.query.page) : undefined,
       limit: req.query.limit ? Number(req.query.limit) : undefined,
+      requestingUserId: req.user!.id,
     };
     const result = await vendorService.getVendors(filters);
 
@@ -50,11 +51,47 @@ export const getVendors = async (req: Request, res: Response) => {
 export const getVendorById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const vendor = await vendorService.getVendorById(String(id));
+    const vendor = await vendorService.getVendorById(String(id), req.user!.id);
 
     res.status(200).json({
       success: true,
       data: vendor,
+    });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};
+
+export const likeVendor = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user!.id;
+    const result = await vendorService.toggleLike(String(id), userId);
+
+    res.status(200).json({
+      success: true,
+      message: result.liked ? 'Vendor liked' : 'Vendor unliked',
+      data: result,
+    });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};
+
+export const getCategorySummary = async (req: Request, res: Response) => {
+  try {
+    const societyId = req.user!.societyId!;
+    const categories = await vendorService.getCategorySummary(societyId);
+
+    res.status(200).json({
+      success: true,
+      data: categories,
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({

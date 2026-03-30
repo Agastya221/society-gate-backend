@@ -417,6 +417,10 @@ model Society {
   guestEntryLogs      GuestEntryLog[]
   registrationRequest SocietyRegistrationRequest?
   preApprovedEntries  PreApprovedEntry[]
+  communityPosts      CommunityPost[]
+  postComments        PostComment[]
+  societyDocuments    SocietyDocument[]
+  polls               Poll[]
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
@@ -616,6 +620,19 @@ model User {
   verifiedStaffAttendance StaffAttendance[]
   staffBookings           StaffBooking[]
   staffReviews            StaffReview[]
+  vendorLikes             VendorLike[]
+
+  // Community Posts
+  communityPosts CommunityPost[] @relation("PostAuthor")
+  postLikes      PostLike[]
+  postComments   PostComment[]   @relation("CommentAuthor")
+
+  // Documents
+  uploadedDocuments SocietyDocument[] @relation("DocumentUploader")
+
+  // Polls
+  createdPolls Poll[]     @relation("PollCreator")
+  pollVotes    PollVote[] @relation("PollVoter")
 
   // Onboarding relations
   onboardingRequest   OnboardingRequest?   @relation("ResidentOnboarding")
@@ -1144,12 +1161,29 @@ model StaffReview {
 // VEHICLES
 // --------------------
 
+enum VehicleStatus {
+  PENDING  // Awaiting admin approval
+  ACTIVE   // Approved
+  REJECTED // Rejected by admin
+}
+
 model Vehicle {
-  id            String  @id @default(uuid())
+  id            String        @id @default(uuid())
   vehicleNumber String
-  vehicleType   String // Car, Bike, Bicycle
+  vehicleType   String // Car, Bike, Bicycle, Other
   model         String?
   color         String?
+
+  // Approval
+  status        VehicleStatus @default(PENDING)
+  rejectionNote String?
+
+  // Parking
+  parkingSlot   String? // Allocated stall/spot e.g. "B-12"
+  stickerNumber String? // Physical sticker assigned
+
+  // Gate tracking
+  lastSeen DateTime? // Last time vehicle was seen at gate
 
   // Owner
   userId String
@@ -1169,6 +1203,7 @@ model Vehicle {
 
   @@unique([societyId, vehicleNumber])
   @@index([userId])
+  @@index([societyId, status])
 }
 
 // --------------------
@@ -1550,6 +1585,9 @@ model Vendor {
   rating       Float? @default(0)
   totalReviews Int    @default(0)
 
+  // Likes
+  likesCount Int @default(0)
+
   // Availability
   isActive     Boolean  @default(true)
   workingDays  String[] // ["MON", "TUE", "WED"]
@@ -1570,11 +1608,212 @@ model Vendor {
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
+  likes VendorLike[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([societyId, category, isActive])
   @@index([societyId, isVerified])
+}
+
+model VendorLike {
+  id       String @id @default(uuid())
+  vendorId String
+  userId   String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([vendorId, userId])
+  @@index([vendorId])
+}
+
+// --------------------
+// COMMUNITY POSTS
+// --------------------
+
+enum PostCategory {
+  GENERAL
+  ANNOUNCEMENT
+  QUESTION
+  ISSUE
+  APPRECIATION
+  HELP
+  EVENT
+}
+
+model CommunityPost {
+  id       String       @id @default(uuid())
+  title    String
+  content  String
+  category PostCategory @default(GENERAL)
+
+  isAnonymous Boolean @default(false)
+  isPinned    Boolean @default(false)
+  isActive    Boolean @default(true)
+
+  likesCount    Int @default(0)
+  commentsCount Int @default(0)
+
+  authorId  String
+  author    User    @relation("PostAuthor", fields: [authorId], references: [id])
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  likes    PostLike[]
+  comments PostComment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, isActive, isPinned, createdAt(sort: Desc)])
+  @@index([societyId, category, isActive])
+  @@index([authorId, isActive])
+}
+
+model PostLike {
+  id     String @id @default(uuid())
+  postId String
+  userId String
+
+  post CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
+}
+
+model PostComment {
+  id      String @id @default(uuid())
+  content String
+
+  isAnonymous Boolean @default(false)
+
+  postId    String
+  authorId  String
+  societyId String
+
+  post    CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author  User          @relation("CommentAuthor", fields: [authorId], references: [id])
+  society Society       @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([postId, createdAt(sort: Desc)])
+  @@index([authorId])
+}
+
+// --------------------
+// SOCIETY DOCUMENTS
+// --------------------
+
+enum DocumentCategory {
+  RULES_AND_BYLAWS
+  MEETING_MINUTES
+  FINANCIAL
+  CIRCULAR
+  MAINTENANCE
+  LEGAL
+  PERSONAL
+  OTHER
+}
+
+model SocietyDocument {
+  id          String           @id @default(uuid())
+  name        String
+  description String?
+  category    DocumentCategory
+
+  // File info
+  fileUrl     String // S3 URL
+  fileKey     String // S3 key for deletion
+  fileName    String
+  fileSizeMB  Float
+  fileType    String // PDF, PNG, etc.
+
+  // Scope
+  isAdminDoc Boolean @default(false) // true = visible to all residents, false = personal
+
+  // Owner
+  uploadedById String
+  uploadedBy   User   @relation("DocumentUploader", fields: [uploadedById], references: [id])
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, isAdminDoc, category])
+  @@index([uploadedById, isAdminDoc])
+}
+
+// --------------------
+// POLLS / ELECTIONS
+// --------------------
+
+enum PollStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+model Poll {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  status      PollStatus @default(ACTIVE)
+
+  isAnonymous  Boolean   @default(false) // Hide who voted for what
+  allowMultiple Boolean  @default(false) // Allow multiple option votes
+  votingEndsAt DateTime?
+
+  createdById String
+  createdBy   User    @relation("PollCreator", fields: [createdById], references: [id])
+  societyId   String
+  society     Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  options PollOption[]
+  votes   PollVote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status, createdAt(sort: Desc)])
+}
+
+model PollOption {
+  id     String @id @default(uuid())
+  pollId String
+  text   String
+  votes  Int    @default(0)
+
+  poll      Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  pollVotes PollVote[]
+
+  @@index([pollId])
+}
+
+model PollVote {
+  id       String @id @default(uuid())
+  pollId   String
+  optionId String
+  votedById String
+
+  poll   Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  voter  User       @relation("PollVoter", fields: [votedById], references: [id])
+
+  votedAt DateTime @default(now())
+
+  @@unique([pollId, votedById]) // One vote per resident per poll
+  @@index([pollId])
+  @@index([votedById])
 }
 
 // --------------------

@@ -148,6 +148,46 @@ export type Emergency = Prisma.EmergencyModel
  */
 export type Vendor = Prisma.VendorModel
 /**
+ * Model VendorLike
+ * 
+ */
+export type VendorLike = Prisma.VendorLikeModel
+/**
+ * Model CommunityPost
+ * 
+ */
+export type CommunityPost = Prisma.CommunityPostModel
+/**
+ * Model PostLike
+ * 
+ */
+export type PostLike = Prisma.PostLikeModel
+/**
+ * Model PostComment
+ * 
+ */
+export type PostComment = Prisma.PostCommentModel
+/**
+ * Model SocietyDocument
+ * 
+ */
+export type SocietyDocument = Prisma.SocietyDocumentModel
+/**
+ * Model Poll
+ * 
+ */
+export type Poll = Prisma.PollModel
+/**
+ * Model PollOption
+ * 
+ */
+export type PollOption = Prisma.PollOptionModel
+/**
+ * Model PollVote
+ * 
+ */
+export type PollVote = Prisma.PollVoteModel
+/**
  * Model OnboardingRequest
  * 
  */

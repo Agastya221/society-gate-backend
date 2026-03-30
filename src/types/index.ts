@@ -42,6 +42,10 @@ import {
   PreApprovedEntryStatus,
   PreApprovedVerificationType,
   HelpCategory,
+  PostCategory,
+  VehicleStatus,
+  DocumentCategory,
+  PollStatus,
 } from '../../prisma/generated/prisma/client';
 
 import type {
@@ -75,6 +79,14 @@ import type {
   PreApprovedMeta,
   PreApprovedVerification,
   PreApprovedUsage,
+  Vehicle,
+  CommunityPost,
+  PostLike,
+  PostComment,
+  SocietyDocument,
+  Poll,
+  PollOption,
+  PollVote,
   Prisma,
 } from '../../prisma/generated/prisma/client';
 
@@ -118,6 +130,10 @@ export {
   PreApprovedEntryStatus,
   PreApprovedVerificationType,
   HelpCategory,
+  PostCategory,
+  VehicleStatus,
+  DocumentCategory,
+  PollStatus,
 };
 
 // Re-export model types and Prisma namespace
@@ -152,6 +168,14 @@ export type {
   PreApprovedMeta,
   PreApprovedVerification,
   PreApprovedUsage,
+  Vehicle,
+  CommunityPost,
+  PostLike,
+  PostComment,
+  SocietyDocument,
+  Poll,
+  PollOption,
+  PollVote,
   Prisma,
 };
 
