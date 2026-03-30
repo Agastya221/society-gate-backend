@@ -26,12 +26,22 @@ export const errorHandler = (
 
   // Prisma errors
   if (err.name === 'PrismaClientKnownRequestError') {
-    logger.error({ prismaError: err.message, code: (err as any).code, meta: (err as any).meta }, 'Prisma error');
+    const code = (err as any).code as string | undefined;
+    logger.error({ prismaError: err.message, code, meta: (err as any).meta }, 'Prisma error');
+
+    // Connection/timeout errors → 503 so the client knows to retry
+    if (code === 'ETIMEDOUT' || code === 'P1001' || code === 'P1002' || code === 'P1008' || code === 'P1017') {
+      return res.status(503).json({
+        success: false,
+        message: 'Service temporarily unavailable. Please try again.',
+      });
+    }
+
     return res.status(400).json({
       success: false,
       message: 'Database error occurred',
       error: err.message,
-      code: (err as any).code,
+      code,
     });
   }
 
