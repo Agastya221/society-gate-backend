@@ -17,10 +17,20 @@ export function validate(schemas: ValidationSchemas) {
         req.body = schemas.body.parse(req.body);
       }
       if (schemas.query) {
-        req.query = schemas.query.parse(req.query) as typeof req.query;
+        // req.query is a read-only getter in some Express/Node versions — mutate in place
+        const parsed = schemas.query.parse(req.query) as Record<string, unknown>;
+        for (const key of Object.keys(req.query)) {
+          delete (req.query as Record<string, unknown>)[key];
+        }
+        Object.assign(req.query, parsed);
       }
       if (schemas.params) {
-        req.params = schemas.params.parse(req.params) as typeof req.params;
+        // Same for req.params
+        const parsed = schemas.params.parse(req.params) as Record<string, unknown>;
+        for (const key of Object.keys(req.params)) {
+          delete (req.params as Record<string, unknown>)[key];
+        }
+        Object.assign(req.params, parsed);
       }
       next();
     } catch (error) {
