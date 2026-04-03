@@ -273,7 +273,7 @@ export class AmenityService {
     return updatedBooking;
   }
 
-  // Get fixed slot blocks for a given date
+  // Get fixed slot blocks for a given date — rich availability data for UI
   async getSlots(amenityId: string, date: string) {
     const amenity = await prisma.amenity.findUnique({ where: { id: amenityId } });
     if (!amenity || !amenity.isActive) {
@@ -283,7 +283,7 @@ export class AmenityService {
     const openTime = amenity.openTime ?? '06:00';
     const closeTime = amenity.closeTime ?? '22:00';
     const slotDurationHours = amenity.slotDurationHours ?? 1;
-    const maxCapacity = amenity.capacity ?? 1;
+    const totalCapacity = amenity.capacity ?? 1;
 
     const toMinutes = (t: string) => {
       const [h, m] = t.split(':').map(Number);
@@ -294,48 +294,75 @@ export class AmenityService {
       const m = (minutes % 60).toString().padStart(2, '0');
       return `${h}:${m}`;
     };
+    const to12h = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      const period = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      return `${h12}:${m.toString().padStart(2, '0')} ${period}`;
+    };
 
     const openMin = toMinutes(openTime);
     const closeMin = toMinutes(closeTime);
     const slotMin = slotDurationHours * 60;
 
+    // Current time in IST minutes (for marking past slots)
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const isToday = date === todayStr;
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+
     // Build slot list
-    const slots: { id: string; startTime: string; endTime: string }[] = [];
+    const slots: { id: string; startTime: string; endTime: string; startMin: number }[] = [];
     for (let start = openMin; start + slotMin <= closeMin; start += slotMin) {
       const startStr = toTimeStr(start);
       const endStr = toTimeStr(start + slotMin);
-      slots.push({
-        id: `${amenityId}_${date}_${startStr}`,
-        startTime: startStr,
-        endTime: endStr,
-      });
+      slots.push({ id: `${amenityId}_${date}_${startStr}`, startTime: startStr, endTime: endStr, startMin: start });
     }
 
-    // Fetch confirmed/pending bookings for this amenity+date
-    const bookingDate = new Date(date);
+    // Fetch all confirmed bookings for this amenity+date in one query
     const existingBookings = await prisma.amenityBooking.findMany({
       where: {
         amenityId,
         bookingDate: {
-          gte: new Date(bookingDate.setHours(0, 0, 0, 0)),
+          gte: new Date(new Date(date).setHours(0, 0, 0, 0)),
           lt: new Date(new Date(date).setHours(23, 59, 59, 999)),
         },
-        status: { in: ['PENDING', 'CONFIRMED'] },
+        status: { in: ['CONFIRMED', 'PENDING'] },
       },
       select: { startTime: true, endTime: true, guestCount: true },
     });
 
     return slots.map((slot) => {
-      const bookedGuests = existingBookings
-        .filter((b) => b.startTime === slot.startTime && b.endTime === slot.endTime)
-        .reduce((sum, b) => sum + (b.guestCount ?? 1), 0);
+      const slotBookings = existingBookings.filter(
+        (b) => b.startTime === slot.startTime && b.endTime === slot.endTime
+      );
+      const bookedCount = slotBookings.reduce((sum, b) => sum + (b.guestCount ?? 1), 0);
+      const availableCapacity = Math.max(0, totalCapacity - bookedCount);
+      const isFull = availableCapacity === 0;
+      const isPast = isToday && slot.startMin < nowMin;
+
+      // Status label for UI colour coding — mirrors movie-ticket style
+      let status: 'AVAILABLE' | 'FILLING_FAST' | 'FULL' | 'PAST';
+      if (isPast) {
+        status = 'PAST';
+      } else if (isFull) {
+        status = 'FULL';
+      } else if (availableCapacity <= Math.ceil(totalCapacity * 0.3)) {
+        status = 'FILLING_FAST';
+      } else {
+        status = 'AVAILABLE';
+      }
 
       return {
         id: slot.id,
         startTime: slot.startTime,
         endTime: slot.endTime,
-        isBooked: bookedGuests >= maxCapacity,
-        availableCapacity: Math.max(0, maxCapacity - bookedGuests),
+        label: `${to12h(slot.startTime)} – ${to12h(slot.endTime)}`,
+        status,                       // AVAILABLE | FILLING_FAST | FULL | PAST
+        isBookable: status === 'AVAILABLE' || status === 'FILLING_FAST',
+        totalCapacity,
+        bookedCount,
+        availableCapacity,
       };
     });
   }
