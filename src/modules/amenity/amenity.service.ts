@@ -160,7 +160,7 @@ export class AmenityService {
           ...data,
           userId,
           bookingDate: new Date(bookingDate),
-          status: 'PENDING',
+          status: 'CONFIRMED',
         },
         include: {
           amenity: true,
