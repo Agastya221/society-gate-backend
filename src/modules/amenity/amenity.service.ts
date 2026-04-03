@@ -333,36 +333,21 @@ export class AmenityService {
     });
 
     return slots.map((slot) => {
-      const slotBookings = existingBookings.filter(
+      const isBooked = existingBookings.some(
         (b) => b.startTime === slot.startTime && b.endTime === slot.endTime
       );
-      const bookedCount = slotBookings.reduce((sum, b) => sum + (b.guestCount ?? 1), 0);
-      const availableCapacity = Math.max(0, totalCapacity - bookedCount);
-      const isFull = availableCapacity === 0;
       const isPast = isToday && slot.startMin < nowMin;
 
-      // Status label for UI colour coding — mirrors movie-ticket style
-      let status: 'AVAILABLE' | 'FILLING_FAST' | 'FULL' | 'PAST';
-      if (isPast) {
-        status = 'PAST';
-      } else if (isFull) {
-        status = 'FULL';
-      } else if (availableCapacity <= Math.ceil(totalCapacity * 0.3)) {
-        status = 'FILLING_FAST';
-      } else {
-        status = 'AVAILABLE';
-      }
+      const status: 'AVAILABLE' | 'BOOKED' | 'PAST' =
+        isPast ? 'PAST' : isBooked ? 'BOOKED' : 'AVAILABLE';
 
       return {
         id: slot.id,
         startTime: slot.startTime,
         endTime: slot.endTime,
         label: `${to12h(slot.startTime)} – ${to12h(slot.endTime)}`,
-        status,                       // AVAILABLE | FILLING_FAST | FULL | PAST
-        isBookable: status === 'AVAILABLE' || status === 'FILLING_FAST',
-        totalCapacity,
-        bookedCount,
-        availableCapacity,
+        status,           // AVAILABLE | BOOKED | PAST
+        isBookable: status === 'AVAILABLE',
       };
     });
   }
