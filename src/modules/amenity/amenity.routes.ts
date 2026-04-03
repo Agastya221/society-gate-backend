@@ -7,6 +7,7 @@ import {
   deleteAmenity,
   createBooking,
   getBookings,
+  getMyBookings,
   approveBooking,
   cancelBooking,
   getSlots,
@@ -22,6 +23,7 @@ router.use(ensureSameSociety);
 
 // Static routes first (must come before /:id to avoid param capture)
 router.get('/', cache({ ttl: 300, keyPrefix: 'amenities', varyBy: ['societyId'] }), getAmenities);
+router.get('/my-bookings', cache({ ttl: 60, keyPrefix: 'bookings', varyBy: ['userId'] }), getMyBookings);
 router.get('/bookings', cache({ ttl: 60, keyPrefix: 'bookings', varyBy: ['societyId', 'userId'] }), getBookings);
 router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['amenities:*']), createAmenity);
 router.post('/bookings', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['bookings:*']), createBooking);

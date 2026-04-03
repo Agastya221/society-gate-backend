@@ -13,6 +13,7 @@ const router = Router();
 
 // API v1 Route Groups
 router.use('/auth', authRoutes);              // /api/v1/auth
+router.use('/users', authRoutes);             // /api/v1/users (alias — FCM token, profile, etc.)
 router.use('/gate', gateRoutes);              // /api/v1/gate/*
 router.use('/staff', staffRoutes);            // /api/v1/staff/*
 router.use('/community', communityRoutes);    // /api/v1/community/*

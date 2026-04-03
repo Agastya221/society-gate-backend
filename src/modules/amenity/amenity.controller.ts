@@ -117,6 +117,26 @@ export const createBooking = async (req: Request, res: Response) => {
   }
 };
 
+export const getMyBookings = async (req: Request, res: Response) => {
+  try {
+    const filters: BookingFilters = {
+      societyId: req.user!.societyId!,
+      userId: req.user!.id, // always scoped to the logged-in user
+      status: req.query.status as BookingStatus | undefined,
+      page: req.query.page ? Number(req.query.page) : undefined,
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+    };
+    const result = await amenityService.getBookings(filters);
+
+    res.status(200).json({ success: true, data: result });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};
+
 export const getBookings = async (req: Request, res: Response) => {
   try {
     const filters: BookingFilters = {
