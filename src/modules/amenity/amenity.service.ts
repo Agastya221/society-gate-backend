@@ -6,6 +6,7 @@ import type {
   AmenityFilters,
   CreateBookingDTO,
   BookingFilters,
+  BookSlotDTO,
   Prisma,
 } from '../../types';
 
@@ -270,5 +271,128 @@ export class AmenityService {
     });
 
     return updatedBooking;
+  }
+
+  // Get fixed slot blocks for a given date
+  async getSlots(amenityId: string, date: string) {
+    const amenity = await prisma.amenity.findUnique({ where: { id: amenityId } });
+    if (!amenity || !amenity.isActive) {
+      throw new AppError('Amenity not found or inactive', 404);
+    }
+
+    const openTime = amenity.openTime ?? '06:00';
+    const closeTime = amenity.closeTime ?? '22:00';
+    const slotDurationHours = amenity.slotDurationHours ?? 1;
+    const maxCapacity = amenity.capacity ?? 1;
+
+    const toMinutes = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+    const toTimeStr = (minutes: number) => {
+      const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+      const m = (minutes % 60).toString().padStart(2, '0');
+      return `${h}:${m}`;
+    };
+
+    const openMin = toMinutes(openTime);
+    const closeMin = toMinutes(closeTime);
+    const slotMin = slotDurationHours * 60;
+
+    // Build slot list
+    const slots: { id: string; startTime: string; endTime: string }[] = [];
+    for (let start = openMin; start + slotMin <= closeMin; start += slotMin) {
+      const startStr = toTimeStr(start);
+      const endStr = toTimeStr(start + slotMin);
+      slots.push({
+        id: `${amenityId}_${date}_${startStr}`,
+        startTime: startStr,
+        endTime: endStr,
+      });
+    }
+
+    // Fetch confirmed/pending bookings for this amenity+date
+    const bookingDate = new Date(date);
+    const existingBookings = await prisma.amenityBooking.findMany({
+      where: {
+        amenityId,
+        bookingDate: {
+          gte: new Date(bookingDate.setHours(0, 0, 0, 0)),
+          lt: new Date(new Date(date).setHours(23, 59, 59, 999)),
+        },
+        status: { in: ['PENDING', 'CONFIRMED'] },
+      },
+      select: { startTime: true, endTime: true, guestCount: true },
+    });
+
+    return slots.map((slot) => {
+      const bookedGuests = existingBookings
+        .filter((b) => b.startTime === slot.startTime && b.endTime === slot.endTime)
+        .reduce((sum, b) => sum + (b.guestCount ?? 1), 0);
+
+      return {
+        id: slot.id,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        isBooked: bookedGuests >= maxCapacity,
+        availableCapacity: Math.max(0, maxCapacity - bookedGuests),
+      };
+    });
+  }
+
+  // Book by slotId (frontend-facing)
+  async bookSlot(amenityId: string, data: BookSlotDTO, userId: string) {
+    const { slotId, date, members, purpose } = data;
+
+    // Derive startTime/endTime from slotId: "<amenityId>_<date>_<HH:MM>"
+    const parts = slotId.split('_');
+    // slotId format: <uuid(36chars)>_<YYYY-MM-DD>_<HH:MM>
+    // amenityId is a UUID (contains hyphens), date is YYYY-MM-DD, time is HH:MM
+    // parts after splitting by _ are variable due to UUID hyphens
+    // safer: strip amenityId + date prefix from slotId
+    const prefix = `${amenityId}_${date}_`;
+    if (!slotId.startsWith(prefix)) {
+      throw new AppError('Invalid slotId', 400);
+    }
+    const startTime = slotId.slice(prefix.length);
+
+    const amenity = await prisma.amenity.findUnique({ where: { id: amenityId } });
+    if (!amenity || !amenity.isActive) {
+      throw new AppError('Amenity not found or inactive', 404);
+    }
+
+    const slotDurationHours = amenity.slotDurationHours ?? 1;
+    const toMinutes = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+    const toTimeStr = (minutes: number) => {
+      const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+      const m = (minutes % 60).toString().padStart(2, '0');
+      return `${h}:${m}`;
+    };
+    const endTime = toTimeStr(toMinutes(startTime) + slotDurationHours * 60);
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { flatId: true, societyId: true },
+    });
+    if (!user?.flatId || !user.societyId) {
+      throw new AppError('User must be assigned to a flat', 400);
+    }
+
+    return this.createBooking(
+      {
+        amenityId,
+        flatId: user.flatId,
+        societyId: user.societyId,
+        bookingDate: new Date(date),
+        startTime,
+        endTime,
+        guestCount: members ? members.length + 1 : 1,
+        purpose,
+      },
+      userId
+    );
   }
 }

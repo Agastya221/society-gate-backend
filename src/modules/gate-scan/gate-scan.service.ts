@@ -1,6 +1,7 @@
 import { prisma } from '../../utils/Client';
 import { verifyQRToken } from '../../utils/QrGenerate';
 import { AppError } from '../../utils/ResponseHandler';
+import { eventBus } from '../../utils/eventBus';
 import { preApprovedEntryService } from '../pre-approved-entry/pre-approved-entry.service';
 
 interface ScanResult {
@@ -81,7 +82,7 @@ export class GateScanService {
   async verifyCode(code: string, guardId: string): Promise<VerifyCodeResult> {
     const guard = await prisma.user.findUnique({
       where: { id: guardId },
-      select: { societyId: true },
+      select: { societyId: true, name: true },
     });
     if (!guard?.societyId) throw new AppError('Guard not assigned to society', 400);
 
@@ -120,7 +121,7 @@ export class GateScanService {
     });
 
     if (guestInvite) {
-      return this._verifyGuestInvite(guestInvite, guard.societyId, guardId, code, now, currentDay, currentTime);
+      return this._verifyGuestInvite(guestInvite, guard.societyId, guardId, guard.name ?? 'Guard', code, now, currentDay, currentTime);
     }
 
     // --- Not found ---
@@ -210,6 +211,7 @@ export class GateScanService {
     invite: any,
     societyId: string,
     guardId: string,
+    guardName: string,
     code: string,
     now: Date,
     currentDay: string,
@@ -268,6 +270,21 @@ export class GateScanService {
         },
       });
     }
+
+    // Emit notification event — listener handles FCM + in-app
+    // PRIVATE invites are deliberately excluded (silent entry)
+    eventBus.emit('guest-invite.used', {
+      inviteId: invite.id,
+      inviteType: invite.type,
+      isPrivate: invite.isPrivate,
+      visitorName: invite.visitorName,
+      visitorPhone: invite.visitorPhone ?? null,
+      flatId: invite.flatId,
+      societyId,
+      guardId,
+      guardName,
+      residentName: invite.resident.name,
+    });
 
     return {
       allowed: true,

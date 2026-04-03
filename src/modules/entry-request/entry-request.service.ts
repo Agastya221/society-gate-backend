@@ -97,6 +97,7 @@ export class EntryRequestService {
       entryRequestId: entryRequest.id,
       flatId: data.flatId,
       societyId: guard.societyId,
+      guardId,
       visitorName: data.visitorName,
       providerTag: data.providerTag,
       type: data.type,
@@ -131,7 +132,8 @@ export class EntryRequestService {
     const where: Prisma.EntryRequestWhereInput = {};
 
     if (user.role === 'GUARD') {
-      where.guardId = userId;
+      // Guards see all requests for their society (not just their own — any guard can process)
+      if (user.societyId) where.societyId = user.societyId;
     } else if (user.role === 'RESIDENT') {
       if (user.flatId) where.flatId = user.flatId;
     } else if (user.role === 'ADMIN') {
@@ -141,11 +143,16 @@ export class EntryRequestService {
     if (status) where.status = status;
     if (flatId && user.role !== 'RESIDENT') where.flatId = flatId;
 
-    const [entryRequests, total] = await Promise.all([
+    const [rawRequests, total] = await Promise.all([
       prisma.entryRequest.findMany({
         where,
         include: {
-          flat: { select: { id: true, flatNumber: true } },
+          flat: {
+            select: {
+              flatNumber: true,
+              block: { select: { name: true } },
+            },
+          },
           guard: { select: { id: true, name: true } },
           approvedBy: { select: { id: true, name: true } },
         },
@@ -155,6 +162,14 @@ export class EntryRequestService {
       }),
       prisma.entryRequest.count({ where }),
     ]);
+
+    const entryRequests = rawRequests.map((r) => ({
+      ...r,
+      flat: {
+        number: r.flat?.flatNumber ?? '',
+        block: r.flat?.block ?? null,
+      },
+    }));
 
     return {
       entryRequests,
@@ -178,6 +193,7 @@ export class EntryRequestService {
           select: {
             id: true,
             flatNumber: true,
+            block: { select: { name: true } },
             residents: { select: { id: true } },
           },
         },
@@ -275,7 +291,7 @@ export class EntryRequestService {
         entryId: entry.id,
       },
       include: {
-        flat: { select: { id: true, flatNumber: true } },
+        flat: { select: { id: true, flatNumber: true, block: { select: { name: true } } } },
         guard: { select: { id: true, name: true } },
         approvedBy: { select: { id: true, name: true } },
       },
@@ -286,6 +302,17 @@ export class EntryRequestService {
       status: 'APPROVED',
       flatNumber: entryRequest.flat.flatNumber,
       approvedBy: updatedRequest.approvedBy?.name,
+    });
+
+    eventBus.emit('entry-request.approved', {
+      entryRequestId,
+      flatId: entryRequest.flatId,
+      societyId: entryRequest.societyId,
+      guardId: entryRequest.guardId,
+      visitorName: entryRequest.visitorName || 'Visitor',
+      visitorType: entryRequest.type,
+      approvedById: userId,
+      approvedByName: updatedRequest.approvedBy?.name ?? 'A resident',
     });
 
     return updatedRequest;
@@ -325,23 +352,41 @@ export class EntryRequestService {
       throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
     }
 
-    const updatedRequest = await prisma.entryRequest.update({
-      where: { id: entryRequestId },
-      data: {
-        status: 'REJECTED',
-        rejectedAt: new Date(),
-        rejectionReason: reason,
-      },
-      include: {
-        flat: { select: { id: true, flatNumber: true } },
-        guard: { select: { id: true, name: true } },
-      },
-    });
+    const [updatedRequest, rejecter] = await Promise.all([
+      prisma.entryRequest.update({
+        where: { id: entryRequestId },
+        data: {
+          status: 'REJECTED',
+          rejectedAt: new Date(),
+          rejectionReason: reason,
+        },
+        include: {
+          flat: { select: { id: true, flatNumber: true, block: { select: { name: true } } } },
+          guard: { select: { id: true, name: true } },
+        },
+      }),
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true },
+      }),
+    ]);
 
     emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
       id: entryRequestId,
       status: 'REJECTED',
       flatNumber: entryRequest.flat.flatNumber,
+      reason,
+    });
+
+    eventBus.emit('entry-request.rejected', {
+      entryRequestId,
+      flatId: entryRequest.flatId,
+      societyId: entryRequest.societyId,
+      guardId: entryRequest.guardId,
+      visitorName: entryRequest.visitorName || 'Visitor',
+      visitorType: entryRequest.type,
+      rejectedById: userId,
+      rejectedByName: rejecter?.name ?? 'A resident',
       reason,
     });
 

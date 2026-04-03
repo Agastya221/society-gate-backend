@@ -8,6 +8,126 @@ import logger from '../utils/logger';
 // ARCH-3: Notification listeners decoupled from business logic.
 // Each handler listens for a domain event and sends the appropriate notifications.
 
+eventBus.on('entry-request.approved', async (payload) => {
+  try {
+    // Notify all flat members EXCEPT the one who approved
+    const otherResidents = await prisma.user.findMany({
+      where: {
+        flatId: payload.flatId,
+        isActive: true,
+        role: 'RESIDENT',
+        id: { not: payload.approvedById },
+      },
+      select: { id: true },
+    });
+
+    if (otherResidents.length === 0) return;
+
+    const title = 'Entry approved';
+    const body = `${payload.approvedByName} allowed ${payload.visitorName} (${payload.visitorType.toLowerCase()}) to enter`;
+
+    await Promise.all(
+      otherResidents.map((r) =>
+        notificationService.sendToUser(r.id, {
+          type: 'ENTRY_REQUEST',
+          title,
+          message: body,
+          data: { entryRequestId: payload.entryRequestId, approvedBy: payload.approvedByName },
+          referenceId: payload.entryRequestId,
+          referenceType: 'EntryRequest',
+          societyId: payload.societyId,
+        })
+      )
+    );
+
+    pushService.sendToUsers(
+      otherResidents.map((r) => r.id),
+      {
+        title,
+        body,
+        data: {
+          type: 'GATE_APPROVED',
+          screen: 'EntryRequest',
+          requestId: payload.entryRequestId,
+          entryRequestId: payload.entryRequestId,
+          approvedBy: payload.approvedByName,
+        },
+      }
+    ).catch((err) => logger.error({ err }, 'Push failed: entry-request.approved (residents)'));
+
+    // Notify the guard that entry was approved
+    pushService.sendToUser(payload.guardId, {
+      title: 'Entry approved',
+      body: `${payload.approvedByName} approved ${payload.visitorName}. Let them in.`,
+      data: { type: 'GATE_APPROVED', requestId: payload.entryRequestId, entryRequestId: payload.entryRequestId },
+    }).catch((err) => logger.error({ err }, 'Push failed: entry-request.approved (guard)'));
+  } catch (error) {
+    logger.error({ error, event: 'entry-request.approved', payload }, 'Failed to send approval notification');
+  }
+});
+
+eventBus.on('entry-request.rejected', async (payload) => {
+  try {
+    // Notify all flat members EXCEPT the one who rejected
+    const otherResidents = await prisma.user.findMany({
+      where: {
+        flatId: payload.flatId,
+        isActive: true,
+        role: 'RESIDENT',
+        id: { not: payload.rejectedById },
+      },
+      select: { id: true },
+    });
+
+    if (otherResidents.length === 0) return;
+
+    const title = 'Entry rejected';
+    const body = payload.reason
+      ? `${payload.rejectedByName} rejected ${payload.visitorName} — "${payload.reason}"`
+      : `${payload.rejectedByName} rejected ${payload.visitorName} (${payload.visitorType.toLowerCase()})`;
+
+    await Promise.all(
+      otherResidents.map((r) =>
+        notificationService.sendToUser(r.id, {
+          type: 'ENTRY_REQUEST',
+          title,
+          message: body,
+          data: { entryRequestId: payload.entryRequestId, rejectedBy: payload.rejectedByName },
+          referenceId: payload.entryRequestId,
+          referenceType: 'EntryRequest',
+          societyId: payload.societyId,
+        })
+      )
+    );
+
+    pushService.sendToUsers(
+      otherResidents.map((r) => r.id),
+      {
+        title,
+        body,
+        data: {
+          type: 'GATE_DENIED',
+          screen: 'EntryRequest',
+          requestId: payload.entryRequestId,
+          entryRequestId: payload.entryRequestId,
+          rejectedBy: payload.rejectedByName,
+        },
+      }
+    ).catch((err) => logger.error({ err }, 'Push failed: entry-request.rejected (residents)'));
+
+    // Notify the guard that entry was denied
+    pushService.sendToUser(payload.guardId, {
+      title: 'Entry denied',
+      body: payload.reason
+        ? `${payload.rejectedByName} denied ${payload.visitorName} — "${payload.reason}"`
+        : `${payload.rejectedByName} denied ${payload.visitorName}`,
+      data: { type: 'GATE_DENIED', requestId: payload.entryRequestId, entryRequestId: payload.entryRequestId },
+    }).catch((err) => logger.error({ err }, 'Push failed: entry-request.rejected (guard)'));
+  } catch (error) {
+    logger.error({ error, event: 'entry-request.rejected', payload }, 'Failed to send rejection notification');
+  }
+});
+
 eventBus.on('entry-request.created', async (payload) => {
   try {
     const providerName = payload.providerTag || payload.type;
@@ -28,7 +148,7 @@ eventBus.on('entry-request.created', async (payload) => {
       body: payload.visitorName
         ? `${payload.visitorName} is waiting`
         : `${payload.type} is waiting at the gate`,
-      data: { screen: 'EntryRequest', entryRequestId: payload.entryRequestId },
+      data: { type: 'GATE_REQUEST', screen: 'EntryRequest', requestId: payload.entryRequestId, entryRequestId: payload.entryRequestId },
     }).catch((err) => logger.error({ err }, 'Push failed: entry-request.created'));
   } catch (error) {
     logger.error({ error, event: 'entry-request.created', payload }, 'Failed to send entry request notification');
@@ -271,6 +391,53 @@ eventBus.on('staff.booking-accepted', async (payload) => {
 // ============================================
 // PRE-APPROVED ENTRY EVENTS
 // ============================================
+
+// ============================================
+// GUEST INVITE USED — notify flat on entry
+// PRIVATE invites are skipped (silent entry, no alert to family)
+// ============================================
+
+eventBus.on('guest-invite.used', async (payload) => {
+  try {
+    // PRIVATE = silent entry — no notification to anyone in the flat
+    if (payload.isPrivate) return;
+
+    const title = 'Guest arrived at gate';
+    const body = payload.visitorPhone
+      ? `${payload.visitorName} (${payload.visitorPhone}) was let in by ${payload.guardName}`
+      : `${payload.visitorName} was let in by ${payload.guardName}`;
+    const subtext = `Pre-approved by ${payload.residentName}`;
+
+    await notificationService.sendToFlat(payload.flatId, {
+      type: 'GUEST_ENTRY',
+      title,
+      message: `${body}. ${subtext}`,
+      data: {
+        inviteId: payload.inviteId,
+        inviteType: payload.inviteType,
+        visitorName: payload.visitorName,
+        guardName: payload.guardName,
+        allowedBy: payload.residentName,
+      },
+      referenceId: payload.inviteId,
+      referenceType: 'GuestInvite',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToFlat(payload.flatId, {
+      title,
+      body,
+      data: {
+        screen: 'GuestInvite',
+        inviteId: payload.inviteId,
+        allowedBy: payload.residentName,
+        guardName: payload.guardName,
+      },
+    }).catch((err) => logger.error({ err }, 'Push failed: guest-invite.used'));
+  } catch (error) {
+    logger.error({ error, event: 'guest-invite.used', payload }, 'Failed to send guest entry notification');
+  }
+});
 
 eventBus.on('pre-approved.created', async (payload) => {
   try {

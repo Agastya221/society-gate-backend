@@ -119,7 +119,8 @@ export const getTodayEntries = asyncHandler(async (req: Request, res: Response) 
  * Paginated entry list with filters.
  */
 export const getEntries = asyncHandler(async (req: Request, res: Response) => {
-  const societyId = req.user!.societyId!;
+  const user = req.user!;
+  const societyId = user.societyId!;
   const { status, type, flatId, page = '1', limit = '20' } = req.query;
 
   const where: {
@@ -131,7 +132,13 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
 
   if (status) where.status = status as EntryStatus;
   if (type) where.type = type as EntryType;
-  if (flatId) where.flatId = flatId as string;
+
+  // Residents are always scoped to their own flat regardless of query param
+  if (user.role === 'RESIDENT') {
+    where.flatId = user.flatId!;
+  } else if (flatId) {
+    where.flatId = flatId as string;
+  }
 
   const pageNum = parseInt(page as string, 10);
   const limitNum = parseInt(limit as string, 10);
@@ -139,10 +146,17 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
   const [entries, total] = await Promise.all([
     prisma.entry.findMany({
       where,
-      include: {
-        flat: true,
-        createdBy: { select: { id: true, name: true, role: true } },
-        approvedBy: { select: { id: true, name: true, role: true } },
+      select: {
+        id: true,
+        type: true,
+        status: true,
+        visitorName: true,
+        visitorPhone: true,
+        companyName: true,
+        createdAt: true,
+        checkInTime: true,
+        checkOutTime: true,
+        flat: { select: { flatNumber: true } },
       },
       orderBy: { checkInTime: 'desc' },
       skip: (pageNum - 1) * limitNum,
@@ -151,10 +165,17 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
     prisma.entry.count({ where }),
   ]);
 
+  const mapped = entries.map((e) => ({
+    ...e,
+    checkOutAt: e.checkOutTime,
+    checkOutTime: undefined,
+    flat: { number: e.flat.flatNumber },
+  }));
+
   res.json({
     success: true,
     data: {
-      entries,
+      entries: mapped,
       pagination: {
         total,
         page: pageNum,

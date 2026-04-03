@@ -28,6 +28,7 @@ export type AggregateAmenity = {
 
 export type AmenityAvgAggregateOutputType = {
   capacity: number | null
+  slotDurationHours: number | null
   bookingDuration: number | null
   advanceBookingDays: number | null
   maxBookingsPerUser: number | null
@@ -36,6 +37,7 @@ export type AmenityAvgAggregateOutputType = {
 
 export type AmenitySumAggregateOutputType = {
   capacity: number | null
+  slotDurationHours: number | null
   bookingDuration: number | null
   advanceBookingDays: number | null
   maxBookingsPerUser: number | null
@@ -50,6 +52,8 @@ export type AmenityMinAggregateOutputType = {
   capacity: number | null
   openTime: string | null
   closeTime: string | null
+  timings: string | null
+  slotDurationHours: number | null
   bookingDuration: number | null
   advanceBookingDays: number | null
   maxBookingsPerUser: number | null
@@ -68,6 +72,8 @@ export type AmenityMaxAggregateOutputType = {
   capacity: number | null
   openTime: string | null
   closeTime: string | null
+  timings: string | null
+  slotDurationHours: number | null
   bookingDuration: number | null
   advanceBookingDays: number | null
   maxBookingsPerUser: number | null
@@ -86,6 +92,9 @@ export type AmenityCountAggregateOutputType = {
   capacity: number
   openTime: number
   closeTime: number
+  timings: number
+  slotDurationHours: number
+  rules: number
   bookingDuration: number
   advanceBookingDays: number
   maxBookingsPerUser: number
@@ -101,6 +110,7 @@ export type AmenityCountAggregateOutputType = {
 
 export type AmenityAvgAggregateInputType = {
   capacity?: true
+  slotDurationHours?: true
   bookingDuration?: true
   advanceBookingDays?: true
   maxBookingsPerUser?: true
@@ -109,6 +119,7 @@ export type AmenityAvgAggregateInputType = {
 
 export type AmenitySumAggregateInputType = {
   capacity?: true
+  slotDurationHours?: true
   bookingDuration?: true
   advanceBookingDays?: true
   maxBookingsPerUser?: true
@@ -123,6 +134,8 @@ export type AmenityMinAggregateInputType = {
   capacity?: true
   openTime?: true
   closeTime?: true
+  timings?: true
+  slotDurationHours?: true
   bookingDuration?: true
   advanceBookingDays?: true
   maxBookingsPerUser?: true
@@ -141,6 +154,8 @@ export type AmenityMaxAggregateInputType = {
   capacity?: true
   openTime?: true
   closeTime?: true
+  timings?: true
+  slotDurationHours?: true
   bookingDuration?: true
   advanceBookingDays?: true
   maxBookingsPerUser?: true
@@ -159,6 +174,9 @@ export type AmenityCountAggregateInputType = {
   capacity?: true
   openTime?: true
   closeTime?: true
+  timings?: true
+  slotDurationHours?: true
+  rules?: true
   bookingDuration?: true
   advanceBookingDays?: true
   maxBookingsPerUser?: true
@@ -265,6 +283,9 @@ export type AmenityGroupByOutputType = {
   capacity: number | null
   openTime: string | null
   closeTime: string | null
+  timings: string | null
+  slotDurationHours: number
+  rules: string[]
   bookingDuration: number
   advanceBookingDays: number
   maxBookingsPerUser: number
@@ -307,6 +328,9 @@ export type AmenityWhereInput = {
   capacity?: Prisma.IntNullableFilter<"Amenity"> | number | null
   openTime?: Prisma.StringNullableFilter<"Amenity"> | string | null
   closeTime?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  timings?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  slotDurationHours?: Prisma.IntFilter<"Amenity"> | number
+  rules?: Prisma.StringNullableListFilter<"Amenity">
   bookingDuration?: Prisma.IntFilter<"Amenity"> | number
   advanceBookingDays?: Prisma.IntFilter<"Amenity"> | number
   maxBookingsPerUser?: Prisma.IntFilter<"Amenity"> | number
@@ -328,6 +352,9 @@ export type AmenityOrderByWithRelationInput = {
   capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   openTime?: Prisma.SortOrderInput | Prisma.SortOrder
   closeTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  timings?: Prisma.SortOrderInput | Prisma.SortOrder
+  slotDurationHours?: Prisma.SortOrder
+  rules?: Prisma.SortOrder
   bookingDuration?: Prisma.SortOrder
   advanceBookingDays?: Prisma.SortOrder
   maxBookingsPerUser?: Prisma.SortOrder
@@ -352,6 +379,9 @@ export type AmenityWhereUniqueInput = Prisma.AtLeast<{
   capacity?: Prisma.IntNullableFilter<"Amenity"> | number | null
   openTime?: Prisma.StringNullableFilter<"Amenity"> | string | null
   closeTime?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  timings?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  slotDurationHours?: Prisma.IntFilter<"Amenity"> | number
+  rules?: Prisma.StringNullableListFilter<"Amenity">
   bookingDuration?: Prisma.IntFilter<"Amenity"> | number
   advanceBookingDays?: Prisma.IntFilter<"Amenity"> | number
   maxBookingsPerUser?: Prisma.IntFilter<"Amenity"> | number
@@ -373,6 +403,9 @@ export type AmenityOrderByWithAggregationInput = {
   capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   openTime?: Prisma.SortOrderInput | Prisma.SortOrder
   closeTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  timings?: Prisma.SortOrderInput | Prisma.SortOrder
+  slotDurationHours?: Prisma.SortOrder
+  rules?: Prisma.SortOrder
   bookingDuration?: Prisma.SortOrder
   advanceBookingDays?: Prisma.SortOrder
   maxBookingsPerUser?: Prisma.SortOrder
@@ -400,6 +433,9 @@ export type AmenityScalarWhereWithAggregatesInput = {
   capacity?: Prisma.IntNullableWithAggregatesFilter<"Amenity"> | number | null
   openTime?: Prisma.StringNullableWithAggregatesFilter<"Amenity"> | string | null
   closeTime?: Prisma.StringNullableWithAggregatesFilter<"Amenity"> | string | null
+  timings?: Prisma.StringNullableWithAggregatesFilter<"Amenity"> | string | null
+  slotDurationHours?: Prisma.IntWithAggregatesFilter<"Amenity"> | number
+  rules?: Prisma.StringNullableListFilter<"Amenity">
   bookingDuration?: Prisma.IntWithAggregatesFilter<"Amenity"> | number
   advanceBookingDays?: Prisma.IntWithAggregatesFilter<"Amenity"> | number
   maxBookingsPerUser?: Prisma.IntWithAggregatesFilter<"Amenity"> | number
@@ -419,6 +455,9 @@ export type AmenityCreateInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -439,6 +478,9 @@ export type AmenityUncheckedCreateInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -459,6 +501,9 @@ export type AmenityUpdateInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -479,6 +524,9 @@ export type AmenityUncheckedUpdateInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -499,6 +547,9 @@ export type AmenityCreateManyInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -518,6 +569,9 @@ export type AmenityUpdateManyMutationInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -536,6 +590,9 @@ export type AmenityUncheckedUpdateManyInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -565,6 +622,9 @@ export type AmenityCountOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   openTime?: Prisma.SortOrder
   closeTime?: Prisma.SortOrder
+  timings?: Prisma.SortOrder
+  slotDurationHours?: Prisma.SortOrder
+  rules?: Prisma.SortOrder
   bookingDuration?: Prisma.SortOrder
   advanceBookingDays?: Prisma.SortOrder
   maxBookingsPerUser?: Prisma.SortOrder
@@ -578,6 +638,7 @@ export type AmenityCountOrderByAggregateInput = {
 
 export type AmenityAvgOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
+  slotDurationHours?: Prisma.SortOrder
   bookingDuration?: Prisma.SortOrder
   advanceBookingDays?: Prisma.SortOrder
   maxBookingsPerUser?: Prisma.SortOrder
@@ -592,6 +653,8 @@ export type AmenityMaxOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   openTime?: Prisma.SortOrder
   closeTime?: Prisma.SortOrder
+  timings?: Prisma.SortOrder
+  slotDurationHours?: Prisma.SortOrder
   bookingDuration?: Prisma.SortOrder
   advanceBookingDays?: Prisma.SortOrder
   maxBookingsPerUser?: Prisma.SortOrder
@@ -610,6 +673,8 @@ export type AmenityMinOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   openTime?: Prisma.SortOrder
   closeTime?: Prisma.SortOrder
+  timings?: Prisma.SortOrder
+  slotDurationHours?: Prisma.SortOrder
   bookingDuration?: Prisma.SortOrder
   advanceBookingDays?: Prisma.SortOrder
   maxBookingsPerUser?: Prisma.SortOrder
@@ -622,6 +687,7 @@ export type AmenityMinOrderByAggregateInput = {
 
 export type AmenitySumOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
+  slotDurationHours?: Prisma.SortOrder
   bookingDuration?: Prisma.SortOrder
   advanceBookingDays?: Prisma.SortOrder
   maxBookingsPerUser?: Prisma.SortOrder
@@ -675,12 +741,21 @@ export type AmenityUncheckedUpdateManyWithoutSocietyNestedInput = {
   deleteMany?: Prisma.AmenityScalarWhereInput | Prisma.AmenityScalarWhereInput[]
 }
 
+export type AmenityCreaterulesInput = {
+  set: string[]
+}
+
 export type AmenityCreateimagesInput = {
   set: string[]
 }
 
 export type EnumAmenityTypeFieldUpdateOperationsInput = {
   set?: $Enums.AmenityType
+}
+
+export type AmenityUpdaterulesInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type AmenityUpdateimagesInput = {
@@ -710,6 +785,9 @@ export type AmenityCreateWithoutSocietyInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -729,6 +807,9 @@ export type AmenityUncheckedCreateWithoutSocietyInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -777,6 +858,9 @@ export type AmenityScalarWhereInput = {
   capacity?: Prisma.IntNullableFilter<"Amenity"> | number | null
   openTime?: Prisma.StringNullableFilter<"Amenity"> | string | null
   closeTime?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  timings?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  slotDurationHours?: Prisma.IntFilter<"Amenity"> | number
+  rules?: Prisma.StringNullableListFilter<"Amenity">
   bookingDuration?: Prisma.IntFilter<"Amenity"> | number
   advanceBookingDays?: Prisma.IntFilter<"Amenity"> | number
   maxBookingsPerUser?: Prisma.IntFilter<"Amenity"> | number
@@ -796,6 +880,9 @@ export type AmenityCreateWithoutBookingsInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -815,6 +902,9 @@ export type AmenityUncheckedCreateWithoutBookingsInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -850,6 +940,9 @@ export type AmenityUpdateWithoutBookingsInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -869,6 +962,9 @@ export type AmenityUncheckedUpdateWithoutBookingsInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -888,6 +984,9 @@ export type AmenityCreateManySocietyInput = {
   capacity?: number | null
   openTime?: string | null
   closeTime?: string | null
+  timings?: string | null
+  slotDurationHours?: number
+  rules?: Prisma.AmenityCreaterulesInput | string[]
   bookingDuration?: number
   advanceBookingDays?: number
   maxBookingsPerUser?: number
@@ -906,6 +1005,9 @@ export type AmenityUpdateWithoutSocietyInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -925,6 +1027,9 @@ export type AmenityUncheckedUpdateWithoutSocietyInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -944,6 +1049,9 @@ export type AmenityUncheckedUpdateManyWithoutSocietyInput = {
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closeTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotDurationHours?: Prisma.IntFieldUpdateOperationsInput | number
+  rules?: Prisma.AmenityUpdaterulesInput | string[]
   bookingDuration?: Prisma.IntFieldUpdateOperationsInput | number
   advanceBookingDays?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookingsPerUser?: Prisma.IntFieldUpdateOperationsInput | number
@@ -993,6 +1101,9 @@ export type AmenitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   capacity?: boolean
   openTime?: boolean
   closeTime?: boolean
+  timings?: boolean
+  slotDurationHours?: boolean
+  rules?: boolean
   bookingDuration?: boolean
   advanceBookingDays?: boolean
   maxBookingsPerUser?: boolean
@@ -1015,6 +1126,9 @@ export type AmenitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   capacity?: boolean
   openTime?: boolean
   closeTime?: boolean
+  timings?: boolean
+  slotDurationHours?: boolean
+  rules?: boolean
   bookingDuration?: boolean
   advanceBookingDays?: boolean
   maxBookingsPerUser?: boolean
@@ -1035,6 +1149,9 @@ export type AmenitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   capacity?: boolean
   openTime?: boolean
   closeTime?: boolean
+  timings?: boolean
+  slotDurationHours?: boolean
+  rules?: boolean
   bookingDuration?: boolean
   advanceBookingDays?: boolean
   maxBookingsPerUser?: boolean
@@ -1055,6 +1172,9 @@ export type AmenitySelectScalar = {
   capacity?: boolean
   openTime?: boolean
   closeTime?: boolean
+  timings?: boolean
+  slotDurationHours?: boolean
+  rules?: boolean
   bookingDuration?: boolean
   advanceBookingDays?: boolean
   maxBookingsPerUser?: boolean
@@ -1066,7 +1186,7 @@ export type AmenitySelectScalar = {
   updatedAt?: boolean
 }
 
-export type AmenityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "description" | "capacity" | "openTime" | "closeTime" | "bookingDuration" | "advanceBookingDays" | "maxBookingsPerUser" | "pricePerHour" | "isActive" | "images" | "societyId" | "createdAt" | "updatedAt", ExtArgs["result"]["amenity"]>
+export type AmenityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "description" | "capacity" | "openTime" | "closeTime" | "timings" | "slotDurationHours" | "rules" | "bookingDuration" | "advanceBookingDays" | "maxBookingsPerUser" | "pricePerHour" | "isActive" | "images" | "societyId" | "createdAt" | "updatedAt", ExtArgs["result"]["amenity"]>
 export type AmenityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   bookings?: boolean | Prisma.Amenity$bookingsArgs<ExtArgs>
@@ -1093,6 +1213,9 @@ export type $AmenityPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     capacity: number | null
     openTime: string | null
     closeTime: string | null
+    timings: string | null
+    slotDurationHours: number
+    rules: string[]
     bookingDuration: number
     advanceBookingDays: number
     maxBookingsPerUser: number
@@ -1534,6 +1657,9 @@ export interface AmenityFieldRefs {
   readonly capacity: Prisma.FieldRef<"Amenity", 'Int'>
   readonly openTime: Prisma.FieldRef<"Amenity", 'String'>
   readonly closeTime: Prisma.FieldRef<"Amenity", 'String'>
+  readonly timings: Prisma.FieldRef<"Amenity", 'String'>
+  readonly slotDurationHours: Prisma.FieldRef<"Amenity", 'Int'>
+  readonly rules: Prisma.FieldRef<"Amenity", 'String[]'>
   readonly bookingDuration: Prisma.FieldRef<"Amenity", 'Int'>
   readonly advanceBookingDays: Prisma.FieldRef<"Amenity", 'Int'>
   readonly maxBookingsPerUser: Prisma.FieldRef<"Amenity", 'Int'>

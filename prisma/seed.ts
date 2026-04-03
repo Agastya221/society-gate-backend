@@ -312,22 +312,22 @@ async function main() {
   // ============================================
   console.log('🏊 Creating amenities...');
   const gym = await prisma.amenity.create({
-    data: { name: 'Greenfield Fitness Studio', type: 'GYM', description: 'Fully-equipped gym with treadmills, ellipticals, cross-trainers and free weights. Personal trainer available 6-8 AM & 6-8 PM.', capacity: 25, pricePerHour: 0, maxBookingsPerUser: 2, isActive: true, societyId: society.id },
+    data: { name: 'Greenfield Fitness Studio', type: 'GYM', description: 'Fully-equipped gym with treadmills, ellipticals, cross-trainers and free weights. Personal trainer available 6-8 AM & 6-8 PM.', capacity: 25, openTime: '05:00', closeTime: '23:00', timings: '5:00 AM - 11:00 PM', slotDurationHours: 1, rules: ['No outside food allowed', 'Carry your own towel', 'Wipe equipment after use', 'Proper sportswear mandatory'], pricePerHour: 0, maxBookingsPerUser: 2, isActive: true, societyId: society.id },
   });
   const pool = await prisma.amenity.create({
-    data: { name: 'Aqua Pool', type: 'SWIMMING_POOL', description: 'Semi-Olympic size pool (25m x 12m) with kids pool. Lifeguard on duty 6 AM - 9 PM.', capacity: 40, pricePerHour: 250, maxBookingsPerUser: 3, isActive: true, societyId: society.id },
+    data: { name: 'Aqua Pool', type: 'SWIMMING_POOL', description: 'Semi-Olympic size pool (25m x 12m) with kids pool. Lifeguard on duty 6 AM - 9 PM.', capacity: 40, openTime: '06:00', closeTime: '21:00', timings: '6:00 AM - 9:00 PM', slotDurationHours: 1, rules: ['Shower before entering pool', 'No diving in shallow end', 'Children below 10 must be accompanied', 'No food inside pool area'], pricePerHour: 250, maxBookingsPerUser: 3, isActive: true, societyId: society.id },
   });
   const clubhouse = await prisma.amenity.create({
-    data: { name: 'Grand Banquet Hall', type: 'CLUBHOUSE', description: 'AC banquet hall with stage, sound system, and catering area. Capacity 150 guests.', capacity: 150, pricePerHour: 3000, maxBookingsPerUser: 2, isActive: true, societyId: society.id },
+    data: { name: 'Grand Banquet Hall', type: 'CLUBHOUSE', description: 'AC banquet hall with stage, sound system, and catering area. Capacity 150 guests.', capacity: 150, openTime: '09:00', closeTime: '23:00', timings: '9:00 AM - 11:00 PM', slotDurationHours: 4, rules: ['Advance booking mandatory', 'Cleaning deposit required', 'Music off by 10:30 PM', 'Outside catering allowed with approval'], pricePerHour: 3000, maxBookingsPerUser: 2, isActive: true, societyId: society.id },
   });
   await prisma.amenity.create({
-    data: { name: "Children's Play Zone", type: 'GARDEN', description: 'Safe outdoor play area with swings, slides, sandpit for kids aged 2-12.', capacity: 20, pricePerHour: 0, maxBookingsPerUser: 5, isActive: true, societyId: society.id },
+    data: { name: "Children's Play Zone", type: 'GARDEN', description: 'Safe outdoor play area with swings, slides, sandpit for kids aged 2-12.', capacity: 20, openTime: '07:00', closeTime: '20:00', timings: '7:00 AM - 8:00 PM', slotDurationHours: 1, rules: ["Children must be accompanied by an adult", 'No bicycles or scooters inside', 'Keep the area clean'], pricePerHour: 0, maxBookingsPerUser: 5, isActive: true, societyId: society.id },
   });
   const sportsCourt = await prisma.amenity.create({
-    data: { name: 'Multi-Sport Court', type: 'SPORTS_COURT', description: 'Badminton, basketball, and tennis court with flood lights.', capacity: 10, pricePerHour: 200, maxBookingsPerUser: 3, isActive: true, societyId: society.id },
+    data: { name: 'Multi-Sport Court', type: 'SPORTS_COURT', description: 'Badminton, basketball, and tennis court with flood lights.', capacity: 10, openTime: '06:00', closeTime: '22:00', timings: '6:00 AM - 10:00 PM', slotDurationHours: 1, rules: ['Wear non-marking shoes', 'Book in advance during peak hours', 'Max 2 continuous slots per user'], pricePerHour: 200, maxBookingsPerUser: 3, isActive: true, societyId: society.id },
   });
   await prisma.amenity.create({
-    data: { name: 'Rooftop Party Lounge', type: 'PARTY_HALL', description: 'Rooftop lounge with BBQ area, city views, and DJ console. Adults only.', capacity: 60, pricePerHour: 2000, maxBookingsPerUser: 1, isActive: true, societyId: society.id },
+    data: { name: 'Rooftop Party Lounge', type: 'PARTY_HALL', description: 'Rooftop lounge with BBQ area, city views, and DJ console. Adults only.', capacity: 60, openTime: '17:00', closeTime: '23:00', timings: '5:00 PM - 11:00 PM', slotDurationHours: 3, rules: ['Adults only (18+)', 'No glass bottles on rooftop', 'DJ & loud music until 10:30 PM only', 'Cleaning charge applicable'], pricePerHour: 2000, maxBookingsPerUser: 1, isActive: true, societyId: society.id },
   });
   console.log('✅ 6 amenities\n');
 

@@ -10,9 +10,31 @@ export interface AppEvents {
     entryRequestId: string;
     flatId: string;
     societyId: string;
+    guardId: string;
     visitorName?: string;
     providerTag?: string;
     type: string;
+  };
+  'entry-request.approved': {
+    entryRequestId: string;
+    flatId: string;
+    societyId: string;
+    guardId: string;
+    visitorName: string;
+    visitorType: string;
+    approvedById: string;   // excluded from flat notification
+    approvedByName: string;
+  };
+  'entry-request.rejected': {
+    entryRequestId: string;
+    flatId: string;
+    societyId: string;
+    guardId: string;
+    visitorName: string;
+    visitorType: string;
+    rejectedById: string;   // excluded from flat notification
+    rejectedByName: string;
+    reason?: string;
   };
   'emergency.created': {
     emergencyId: string;
@@ -75,13 +97,17 @@ export interface AppEvents {
     staffType: string;
     societyId: string;
   };
-  'guest-invite.verified': {
+  'guest-invite.used': {
+    inviteId: string;
     inviteType: string;
+    isPrivate: boolean;
+    visitorName: string;
+    visitorPhone: string | null;
     flatId: string;
     societyId: string;
-    visitorName: string;
     guardId: string;
-    allowed: boolean;
+    guardName: string;
+    residentName: string; // flat member who created (pre-allowed) the invite
   };
   'pre-approved.created': {
     entryId: string;

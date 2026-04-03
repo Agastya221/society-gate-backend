@@ -287,6 +287,9 @@ export interface CreateAmenityDTO {
   capacity?: number;
   openTime?: string;
   closeTime?: string;
+  timings?: string;
+  slotDurationHours?: number;
+  rules?: string[];
   bookingDuration?: number;
   advanceBookingDays?: number;
   maxBookingsPerUser?: number;
@@ -301,6 +304,9 @@ export interface UpdateAmenityDTO {
   capacity?: number;
   openTime?: string;
   closeTime?: string;
+  timings?: string;
+  slotDurationHours?: number;
+  rules?: string[];
   bookingDuration?: number;
   advanceBookingDays?: number;
   maxBookingsPerUser?: number;
@@ -323,6 +329,13 @@ export interface CreateBookingDTO {
   startTime: string;
   endTime: string;
   guestCount?: number;
+  purpose?: string;
+}
+
+export interface BookSlotDTO {
+  slotId: string; // "<amenityId>_<date>_<startTime>"
+  date: string;   // "YYYY-MM-DD"
+  members?: string[]; // Additional member userIds
   purpose?: string;
 }
 

@@ -179,3 +179,38 @@ export const cancelBooking = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getSlots = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const date = req.query.date as string;
+    if (!date) {
+      return res.status(400).json({ success: false, message: 'date query param is required (YYYY-MM-DD)' });
+    }
+    const slots = await amenityService.getSlots(String(id), date);
+    return res.status(200).json({ success: true, data: slots });
+  } catch (error: unknown) {
+    return res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};
+
+export const bookSlot = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user!.id;
+    const booking = await amenityService.bookSlot(String(id), req.body, userId);
+    return res.status(201).json({
+      success: true,
+      message: 'Booking created successfully',
+      data: { id: booking.id, status: booking.status },
+    });
+  } catch (error: unknown) {
+    return res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};

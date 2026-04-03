@@ -227,6 +227,7 @@ enum NotificationType {
   EMERGENCY_ALERT
   STAFF_CHECKIN
   STAFF_CHECKOUT
+  GUEST_ENTRY
   SYSTEM
 }
 
@@ -1383,9 +1384,14 @@ model Amenity {
   description String?
 
   // Capacity & timing
-  capacity  Int? // Max people allowed
-  openTime  String? // "06:00"
-  closeTime String? // "22:00"
+  capacity          Int?    // Max people allowed
+  openTime          String? // "06:00"
+  closeTime         String? // "22:00"
+  timings           String? // Human-readable e.g. "6:00 AM - 10:00 PM"
+  slotDurationHours Int     @default(1) // Hours per bookable slot block
+
+  // Rules
+  rules String[] // e.g. ["No pets allowed", "Advance booking required"]
 
   // Booking rules
   bookingDuration    Int @default(60) // Minutes per slot

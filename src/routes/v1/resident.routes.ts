@@ -9,6 +9,7 @@ import communityPostRoutes from '../../modules/community-post/community-post.rou
 import vehicleRoutes from '../../modules/vehicle/vehicle.routes';
 import documentRoutes from '../../modules/document/document.routes';
 import pollRoutes from '../../modules/poll/poll.routes';
+import amenityRoutes from '../../modules/amenity/amenity.routes';
 
 const router = Router();
 
@@ -27,5 +28,6 @@ router.use('/posts', communityPostRoutes);         // /api/v1/resident/posts
 router.use('/vehicles', vehicleRoutes);            // /api/v1/resident/vehicles
 router.use('/documents', documentRoutes);          // /api/v1/resident/documents
 router.use('/polls', pollRoutes);                  // /api/v1/resident/polls
+router.use('/amenities', amenityRoutes);           // /api/v1/resident/amenities
 
 export default router;

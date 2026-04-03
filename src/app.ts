@@ -15,6 +15,15 @@ const app = express();
 // Security headers
 app.use(helmet());
 
+// Request timeout — kill any request that hasn't responded in 25s
+// Prevents hanging DB connections from blocking the client indefinitely
+app.use((_req, res, next) => {
+  res.setTimeout(25000, () => {
+    res.status(503).json({ success: false, message: 'Request timed out. Please try again.' });
+  });
+  next();
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '1mb' })); // Reduced from 10mb to prevent memory exhaustion
