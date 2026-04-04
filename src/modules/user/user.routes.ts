@@ -3,6 +3,7 @@ import { UserController } from './user.controller';
 import {
   authenticateResidentApp,
   authenticateGuardApp,
+  authenticateForOnboarding,
   authorize,
   authenticate,
 } from '../../middlewares/auth.middleware';
@@ -75,10 +76,10 @@ router.get(
   userController.getGuards
 );
 
-// Update FCM Token (Resident App)
+// Update FCM Token (Resident App) — allow inactive users (new users after first login)
 router.patch(
   '/resident-app/fcm-token',
-  authenticateResidentApp,
+  authenticateForOnboarding,
   validate({ body: updateFcmTokenSchema }),
   userController.updateFcmToken
 );
