@@ -43,18 +43,18 @@ export const cache = (options: CacheOptions = {}) => {
       const cachedData = await redis.get(cacheKey);
 
       if (cachedData) {
-        logger.debug({ url: req.originalUrl || req.url }, 'Cache hit');
+        logger.info({ cacheKey, url: req.originalUrl || req.url }, '🟢 [REDIS CACHE HIT]');
         const parsed = JSON.parse(cachedData);
         return res.json(parsed);
       }
 
-      logger.debug({ url: req.originalUrl || req.url }, 'Cache miss');
+      logger.info({ cacheKey, url: req.originalUrl || req.url }, '🔴 [REDIS CACHE MISS]');
 
       const originalJson = res.json.bind(res);
 
       res.json = ((body: unknown) => {
         redis.setex(cacheKey, ttl, JSON.stringify(body)).catch(err => {
-          logger.error({ error: err }, 'Redis cache set error');
+          logger.error({ error: err, cacheKey }, '❌ [REDIS CACHE SET ERROR]');
         });
         return originalJson(body);
       }) as typeof res.json;
@@ -114,9 +114,9 @@ export const clearCacheAfter = (patterns: string[]) => {
     res.json = ((body: unknown) => {
       patterns.forEach(pattern => {
         clearCacheByPattern(pattern).then(deletedCount => {
-          logger.debug({ pattern, deletedCount }, 'Cache invalidated');
+          logger.info({ pattern, deletedCount }, '🧹 [REDIS CACHE INVALIDATED]');
         }).catch(err => {
-          logger.error({ error: err, pattern }, 'Clear cache after mutation error');
+          logger.error({ error: err, pattern }, '❌ [REDIS CACHE INVALIDATION ERROR]');
         });
       });
       return originalJson(body);
