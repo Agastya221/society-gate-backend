@@ -8,6 +8,7 @@ import {
   authenticate,
 } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
+import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 import {
   verifyWidgetTokenSchema,
   verifyResidentWidgetTokenSchema,
@@ -54,10 +55,10 @@ router.post('/logout', authenticate, userController.logout);
 // ============================================
 
 // Get Profile
-router.get('/resident-app/profile', authenticateResidentApp, userController.getProfile);
+router.get('/resident-app/profile', authenticateResidentApp, cache({ ttl: 300, keyPrefix: 'user:profile', varyBy: ['userId'] }), userController.getProfile);
 
 // Update Profile
-router.patch('/resident-app/profile', authenticateResidentApp, validate({ body: updateProfileSchema }), userController.updateProfile);
+router.patch('/resident-app/profile', authenticateResidentApp, validate({ body: updateProfileSchema }), clearCacheAfter(['api:user*']), userController.updateProfile);
 
 // Admin: Create Guard
 router.post(
@@ -65,6 +66,7 @@ router.post(
   authenticateResidentApp,
   authorize('ADMIN'),
   validate({ body: createGuardSchema }),
+  clearCacheAfter(['api:user*']),
   userController.createGuard
 );
 
@@ -73,6 +75,7 @@ router.get(
   '/resident-app/guards',
   authenticateResidentApp,
   authorize('ADMIN'),
+  cache({ ttl: 300, keyPrefix: 'user:guards', varyBy: ['societyId'] }),
   userController.getGuards
 );
 
@@ -81,6 +84,7 @@ router.patch(
   '/resident-app/fcm-token',
   authenticateForOnboarding,
   validate({ body: updateFcmTokenSchema }),
+  clearCacheAfter(['api:user*']),
   userController.updateFcmToken
 );
 
@@ -90,6 +94,7 @@ router.patch(
   authenticateResidentApp,
   authorize('ADMIN'),
   validate({ params: idParams, body: toggleUserStatusSchema }),
+  clearCacheAfter(['api:user*']),
   userController.toggleUserStatus
 );
 
@@ -99,13 +104,14 @@ router.patch(
 // ============================================
 
 // Get Profile
-router.get('/guard-app/profile', authenticateGuardApp, userController.getProfile);
+router.get('/guard-app/profile', authenticateGuardApp, cache({ ttl: 300, keyPrefix: 'user:profile', varyBy: ['userId'] }), userController.getProfile);
 
 // Update FCM Token (Guard App)
 router.patch(
   '/guard-app/fcm-token',
   authenticateGuardApp,
   validate({ body: updateFcmTokenSchema }),
+  clearCacheAfter(['api:user*']),
   userController.updateFcmToken
 );
 

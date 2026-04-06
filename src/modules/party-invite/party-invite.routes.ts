@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { authenticate, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { idParams, createPartyInviteSchema, addPartyGuestSchema, claimPartySlotSchema } from '../../schemas';
+import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 import {
   createPartyInvite,
   listPartyInvites,
@@ -29,11 +30,11 @@ router.post('/:inviteCode/claim', claimLimiter, validate({ body: claimPartySlotS
 router.use(authenticate);
 router.use(ensureSameSociety);
 
-router.post('/', validate({ body: createPartyInviteSchema }), createPartyInvite);
-router.get('/', listPartyInvites);
-router.get('/:id', validate({ params: idParams }), getPartyInvite);
-router.post('/:id/add-guest', validate({ params: idParams, body: addPartyGuestSchema }), addPartyGuest);
-router.delete('/:id/guests/:code', removePartyGuest);
-router.patch('/:id/cancel', validate({ params: idParams }), cancelPartyInvite);
+router.post('/', validate({ body: createPartyInviteSchema }), clearCacheAfter(['api:party-invites*']), createPartyInvite);
+router.get('/', cache({ ttl: 120, keyPrefix: 'party-invites', varyBy: ['userId', 'societyId'] }), listPartyInvites);
+router.get('/:id', validate({ params: idParams }), cache({ ttl: 120, keyPrefix: 'party-invites' }), getPartyInvite);
+router.post('/:id/add-guest', validate({ params: idParams, body: addPartyGuestSchema }), clearCacheAfter(['api:party-invites*']), addPartyGuest);
+router.delete('/:id/guests/:code', clearCacheAfter(['api:party-invites*']), removePartyGuest);
+router.patch('/:id/cancel', validate({ params: idParams }), clearCacheAfter(['api:party-invites*']), cancelPartyInvite);
 
 export default router;

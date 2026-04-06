@@ -451,9 +451,19 @@ async function main() {
   // ENTRY REQUESTS (pending at gate)
   // ============================================
   console.log('📸 Creating entry requests...');
-  await prisma.entryRequest.create({ data: { type: 'DELIVERY', status: 'PENDING', visitorName: 'Zomato Delivery', visitorPhone: '9850000001', expiresAt: new Date(Date.now() + 15 * 60 * 1000), flatId: flat('A301').id, societyId: society.id, guardId: guard1.id } });
-  await prisma.entryRequest.create({ data: { type: 'VISITOR', status: 'PENDING', visitorName: 'Amit Kumar', visitorPhone: '9850000002', expiresAt: new Date(Date.now() + 12 * 60 * 1000), flatId: flat('B102').id, societyId: society.id, guardId: guard2.id } });
-  console.log('✅ 2 entry requests\n');
+  // PENDING — actively waiting for resident approval (expires in future)
+  await prisma.entryRequest.create({ data: { type: 'DELIVERY', status: 'PENDING', visitorName: 'Swiggy Delivery', visitorPhone: '9850000001', providerTag: 'SWIGGY', expiresAt: new Date(Date.now() + 14 * 60 * 1000), flatId: flat('A301').id, societyId: society.id, guardId: guard1.id } });
+  await prisma.entryRequest.create({ data: { type: 'VISITOR', status: 'PENDING', visitorName: 'Rahul Mehta', visitorPhone: '9850000002', expiresAt: new Date(Date.now() + 11 * 60 * 1000), flatId: flat('B102').id, societyId: society.id, guardId: guard2.id } });
+  await prisma.entryRequest.create({ data: { type: 'DELIVERY', status: 'PENDING', visitorName: 'Blinkit Delivery', visitorPhone: '9850000007', providerTag: 'BLINKIT', expiresAt: new Date(Date.now() + 9 * 60 * 1000), flatId: flat('C201').id, societyId: society.id, guardId: guard3.id } });
+  await prisma.entryRequest.create({ data: { type: 'CAB', status: 'PENDING', visitorName: 'Ola Cab — Suresh', visitorPhone: '9850000008', expiresAt: new Date(Date.now() + 7 * 60 * 1000), flatId: flat('A101').id, societyId: society.id, guardId: guard1.id } });
+  // APPROVED — resident said yes, guard let them in
+  await prisma.entryRequest.create({ data: { type: 'VISITOR', status: 'APPROVED', visitorName: 'Priya Nair', visitorPhone: '9850000003', expiresAt: new Date(Date.now() + 10 * 60 * 1000), approvedById: res2.id, approvedAt: hoursAgo(1), flatId: flat('A301').id, societyId: society.id, guardId: guard1.id } });
+  await prisma.entryRequest.create({ data: { type: 'DELIVERY', status: 'APPROVED', visitorName: 'Amazon Delivery', visitorPhone: '9850000005', providerTag: 'AMAZON', expiresAt: new Date(Date.now() + 5 * 60 * 1000), approvedById: res3.id, approvedAt: hoursAgo(2), flatId: flat('B102').id, societyId: society.id, guardId: guard2.id } });
+  // REJECTED — resident denied entry
+  await prisma.entryRequest.create({ data: { type: 'VISITOR', status: 'REJECTED', visitorName: 'Unknown Person', visitorPhone: '9850000004', expiresAt: hoursAgo(0.5), rejectedAt: hoursAgo(1), rejectionReason: 'Not expecting any visitors today', flatId: flat('B401').id, societyId: society.id, guardId: guard3.id } });
+  // EXPIRED — resident did not respond in time
+  await prisma.entryRequest.create({ data: { type: 'DELIVERY', status: 'EXPIRED', visitorName: 'Flipkart Delivery', visitorPhone: '9850000006', providerTag: 'FLIPKART', expiresAt: hoursAgo(1), flatId: flat('C401').id, societyId: society.id, guardId: guard1.id } });
+  console.log('✅ 8 entry requests (4 pending, 2 approved, 1 rejected, 1 expired)\n');
 
   // ============================================
   // NOTICES
