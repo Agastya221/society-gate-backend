@@ -17,8 +17,19 @@ const httpServer = createServer(app);
 
 initializeSocketIO(httpServer);
 
-httpServer.listen(PORT, () => {
-  logger.info({ port: PORT, env: process.env.NODE_ENV || 'development' }, 'Server started');
+// Verify critical database connections on startup
+const verifyConnections = async () => {
+  try {
+    await prisma.$connect();
+    logger.info('🟢 [DATABASE] PostgreSQL connected successfully');
+  } catch (error) {
+    logger.error({ error }, '🔴 [DATABASE] PostgreSQL connection failed');
+  }
+};
+
+httpServer.listen(PORT, async () => {
+  logger.info({ port: PORT, env: process.env.NODE_ENV || 'development' }, '🚀 [SERVER] Server started');
+  await verifyConnections();
 });
 
 // Graceful shutdown

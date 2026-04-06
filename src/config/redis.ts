@@ -31,20 +31,20 @@ redis.on('error', (err) => {
 
 redis.on('connect', () => {
   isRedisConnected = true;
-  logger.info('Redis connected successfully');
+  logger.info('🟢 [REDIS] Connected successfully');
 });
 
 redis.on('close', () => {
   isRedisConnected = false;
-  logger.warn('Redis connection closed');
+  logger.warn('🟡 [REDIS] Connection closed');
 });
 
 // Connect to Redis
 redis.connect().catch((err) => {
   if (process.env.NODE_ENV === 'production') {
-    logger.error({ error: err.message }, 'PRODUCTION: Redis not available - this is dangerous in production');
+    logger.error({ error: err.message }, '🔴 [REDIS] PRODUCTION: Redis not available - this is dangerous in production');
   } else {
-    logger.warn({ error: err.message }, 'Redis not available');
+    logger.warn({ error: err.message }, '🔴 [REDIS] Redis not available');
   }
 });
 
