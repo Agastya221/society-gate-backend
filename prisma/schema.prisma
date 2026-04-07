@@ -761,8 +761,8 @@ model Entry {
   autoApprovalReason String? // "Expected delivery" or "Standing rule"
 
   // Flat reference
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
+  flatId String?
+  flat   Flat?   @relation(fields: [flatId], references: [id])
 
   // Society reference
   societyId String
@@ -840,8 +840,8 @@ model GuestInvite {
   isPrivate Boolean @default(false) // true for PRIVATE type (silent entry)
 
   // Relations
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
+  flatId String?
+  flat   Flat?   @relation(fields: [flatId], references: [id])
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
@@ -887,8 +887,8 @@ model PartyInvite {
   status PartyInviteStatus @default(ACTIVE)
 
   // Relations
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
+  flatId String?
+  flat   Flat?   @relation(fields: [flatId], references: [id])
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
@@ -943,7 +943,7 @@ model GuestEntryLog {
   partyInvite   PartyInvite?  @relation(fields: [partyInviteId], references: [id])
   inviteType    InviteRefType
 
-  flatId  String
+  flatId  String?
   guardId String
   guard   User   @relation("GuestEntryGuard", fields: [guardId], references: [id])
 
@@ -1245,9 +1245,9 @@ model Vehicle {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  // Flat
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
+  // Flat (optional — guards/outside admins may not have a flat)
+  flatId String?
+  flat   Flat?  @relation(fields: [flatId], references: [id])
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
@@ -1334,8 +1334,8 @@ model GatePass {
   requestedBy   User   @relation("GatePassRequester", fields: [requestedById], references: [id])
 
   // Flat reference
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
+  flatId String?
+  flat   Flat?   @relation(fields: [flatId], references: [id])
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
@@ -2097,8 +2097,8 @@ model PreApprovedEntry {
   // Relations
   userId    String
   user      User    @relation("PreApprovedEntryCreator", fields: [userId], references: [id])
-  flatId    String
-  flat      Flat    @relation(fields: [flatId], references: [id])
+  flatId    String?
+  flat      Flat?    @relation(fields: [flatId], references: [id])
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
