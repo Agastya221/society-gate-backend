@@ -15,6 +15,9 @@ const daysFromNow = (days: number) => {
 const hoursAgo = (hours: number) => {
   const d = new Date(); d.setHours(d.getHours() - hours); return d;
 };
+const hoursFromNow = (hours: number) => {
+  const d = new Date(); d.setHours(d.getHours() + hours); return d;
+};
 
 async function main() {
   console.log('🌱 Starting seed...\n');
@@ -23,6 +26,8 @@ async function main() {
   // CLEAN DATABASE (new models first)
   // ============================================
   console.log('🧹 Cleaning...');
+  await prisma.invoiceLineItem.deleteMany();
+  await prisma.invoice.deleteMany();
   await prisma.pollVote.deleteMany();
   await prisma.pollOption.deleteMany();
   await prisma.poll.deleteMany();
@@ -61,6 +66,7 @@ async function main() {
   await prisma.onboardingAuditLog.deleteMany();
   await prisma.residentDocument.deleteMany();
   await prisma.onboardingRequest.deleteMany();
+  await prisma.societyRegistrationRequest.deleteMany();
   await prisma.user.deleteMany();
   await prisma.flat.deleteMany();
   await prisma.block.deleteMany();
@@ -115,7 +121,10 @@ async function main() {
   const towerC = await prisma.block.create({
     data: { name: 'Tower C (Lily)', societyId: society.id, totalFloors: 8, description: 'North-facing 2BHK compact units' },
   });
-  console.log('✅ 3 blocks\n');
+  const adminBlock = await prisma.block.create({
+    data: { name: 'Admin', societyId: society.id, description: 'Virtual block for society management office' },
+  });
+  console.log('✅ 4 blocks (3 towers + Admin)\n');
 
   // ============================================
   // FLATS (96 total — top 2 floors vacant per tower)
@@ -138,8 +147,13 @@ async function main() {
       }
     }
   }
+  // Admin Office flat — for outside society managers with no real flat
+  const adminOfficeFlat = await prisma.flat.create({
+    data: { flatNumber: 'OFFICE', blockId: adminBlock.id, societyId: society.id, isOccupied: false },
+  });
+
   const flat = (num: string) => flats.find((f: any) => f.flatNumber === num);
-  console.log(`✅ ${flats.length} flats\n`);
+  console.log(`✅ ${flats.length} flats + 1 Admin Office flat\n`);
 
   // ============================================
   // USERS
@@ -799,16 +813,118 @@ async function main() {
   // ============================================
   console.log('🔔 Creating notifications...');
   await prisma.notification.createMany({ data: [
+    // Resident specific notifications
     { type: 'SYSTEM', title: 'Welcome to Greenfield Heights', message: 'Your account has been activated. Explore the app!', userId: res1.id, societyId: society.id, isRead: true, readAt: daysAgo(60) },
     { type: 'ENTRY_REQUEST', title: 'Delivery at Gate', message: 'Zomato delivery waiting for approval at main gate.', userId: res2.id, societyId: society.id, isRead: false, referenceType: 'EntryRequest' },
     { type: 'ONBOARDING_STATUS', title: 'Booking Confirmed', message: 'Your banquet hall booking for April 5 has been confirmed.', userId: res1.id, societyId: society.id, isRead: true, readAt: daysAgo(1), referenceType: 'AmenityBooking' },
     { type: 'DELIVERY_REQUEST', title: 'Amazon Package', message: 'Your Amazon delivery is expected today between 2-4 PM.', userId: res1.id, societyId: society.id, isRead: false },
-    { type: 'EMERGENCY_ALERT', title: 'Fire Incident Resolved', message: 'Kitchen fire in A-101 has been controlled. No injuries reported.', userId: admin.id, societyId: society.id, isRead: true, readAt: daysAgo(15) },
     { type: 'STAFF_CHECKIN', title: 'Staff Arrived', message: 'Lakshmi Devi (Maid) checked in at 8:05 AM.', userId: res1.id, societyId: society.id, isRead: true, readAt: hoursAgo(4) },
     { type: 'SYSTEM', title: 'New Poll: EV Charging Stations', message: 'A new poll has been created. Your vote matters!', userId: res5.id, societyId: society.id, isRead: false },
     { type: 'SYSTEM', title: 'Vehicle Registration Pending', message: 'Your vehicle MH12QR0011 is awaiting admin approval.', userId: res4.id, societyId: society.id, isRead: false },
+    
+    // Admin specific notifications
+    { type: 'EMERGENCY_ALERT', title: '🚨 Fire Incident Resolved', message: 'Kitchen fire in A101 has been controlled. No injuries reported.', userId: admin.id, societyId: society.id, isRead: true, readAt: daysAgo(15) },
+    { type: 'ONBOARDING_STATUS', title: '🏠 New Onboarding Request', message: 'A new owner onboarding request for Tower A-A501 is pending your review', userId: admin.id, societyId: society.id, isRead: false, referenceType: 'OnboardingRequest', data: { requestId: 'seed-req-123', residentType: 'OWNER', flatNumber: 'A501', blockName: 'Tower A (Jasmine)', societyName: 'Greenfield Heights' } },
+    { type: 'ONBOARDING_STATUS', title: '🏠 New Onboarding Request', message: 'A new tenant onboarding request for Tower B-B404 is pending your review', userId: admin.id, societyId: society.id, isRead: true, readAt: hoursAgo(2), referenceType: 'OnboardingRequest', data: { requestId: 'seed-req-124', residentType: 'TENANT', flatNumber: 'B404', blockName: 'Tower B (Orchid)', societyName: 'Greenfield Heights' } },
+    { type: 'SYSTEM', title: '⚠️ New NOISE Complaint', message: '"Loud Music After 11 PM — B103" from Tower B-102 — MEDIUM priority', userId: admin.id, societyId: society.id, isRead: false, referenceType: 'Complaint', data: { complaintId: 'seed-comp-123', category: 'NOISE', priority: 'MEDIUM', isAnonymous: false } },
+    { type: 'SYSTEM', title: '🚨 New SECURITY Complaint', message: '"Security Guard Misbehavior" from Tower A-301 — HIGH priority', userId: admin.id, societyId: society.id, isRead: false, referenceType: 'Complaint', data: { complaintId: 'seed-comp-124', category: 'SECURITY', priority: 'HIGH', isAnonymous: true } },
+    { type: 'SYSTEM', title: '📋 New MAINTENANCE Complaint', message: '"Construction Debris Near Tower B" from Tower C-401 — MEDIUM priority', userId: admin.id, societyId: society.id, isRead: true, readAt: daysAgo(1), referenceType: 'Complaint', data: { complaintId: 'seed-comp-125', category: 'CLEANLINESS', priority: 'MEDIUM', isAnonymous: false } },
   ]});
-  console.log('✅ 8 notifications\n');
+  console.log('✅ 13 notifications\n');
+
+  // ============================================
+  // INVOICES & FINANCE
+  // ============================================
+  console.log('💰 Creating invoices...');
+  const inv1 = await prisma.invoice.create({
+    data: {
+      month: 'April 2026', amount: 4500, penalty: 0, totalAmount: 4500, status: 'PAID', description: 'Monthly Maintenance Invoice for April 2026', dueDate: daysFromNow(5), paidAt: daysAgo(2), flatId: flat('A101').id, societyId: society.id,
+      lineItems: { create: [{ description: 'Monthly Maintenance', amount: 4500 }] }
+    }
+  });
+  const inv2 = await prisma.invoice.create({
+    data: {
+      month: 'March 2026', amount: 4500, penalty: 200, totalAmount: 4700, status: 'OVERDUE', description: 'Monthly Maintenance Invoice with Late Fee', dueDate: daysAgo(25), flatId: flat('B102').id, societyId: society.id,
+      lineItems: { create: [{ description: 'Monthly Maintenance', amount: 4500 }, { description: 'Late Fee', amount: 200 }] }
+    }
+  });
+  const inv3 = await prisma.invoice.create({
+    data: {
+      month: 'April 2026', amount: 4500, penalty: 0, totalAmount: 4500, status: 'PENDING', description: 'Monthly Maintenance Invoice for April 2026', dueDate: daysFromNow(5), flatId: flat('C201').id, societyId: society.id,
+      lineItems: { create: [{ description: 'Monthly Maintenance', amount: 4500 }] }
+    }
+  });
+  const inv4 = await prisma.invoice.create({
+    data: {
+      month: 'April 2026', amount: 4500, penalty: 200, totalAmount: 4700, status: 'WAIVED', description: 'Monthly Maintenance Invoice for April 2026 (Waived due to volunteer work)', dueDate: daysFromNow(5), paidAt: daysAgo(1), flatId: flat('B401').id, societyId: society.id,
+      lineItems: { create: [{ description: 'Monthly Maintenance', amount: 4500 }, { description: 'Late Fee Waiver', amount: 200 }] }
+    }
+  });
+  console.log('✅ 4 invoices\n');
+
+  // ============================================
+  // SOCIETY REGISTRATION REQUEST
+  // ============================================
+  console.log('🏢 Creating society registration requests...');
+  await prisma.societyRegistrationRequest.create({
+    data: {
+      requestedById: res3.id, societyName: 'Golden Orchards', address: 'Baner-Balewadi Road', city: 'Pune', state: 'Maharashtra', pincode: '411045', contactName: 'Vikram Chauhan', contactPhone: '9811000006', contactEmail: 'vikram.go@example.com', totalFlats: 150, monthlyFee: 3500, status: 'PENDING', rejectionReason: 'Awaiting more building completion docs', reviewedById: superAdmin.id, reviewedAt: daysAgo(1)
+    }
+  });
+  console.log('✅ 1 society registration requests\n');
+
+  // ============================================
+  // GUEST INVITES & LOGS
+  // ============================================
+  console.log('✉️ Creating guest invites & entry logs...');
+  const gInv1 = await prisma.guestInvite.create({
+    data: { type: 'QUICK', visitorName: 'Ramesh Singh', visitorPhone: '9840330001', validFrom: hoursAgo(2), validUntil: hoursFromNow(5), allowedDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'], timeFrom: '00:00', timeUntil: '23:59', passcode: 'AB12CD', maxUses: 1, usedCount: 1, note: 'Plumber for bathroom leak tracking', isPrivate: false, flatId: flat('A101').id, societyId: society.id, residentId: res1.id }
+  });
+  const gInv2 = await prisma.guestInvite.create({
+    data: { type: 'FREQUENT', visitorName: 'Sneha Aunt', visitorPhone: '9840330002', validFrom: daysAgo(10), validUntil: daysFromNow(180), allowedDays: ['SAT', 'SUN'], timeFrom: '10:00', timeUntil: '18:00', passcode: 'XYZ789', maxUses: 50, usedCount: 5, note: 'Weekend caretaker', isPrivate: true, flatId: flat('A301').id, societyId: society.id, residentId: res2.id }
+  });
+
+  await prisma.guestEntryLog.create({
+    data: { guestInviteId: gInv1.id, inviteType: 'GUEST_INVITE', flatId: flat('A101').id, guardId: guard1.id, visitorName: 'Ramesh Singh', visitorPhone: '9840330001', passcode: 'AB12CD', status: 'ALLOWED', denyReason: 'Verified quick pass entry logic', societyId: society.id }
+  });
+  console.log('✅ 2 guest invites, 1 log\n');
+
+  // ============================================
+  // PARTY INVITES & SLOTS
+  // ============================================
+  console.log('🎉 Creating party invites...');
+  const pInv1 = await prisma.partyInvite.create({
+    data: { hostName: 'Priya Desai', validFrom: hoursAgo(2), validUntil: daysFromNow(3), venue: 'Clubhouse Ground Floor / C201', note: 'Bring a gift! Theme is Retro.', theme: 2, maxGuests: 20, usedSlots: 2, inviteCode: 'RTL-88XX', inviteLink: 'https://sgate.app/RTL-88XX', flatId: flat('C201').id, societyId: society.id, residentId: res5.id }
+  });
+
+  await prisma.partySlot.create({ data: { partyInviteId: pInv1.id, code: 'GUEST1', phone: '9000000001', name: 'Alok Nath', addedByResident: true, claimedAt: hoursAgo(1) } });
+  await prisma.partySlot.create({ data: { partyInviteId: pInv1.id, code: 'GUEST2', phone: '9000000002', name: 'Rahul Bose', addedByResident: false, claimedAt: hoursAgo(2) } });
+  
+  await prisma.guestEntryLog.create({
+    data: { partyInviteId: pInv1.id, inviteType: 'PARTY_INVITE', flatId: flat('C201').id, guardId: guard2.id, visitorName: 'Alok Nath', visitorPhone: '9000000001', passcode: 'GUEST1', status: 'ALLOWED', denyReason: 'Verified Host Confirmation', societyId: society.id }
+  });
+  console.log('✅ 1 party invite, 2 slots, 1 log\n');
+
+  // ============================================
+  // PRE-APPROVED ENTRIES
+  // ============================================
+  console.log('🚕 Creating pre-approved entries...');
+  const paEntry1 = await prisma.preApprovedEntry.create({
+    data: { type: 'CAB', mode: 'SAFE', scheduleType: 'ONCE', status: 'ACTIVE', visitorName: 'Uber Driver', visitorPhone: '9845012345', isLocked: false, lockedAt: new Date(), lockedByGuardId: guard1.id, userId: res1.id, flatId: flat('A101').id, societyId: society.id }
+  });
+  await prisma.preApprovedSchedule.create({ data: { entryId: paEntry1.id, date: hoursFromNow(2), startTime: '15:00', endTime: '16:00', validFrom: daysAgo(1), validUntil: daysFromNow(2), daysOfWeek: ['MON','TUE','WED','THU','FRI','SAT','SUN'], timeFrom: '15:00', timeTo: '16:00', entriesPerDay: 1, graceBeforeMinutes: 15, graceAfterMinutes: 30 } });
+  await prisma.preApprovedMeta.create({ data: { entryId: paEntry1.id, vehicleLast4Digits: '9988', companyName: 'Uber', isSurprise: false, category: 'OTHER', customCategory: 'Cab Booking' } });
+  await prisma.preApprovedVerification.create({ data: { entryId: paEntry1.id, verificationType: 'VEHICLE_LAST4', verificationValue: '9988' } });
+
+  const paEntry2 = await prisma.preApprovedEntry.create({
+    data: { type: 'DELIVERY', mode: 'SURPRISE', scheduleType: 'RECURRING', status: 'ACTIVE', visitorName: 'Amazon Delivery', visitorPhone: '9845012346', isLocked: false, lockedAt: daysAgo(1), lockedByGuardId: guard2.id, userId: res2.id, flatId: flat('A301').id, societyId: society.id }
+  });
+  await prisma.preApprovedSchedule.create({ data: { entryId: paEntry2.id, date: new Date(), startTime: '08:00', endTime: '20:00', validFrom: daysAgo(5), validUntil: daysFromNow(5), daysOfWeek: ['MON','TUE','WED','THU','FRI','SAT','SUN'], timeFrom: '08:00', timeTo: '20:00', entriesPerDay: 2, graceBeforeMinutes: 15, graceAfterMinutes: 30 } });
+  await prisma.preApprovedMeta.create({ data: { entryId: paEntry2.id, vehicleLast4Digits: '0000', companyName: 'Amazon', isSurprise: true, category: 'OTHER', customCategory: 'Surprise Package Delivery' } });
+  await prisma.preApprovedVerification.create({ data: { entryId: paEntry2.id, verificationType: 'NONE', verificationValue: 'N/A Verification' } });
+
+  await prisma.preApprovedUsage.create({ data: { entryId: paEntry1.id, guardId: guard1.id, gatePointId: mainGate.id, notes: 'Arrived on time safely', usedAt: hoursAgo(1) }});
+  console.log('✅ 2 pre-approved entries, 1 usage\n');
 
   // ============================================
   // SUMMARY
@@ -847,6 +963,10 @@ async function main() {
   console.log('  Polls:            3 (2 active, 1 closed) + votes');
   console.log('  Visitor Freq:     3');
   console.log('  Notifications:    8');
+  console.log('  Invoices:         4 (all billing statuses)');
+  console.log('  Society Requests: 1');
+  console.log('  Guest & Parties:  3 invites, 2 logic logs, 2 slots');
+  console.log('  Pre-Approved:     2 entries (cab & surprise)');
   console.log('═══════════════════════════════════════════');
   console.log('\n🔑 KEY LOGIN ACCOUNTS:');
   console.log('───────────────────────────────────────────');

@@ -24,6 +24,23 @@ export class SocietyService {
       },
     });
 
+    // Create Admin Office block + flat for outside admins/society managers
+    const adminBlock = await prisma.block.create({
+      data: {
+        name: 'Admin',
+        societyId: society.id,
+        description: 'Virtual block for society management office',
+      },
+    });
+    await prisma.flat.create({
+      data: {
+        flatNumber: 'OFFICE',
+        blockId: adminBlock.id,
+        societyId: society.id,
+        isOccupied: false,
+      },
+    });
+
     return society;
   }
 
