@@ -169,7 +169,7 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
     ...e,
     checkOutAt: e.checkOutTime,
     checkOutTime: undefined,
-    flat: { number: e.flat.flatNumber },
+    flat: { number: e.flat?.flatNumber ?? '' },
   }));
 
   res.json({

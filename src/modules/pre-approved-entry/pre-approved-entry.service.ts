@@ -254,7 +254,7 @@ export class PreApprovedEntryService {
 
     await accessControlCache.invalidate(
       entry.societyId,
-      entry.flatId,
+      entry.flatId ?? '',
       entry.meta?.vehicleLast4Digits ?? dto.vehicleLast4Digits,
     );
 
@@ -276,7 +276,7 @@ export class PreApprovedEntryService {
 
     await accessControlCache.invalidate(
       entry.societyId,
-      entry.flatId,
+      entry.flatId ?? '',
       entry.meta?.vehicleLast4Digits,
     );
 
@@ -635,7 +635,7 @@ export class PreApprovedEntryService {
     // Invalidate cache
     await accessControlCache.invalidate(
       result.entry.societyId,
-      result.entry.flatId,
+      result.entry.flatId ?? '',
       result.entry.meta?.vehicleLast4Digits,
     );
 
@@ -643,7 +643,7 @@ export class PreApprovedEntryService {
     if (result.entry.mode !== 'SURPRISE') {
       eventBus.emit('pre-approved.entry-used', {
         entryId: result.entry.id,
-        flatId: result.entry.flatId,
+        flatId: result.entry.flatId ?? '',
         societyId: result.entry.societyId,
         type: result.entry.type,
         mode: result.entry.mode,
@@ -708,7 +708,7 @@ export class PreApprovedEntryService {
         status: entry.status,
         displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
         isPrivate: false,
-        flatNumber: entry.flat.flatNumber,
+        flatNumber: entry.flat?.flatNumber ?? '',
         residentName: entry.user.name,
         visitorName: entry.visitorName,
         schedule: entry.schedule,
@@ -762,7 +762,7 @@ export class PreApprovedEntryService {
         mode: entry.mode,
         displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
         isPrivate: false,
-        flatNumber: entry.flat.flatNumber,
+        flatNumber: entry.flat?.flatNumber ?? '',
         residentName: entry.user.name,
         visitorName: entry.visitorName,
         schedule: entry.schedule,
@@ -834,13 +834,13 @@ export class PreApprovedEntryService {
 
     await accessControlCache.invalidate(
       entry.societyId,
-      entry.flatId,
+      entry.flatId ?? '',
       entry.meta?.vehicleLast4Digits,
     );
 
     eventBus.emit('pre-approved.cancelled-by-admin', {
       entryId: entry.id,
-      flatId: entry.flatId,
+      flatId: entry.flatId ?? '',
       societyId: entry.societyId,
       displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
       adminName: admin.name,

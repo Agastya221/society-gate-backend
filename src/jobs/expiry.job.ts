@@ -186,7 +186,7 @@ export async function expirePreApprovedEntries() {
       const key = `${entry.societyId}:${entry.flatId}:${entry.meta?.vehicleLast4Digits ?? ''}`;
       if (!invalidations.has(key)) {
         invalidations.add(key);
-        await accessControlCache.invalidate(entry.societyId, entry.flatId, entry.meta?.vehicleLast4Digits);
+        await accessControlCache.invalidate(entry.societyId, entry.flatId ?? '', entry.meta?.vehicleLast4Digits);
       }
     }
 
@@ -239,7 +239,7 @@ export async function notifyExpiringEntries() {
     for (const entry of expiring) {
       eventBus.emit('pre-approved.expiring-soon', {
         entryId: entry.id,
-        flatId: entry.flatId,
+        flatId: entry.flatId ?? '',
         societyId: entry.societyId,
         displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
         expiresAt: entry.schedule!.validUntil!,
