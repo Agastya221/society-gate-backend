@@ -56,6 +56,13 @@ enum PaymentStatus {
   OVERDUE
 }
 
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  WAIVED
+}
+
 enum FamilyRole {
   SPOUSE
   CHILD
@@ -422,9 +429,56 @@ model Society {
   postComments        PostComment[]
   societyDocuments    SocietyDocument[]
   polls               Poll[]
+  invoices            Invoice[]
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
+}
+
+// --------------------
+// INVOICES (Society Billing)
+// --------------------
+
+model Invoice {
+  id          String        @id @default(uuid())
+  month       String        // e.g. "April 2024"
+  amount      Float         // Base amount
+  penalty     Float         @default(0) // Accumulated late fees
+  totalAmount Float         // amount + penalty (computed on create/update)
+  status      InvoiceStatus @default(PENDING)
+  description String?
+  dueDate     DateTime
+  paidAt      DateTime?
+
+  // Flat being billed
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  // Society
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  lineItems InvoiceLineItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([societyId, flatId, month]) // Prevent duplicate invoices per flat per month
+  @@index([societyId, status])
+  @@index([societyId, month])
+  @@index([flatId, status])
+  @@index([status, dueDate])
+}
+
+model InvoiceLineItem {
+  id          String  @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String  // "Monthly Maintenance", "Late Fee"
+  amount      Float
+  createdAt   DateTime @default(now())
+
+  @@index([invoiceId])
 }
 
 model SocietyRegistrationRequest {
@@ -561,6 +615,7 @@ model Flat {
   guestInvites         GuestInvite[]
   partyInvites         PartyInvite[]
   preApprovedEntries   PreApprovedEntry[]
+  invoices             Invoice[]
 
   @@unique([societyId, flatNumber])
   @@index([societyId])

@@ -9,6 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Society'
+export type * from './models/Invoice'
+export type * from './models/InvoiceLineItem'
 export type * from './models/SocietyRegistrationRequest'
 export type * from './models/GatePoint'
 export type * from './models/Block'

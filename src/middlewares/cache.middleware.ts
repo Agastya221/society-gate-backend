@@ -33,7 +33,10 @@ export const cache = (options: CacheOptions = {}) => {
           if (field === 'userId') return req.user?.id || 'anonymous';
           if (field === 'societyId') return req.user?.societyId || 'none';
           if (field === 'role') return req.user?.role || 'none';
-          return req.query[field] || req.params[field] || 'none';
+          const qVal = req.query[field];
+          const pVal = req.params[field];
+          const resolvedQ = Array.isArray(qVal) ? (qVal[0] as string) : (qVal as string | undefined);
+          return resolvedQ || pVal || 'none';
         });
         varyKey = `:${varyValues.join(':')}`;
       }

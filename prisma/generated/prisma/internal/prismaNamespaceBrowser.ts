@@ -52,6 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Society: 'Society',
+  Invoice: 'Invoice',
+  InvoiceLineItem: 'InvoiceLineItem',
   SocietyRegistrationRequest: 'SocietyRegistrationRequest',
   GatePoint: 'GatePoint',
   Block: 'Block',
@@ -134,6 +136,36 @@ export const SocietyScalarFieldEnum = {
 } as const
 
 export type SocietyScalarFieldEnum = (typeof SocietyScalarFieldEnum)[keyof typeof SocietyScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  month: 'month',
+  amount: 'amount',
+  penalty: 'penalty',
+  totalAmount: 'totalAmount',
+  status: 'status',
+  description: 'description',
+  dueDate: 'dueDate',
+  paidAt: 'paidAt',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
+
+
+export const InvoiceLineItemScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  description: 'description',
+  amount: 'amount',
+  createdAt: 'createdAt'
+} as const
+
+export type InvoiceLineItemScalarFieldEnum = (typeof InvoiceLineItemScalarFieldEnum)[keyof typeof InvoiceLineItemScalarFieldEnum]
 
 
 export const SocietyRegistrationRequestScalarFieldEnum = {

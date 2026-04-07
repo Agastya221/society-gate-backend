@@ -23,6 +23,16 @@ export * from './enums';
  */
 export type Society = Prisma.SocietyModel
 /**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
+ * Model InvoiceLineItem
+ * 
+ */
+export type InvoiceLineItem = Prisma.InvoiceLineItemModel
+/**
  * Model SocietyRegistrationRequest
  * 
  */
