@@ -2,6 +2,7 @@ import { prisma, TransactionClient } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import type { OnboardingStatus, OnboardingAction, ResidentType, DocumentType } from '../../../prisma/generated/prisma/client';
 import type { Prisma } from '../../types';
+import { eventBus } from '../../utils/eventBus';
 
 export class OnboardingService {
   // ============================================
@@ -226,6 +227,21 @@ export class OnboardingService {
       submittedAt: request.submittedAt,
       estimatedReviewTime: '24-48 hours',
     };
+
+    // Notify all admins of the society about the new onboarding request (non-blocking)
+    setImmediate(() => {
+      eventBus.emit('onboarding.submitted', {
+        requestId: request.id,
+        societyId: request.societyId,
+        societyName: request.society.name,
+        residentName: 'New Resident', // admin will see details in their dashboard
+        residentPhone: '',
+        flatNumber: request.flat?.flatNumber || '',
+        blockName: request.block?.name || '',
+        residentType: request.residentType,
+        userId,
+      });
+    });
   }
 
   // ============================================
@@ -545,7 +561,7 @@ export class OnboardingService {
       return updatedRequest;
     });
 
-    return {
+    const result_data = {
       requestId: result.id,
       status: result.status,
       approvedAt: result.approvedAt,
@@ -557,6 +573,19 @@ export class OnboardingService {
         flatId: request.flatId,
       },
     };
+
+    // Notify the resident their request was approved
+    setImmediate(() => {
+      eventBus.emit('onboarding.approved', {
+        requestId: result.id,
+        societyId: request.societyId,
+        userId: request.user.id,
+        residentName: request.user.name,
+        flatId: request.flatId,
+      });
+    });
+
+    return result_data;
   }
 
   // ============================================
@@ -609,12 +638,24 @@ export class OnboardingService {
       return updatedRequest;
     });
 
-    return {
+    const result_data = {
       requestId: result.id,
       status: result.status,
       rejectedAt: result.rejectedAt,
       reason: result.rejectionReason,
     };
+
+    // Notify resident their request was rejected
+    setImmediate(() => {
+      eventBus.emit('onboarding.rejected', {
+        requestId: result.id,
+        societyId: request.societyId,
+        userId: request.userId,
+        reason,
+      });
+    });
+
+    return result_data;
   }
 
   // ============================================

@@ -5,6 +5,7 @@ import { ComplaintCategory, ComplaintStatus, ComplaintPriority, Role } from '../
 import { getPresignedViewUrl } from '../../utils/s3';
 import type { Prisma } from '../../types';
 import logger from '../../utils/logger';
+import { eventBus } from '../../utils/eventBus';
 
 export class ComplaintService {
   /**
@@ -84,6 +85,21 @@ export class ComplaintService {
         },
         society: { select: { id: true, name: true } },
       },
+    });
+
+    // Emit event for admin notification (non-blocking)
+    setImmediate(() => {
+      eventBus.emit('complaint.created', {
+        complaintId: complaint.id,
+        societyId,
+        category: complaint.category,
+        priority: complaint.priority,
+        title: complaint.title,
+        reportedByName: complaint.isAnonymous ? 'Anonymous' : complaint.reportedBy.name,
+        flatNumber: complaint.flat?.flatNumber ?? null,
+        blockName: complaint.flat?.block?.name ?? null,
+        isAnonymous: complaint.isAnonymous,
+      });
     });
 
     return complaint;

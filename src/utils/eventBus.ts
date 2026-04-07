@@ -147,6 +147,42 @@ export interface AppEvents {
     displayLabel: string;
     expiresAt: Date;
   };
+  // ---- Admin-facing events ----
+  'onboarding.submitted': {
+    requestId: string;
+    societyId: string;
+    societyName: string;
+    residentName: string;
+    residentPhone: string;
+    flatNumber: string;
+    blockName: string;
+    residentType: string;
+    userId: string;
+  };
+  'onboarding.approved': {
+    requestId: string;
+    societyId: string;
+    userId: string;        // resident who was approved
+    residentName: string;
+    flatId: string;
+  };
+  'onboarding.rejected': {
+    requestId: string;
+    societyId: string;
+    userId: string;        // resident who was rejected
+    reason: string;
+  };
+  'complaint.created': {
+    complaintId: string;
+    societyId: string;
+    category: string;
+    priority: string;
+    title: string;
+    reportedByName: string;
+    flatNumber: string | null;
+    blockName: string | null;
+    isAnonymous: boolean;
+  };
 }
 
 class AppEventBus extends EventEmitter {

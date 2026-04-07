@@ -7,6 +7,7 @@ import pollRoutes from '../../modules/poll/poll.routes';
 import noticeRoutes from '../../modules/notice/notice.routes';
 import billingRoutes from '../../modules/billing/billing.routes';
 import broadcastRoutes from '../../modules/broadcast/broadcast.routes';
+import adminNotificationRoutes from '../../modules/admin/admin-notification.routes';
 import {
   getAdminStaffDirectory,
   getAdminStaffAttendance,
@@ -35,8 +36,9 @@ router.use('/polls', pollRoutes);         // /api/v1/admin/polls
 router.use('/notices', noticeRoutes);     // /api/v1/admin/notices
 
 // ---- New modules ----
-router.use('/billing', billingRoutes);       // /api/v1/admin/billing/...  +  /api/v1/admin/billing/dues
-router.use('/broadcast', broadcastRoutes);   // /api/v1/admin/broadcast
+router.use('/billing', billingRoutes);         // /api/v1/admin/billing/...
+router.use('/broadcast', broadcastRoutes);     // /api/v1/admin/broadcast
+router.use('/notifications', adminNotificationRoutes); // /api/v1/admin/notifications
 
 // Alias: /api/v1/admin/dues → billing dues list (matches frontend audit spec)
 import { listDues } from '../../modules/billing/billing.controller';

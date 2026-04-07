@@ -525,4 +525,113 @@ eventBus.on('pre-approved.expiring-soon', async (payload) => {
   }
 });
 
+// ============================================
+// ADMIN-SPECIFIC NOTIFICATION LISTENERS
+// Note: Admin can also be a resident — the same Notification table is used.
+//       These listeners send to ADMIN/SUPER_ADMIN users via notifyAdmins().
+//       If an admin is also a resident, they'll receive both types in their feed.
+// ============================================
+
+import { adminNotificationService } from '../modules/admin/admin-notification.service';
+
+// New onboarding request submitted — alert all admins of that society
+eventBus.on('onboarding.submitted', async (payload) => {
+  try {
+    const location = [payload.blockName, payload.flatNumber].filter(Boolean).join('-');
+    const locationPart = location ? ` for ${payload.residentType.toLowerCase()} of ${location}` : '';
+
+    await adminNotificationService.notifyAdmins(payload.societyId, {
+      type: 'ONBOARDING_STATUS',
+      title: '🏠 New Onboarding Request',
+      message: `A new ${payload.residentType.toLowerCase()} onboarding request${locationPart} is pending your review`,
+      referenceId: payload.requestId,
+      referenceType: 'OnboardingRequest',
+      data: {
+        requestId: payload.requestId,
+        residentType: payload.residentType,
+        flatNumber: payload.flatNumber,
+        blockName: payload.blockName,
+        societyName: payload.societyName,
+      },
+    });
+
+    logger.info({ societyId: payload.societyId, requestId: payload.requestId }, '🔔 [ADMIN NOTIF] Onboarding request submitted alert sent');
+  } catch (error) {
+    logger.error({ error, event: 'onboarding.submitted', payload }, 'Failed to send admin onboarding notification');
+  }
+});
+
+// Onboarding approved — notify the resident
+eventBus.on('onboarding.approved', async (payload) => {
+  try {
+    await notificationService.sendToUser(payload.userId, {
+      type: 'ONBOARDING_STATUS',
+      title: '✅ Onboarding Approved!',
+      message: 'Welcome to your society! Your onboarding request has been approved. You now have full access.',
+      referenceId: payload.requestId,
+      referenceType: 'OnboardingRequest',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToUser(payload.userId, {
+      title: '✅ You\'re approved!',
+      body: 'Welcome! Your onboarding request has been approved by the admin.',
+      data: { screen: 'Home', type: 'ONBOARDING_APPROVED' },
+    }).catch((err) => logger.error({ err }, 'Push failed: onboarding.approved'));
+  } catch (error) {
+    logger.error({ error, event: 'onboarding.approved', payload }, 'Failed to send onboarding approved notification');
+  }
+});
+
+// Onboarding rejected — notify the resident
+eventBus.on('onboarding.rejected', async (payload) => {
+  try {
+    await notificationService.sendToUser(payload.userId, {
+      type: 'ONBOARDING_STATUS',
+      title: '❌ Onboarding Request Rejected',
+      message: payload.reason
+        ? `Your onboarding request was rejected: ${payload.reason}`
+        : 'Your onboarding request was rejected. Please contact the society admin.',
+      referenceId: payload.requestId,
+      referenceType: 'OnboardingRequest',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToUser(payload.userId, {
+      title: 'Request rejected',
+      body: payload.reason || 'Your onboarding request was rejected by admin.',
+      data: { screen: 'OnboardingStatus', type: 'ONBOARDING_REJECTED' },
+    }).catch((err) => logger.error({ err }, 'Push failed: onboarding.rejected'));
+  } catch (error) {
+    logger.error({ error, event: 'onboarding.rejected', payload }, 'Failed to send onboarding rejected notification');
+  }
+});
+
+// New complaint submitted — notify all admins
+eventBus.on('complaint.created', async (payload) => {
+  try {
+    const location = [payload.blockName, payload.flatNumber].filter(Boolean).join('-');
+    const locationPart = location ? ` from ${location}` : '';
+    const priorityEmoji = payload.priority === 'URGENT' ? '🚨' : payload.priority === 'HIGH' ? '⚠️' : '📋';
+
+    await adminNotificationService.notifyAdmins(payload.societyId, {
+      type: 'SYSTEM',
+      title: `${priorityEmoji} New ${payload.category} Complaint`,
+      message: `"${payload.title}"${locationPart} — ${payload.priority} priority`,
+      referenceId: payload.complaintId,
+      referenceType: 'Complaint',
+      data: {
+        complaintId: payload.complaintId,
+        category: payload.category,
+        priority: payload.priority,
+        isAnonymous: payload.isAnonymous,
+      },
+    });
+
+    logger.info({ societyId: payload.societyId, complaintId: payload.complaintId }, '🔔 [ADMIN NOTIF] New complaint alert sent to admins');
+  } catch (error) {
+    logger.error({ error, event: 'complaint.created', payload }, 'Failed to send admin complaint notification');
+  }
+});
+
 logger.info('Notification event listeners registered');
