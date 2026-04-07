@@ -285,7 +285,7 @@ export type GuestInviteGroupByOutputType = {
   usedCount: number
   note: string | null
   isPrivate: boolean
-  flatId: string
+  flatId: string | null
   societyId: string
   residentId: string
   createdAt: Date
@@ -331,12 +331,12 @@ export type GuestInviteWhereInput = {
   usedCount?: Prisma.IntFilter<"GuestInvite"> | number
   note?: Prisma.StringNullableFilter<"GuestInvite"> | string | null
   isPrivate?: Prisma.BoolFilter<"GuestInvite"> | boolean
-  flatId?: Prisma.StringFilter<"GuestInvite"> | string
+  flatId?: Prisma.StringNullableFilter<"GuestInvite"> | string | null
   societyId?: Prisma.StringFilter<"GuestInvite"> | string
   residentId?: Prisma.StringFilter<"GuestInvite"> | string
   createdAt?: Prisma.DateTimeFilter<"GuestInvite"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GuestInvite"> | Date | string
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   resident?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   guestEntryLogs?: Prisma.GuestEntryLogListRelationFilter
@@ -358,7 +358,7 @@ export type GuestInviteOrderByWithRelationInput = {
   usedCount?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   isPrivate?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   residentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -388,12 +388,12 @@ export type GuestInviteWhereUniqueInput = Prisma.AtLeast<{
   usedCount?: Prisma.IntFilter<"GuestInvite"> | number
   note?: Prisma.StringNullableFilter<"GuestInvite"> | string | null
   isPrivate?: Prisma.BoolFilter<"GuestInvite"> | boolean
-  flatId?: Prisma.StringFilter<"GuestInvite"> | string
+  flatId?: Prisma.StringNullableFilter<"GuestInvite"> | string | null
   societyId?: Prisma.StringFilter<"GuestInvite"> | string
   residentId?: Prisma.StringFilter<"GuestInvite"> | string
   createdAt?: Prisma.DateTimeFilter<"GuestInvite"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GuestInvite"> | Date | string
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   resident?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   guestEntryLogs?: Prisma.GuestEntryLogListRelationFilter
@@ -415,7 +415,7 @@ export type GuestInviteOrderByWithAggregationInput = {
   usedCount?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   isPrivate?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   residentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -446,7 +446,7 @@ export type GuestInviteScalarWhereWithAggregatesInput = {
   usedCount?: Prisma.IntWithAggregatesFilter<"GuestInvite"> | number
   note?: Prisma.StringNullableWithAggregatesFilter<"GuestInvite"> | string | null
   isPrivate?: Prisma.BoolWithAggregatesFilter<"GuestInvite"> | boolean
-  flatId?: Prisma.StringWithAggregatesFilter<"GuestInvite"> | string
+  flatId?: Prisma.StringNullableWithAggregatesFilter<"GuestInvite"> | string | null
   societyId?: Prisma.StringWithAggregatesFilter<"GuestInvite"> | string
   residentId?: Prisma.StringWithAggregatesFilter<"GuestInvite"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GuestInvite"> | Date | string
@@ -471,7 +471,7 @@ export type GuestInviteCreateInput = {
   isPrivate?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
   society: Prisma.SocietyCreateNestedOneWithoutGuestInvitesInput
   resident: Prisma.UserCreateNestedOneWithoutCreatedGuestInvitesInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuestInviteInput
@@ -493,7 +493,7 @@ export type GuestInviteUncheckedCreateInput = {
   usedCount?: number
   note?: string | null
   isPrivate?: boolean
-  flatId: string
+  flatId?: string | null
   societyId: string
   residentId: string
   createdAt?: Date | string
@@ -519,7 +519,7 @@ export type GuestInviteUpdateInput = {
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGuestInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGuestInvitesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutGuestInvitesNestedInput
   resident?: Prisma.UserUpdateOneRequiredWithoutCreatedGuestInvitesNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuestInviteNestedInput
@@ -541,7 +541,7 @@ export type GuestInviteUncheckedUpdateInput = {
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -565,7 +565,7 @@ export type GuestInviteCreateManyInput = {
   usedCount?: number
   note?: string | null
   isPrivate?: boolean
-  flatId: string
+  flatId?: string | null
   societyId: string
   residentId: string
   createdAt?: Date | string
@@ -608,7 +608,7 @@ export type GuestInviteUncheckedUpdateManyInput = {
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -892,7 +892,7 @@ export type GuestInviteCreateWithoutSocietyInput = {
   isPrivate?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
   resident: Prisma.UserCreateNestedOneWithoutCreatedGuestInvitesInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuestInviteInput
 }
@@ -913,7 +913,7 @@ export type GuestInviteUncheckedCreateWithoutSocietyInput = {
   usedCount?: number
   note?: string | null
   isPrivate?: boolean
-  flatId: string
+  flatId?: string | null
   residentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -965,7 +965,7 @@ export type GuestInviteScalarWhereInput = {
   usedCount?: Prisma.IntFilter<"GuestInvite"> | number
   note?: Prisma.StringNullableFilter<"GuestInvite"> | string | null
   isPrivate?: Prisma.BoolFilter<"GuestInvite"> | boolean
-  flatId?: Prisma.StringFilter<"GuestInvite"> | string
+  flatId?: Prisma.StringNullableFilter<"GuestInvite"> | string | null
   societyId?: Prisma.StringFilter<"GuestInvite"> | string
   residentId?: Prisma.StringFilter<"GuestInvite"> | string
   createdAt?: Prisma.DateTimeFilter<"GuestInvite"> | Date | string
@@ -1062,7 +1062,7 @@ export type GuestInviteCreateWithoutResidentInput = {
   isPrivate?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
   society: Prisma.SocietyCreateNestedOneWithoutGuestInvitesInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuestInviteInput
 }
@@ -1083,7 +1083,7 @@ export type GuestInviteUncheckedCreateWithoutResidentInput = {
   usedCount?: number
   note?: string | null
   isPrivate?: boolean
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1134,7 +1134,7 @@ export type GuestInviteCreateWithoutGuestEntryLogsInput = {
   isPrivate?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGuestInvitesInput
   society: Prisma.SocietyCreateNestedOneWithoutGuestInvitesInput
   resident: Prisma.UserCreateNestedOneWithoutCreatedGuestInvitesInput
 }
@@ -1155,7 +1155,7 @@ export type GuestInviteUncheckedCreateWithoutGuestEntryLogsInput = {
   usedCount?: number
   note?: string | null
   isPrivate?: boolean
-  flatId: string
+  flatId?: string | null
   societyId: string
   residentId: string
   createdAt?: Date | string
@@ -1196,7 +1196,7 @@ export type GuestInviteUpdateWithoutGuestEntryLogsInput = {
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGuestInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGuestInvitesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutGuestInvitesNestedInput
   resident?: Prisma.UserUpdateOneRequiredWithoutCreatedGuestInvitesNestedInput
 }
@@ -1217,7 +1217,7 @@ export type GuestInviteUncheckedUpdateWithoutGuestEntryLogsInput = {
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1240,7 +1240,7 @@ export type GuestInviteCreateManySocietyInput = {
   usedCount?: number
   note?: string | null
   isPrivate?: boolean
-  flatId: string
+  flatId?: string | null
   residentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1264,7 +1264,7 @@ export type GuestInviteUpdateWithoutSocietyInput = {
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGuestInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGuestInvitesNestedInput
   resident?: Prisma.UserUpdateOneRequiredWithoutCreatedGuestInvitesNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuestInviteNestedInput
 }
@@ -1285,7 +1285,7 @@ export type GuestInviteUncheckedUpdateWithoutSocietyInput = {
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1308,7 +1308,7 @@ export type GuestInviteUncheckedUpdateManyWithoutSocietyInput = {
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1420,7 +1420,7 @@ export type GuestInviteCreateManyResidentInput = {
   usedCount?: number
   note?: string | null
   isPrivate?: boolean
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1444,7 +1444,7 @@ export type GuestInviteUpdateWithoutResidentInput = {
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGuestInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGuestInvitesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutGuestInvitesNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuestInviteNestedInput
 }
@@ -1465,7 +1465,7 @@ export type GuestInviteUncheckedUpdateWithoutResidentInput = {
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1488,7 +1488,7 @@ export type GuestInviteUncheckedUpdateManyWithoutResidentInput = {
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1546,7 +1546,7 @@ export type GuestInviteSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   residentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GuestInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   guestEntryLogs?: boolean | Prisma.GuestInvite$guestEntryLogsArgs<ExtArgs>
@@ -1574,7 +1574,7 @@ export type GuestInviteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   residentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GuestInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guestInvite"]>
@@ -1600,7 +1600,7 @@ export type GuestInviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   residentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GuestInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guestInvite"]>
@@ -1630,19 +1630,19 @@ export type GuestInviteSelectScalar = {
 
 export type GuestInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "visitorName" | "visitorPhone" | "validFrom" | "validUntil" | "allowedDays" | "timeFrom" | "timeUntil" | "passcode" | "maxUses" | "usedCount" | "note" | "isPrivate" | "flatId" | "societyId" | "residentId" | "createdAt" | "updatedAt", ExtArgs["result"]["guestInvite"]>
 export type GuestInviteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GuestInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   guestEntryLogs?: boolean | Prisma.GuestInvite$guestEntryLogsArgs<ExtArgs>
   _count?: boolean | Prisma.GuestInviteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GuestInviteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GuestInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type GuestInviteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GuestInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -1650,7 +1650,7 @@ export type GuestInviteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $GuestInvitePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "GuestInvite"
   objects: {
-    flat: Prisma.$FlatPayload<ExtArgs>
+    flat: Prisma.$FlatPayload<ExtArgs> | null
     society: Prisma.$SocietyPayload<ExtArgs>
     resident: Prisma.$UserPayload<ExtArgs>
     guestEntryLogs: Prisma.$GuestEntryLogPayload<ExtArgs>[]
@@ -1671,7 +1671,7 @@ export type $GuestInvitePayload<ExtArgs extends runtime.Types.Extensions.Interna
     usedCount: number
     note: string | null
     isPrivate: boolean
-    flatId: string
+    flatId: string | null
     societyId: string
     residentId: string
     createdAt: Date
@@ -2070,7 +2070,7 @@ readonly fields: GuestInviteFieldRefs;
  */
 export interface Prisma__GuestInviteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  flat<T extends Prisma.FlatDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FlatDefaultArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  flat<T extends Prisma.GuestInvite$flatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GuestInvite$flatArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   society<T extends Prisma.SocietyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SocietyDefaultArgs<ExtArgs>>): Prisma.Prisma__SocietyClient<runtime.Types.Result.GetResult<Prisma.$SocietyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   resident<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   guestEntryLogs<T extends Prisma.GuestInvite$guestEntryLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GuestInvite$guestEntryLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuestEntryLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2516,6 +2516,25 @@ export type GuestInviteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many GuestInvites to delete.
    */
   limit?: number
+}
+
+/**
+ * GuestInvite.flat
+ */
+export type GuestInvite$flatArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Flat
+   */
+  select?: Prisma.FlatSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Flat
+   */
+  omit?: Prisma.FlatOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FlatInclude<ExtArgs> | null
+  where?: Prisma.FlatWhereInput
 }
 
 /**

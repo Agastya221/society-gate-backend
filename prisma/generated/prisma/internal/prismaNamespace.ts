@@ -403,6 +403,7 @@ export const ModelName = {
   StaffBooking: 'StaffBooking',
   StaffReview: 'StaffReview',
   Vehicle: 'Vehicle',
+  ParkingViolation: 'ParkingViolation',
   VisitorFrequency: 'VisitorFrequency',
   PaymentReminder: 'PaymentReminder',
   GatePass: 'GatePass',
@@ -445,7 +446,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "invoice" | "invoiceLineItem" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
+    modelProps: "society" | "invoice" | "invoiceLineItem" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "parkingViolation" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1852,6 +1853,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.VehicleCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.VehicleCountAggregateOutputType> | number
+        }
+      }
+    }
+    ParkingViolation: {
+      payload: Prisma.$ParkingViolationPayload<ExtArgs>
+      fields: Prisma.ParkingViolationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ParkingViolationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ParkingViolationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>
+        }
+        findFirst: {
+          args: Prisma.ParkingViolationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ParkingViolationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>
+        }
+        findMany: {
+          args: Prisma.ParkingViolationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>[]
+        }
+        create: {
+          args: Prisma.ParkingViolationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>
+        }
+        createMany: {
+          args: Prisma.ParkingViolationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ParkingViolationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>[]
+        }
+        delete: {
+          args: Prisma.ParkingViolationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>
+        }
+        update: {
+          args: Prisma.ParkingViolationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ParkingViolationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ParkingViolationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ParkingViolationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ParkingViolationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingViolationPayload>
+        }
+        aggregate: {
+          args: Prisma.ParkingViolationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateParkingViolation>
+        }
+        groupBy: {
+          args: Prisma.ParkingViolationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ParkingViolationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ParkingViolationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ParkingViolationCountAggregateOutputType> | number
         }
       }
     }
@@ -4309,6 +4384,29 @@ export const VehicleScalarFieldEnum = {
 export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeof VehicleScalarFieldEnum]
 
 
+export const ParkingViolationScalarFieldEnum = {
+  id: 'id',
+  vehicleId: 'vehicleId',
+  vehicleNumber: 'vehicleNumber',
+  type: 'type',
+  description: 'description',
+  source: 'source',
+  penaltyAmount: 'penaltyAmount',
+  addedToInvoice: 'addedToInvoice',
+  invoiceId: 'invoiceId',
+  reportedById: 'reportedById',
+  societyId: 'societyId',
+  status: 'status',
+  resolvedAt: 'resolvedAt',
+  resolvedById: 'resolvedById',
+  resolutionNote: 'resolutionNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ParkingViolationScalarFieldEnum = (typeof ParkingViolationScalarFieldEnum)[keyof typeof ParkingViolationScalarFieldEnum]
+
+
 export const VisitorFrequencyScalarFieldEnum = {
   id: 'id',
   visitorPhone: 'visitorPhone',
@@ -5157,6 +5255,48 @@ export type ListEnumVehicleStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'ViolationType'
+ */
+export type EnumViolationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ViolationType'>
+    
+
+
+/**
+ * Reference to a field of type 'ViolationType[]'
+ */
+export type ListEnumViolationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ViolationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ViolationSource'
+ */
+export type EnumViolationSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ViolationSource'>
+    
+
+
+/**
+ * Reference to a field of type 'ViolationSource[]'
+ */
+export type ListEnumViolationSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ViolationSource[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ViolationStatus'
+ */
+export type EnumViolationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ViolationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ViolationStatus[]'
+ */
+export type ListEnumViolationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ViolationStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'GatePassType'
  */
 export type EnumGatePassTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GatePassType'>
@@ -5675,6 +5815,7 @@ export type GlobalOmitConfig = {
   staffBooking?: Prisma.StaffBookingOmit
   staffReview?: Prisma.StaffReviewOmit
   vehicle?: Prisma.VehicleOmit
+  parkingViolation?: Prisma.ParkingViolationOmit
   visitorFrequency?: Prisma.VisitorFrequencyOmit
   paymentReminder?: Prisma.PaymentReminderOmit
   gatePass?: Prisma.GatePassOmit

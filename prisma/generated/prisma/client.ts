@@ -133,6 +133,11 @@ export type StaffReview = Prisma.StaffReviewModel
  */
 export type Vehicle = Prisma.VehicleModel
 /**
+ * Model ParkingViolation
+ * 
+ */
+export type ParkingViolation = Prisma.ParkingViolationModel
+/**
  * Model VisitorFrequency
  * 
  */

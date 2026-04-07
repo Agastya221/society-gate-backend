@@ -200,7 +200,7 @@ export type GuestEntryLogGroupByOutputType = {
   guestInviteId: string | null
   partyInviteId: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId: string | null
   guardId: string
   visitorName: string
   visitorPhone: string | null
@@ -237,7 +237,7 @@ export type GuestEntryLogWhereInput = {
   guestInviteId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   partyInviteId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   inviteType?: Prisma.EnumInviteRefTypeFilter<"GuestEntryLog"> | $Enums.InviteRefType
-  flatId?: Prisma.StringFilter<"GuestEntryLog"> | string
+  flatId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   guardId?: Prisma.StringFilter<"GuestEntryLog"> | string
   visitorName?: Prisma.StringFilter<"GuestEntryLog"> | string
   visitorPhone?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
@@ -257,7 +257,7 @@ export type GuestEntryLogOrderByWithRelationInput = {
   guestInviteId?: Prisma.SortOrderInput | Prisma.SortOrder
   partyInviteId?: Prisma.SortOrderInput | Prisma.SortOrder
   inviteType?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   guardId?: Prisma.SortOrder
   visitorName?: Prisma.SortOrder
   visitorPhone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -280,7 +280,7 @@ export type GuestEntryLogWhereUniqueInput = Prisma.AtLeast<{
   guestInviteId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   partyInviteId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   inviteType?: Prisma.EnumInviteRefTypeFilter<"GuestEntryLog"> | $Enums.InviteRefType
-  flatId?: Prisma.StringFilter<"GuestEntryLog"> | string
+  flatId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   guardId?: Prisma.StringFilter<"GuestEntryLog"> | string
   visitorName?: Prisma.StringFilter<"GuestEntryLog"> | string
   visitorPhone?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
@@ -300,7 +300,7 @@ export type GuestEntryLogOrderByWithAggregationInput = {
   guestInviteId?: Prisma.SortOrderInput | Prisma.SortOrder
   partyInviteId?: Prisma.SortOrderInput | Prisma.SortOrder
   inviteType?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   guardId?: Prisma.SortOrder
   visitorName?: Prisma.SortOrder
   visitorPhone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -322,7 +322,7 @@ export type GuestEntryLogScalarWhereWithAggregatesInput = {
   guestInviteId?: Prisma.StringNullableWithAggregatesFilter<"GuestEntryLog"> | string | null
   partyInviteId?: Prisma.StringNullableWithAggregatesFilter<"GuestEntryLog"> | string | null
   inviteType?: Prisma.EnumInviteRefTypeWithAggregatesFilter<"GuestEntryLog"> | $Enums.InviteRefType
-  flatId?: Prisma.StringWithAggregatesFilter<"GuestEntryLog"> | string
+  flatId?: Prisma.StringNullableWithAggregatesFilter<"GuestEntryLog"> | string | null
   guardId?: Prisma.StringWithAggregatesFilter<"GuestEntryLog"> | string
   visitorName?: Prisma.StringWithAggregatesFilter<"GuestEntryLog"> | string
   visitorPhone?: Prisma.StringNullableWithAggregatesFilter<"GuestEntryLog"> | string | null
@@ -336,7 +336,7 @@ export type GuestEntryLogScalarWhereWithAggregatesInput = {
 export type GuestEntryLogCreateInput = {
   id?: string
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   visitorName: string
   visitorPhone?: string | null
   passcode: string
@@ -354,7 +354,7 @@ export type GuestEntryLogUncheckedCreateInput = {
   guestInviteId?: string | null
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -368,7 +368,7 @@ export type GuestEntryLogUncheckedCreateInput = {
 export type GuestEntryLogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -386,7 +386,7 @@ export type GuestEntryLogUncheckedUpdateInput = {
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -402,7 +402,7 @@ export type GuestEntryLogCreateManyInput = {
   guestInviteId?: string | null
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -416,7 +416,7 @@ export type GuestEntryLogCreateManyInput = {
 export type GuestEntryLogUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -430,7 +430,7 @@ export type GuestEntryLogUncheckedUpdateManyInput = {
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -678,7 +678,7 @@ export type EnumGuestEntryResultFieldUpdateOperationsInput = {
 export type GuestEntryLogCreateWithoutSocietyInput = {
   id?: string
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   visitorName: string
   visitorPhone?: string | null
   passcode: string
@@ -695,7 +695,7 @@ export type GuestEntryLogUncheckedCreateWithoutSocietyInput = {
   guestInviteId?: string | null
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -739,7 +739,7 @@ export type GuestEntryLogScalarWhereInput = {
   guestInviteId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   partyInviteId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   inviteType?: Prisma.EnumInviteRefTypeFilter<"GuestEntryLog"> | $Enums.InviteRefType
-  flatId?: Prisma.StringFilter<"GuestEntryLog"> | string
+  flatId?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
   guardId?: Prisma.StringFilter<"GuestEntryLog"> | string
   visitorName?: Prisma.StringFilter<"GuestEntryLog"> | string
   visitorPhone?: Prisma.StringNullableFilter<"GuestEntryLog"> | string | null
@@ -753,7 +753,7 @@ export type GuestEntryLogScalarWhereInput = {
 export type GuestEntryLogCreateWithoutGuardInput = {
   id?: string
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   visitorName: string
   visitorPhone?: string | null
   passcode: string
@@ -770,7 +770,7 @@ export type GuestEntryLogUncheckedCreateWithoutGuardInput = {
   guestInviteId?: string | null
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   visitorName: string
   visitorPhone?: string | null
   passcode: string
@@ -809,7 +809,7 @@ export type GuestEntryLogUpdateManyWithWhereWithoutGuardInput = {
 export type GuestEntryLogCreateWithoutGuestInviteInput = {
   id?: string
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   visitorName: string
   visitorPhone?: string | null
   passcode: string
@@ -825,7 +825,7 @@ export type GuestEntryLogUncheckedCreateWithoutGuestInviteInput = {
   id?: string
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -865,7 +865,7 @@ export type GuestEntryLogUpdateManyWithWhereWithoutGuestInviteInput = {
 export type GuestEntryLogCreateWithoutPartyInviteInput = {
   id?: string
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   visitorName: string
   visitorPhone?: string | null
   passcode: string
@@ -881,7 +881,7 @@ export type GuestEntryLogUncheckedCreateWithoutPartyInviteInput = {
   id?: string
   guestInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -923,7 +923,7 @@ export type GuestEntryLogCreateManySocietyInput = {
   guestInviteId?: string | null
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -936,7 +936,7 @@ export type GuestEntryLogCreateManySocietyInput = {
 export type GuestEntryLogUpdateWithoutSocietyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -953,7 +953,7 @@ export type GuestEntryLogUncheckedUpdateWithoutSocietyInput = {
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -968,7 +968,7 @@ export type GuestEntryLogUncheckedUpdateManyWithoutSocietyInput = {
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -983,7 +983,7 @@ export type GuestEntryLogCreateManyGuardInput = {
   guestInviteId?: string | null
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   visitorName: string
   visitorPhone?: string | null
   passcode: string
@@ -996,7 +996,7 @@ export type GuestEntryLogCreateManyGuardInput = {
 export type GuestEntryLogUpdateWithoutGuardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1013,7 +1013,7 @@ export type GuestEntryLogUncheckedUpdateWithoutGuardInput = {
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1028,7 +1028,7 @@ export type GuestEntryLogUncheckedUpdateManyWithoutGuardInput = {
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1042,7 +1042,7 @@ export type GuestEntryLogCreateManyGuestInviteInput = {
   id?: string
   partyInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -1056,7 +1056,7 @@ export type GuestEntryLogCreateManyGuestInviteInput = {
 export type GuestEntryLogUpdateWithoutGuestInviteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1072,7 +1072,7 @@ export type GuestEntryLogUncheckedUpdateWithoutGuestInviteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1087,7 +1087,7 @@ export type GuestEntryLogUncheckedUpdateManyWithoutGuestInviteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partyInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1102,7 +1102,7 @@ export type GuestEntryLogCreateManyPartyInviteInput = {
   id?: string
   guestInviteId?: string | null
   inviteType: $Enums.InviteRefType
-  flatId: string
+  flatId?: string | null
   guardId: string
   visitorName: string
   visitorPhone?: string | null
@@ -1116,7 +1116,7 @@ export type GuestEntryLogCreateManyPartyInviteInput = {
 export type GuestEntryLogUpdateWithoutPartyInviteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passcode?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1132,7 +1132,7 @@ export type GuestEntryLogUncheckedUpdateWithoutPartyInviteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1147,7 +1147,7 @@ export type GuestEntryLogUncheckedUpdateManyWithoutPartyInviteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   guestInviteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inviteType?: Prisma.EnumInviteRefTypeFieldUpdateOperationsInput | $Enums.InviteRefType
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guardId?: Prisma.StringFieldUpdateOperationsInput | string
   visitorName?: Prisma.StringFieldUpdateOperationsInput | string
   visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1269,7 +1269,7 @@ export type $GuestEntryLogPayload<ExtArgs extends runtime.Types.Extensions.Inter
     guestInviteId: string | null
     partyInviteId: string | null
     inviteType: $Enums.InviteRefType
-    flatId: string
+    flatId: string | null
     guardId: string
     visitorName: string
     visitorPhone: string | null

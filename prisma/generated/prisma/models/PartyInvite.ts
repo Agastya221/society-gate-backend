@@ -272,7 +272,7 @@ export type PartyInviteGroupByOutputType = {
   inviteCode: string
   inviteLink: string
   status: $Enums.PartyInviteStatus
-  flatId: string
+  flatId: string | null
   societyId: string
   residentId: string
   createdAt: Date
@@ -315,12 +315,12 @@ export type PartyInviteWhereInput = {
   inviteCode?: Prisma.StringFilter<"PartyInvite"> | string
   inviteLink?: Prisma.StringFilter<"PartyInvite"> | string
   status?: Prisma.EnumPartyInviteStatusFilter<"PartyInvite"> | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFilter<"PartyInvite"> | string
+  flatId?: Prisma.StringNullableFilter<"PartyInvite"> | string | null
   societyId?: Prisma.StringFilter<"PartyInvite"> | string
   residentId?: Prisma.StringFilter<"PartyInvite"> | string
   createdAt?: Prisma.DateTimeFilter<"PartyInvite"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PartyInvite"> | Date | string
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   resident?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   slots?: Prisma.PartySlotListRelationFilter
@@ -340,7 +340,7 @@ export type PartyInviteOrderByWithRelationInput = {
   inviteCode?: Prisma.SortOrder
   inviteLink?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   residentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -368,12 +368,12 @@ export type PartyInviteWhereUniqueInput = Prisma.AtLeast<{
   usedSlots?: Prisma.IntFilter<"PartyInvite"> | number
   inviteLink?: Prisma.StringFilter<"PartyInvite"> | string
   status?: Prisma.EnumPartyInviteStatusFilter<"PartyInvite"> | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFilter<"PartyInvite"> | string
+  flatId?: Prisma.StringNullableFilter<"PartyInvite"> | string | null
   societyId?: Prisma.StringFilter<"PartyInvite"> | string
   residentId?: Prisma.StringFilter<"PartyInvite"> | string
   createdAt?: Prisma.DateTimeFilter<"PartyInvite"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PartyInvite"> | Date | string
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   resident?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   slots?: Prisma.PartySlotListRelationFilter
@@ -393,7 +393,7 @@ export type PartyInviteOrderByWithAggregationInput = {
   inviteCode?: Prisma.SortOrder
   inviteLink?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   residentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -421,7 +421,7 @@ export type PartyInviteScalarWhereWithAggregatesInput = {
   inviteCode?: Prisma.StringWithAggregatesFilter<"PartyInvite"> | string
   inviteLink?: Prisma.StringWithAggregatesFilter<"PartyInvite"> | string
   status?: Prisma.EnumPartyInviteStatusWithAggregatesFilter<"PartyInvite"> | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringWithAggregatesFilter<"PartyInvite"> | string
+  flatId?: Prisma.StringNullableWithAggregatesFilter<"PartyInvite"> | string | null
   societyId?: Prisma.StringWithAggregatesFilter<"PartyInvite"> | string
   residentId?: Prisma.StringWithAggregatesFilter<"PartyInvite"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PartyInvite"> | Date | string
@@ -443,7 +443,7 @@ export type PartyInviteCreateInput = {
   status?: $Enums.PartyInviteStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
   society: Prisma.SocietyCreateNestedOneWithoutPartyInvitesInput
   resident: Prisma.UserCreateNestedOneWithoutCreatedPartyInvitesInput
   slots?: Prisma.PartySlotCreateNestedManyWithoutPartyInviteInput
@@ -463,7 +463,7 @@ export type PartyInviteUncheckedCreateInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   societyId: string
   residentId: string
   createdAt?: Date | string
@@ -487,7 +487,7 @@ export type PartyInviteUpdateInput = {
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPartyInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPartyInvitesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPartyInvitesNestedInput
   resident?: Prisma.UserUpdateOneRequiredWithoutCreatedPartyInvitesNestedInput
   slots?: Prisma.PartySlotUpdateManyWithoutPartyInviteNestedInput
@@ -507,7 +507,7 @@ export type PartyInviteUncheckedUpdateInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -529,7 +529,7 @@ export type PartyInviteCreateManyInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   societyId: string
   residentId: string
   createdAt?: Date | string
@@ -566,7 +566,7 @@ export type PartyInviteUncheckedUpdateManyInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -840,7 +840,7 @@ export type PartyInviteCreateWithoutSocietyInput = {
   status?: $Enums.PartyInviteStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
   resident: Prisma.UserCreateNestedOneWithoutCreatedPartyInvitesInput
   slots?: Prisma.PartySlotCreateNestedManyWithoutPartyInviteInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutPartyInviteInput
@@ -859,7 +859,7 @@ export type PartyInviteUncheckedCreateWithoutSocietyInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   residentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -909,7 +909,7 @@ export type PartyInviteScalarWhereInput = {
   inviteCode?: Prisma.StringFilter<"PartyInvite"> | string
   inviteLink?: Prisma.StringFilter<"PartyInvite"> | string
   status?: Prisma.EnumPartyInviteStatusFilter<"PartyInvite"> | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFilter<"PartyInvite"> | string
+  flatId?: Prisma.StringNullableFilter<"PartyInvite"> | string | null
   societyId?: Prisma.StringFilter<"PartyInvite"> | string
   residentId?: Prisma.StringFilter<"PartyInvite"> | string
   createdAt?: Prisma.DateTimeFilter<"PartyInvite"> | Date | string
@@ -999,7 +999,7 @@ export type PartyInviteCreateWithoutResidentInput = {
   status?: $Enums.PartyInviteStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
   society: Prisma.SocietyCreateNestedOneWithoutPartyInvitesInput
   slots?: Prisma.PartySlotCreateNestedManyWithoutPartyInviteInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutPartyInviteInput
@@ -1018,7 +1018,7 @@ export type PartyInviteUncheckedCreateWithoutResidentInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1067,7 +1067,7 @@ export type PartyInviteCreateWithoutSlotsInput = {
   status?: $Enums.PartyInviteStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
   society: Prisma.SocietyCreateNestedOneWithoutPartyInvitesInput
   resident: Prisma.UserCreateNestedOneWithoutCreatedPartyInvitesInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutPartyInviteInput
@@ -1086,7 +1086,7 @@ export type PartyInviteUncheckedCreateWithoutSlotsInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   societyId: string
   residentId: string
   createdAt?: Date | string
@@ -1125,7 +1125,7 @@ export type PartyInviteUpdateWithoutSlotsInput = {
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPartyInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPartyInvitesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPartyInvitesNestedInput
   resident?: Prisma.UserUpdateOneRequiredWithoutCreatedPartyInvitesNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutPartyInviteNestedInput
@@ -1144,7 +1144,7 @@ export type PartyInviteUncheckedUpdateWithoutSlotsInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1167,7 +1167,7 @@ export type PartyInviteCreateWithoutGuestEntryLogsInput = {
   status?: $Enums.PartyInviteStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPartyInvitesInput
   society: Prisma.SocietyCreateNestedOneWithoutPartyInvitesInput
   resident: Prisma.UserCreateNestedOneWithoutCreatedPartyInvitesInput
   slots?: Prisma.PartySlotCreateNestedManyWithoutPartyInviteInput
@@ -1186,7 +1186,7 @@ export type PartyInviteUncheckedCreateWithoutGuestEntryLogsInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   societyId: string
   residentId: string
   createdAt?: Date | string
@@ -1225,7 +1225,7 @@ export type PartyInviteUpdateWithoutGuestEntryLogsInput = {
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPartyInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPartyInvitesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPartyInvitesNestedInput
   resident?: Prisma.UserUpdateOneRequiredWithoutCreatedPartyInvitesNestedInput
   slots?: Prisma.PartySlotUpdateManyWithoutPartyInviteNestedInput
@@ -1244,7 +1244,7 @@ export type PartyInviteUncheckedUpdateWithoutGuestEntryLogsInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1265,7 +1265,7 @@ export type PartyInviteCreateManySocietyInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   residentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1286,7 +1286,7 @@ export type PartyInviteUpdateWithoutSocietyInput = {
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPartyInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPartyInvitesNestedInput
   resident?: Prisma.UserUpdateOneRequiredWithoutCreatedPartyInvitesNestedInput
   slots?: Prisma.PartySlotUpdateManyWithoutPartyInviteNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutPartyInviteNestedInput
@@ -1305,7 +1305,7 @@ export type PartyInviteUncheckedUpdateWithoutSocietyInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1326,7 +1326,7 @@ export type PartyInviteUncheckedUpdateManyWithoutSocietyInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   residentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1425,7 +1425,7 @@ export type PartyInviteCreateManyResidentInput = {
   inviteCode: string
   inviteLink: string
   status?: $Enums.PartyInviteStatus
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1446,7 +1446,7 @@ export type PartyInviteUpdateWithoutResidentInput = {
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPartyInvitesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPartyInvitesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPartyInvitesNestedInput
   slots?: Prisma.PartySlotUpdateManyWithoutPartyInviteNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutPartyInviteNestedInput
@@ -1465,7 +1465,7 @@ export type PartyInviteUncheckedUpdateWithoutResidentInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1486,7 +1486,7 @@ export type PartyInviteUncheckedUpdateManyWithoutResidentInput = {
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   inviteLink?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyInviteStatusFieldUpdateOperationsInput | $Enums.PartyInviteStatus
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1550,7 +1550,7 @@ export type PartyInviteSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   residentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PartyInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   slots?: boolean | Prisma.PartyInvite$slotsArgs<ExtArgs>
@@ -1576,7 +1576,7 @@ export type PartyInviteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   residentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PartyInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["partyInvite"]>
@@ -1599,7 +1599,7 @@ export type PartyInviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   residentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PartyInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["partyInvite"]>
@@ -1626,7 +1626,7 @@ export type PartyInviteSelectScalar = {
 
 export type PartyInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "hostName" | "validFrom" | "validUntil" | "venue" | "note" | "theme" | "maxGuests" | "usedSlots" | "inviteCode" | "inviteLink" | "status" | "flatId" | "societyId" | "residentId" | "createdAt" | "updatedAt", ExtArgs["result"]["partyInvite"]>
 export type PartyInviteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PartyInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   slots?: boolean | Prisma.PartyInvite$slotsArgs<ExtArgs>
@@ -1634,12 +1634,12 @@ export type PartyInviteInclude<ExtArgs extends runtime.Types.Extensions.Internal
   _count?: boolean | Prisma.PartyInviteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PartyInviteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PartyInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type PartyInviteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PartyInvite$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   resident?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -1647,7 +1647,7 @@ export type PartyInviteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $PartyInvitePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PartyInvite"
   objects: {
-    flat: Prisma.$FlatPayload<ExtArgs>
+    flat: Prisma.$FlatPayload<ExtArgs> | null
     society: Prisma.$SocietyPayload<ExtArgs>
     resident: Prisma.$UserPayload<ExtArgs>
     slots: Prisma.$PartySlotPayload<ExtArgs>[]
@@ -1666,7 +1666,7 @@ export type $PartyInvitePayload<ExtArgs extends runtime.Types.Extensions.Interna
     inviteCode: string
     inviteLink: string
     status: $Enums.PartyInviteStatus
-    flatId: string
+    flatId: string | null
     societyId: string
     residentId: string
     createdAt: Date
@@ -2065,7 +2065,7 @@ readonly fields: PartyInviteFieldRefs;
  */
 export interface Prisma__PartyInviteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  flat<T extends Prisma.FlatDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FlatDefaultArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  flat<T extends Prisma.PartyInvite$flatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyInvite$flatArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   society<T extends Prisma.SocietyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SocietyDefaultArgs<ExtArgs>>): Prisma.Prisma__SocietyClient<runtime.Types.Result.GetResult<Prisma.$SocietyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   resident<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   slots<T extends Prisma.PartyInvite$slotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyInvite$slotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartySlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2509,6 +2509,25 @@ export type PartyInviteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many PartyInvites to delete.
    */
   limit?: number
+}
+
+/**
+ * PartyInvite.flat
+ */
+export type PartyInvite$flatArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Flat
+   */
+  select?: Prisma.FlatSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Flat
+   */
+  omit?: Prisma.FlatOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FlatInclude<ExtArgs> | null
+  where?: Prisma.FlatWhereInput
 }
 
 /**

@@ -235,7 +235,30 @@ enum NotificationType {
   STAFF_CHECKIN
   STAFF_CHECKOUT
   GUEST_ENTRY
+  PARKING_VIOLATION
+  PARKING_COMPLAINT
   SYSTEM
+}
+
+enum ViolationType {
+  WRONG_PARKING
+  DOUBLE_PARKING
+  BLOCKING_GATE
+  UNAUTHORIZED_SPOT
+  NO_STICKER
+  OTHER
+}
+
+enum ViolationSource {
+  OFFICIAL  // Admin or Guard — can carry penalty
+  COMPLAINT // Resident report — admin reviews, can escalate
+}
+
+enum ViolationStatus {
+  OPEN
+  NOTIFIED
+  RESOLVED
+  DISMISSED
 }
 
 // --------------------
@@ -430,6 +453,7 @@ model Society {
   societyDocuments    SocietyDocument[]
   polls               Poll[]
   invoices            Invoice[]
+  parkingViolations   ParkingViolation[]
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
@@ -714,6 +738,10 @@ model User {
   // Pre-approved entry relations
   preApprovedEntries PreApprovedEntry[] @relation("PreApprovedEntryCreator")
   preApprovedUsages  PreApprovedUsage[] @relation("PreApprovedUsageGuard")
+
+  // Parking violation relations
+  reportedViolations  ParkingViolation[] @relation("ViolationReporter")
+  resolvedViolations  ParkingViolation[] @relation("ViolationResolver")
 
   // Push notifications
   fcmToken   String? // Device push token, updated on every login
@@ -1257,9 +1285,56 @@ model Vehicle {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  violations ParkingViolation[]
+
   @@unique([societyId, vehicleNumber])
   @@index([userId])
   @@index([societyId, status])
+}
+
+// --------------------
+// PARKING VIOLATIONS
+// --------------------
+
+model ParkingViolation {
+  id            String          @id @default(uuid())
+
+  // Vehicle — nullable so residents can report unknown/unregistered vehicles
+  vehicleId     String?
+  vehicle       Vehicle?        @relation(fields: [vehicleId], references: [id])
+  vehicleNumber String          // always stored for display even if unregistered
+
+  type          ViolationType
+  description   String?
+
+  source        ViolationSource @default(OFFICIAL)
+
+  // Penalty (OFFICIAL only)
+  penaltyAmount  Float?
+  addedToInvoice Boolean        @default(false)
+  invoiceId      String?        // set when penalty is pushed to monthly invoice
+
+  // Who filed it
+  reportedById  String
+  reportedBy    User            @relation("ViolationReporter", fields: [reportedById], references: [id])
+
+  societyId     String
+  society       Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  // Resolution
+  status         ViolationStatus @default(OPEN)
+  resolvedAt     DateTime?
+  resolvedById   String?
+  resolvedBy     User?           @relation("ViolationResolver", fields: [resolvedById], references: [id])
+  resolutionNote String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status])
+  @@index([vehicleId, status])
+  @@index([reportedById])
+  @@index([source, status])
 }
 
 // --------------------

@@ -393,6 +393,8 @@ export type UserWhereInput = {
   guardEntryLogs?: Prisma.GuestEntryLogListRelationFilter
   preApprovedEntries?: Prisma.PreApprovedEntryListRelationFilter
   preApprovedUsages?: Prisma.PreApprovedUsageListRelationFilter
+  reportedViolations?: Prisma.ParkingViolationListRelationFilter
+  resolvedViolations?: Prisma.ParkingViolationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -459,6 +461,8 @@ export type UserOrderByWithRelationInput = {
   guardEntryLogs?: Prisma.GuestEntryLogOrderByRelationAggregateInput
   preApprovedEntries?: Prisma.PreApprovedEntryOrderByRelationAggregateInput
   preApprovedUsages?: Prisma.PreApprovedUsageOrderByRelationAggregateInput
+  reportedViolations?: Prisma.ParkingViolationOrderByRelationAggregateInput
+  resolvedViolations?: Prisma.ParkingViolationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -528,6 +532,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   guardEntryLogs?: Prisma.GuestEntryLogListRelationFilter
   preApprovedEntries?: Prisma.PreApprovedEntryListRelationFilter
   preApprovedUsages?: Prisma.PreApprovedUsageListRelationFilter
+  reportedViolations?: Prisma.ParkingViolationListRelationFilter
+  resolvedViolations?: Prisma.ParkingViolationListRelationFilter
 }, "id" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -649,6 +655,8 @@ export type UserCreateInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -712,6 +720,8 @@ export type UserUncheckedCreateInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUpdateInput = {
@@ -775,6 +785,8 @@ export type UserUpdateInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -838,6 +850,8 @@ export type UserUncheckedUpdateInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1339,6 +1353,36 @@ export type UserUpdateOneRequiredWithoutVehiclesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVehiclesInput, Prisma.UserUpdateWithoutVehiclesInput>, Prisma.UserUncheckedUpdateWithoutVehiclesInput>
 }
 
+export type UserCreateNestedOneWithoutReportedViolationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReportedViolationsInput, Prisma.UserUncheckedCreateWithoutReportedViolationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReportedViolationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutResolvedViolationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResolvedViolationsInput, Prisma.UserUncheckedCreateWithoutResolvedViolationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResolvedViolationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReportedViolationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReportedViolationsInput, Prisma.UserUncheckedCreateWithoutReportedViolationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReportedViolationsInput
+  upsert?: Prisma.UserUpsertWithoutReportedViolationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReportedViolationsInput, Prisma.UserUpdateWithoutReportedViolationsInput>, Prisma.UserUncheckedUpdateWithoutReportedViolationsInput>
+}
+
+export type UserUpdateOneWithoutResolvedViolationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResolvedViolationsInput, Prisma.UserUncheckedCreateWithoutResolvedViolationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResolvedViolationsInput
+  upsert?: Prisma.UserUpsertWithoutResolvedViolationsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResolvedViolationsInput, Prisma.UserUpdateWithoutResolvedViolationsInput>, Prisma.UserUncheckedUpdateWithoutResolvedViolationsInput>
+}
+
 export type UserCreateNestedOneWithoutRequestedGatePassesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutRequestedGatePassesInput, Prisma.UserUncheckedCreateWithoutRequestedGatePassesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutRequestedGatePassesInput
@@ -1761,6 +1805,8 @@ export type UserCreateWithoutSocietyInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutSocietyInput = {
@@ -1823,6 +1869,8 @@ export type UserUncheckedCreateWithoutSocietyInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutSocietyInput = {
@@ -1939,6 +1987,8 @@ export type UserCreateWithoutSocietyRegistrationRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutSocietyRegistrationRequestsInput = {
@@ -2001,6 +2051,8 @@ export type UserUncheckedCreateWithoutSocietyRegistrationRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutSocietyRegistrationRequestsInput = {
@@ -2068,6 +2120,8 @@ export type UserCreateWithoutSocietyRegistrationReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutSocietyRegistrationReviewsInput = {
@@ -2130,6 +2184,8 @@ export type UserUncheckedCreateWithoutSocietyRegistrationReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutSocietyRegistrationReviewsInput = {
@@ -2208,6 +2264,8 @@ export type UserUpdateWithoutSocietyRegistrationRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput = {
@@ -2270,6 +2328,8 @@ export type UserUncheckedUpdateWithoutSocietyRegistrationRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutSocietyRegistrationReviewsInput = {
@@ -2343,6 +2403,8 @@ export type UserUpdateWithoutSocietyRegistrationReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput = {
@@ -2405,6 +2467,8 @@ export type UserUncheckedUpdateWithoutSocietyRegistrationReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutFlatInput = {
@@ -2467,6 +2531,8 @@ export type UserCreateWithoutFlatInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutFlatInput = {
@@ -2529,6 +2595,8 @@ export type UserUncheckedCreateWithoutFlatInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutFlatInput = {
@@ -2617,6 +2685,8 @@ export type UserCreateWithoutFamilyMembersInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutFamilyMembersInput = {
@@ -2679,6 +2749,8 @@ export type UserUncheckedCreateWithoutFamilyMembersInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutFamilyMembersInput = {
@@ -2746,6 +2818,8 @@ export type UserCreateWithoutPrimaryResidentInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutPrimaryResidentInput = {
@@ -2808,6 +2882,8 @@ export type UserUncheckedCreateWithoutPrimaryResidentInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutPrimaryResidentInput = {
@@ -2891,6 +2967,8 @@ export type UserUpdateWithoutFamilyMembersInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFamilyMembersInput = {
@@ -2953,6 +3031,8 @@ export type UserUncheckedUpdateWithoutFamilyMembersInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutPrimaryResidentInput = {
@@ -3031,6 +3111,8 @@ export type UserCreateWithoutCreatedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedEntriesInput = {
@@ -3093,6 +3175,8 @@ export type UserUncheckedCreateWithoutCreatedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedEntriesInput = {
@@ -3160,6 +3244,8 @@ export type UserCreateWithoutApprovedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedEntriesInput = {
@@ -3222,6 +3308,8 @@ export type UserUncheckedCreateWithoutApprovedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedEntriesInput = {
@@ -3300,6 +3388,8 @@ export type UserUpdateWithoutCreatedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedEntriesInput = {
@@ -3362,6 +3452,8 @@ export type UserUncheckedUpdateWithoutCreatedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedEntriesInput = {
@@ -3435,6 +3527,8 @@ export type UserUpdateWithoutApprovedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedEntriesInput = {
@@ -3497,6 +3591,8 @@ export type UserUncheckedUpdateWithoutApprovedEntriesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutCreatedGuestInvitesInput = {
@@ -3559,6 +3655,8 @@ export type UserCreateWithoutCreatedGuestInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedGuestInvitesInput = {
@@ -3621,6 +3719,8 @@ export type UserUncheckedCreateWithoutCreatedGuestInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedGuestInvitesInput = {
@@ -3699,6 +3799,8 @@ export type UserUpdateWithoutCreatedGuestInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedGuestInvitesInput = {
@@ -3761,6 +3863,8 @@ export type UserUncheckedUpdateWithoutCreatedGuestInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutCreatedPartyInvitesInput = {
@@ -3823,6 +3927,8 @@ export type UserCreateWithoutCreatedPartyInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedPartyInvitesInput = {
@@ -3885,6 +3991,8 @@ export type UserUncheckedCreateWithoutCreatedPartyInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedPartyInvitesInput = {
@@ -3963,6 +4071,8 @@ export type UserUpdateWithoutCreatedPartyInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedPartyInvitesInput = {
@@ -4025,6 +4135,8 @@ export type UserUncheckedUpdateWithoutCreatedPartyInvitesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutGuardEntryLogsInput = {
@@ -4087,6 +4199,8 @@ export type UserCreateWithoutGuardEntryLogsInput = {
   createdPartyInvites?: Prisma.PartyInviteCreateNestedManyWithoutResidentInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutGuardEntryLogsInput = {
@@ -4149,6 +4263,8 @@ export type UserUncheckedCreateWithoutGuardEntryLogsInput = {
   createdPartyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutResidentInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutGuardEntryLogsInput = {
@@ -4227,6 +4343,8 @@ export type UserUpdateWithoutGuardEntryLogsInput = {
   createdPartyInvites?: Prisma.PartyInviteUpdateManyWithoutResidentNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuardEntryLogsInput = {
@@ -4289,6 +4407,8 @@ export type UserUncheckedUpdateWithoutGuardEntryLogsInput = {
   createdPartyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutResidentNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutAddedDomesticStaffInput = {
@@ -4351,6 +4471,8 @@ export type UserCreateWithoutAddedDomesticStaffInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutAddedDomesticStaffInput = {
@@ -4413,6 +4535,8 @@ export type UserUncheckedCreateWithoutAddedDomesticStaffInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutAddedDomesticStaffInput = {
@@ -4491,6 +4615,8 @@ export type UserUpdateWithoutAddedDomesticStaffInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAddedDomesticStaffInput = {
@@ -4553,6 +4679,8 @@ export type UserUncheckedUpdateWithoutAddedDomesticStaffInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutVerifiedStaffAttendanceInput = {
@@ -4615,6 +4743,8 @@ export type UserCreateWithoutVerifiedStaffAttendanceInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutVerifiedStaffAttendanceInput = {
@@ -4677,6 +4807,8 @@ export type UserUncheckedCreateWithoutVerifiedStaffAttendanceInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutVerifiedStaffAttendanceInput = {
@@ -4755,6 +4887,8 @@ export type UserUpdateWithoutVerifiedStaffAttendanceInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerifiedStaffAttendanceInput = {
@@ -4817,6 +4951,8 @@ export type UserUncheckedUpdateWithoutVerifiedStaffAttendanceInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutStaffBookingsInput = {
@@ -4879,6 +5015,8 @@ export type UserCreateWithoutStaffBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutStaffBookingsInput = {
@@ -4941,6 +5079,8 @@ export type UserUncheckedCreateWithoutStaffBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutStaffBookingsInput = {
@@ -5019,6 +5159,8 @@ export type UserUpdateWithoutStaffBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStaffBookingsInput = {
@@ -5081,6 +5223,8 @@ export type UserUncheckedUpdateWithoutStaffBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutStaffReviewsInput = {
@@ -5143,6 +5287,8 @@ export type UserCreateWithoutStaffReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutStaffReviewsInput = {
@@ -5205,6 +5351,8 @@ export type UserUncheckedCreateWithoutStaffReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutStaffReviewsInput = {
@@ -5283,6 +5431,8 @@ export type UserUpdateWithoutStaffReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStaffReviewsInput = {
@@ -5345,6 +5495,8 @@ export type UserUncheckedUpdateWithoutStaffReviewsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutVehiclesInput = {
@@ -5407,6 +5559,8 @@ export type UserCreateWithoutVehiclesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutVehiclesInput = {
@@ -5469,6 +5623,8 @@ export type UserUncheckedCreateWithoutVehiclesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutVehiclesInput = {
@@ -5547,6 +5703,8 @@ export type UserUpdateWithoutVehiclesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVehiclesInput = {
@@ -5609,6 +5767,552 @@ export type UserUncheckedUpdateWithoutVehiclesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
+}
+
+export type UserCreateWithoutReportedViolationsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  isOwner?: boolean
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  fcmToken?: string | null
+  deviceType?: string | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
+  society?: Prisma.SocietyCreateNestedOneWithoutUsersInput
+  primaryResident?: Prisma.UserCreateNestedOneWithoutFamilyMembersInput
+  familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
+  requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
+  vendorLikes?: Prisma.VendorLikeCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  uploadedDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutUploadedByInput
+  createdPolls?: Prisma.PollCreateNestedManyWithoutCreatedByInput
+  pollVotes?: Prisma.PollVoteCreateNestedManyWithoutVoterInput
+  onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdGuestInvites?: Prisma.GuestInviteCreateNestedManyWithoutResidentInput
+  createdPartyInvites?: Prisma.PartyInviteCreateNestedManyWithoutResidentInput
+  guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
+  preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
+}
+
+export type UserUncheckedCreateWithoutReportedViolationsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  flatId?: string | null
+  isOwner?: boolean
+  societyId?: string | null
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  primaryResidentId?: string | null
+  fcmToken?: string | null
+  deviceType?: string | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
+  requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorUncheckedCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
+  vendorLikes?: Prisma.VendorLikeUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  uploadedDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  createdPolls?: Prisma.PollUncheckedCreateNestedManyWithoutCreatedByInput
+  pollVotes?: Prisma.PollVoteUncheckedCreateNestedManyWithoutVoterInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdGuestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutResidentInput
+  createdPartyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutResidentInput
+  guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
+  preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
+}
+
+export type UserCreateOrConnectWithoutReportedViolationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReportedViolationsInput, Prisma.UserUncheckedCreateWithoutReportedViolationsInput>
+}
+
+export type UserCreateWithoutResolvedViolationsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  isOwner?: boolean
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  fcmToken?: string | null
+  deviceType?: string | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  flat?: Prisma.FlatCreateNestedOneWithoutResidentsInput
+  society?: Prisma.SocietyCreateNestedOneWithoutUsersInput
+  primaryResident?: Prisma.UserCreateNestedOneWithoutFamilyMembersInput
+  familyMembers?: Prisma.UserCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutUserInput
+  requestedGatePasses?: Prisma.GatePassCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutReviewerInput
+  vendorLikes?: Prisma.VendorLikeCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  uploadedDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutUploadedByInput
+  createdPolls?: Prisma.PollCreateNestedManyWithoutCreatedByInput
+  pollVotes?: Prisma.PollVoteCreateNestedManyWithoutVoterInput
+  onboardingRequest?: Prisma.OnboardingRequestCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestCreateNestedManyWithoutApprovedByInput
+  createdGuestInvites?: Prisma.GuestInviteCreateNestedManyWithoutResidentInput
+  createdPartyInvites?: Prisma.PartyInviteCreateNestedManyWithoutResidentInput
+  guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
+  preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+}
+
+export type UserUncheckedCreateWithoutResolvedViolationsInput = {
+  id?: string
+  name?: string
+  phone: string
+  email?: string | null
+  password?: string
+  role: $Enums.Role
+  photoUrl?: string | null
+  isActive?: boolean
+  flatId?: string | null
+  isOwner?: boolean
+  societyId?: string | null
+  isPrimaryResident?: boolean
+  familyRole?: $Enums.FamilyRole | null
+  primaryResidentId?: string | null
+  fcmToken?: string | null
+  deviceType?: string | null
+  lastLogin?: Date | string | null
+  refreshToken?: string | null
+  tokenVersion?: number
+  lastTokenRefresh?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  familyMembers?: Prisma.UserUncheckedCreateNestedManyWithoutPrimaryResidentInput
+  createdEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedEntries?: Prisma.EntryUncheckedCreateNestedManyWithoutApprovedByInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutUserInput
+  requestedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutRequestedByInput
+  approvedGatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutApprovedByInput
+  createdNotices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutUserInput
+  reportedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutReportedByInput
+  assignedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutAssignedToInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutReportedByInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutRespondedByInput
+  addedVendors?: Prisma.VendorUncheckedCreateNestedManyWithoutAddedByInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutAddedByInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutVerifiedByGuardInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutBookedByInput
+  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutReviewerInput
+  vendorLikes?: Prisma.VendorLikeUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  uploadedDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  createdPolls?: Prisma.PollUncheckedCreateNestedManyWithoutCreatedByInput
+  pollVotes?: Prisma.PollVoteUncheckedCreateNestedManyWithoutVoterInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedCreateNestedOneWithoutUserInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedCreateNestedManyWithoutPerformerInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutGuardInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdGuestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutResidentInput
+  createdPartyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutResidentInput
+  guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
+  preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+}
+
+export type UserCreateOrConnectWithoutResolvedViolationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutResolvedViolationsInput, Prisma.UserUncheckedCreateWithoutResolvedViolationsInput>
+}
+
+export type UserUpsertWithoutReportedViolationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReportedViolationsInput, Prisma.UserUncheckedUpdateWithoutReportedViolationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReportedViolationsInput, Prisma.UserUncheckedCreateWithoutReportedViolationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReportedViolationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReportedViolationsInput, Prisma.UserUncheckedUpdateWithoutReportedViolationsInput>
+}
+
+export type UserUpdateWithoutReportedViolationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
+  society?: Prisma.SocietyUpdateOneWithoutUsersNestedInput
+  primaryResident?: Prisma.UserUpdateOneWithoutFamilyMembersNestedInput
+  familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
+  requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
+  vendorLikes?: Prisma.VendorLikeUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  uploadedDocuments?: Prisma.SocietyDocumentUpdateManyWithoutUploadedByNestedInput
+  createdPolls?: Prisma.PollUpdateManyWithoutCreatedByNestedInput
+  pollVotes?: Prisma.PollVoteUpdateManyWithoutVoterNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdGuestInvites?: Prisma.GuestInviteUpdateManyWithoutResidentNestedInput
+  createdPartyInvites?: Prisma.PartyInviteUpdateManyWithoutResidentNestedInput
+  guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
+  preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReportedViolationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  societyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
+  requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUncheckedUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  vendorLikes?: Prisma.VendorLikeUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  uploadedDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdPolls?: Prisma.PollUncheckedUpdateManyWithoutCreatedByNestedInput
+  pollVotes?: Prisma.PollVoteUncheckedUpdateManyWithoutVoterNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdGuestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutResidentNestedInput
+  createdPartyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutResidentNestedInput
+  guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
+  preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
+}
+
+export type UserUpsertWithoutResolvedViolationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutResolvedViolationsInput, Prisma.UserUncheckedUpdateWithoutResolvedViolationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutResolvedViolationsInput, Prisma.UserUncheckedCreateWithoutResolvedViolationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutResolvedViolationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutResolvedViolationsInput, Prisma.UserUncheckedUpdateWithoutResolvedViolationsInput>
+}
+
+export type UserUpdateWithoutResolvedViolationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  flat?: Prisma.FlatUpdateOneWithoutResidentsNestedInput
+  society?: Prisma.SocietyUpdateOneWithoutUsersNestedInput
+  primaryResident?: Prisma.UserUpdateOneWithoutFamilyMembersNestedInput
+  familyMembers?: Prisma.UserUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutUserNestedInput
+  requestedGatePasses?: Prisma.GatePassUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUpdateManyWithoutReviewerNestedInput
+  vendorLikes?: Prisma.VendorLikeUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  uploadedDocuments?: Prisma.SocietyDocumentUpdateManyWithoutUploadedByNestedInput
+  createdPolls?: Prisma.PollUpdateManyWithoutCreatedByNestedInput
+  pollVotes?: Prisma.PollVoteUpdateManyWithoutVoterNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUpdateManyWithoutApprovedByNestedInput
+  createdGuestInvites?: Prisma.GuestInviteUpdateManyWithoutResidentNestedInput
+  createdPartyInvites?: Prisma.PartyInviteUpdateManyWithoutResidentNestedInput
+  guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
+  preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutResolvedViolationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  societyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPrimaryResident?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  familyRole?: Prisma.NullableEnumFamilyRoleFieldUpdateOperationsInput | $Enums.FamilyRole | null
+  primaryResidentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  lastTokenRefresh?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  familyMembers?: Prisma.UserUncheckedUpdateManyWithoutPrimaryResidentNestedInput
+  createdEntries?: Prisma.EntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedEntries?: Prisma.EntryUncheckedUpdateManyWithoutApprovedByNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutUserNestedInput
+  requestedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutRequestedByNestedInput
+  approvedGatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdNotices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutUserNestedInput
+  reportedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutReportedByNestedInput
+  assignedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutAssignedToNestedInput
+  resolvedComplaints?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  reportedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutReportedByNestedInput
+  respondedEmergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutRespondedByNestedInput
+  addedVendors?: Prisma.VendorUncheckedUpdateManyWithoutAddedByNestedInput
+  addedDomesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutAddedByNestedInput
+  verifiedStaffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutVerifiedByGuardNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutBookedByNestedInput
+  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  vendorLikes?: Prisma.VendorLikeUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  uploadedDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdPolls?: Prisma.PollUncheckedUpdateManyWithoutCreatedByNestedInput
+  pollVotes?: Prisma.PollVoteUncheckedUpdateManyWithoutVoterNestedInput
+  onboardingRequest?: Prisma.OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput
+  reviewedOnboardings?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  onboardingAuditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutPerformerNestedInput
+  societyRegistrationRequests?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  societyRegistrationReviews?: Prisma.SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  createdEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutGuardNestedInput
+  approvedEntryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdGuestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutResidentNestedInput
+  createdPartyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutResidentNestedInput
+  guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
+  preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
 }
 
 export type UserCreateWithoutRequestedGatePassesInput = {
@@ -5671,6 +6375,8 @@ export type UserCreateWithoutRequestedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutRequestedGatePassesInput = {
@@ -5733,6 +6439,8 @@ export type UserUncheckedCreateWithoutRequestedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutRequestedGatePassesInput = {
@@ -5800,6 +6508,8 @@ export type UserCreateWithoutApprovedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedGatePassesInput = {
@@ -5862,6 +6572,8 @@ export type UserUncheckedCreateWithoutApprovedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedGatePassesInput = {
@@ -5940,6 +6652,8 @@ export type UserUpdateWithoutRequestedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRequestedGatePassesInput = {
@@ -6002,6 +6716,8 @@ export type UserUncheckedUpdateWithoutRequestedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedGatePassesInput = {
@@ -6075,6 +6791,8 @@ export type UserUpdateWithoutApprovedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedGatePassesInput = {
@@ -6137,6 +6855,8 @@ export type UserUncheckedUpdateWithoutApprovedGatePassesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutCreatedNoticesInput = {
@@ -6199,6 +6919,8 @@ export type UserCreateWithoutCreatedNoticesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedNoticesInput = {
@@ -6261,6 +6983,8 @@ export type UserUncheckedCreateWithoutCreatedNoticesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedNoticesInput = {
@@ -6339,6 +7063,8 @@ export type UserUpdateWithoutCreatedNoticesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedNoticesInput = {
@@ -6401,6 +7127,8 @@ export type UserUncheckedUpdateWithoutCreatedNoticesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutAmenityBookingsInput = {
@@ -6463,6 +7191,8 @@ export type UserCreateWithoutAmenityBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutAmenityBookingsInput = {
@@ -6525,6 +7255,8 @@ export type UserUncheckedCreateWithoutAmenityBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutAmenityBookingsInput = {
@@ -6603,6 +7335,8 @@ export type UserUpdateWithoutAmenityBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAmenityBookingsInput = {
@@ -6665,6 +7399,8 @@ export type UserUncheckedUpdateWithoutAmenityBookingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutReportedComplaintsInput = {
@@ -6727,6 +7463,8 @@ export type UserCreateWithoutReportedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutReportedComplaintsInput = {
@@ -6789,6 +7527,8 @@ export type UserUncheckedCreateWithoutReportedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutReportedComplaintsInput = {
@@ -6856,6 +7596,8 @@ export type UserCreateWithoutAssignedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedComplaintsInput = {
@@ -6918,6 +7660,8 @@ export type UserUncheckedCreateWithoutAssignedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedComplaintsInput = {
@@ -6985,6 +7729,8 @@ export type UserCreateWithoutResolvedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutResolvedComplaintsInput = {
@@ -7047,6 +7793,8 @@ export type UserUncheckedCreateWithoutResolvedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutResolvedComplaintsInput = {
@@ -7125,6 +7873,8 @@ export type UserUpdateWithoutReportedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedComplaintsInput = {
@@ -7187,6 +7937,8 @@ export type UserUncheckedUpdateWithoutReportedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutAssignedComplaintsInput = {
@@ -7260,6 +8012,8 @@ export type UserUpdateWithoutAssignedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedComplaintsInput = {
@@ -7322,6 +8076,8 @@ export type UserUncheckedUpdateWithoutAssignedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutResolvedComplaintsInput = {
@@ -7395,6 +8151,8 @@ export type UserUpdateWithoutResolvedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResolvedComplaintsInput = {
@@ -7457,6 +8215,8 @@ export type UserUncheckedUpdateWithoutResolvedComplaintsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutReportedEmergenciesInput = {
@@ -7519,6 +8279,8 @@ export type UserCreateWithoutReportedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutReportedEmergenciesInput = {
@@ -7581,6 +8343,8 @@ export type UserUncheckedCreateWithoutReportedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutReportedEmergenciesInput = {
@@ -7648,6 +8412,8 @@ export type UserCreateWithoutRespondedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutRespondedEmergenciesInput = {
@@ -7710,6 +8476,8 @@ export type UserUncheckedCreateWithoutRespondedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutRespondedEmergenciesInput = {
@@ -7788,6 +8556,8 @@ export type UserUpdateWithoutReportedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedEmergenciesInput = {
@@ -7850,6 +8620,8 @@ export type UserUncheckedUpdateWithoutReportedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutRespondedEmergenciesInput = {
@@ -7923,6 +8695,8 @@ export type UserUpdateWithoutRespondedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRespondedEmergenciesInput = {
@@ -7985,6 +8759,8 @@ export type UserUncheckedUpdateWithoutRespondedEmergenciesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutAddedVendorsInput = {
@@ -8047,6 +8823,8 @@ export type UserCreateWithoutAddedVendorsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutAddedVendorsInput = {
@@ -8109,6 +8887,8 @@ export type UserUncheckedCreateWithoutAddedVendorsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutAddedVendorsInput = {
@@ -8187,6 +8967,8 @@ export type UserUpdateWithoutAddedVendorsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAddedVendorsInput = {
@@ -8249,6 +9031,8 @@ export type UserUncheckedUpdateWithoutAddedVendorsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutVendorLikesInput = {
@@ -8311,6 +9095,8 @@ export type UserCreateWithoutVendorLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorLikesInput = {
@@ -8373,6 +9159,8 @@ export type UserUncheckedCreateWithoutVendorLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorLikesInput = {
@@ -8451,6 +9239,8 @@ export type UserUpdateWithoutVendorLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorLikesInput = {
@@ -8513,6 +9303,8 @@ export type UserUncheckedUpdateWithoutVendorLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutCommunityPostsInput = {
@@ -8575,6 +9367,8 @@ export type UserCreateWithoutCommunityPostsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutCommunityPostsInput = {
@@ -8637,6 +9431,8 @@ export type UserUncheckedCreateWithoutCommunityPostsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutCommunityPostsInput = {
@@ -8715,6 +9511,8 @@ export type UserUpdateWithoutCommunityPostsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommunityPostsInput = {
@@ -8777,6 +9575,8 @@ export type UserUncheckedUpdateWithoutCommunityPostsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutPostLikesInput = {
@@ -8839,6 +9639,8 @@ export type UserCreateWithoutPostLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutPostLikesInput = {
@@ -8901,6 +9703,8 @@ export type UserUncheckedCreateWithoutPostLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutPostLikesInput = {
@@ -8979,6 +9783,8 @@ export type UserUpdateWithoutPostLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostLikesInput = {
@@ -9041,6 +9847,8 @@ export type UserUncheckedUpdateWithoutPostLikesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutPostCommentsInput = {
@@ -9103,6 +9911,8 @@ export type UserCreateWithoutPostCommentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutPostCommentsInput = {
@@ -9165,6 +9975,8 @@ export type UserUncheckedCreateWithoutPostCommentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutPostCommentsInput = {
@@ -9243,6 +10055,8 @@ export type UserUpdateWithoutPostCommentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostCommentsInput = {
@@ -9305,6 +10119,8 @@ export type UserUncheckedUpdateWithoutPostCommentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutUploadedDocumentsInput = {
@@ -9367,6 +10183,8 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
@@ -9429,6 +10247,8 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
@@ -9507,6 +10327,8 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
@@ -9569,6 +10391,8 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutCreatedPollsInput = {
@@ -9631,6 +10455,8 @@ export type UserCreateWithoutCreatedPollsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedPollsInput = {
@@ -9693,6 +10519,8 @@ export type UserUncheckedCreateWithoutCreatedPollsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedPollsInput = {
@@ -9771,6 +10599,8 @@ export type UserUpdateWithoutCreatedPollsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedPollsInput = {
@@ -9833,6 +10663,8 @@ export type UserUncheckedUpdateWithoutCreatedPollsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutPollVotesInput = {
@@ -9895,6 +10727,8 @@ export type UserCreateWithoutPollVotesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutPollVotesInput = {
@@ -9957,6 +10791,8 @@ export type UserUncheckedCreateWithoutPollVotesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutPollVotesInput = {
@@ -10035,6 +10871,8 @@ export type UserUpdateWithoutPollVotesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPollVotesInput = {
@@ -10097,6 +10935,8 @@ export type UserUncheckedUpdateWithoutPollVotesInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutOnboardingRequestInput = {
@@ -10159,6 +10999,8 @@ export type UserCreateWithoutOnboardingRequestInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingRequestInput = {
@@ -10221,6 +11063,8 @@ export type UserUncheckedCreateWithoutOnboardingRequestInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingRequestInput = {
@@ -10288,6 +11132,8 @@ export type UserCreateWithoutReviewedOnboardingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutReviewedOnboardingsInput = {
@@ -10350,6 +11196,8 @@ export type UserUncheckedCreateWithoutReviewedOnboardingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutReviewedOnboardingsInput = {
@@ -10428,6 +11276,8 @@ export type UserUpdateWithoutOnboardingRequestInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingRequestInput = {
@@ -10490,6 +11340,8 @@ export type UserUncheckedUpdateWithoutOnboardingRequestInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutReviewedOnboardingsInput = {
@@ -10563,6 +11415,8 @@ export type UserUpdateWithoutReviewedOnboardingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedOnboardingsInput = {
@@ -10625,6 +11479,8 @@ export type UserUncheckedUpdateWithoutReviewedOnboardingsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutOnboardingAuditLogsInput = {
@@ -10687,6 +11543,8 @@ export type UserCreateWithoutOnboardingAuditLogsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingAuditLogsInput = {
@@ -10749,6 +11607,8 @@ export type UserUncheckedCreateWithoutOnboardingAuditLogsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingAuditLogsInput = {
@@ -10827,6 +11687,8 @@ export type UserUpdateWithoutOnboardingAuditLogsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingAuditLogsInput = {
@@ -10889,6 +11751,8 @@ export type UserUncheckedUpdateWithoutOnboardingAuditLogsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -10951,6 +11815,8 @@ export type UserCreateWithoutNotificationsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -11013,6 +11879,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -11091,6 +11959,8 @@ export type UserUpdateWithoutNotificationsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -11153,6 +12023,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutCreatedEntryRequestsInput = {
@@ -11215,6 +12087,8 @@ export type UserCreateWithoutCreatedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedEntryRequestsInput = {
@@ -11277,6 +12151,8 @@ export type UserUncheckedCreateWithoutCreatedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedEntryRequestsInput = {
@@ -11344,6 +12220,8 @@ export type UserCreateWithoutApprovedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedEntryRequestsInput = {
@@ -11406,6 +12284,8 @@ export type UserUncheckedCreateWithoutApprovedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedEntryRequestsInput = {
@@ -11484,6 +12364,8 @@ export type UserUpdateWithoutCreatedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedEntryRequestsInput = {
@@ -11546,6 +12428,8 @@ export type UserUncheckedUpdateWithoutCreatedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedEntryRequestsInput = {
@@ -11619,6 +12503,8 @@ export type UserUpdateWithoutApprovedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedEntryRequestsInput = {
@@ -11681,6 +12567,8 @@ export type UserUncheckedUpdateWithoutApprovedEntryRequestsInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutPreApprovedEntriesInput = {
@@ -11743,6 +12631,8 @@ export type UserCreateWithoutPreApprovedEntriesInput = {
   createdPartyInvites?: Prisma.PartyInviteCreateNestedManyWithoutResidentInput
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedUsages?: Prisma.PreApprovedUsageCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutPreApprovedEntriesInput = {
@@ -11805,6 +12695,8 @@ export type UserUncheckedCreateWithoutPreApprovedEntriesInput = {
   createdPartyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutResidentInput
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedCreateNestedManyWithoutGuardInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutPreApprovedEntriesInput = {
@@ -11883,6 +12775,8 @@ export type UserUpdateWithoutPreApprovedEntriesInput = {
   createdPartyInvites?: Prisma.PartyInviteUpdateManyWithoutResidentNestedInput
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreApprovedEntriesInput = {
@@ -11945,6 +12839,8 @@ export type UserUncheckedUpdateWithoutPreApprovedEntriesInput = {
   createdPartyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutResidentNestedInput
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutPreApprovedUsagesInput = {
@@ -12007,6 +12903,8 @@ export type UserCreateWithoutPreApprovedUsagesInput = {
   createdPartyInvites?: Prisma.PartyInviteCreateNestedManyWithoutResidentInput
   guardEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutUserInput
+  reportedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserUncheckedCreateWithoutPreApprovedUsagesInput = {
@@ -12069,6 +12967,8 @@ export type UserUncheckedCreateWithoutPreApprovedUsagesInput = {
   createdPartyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutResidentInput
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutGuardInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutUserInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutReportedByInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutResolvedByInput
 }
 
 export type UserCreateOrConnectWithoutPreApprovedUsagesInput = {
@@ -12147,6 +13047,8 @@ export type UserUpdateWithoutPreApprovedUsagesInput = {
   createdPartyInvites?: Prisma.PartyInviteUpdateManyWithoutResidentNestedInput
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreApprovedUsagesInput = {
@@ -12209,6 +13111,8 @@ export type UserUncheckedUpdateWithoutPreApprovedUsagesInput = {
   createdPartyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutResidentNestedInput
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateManySocietyInput = {
@@ -12295,6 +13199,8 @@ export type UserUpdateWithoutSocietyInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocietyInput = {
@@ -12357,6 +13263,8 @@ export type UserUncheckedUpdateWithoutSocietyInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutSocietyInput = {
@@ -12467,6 +13375,8 @@ export type UserUpdateWithoutFlatInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFlatInput = {
@@ -12529,6 +13439,8 @@ export type UserUncheckedUpdateWithoutFlatInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutFlatInput = {
@@ -12639,6 +13551,8 @@ export type UserUpdateWithoutPrimaryResidentInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPrimaryResidentInput = {
@@ -12701,6 +13615,8 @@ export type UserUncheckedUpdateWithoutPrimaryResidentInput = {
   guardEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutGuardNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutUserNestedInput
   preApprovedUsages?: Prisma.PreApprovedUsageUncheckedUpdateManyWithoutGuardNestedInput
+  reportedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutReportedByNestedInput
+  resolvedViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPrimaryResidentInput = {
@@ -12770,6 +13686,8 @@ export type UserCountOutputType = {
   guardEntryLogs: number
   preApprovedEntries: number
   preApprovedUsages: number
+  reportedViolations: number
+  resolvedViolations: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -12810,6 +13728,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   guardEntryLogs?: boolean | UserCountOutputTypeCountGuardEntryLogsArgs
   preApprovedEntries?: boolean | UserCountOutputTypeCountPreApprovedEntriesArgs
   preApprovedUsages?: boolean | UserCountOutputTypeCountPreApprovedUsagesArgs
+  reportedViolations?: boolean | UserCountOutputTypeCountReportedViolationsArgs
+  resolvedViolations?: boolean | UserCountOutputTypeCountResolvedViolationsArgs
 }
 
 /**
@@ -13081,6 +14001,20 @@ export type UserCountOutputTypeCountPreApprovedUsagesArgs<ExtArgs extends runtim
   where?: Prisma.PreApprovedUsageWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReportedViolationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ParkingViolationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountResolvedViolationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ParkingViolationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -13146,6 +14080,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   guardEntryLogs?: boolean | Prisma.User$guardEntryLogsArgs<ExtArgs>
   preApprovedEntries?: boolean | Prisma.User$preApprovedEntriesArgs<ExtArgs>
   preApprovedUsages?: boolean | Prisma.User$preApprovedUsagesArgs<ExtArgs>
+  reportedViolations?: boolean | Prisma.User$reportedViolationsArgs<ExtArgs>
+  resolvedViolations?: boolean | Prisma.User$resolvedViolationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -13273,6 +14209,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   guardEntryLogs?: boolean | Prisma.User$guardEntryLogsArgs<ExtArgs>
   preApprovedEntries?: boolean | Prisma.User$preApprovedEntriesArgs<ExtArgs>
   preApprovedUsages?: boolean | Prisma.User$preApprovedUsagesArgs<ExtArgs>
+  reportedViolations?: boolean | Prisma.User$reportedViolationsArgs<ExtArgs>
+  resolvedViolations?: boolean | Prisma.User$resolvedViolationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -13330,6 +14268,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     guardEntryLogs: Prisma.$GuestEntryLogPayload<ExtArgs>[]
     preApprovedEntries: Prisma.$PreApprovedEntryPayload<ExtArgs>[]
     preApprovedUsages: Prisma.$PreApprovedUsagePayload<ExtArgs>[]
+    reportedViolations: Prisma.$ParkingViolationPayload<ExtArgs>[]
+    resolvedViolations: Prisma.$ParkingViolationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -13789,6 +14729,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   guardEntryLogs<T extends Prisma.User$guardEntryLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guardEntryLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuestEntryLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   preApprovedEntries<T extends Prisma.User$preApprovedEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$preApprovedEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PreApprovedEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   preApprovedUsages<T extends Prisma.User$preApprovedUsagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$preApprovedUsagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PreApprovedUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reportedViolations<T extends Prisma.User$reportedViolationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportedViolationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParkingViolationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  resolvedViolations<T extends Prisma.User$resolvedViolationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resolvedViolationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParkingViolationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15197,6 +16139,54 @@ export type User$preApprovedUsagesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.PreApprovedUsageScalarFieldEnum | Prisma.PreApprovedUsageScalarFieldEnum[]
+}
+
+/**
+ * User.reportedViolations
+ */
+export type User$reportedViolationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ParkingViolation
+   */
+  select?: Prisma.ParkingViolationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ParkingViolation
+   */
+  omit?: Prisma.ParkingViolationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ParkingViolationInclude<ExtArgs> | null
+  where?: Prisma.ParkingViolationWhereInput
+  orderBy?: Prisma.ParkingViolationOrderByWithRelationInput | Prisma.ParkingViolationOrderByWithRelationInput[]
+  cursor?: Prisma.ParkingViolationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ParkingViolationScalarFieldEnum | Prisma.ParkingViolationScalarFieldEnum[]
+}
+
+/**
+ * User.resolvedViolations
+ */
+export type User$resolvedViolationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ParkingViolation
+   */
+  select?: Prisma.ParkingViolationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ParkingViolation
+   */
+  omit?: Prisma.ParkingViolationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ParkingViolationInclude<ExtArgs> | null
+  where?: Prisma.ParkingViolationWhereInput
+  orderBy?: Prisma.ParkingViolationOrderByWithRelationInput | Prisma.ParkingViolationOrderByWithRelationInput[]
+  cursor?: Prisma.ParkingViolationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ParkingViolationScalarFieldEnum | Prisma.ParkingViolationScalarFieldEnum[]
 }
 
 /**

@@ -16,6 +16,12 @@ import {
   listForAdmin,
   adminCancelEntry,
 } from '../../modules/pre-approved-entry/pre-approved-entry.controller';
+import {
+  lookupVehicle,
+  issueViolation,
+  listViolations,
+  resolveViolation,
+} from '../../modules/vehicle/parking-violation.controller';
 import { authenticate, authorize } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { cache } from '../../middlewares/cache.middleware';
@@ -68,6 +74,13 @@ router.get(
   cache({ ttl: 60, keyPrefix: 'admin:attendance', varyBy: ['societyId', 'date'] }),
   getAdminStaffAttendance,
 );
+
+// ---- Parking violations ----
+router.get('/parking/lookup', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), lookupVehicle);
+router.get('/parking/violations', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), listViolations);
+router.post('/parking/violations', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), issueViolation);
+router.post('/parking/vehicles/:vehicleId/violations', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), issueViolation);
+router.patch('/parking/violations/:id/resolve', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), resolveViolation);
 
 // ---- Pre-approved entry oversight ----
 router.get('/pre-approved', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), validate({ query: adminPreApprovedQuerySchema }), listForAdmin);

@@ -219,7 +219,7 @@ export type PreApprovedEntryGroupByOutputType = {
   lockedAt: Date | null
   lockedByGuardId: string | null
   userId: string
-  flatId: string
+  flatId: string | null
   societyId: string
   createdAt: Date
   updatedAt: Date
@@ -258,12 +258,12 @@ export type PreApprovedEntryWhereInput = {
   lockedAt?: Prisma.DateTimeNullableFilter<"PreApprovedEntry"> | Date | string | null
   lockedByGuardId?: Prisma.StringNullableFilter<"PreApprovedEntry"> | string | null
   userId?: Prisma.StringFilter<"PreApprovedEntry"> | string
-  flatId?: Prisma.StringFilter<"PreApprovedEntry"> | string
+  flatId?: Prisma.StringNullableFilter<"PreApprovedEntry"> | string | null
   societyId?: Prisma.StringFilter<"PreApprovedEntry"> | string
   createdAt?: Prisma.DateTimeFilter<"PreApprovedEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PreApprovedEntry"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   schedule?: Prisma.XOR<Prisma.PreApprovedScheduleNullableScalarRelationFilter, Prisma.PreApprovedScheduleWhereInput> | null
   meta?: Prisma.XOR<Prisma.PreApprovedMetaNullableScalarRelationFilter, Prisma.PreApprovedMetaWhereInput> | null
@@ -284,7 +284,7 @@ export type PreApprovedEntryOrderByWithRelationInput = {
   lockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lockedByGuardId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -313,12 +313,12 @@ export type PreApprovedEntryWhereUniqueInput = Prisma.AtLeast<{
   lockedAt?: Prisma.DateTimeNullableFilter<"PreApprovedEntry"> | Date | string | null
   lockedByGuardId?: Prisma.StringNullableFilter<"PreApprovedEntry"> | string | null
   userId?: Prisma.StringFilter<"PreApprovedEntry"> | string
-  flatId?: Prisma.StringFilter<"PreApprovedEntry"> | string
+  flatId?: Prisma.StringNullableFilter<"PreApprovedEntry"> | string | null
   societyId?: Prisma.StringFilter<"PreApprovedEntry"> | string
   createdAt?: Prisma.DateTimeFilter<"PreApprovedEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PreApprovedEntry"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   schedule?: Prisma.XOR<Prisma.PreApprovedScheduleNullableScalarRelationFilter, Prisma.PreApprovedScheduleWhereInput> | null
   meta?: Prisma.XOR<Prisma.PreApprovedMetaNullableScalarRelationFilter, Prisma.PreApprovedMetaWhereInput> | null
@@ -339,7 +339,7 @@ export type PreApprovedEntryOrderByWithAggregationInput = {
   lockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lockedByGuardId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -363,7 +363,7 @@ export type PreApprovedEntryScalarWhereWithAggregatesInput = {
   lockedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PreApprovedEntry"> | Date | string | null
   lockedByGuardId?: Prisma.StringNullableWithAggregatesFilter<"PreApprovedEntry"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"PreApprovedEntry"> | string
-  flatId?: Prisma.StringWithAggregatesFilter<"PreApprovedEntry"> | string
+  flatId?: Prisma.StringNullableWithAggregatesFilter<"PreApprovedEntry"> | string | null
   societyId?: Prisma.StringWithAggregatesFilter<"PreApprovedEntry"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PreApprovedEntry"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PreApprovedEntry"> | Date | string
@@ -383,7 +383,7 @@ export type PreApprovedEntryCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreApprovedEntriesInput
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutPreApprovedEntriesInput
   schedule?: Prisma.PreApprovedScheduleCreateNestedOneWithoutEntryInput
   meta?: Prisma.PreApprovedMetaCreateNestedOneWithoutEntryInput
@@ -404,7 +404,7 @@ export type PreApprovedEntryUncheckedCreateInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -429,7 +429,7 @@ export type PreApprovedEntryUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
   schedule?: Prisma.PreApprovedScheduleUpdateOneWithoutEntryNestedInput
   meta?: Prisma.PreApprovedMetaUpdateOneWithoutEntryNestedInput
@@ -450,7 +450,7 @@ export type PreApprovedEntryUncheckedUpdateInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -473,7 +473,7 @@ export type PreApprovedEntryCreateManyInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -506,7 +506,7 @@ export type PreApprovedEntryUncheckedUpdateManyInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -814,7 +814,7 @@ export type PreApprovedEntryCreateWithoutSocietyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreApprovedEntriesInput
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   schedule?: Prisma.PreApprovedScheduleCreateNestedOneWithoutEntryInput
   meta?: Prisma.PreApprovedMetaCreateNestedOneWithoutEntryInput
   verification?: Prisma.PreApprovedVerificationCreateNestedOneWithoutEntryInput
@@ -834,7 +834,7 @@ export type PreApprovedEntryUncheckedCreateWithoutSocietyInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   schedule?: Prisma.PreApprovedScheduleUncheckedCreateNestedOneWithoutEntryInput
@@ -885,7 +885,7 @@ export type PreApprovedEntryScalarWhereInput = {
   lockedAt?: Prisma.DateTimeNullableFilter<"PreApprovedEntry"> | Date | string | null
   lockedByGuardId?: Prisma.StringNullableFilter<"PreApprovedEntry"> | string | null
   userId?: Prisma.StringFilter<"PreApprovedEntry"> | string
-  flatId?: Prisma.StringFilter<"PreApprovedEntry"> | string
+  flatId?: Prisma.StringNullableFilter<"PreApprovedEntry"> | string | null
   societyId?: Prisma.StringFilter<"PreApprovedEntry"> | string
   createdAt?: Prisma.DateTimeFilter<"PreApprovedEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PreApprovedEntry"> | Date | string
@@ -974,7 +974,7 @@ export type PreApprovedEntryCreateWithoutUserInput = {
   lockedByGuardId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutPreApprovedEntriesInput
   schedule?: Prisma.PreApprovedScheduleCreateNestedOneWithoutEntryInput
   meta?: Prisma.PreApprovedMetaCreateNestedOneWithoutEntryInput
@@ -994,7 +994,7 @@ export type PreApprovedEntryUncheckedCreateWithoutUserInput = {
   isLocked?: boolean
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1045,7 +1045,7 @@ export type PreApprovedEntryCreateWithoutEntriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreApprovedEntriesInput
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutPreApprovedEntriesInput
   schedule?: Prisma.PreApprovedScheduleCreateNestedOneWithoutEntryInput
   meta?: Prisma.PreApprovedMetaCreateNestedOneWithoutEntryInput
@@ -1065,7 +1065,7 @@ export type PreApprovedEntryUncheckedCreateWithoutEntriesInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1105,7 +1105,7 @@ export type PreApprovedEntryUpdateWithoutEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
   schedule?: Prisma.PreApprovedScheduleUpdateOneWithoutEntryNestedInput
   meta?: Prisma.PreApprovedMetaUpdateOneWithoutEntryNestedInput
@@ -1125,7 +1125,7 @@ export type PreApprovedEntryUncheckedUpdateWithoutEntriesInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1149,7 +1149,7 @@ export type PreApprovedEntryCreateWithoutScheduleInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreApprovedEntriesInput
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutPreApprovedEntriesInput
   meta?: Prisma.PreApprovedMetaCreateNestedOneWithoutEntryInput
   verification?: Prisma.PreApprovedVerificationCreateNestedOneWithoutEntryInput
@@ -1169,7 +1169,7 @@ export type PreApprovedEntryUncheckedCreateWithoutScheduleInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1209,7 +1209,7 @@ export type PreApprovedEntryUpdateWithoutScheduleInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
   meta?: Prisma.PreApprovedMetaUpdateOneWithoutEntryNestedInput
   verification?: Prisma.PreApprovedVerificationUpdateOneWithoutEntryNestedInput
@@ -1229,7 +1229,7 @@ export type PreApprovedEntryUncheckedUpdateWithoutScheduleInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1253,7 +1253,7 @@ export type PreApprovedEntryCreateWithoutMetaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreApprovedEntriesInput
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutPreApprovedEntriesInput
   schedule?: Prisma.PreApprovedScheduleCreateNestedOneWithoutEntryInput
   verification?: Prisma.PreApprovedVerificationCreateNestedOneWithoutEntryInput
@@ -1273,7 +1273,7 @@ export type PreApprovedEntryUncheckedCreateWithoutMetaInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1313,7 +1313,7 @@ export type PreApprovedEntryUpdateWithoutMetaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
   schedule?: Prisma.PreApprovedScheduleUpdateOneWithoutEntryNestedInput
   verification?: Prisma.PreApprovedVerificationUpdateOneWithoutEntryNestedInput
@@ -1333,7 +1333,7 @@ export type PreApprovedEntryUncheckedUpdateWithoutMetaInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1357,7 +1357,7 @@ export type PreApprovedEntryCreateWithoutVerificationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreApprovedEntriesInput
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutPreApprovedEntriesInput
   schedule?: Prisma.PreApprovedScheduleCreateNestedOneWithoutEntryInput
   meta?: Prisma.PreApprovedMetaCreateNestedOneWithoutEntryInput
@@ -1377,7 +1377,7 @@ export type PreApprovedEntryUncheckedCreateWithoutVerificationInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1417,7 +1417,7 @@ export type PreApprovedEntryUpdateWithoutVerificationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
   schedule?: Prisma.PreApprovedScheduleUpdateOneWithoutEntryNestedInput
   meta?: Prisma.PreApprovedMetaUpdateOneWithoutEntryNestedInput
@@ -1437,7 +1437,7 @@ export type PreApprovedEntryUncheckedUpdateWithoutVerificationInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1461,7 +1461,7 @@ export type PreApprovedEntryCreateWithoutUsagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreApprovedEntriesInput
-  flat: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutPreApprovedEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutPreApprovedEntriesInput
   schedule?: Prisma.PreApprovedScheduleCreateNestedOneWithoutEntryInput
   meta?: Prisma.PreApprovedMetaCreateNestedOneWithoutEntryInput
@@ -1481,7 +1481,7 @@ export type PreApprovedEntryUncheckedCreateWithoutUsagesInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1521,7 +1521,7 @@ export type PreApprovedEntryUpdateWithoutUsagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
   schedule?: Prisma.PreApprovedScheduleUpdateOneWithoutEntryNestedInput
   meta?: Prisma.PreApprovedMetaUpdateOneWithoutEntryNestedInput
@@ -1541,7 +1541,7 @@ export type PreApprovedEntryUncheckedUpdateWithoutUsagesInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1563,7 +1563,7 @@ export type PreApprovedEntryCreateManySocietyInput = {
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
   userId: string
-  flatId: string
+  flatId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1582,7 +1582,7 @@ export type PreApprovedEntryUpdateWithoutSocietyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   schedule?: Prisma.PreApprovedScheduleUpdateOneWithoutEntryNestedInput
   meta?: Prisma.PreApprovedMetaUpdateOneWithoutEntryNestedInput
   verification?: Prisma.PreApprovedVerificationUpdateOneWithoutEntryNestedInput
@@ -1602,7 +1602,7 @@ export type PreApprovedEntryUncheckedUpdateWithoutSocietyInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedule?: Prisma.PreApprovedScheduleUncheckedUpdateOneWithoutEntryNestedInput
@@ -1624,7 +1624,7 @@ export type PreApprovedEntryUncheckedUpdateManyWithoutSocietyInput = {
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1718,7 +1718,7 @@ export type PreApprovedEntryCreateManyUserInput = {
   isLocked?: boolean
   lockedAt?: Date | string | null
   lockedByGuardId?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1737,7 +1737,7 @@ export type PreApprovedEntryUpdateWithoutUserInput = {
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutPreApprovedEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput
   schedule?: Prisma.PreApprovedScheduleUpdateOneWithoutEntryNestedInput
   meta?: Prisma.PreApprovedMetaUpdateOneWithoutEntryNestedInput
@@ -1757,7 +1757,7 @@ export type PreApprovedEntryUncheckedUpdateWithoutUserInput = {
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1779,7 +1779,7 @@ export type PreApprovedEntryUncheckedUpdateManyWithoutUserInput = {
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lockedByGuardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1842,7 +1842,7 @@ export type PreApprovedEntrySelect<ExtArgs extends runtime.Types.Extensions.Inte
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PreApprovedEntry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.PreApprovedEntry$scheduleArgs<ExtArgs>
   meta?: boolean | Prisma.PreApprovedEntry$metaArgs<ExtArgs>
@@ -1869,7 +1869,7 @@ export type PreApprovedEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PreApprovedEntry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["preApprovedEntry"]>
 
@@ -1890,7 +1890,7 @@ export type PreApprovedEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PreApprovedEntry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["preApprovedEntry"]>
 
@@ -1915,7 +1915,7 @@ export type PreApprovedEntrySelectScalar = {
 export type PreApprovedEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "mode" | "scheduleType" | "status" | "visitorName" | "visitorPhone" | "isLocked" | "lockedAt" | "lockedByGuardId" | "userId" | "flatId" | "societyId" | "createdAt" | "updatedAt", ExtArgs["result"]["preApprovedEntry"]>
 export type PreApprovedEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PreApprovedEntry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.PreApprovedEntry$scheduleArgs<ExtArgs>
   meta?: boolean | Prisma.PreApprovedEntry$metaArgs<ExtArgs>
@@ -1926,12 +1926,12 @@ export type PreApprovedEntryInclude<ExtArgs extends runtime.Types.Extensions.Int
 }
 export type PreApprovedEntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PreApprovedEntry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
 }
 export type PreApprovedEntryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.PreApprovedEntry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
 }
 
@@ -1939,7 +1939,7 @@ export type $PreApprovedEntryPayload<ExtArgs extends runtime.Types.Extensions.In
   name: "PreApprovedEntry"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
-    flat: Prisma.$FlatPayload<ExtArgs>
+    flat: Prisma.$FlatPayload<ExtArgs> | null
     society: Prisma.$SocietyPayload<ExtArgs>
     schedule: Prisma.$PreApprovedSchedulePayload<ExtArgs> | null
     meta: Prisma.$PreApprovedMetaPayload<ExtArgs> | null
@@ -1959,7 +1959,7 @@ export type $PreApprovedEntryPayload<ExtArgs extends runtime.Types.Extensions.In
     lockedAt: Date | null
     lockedByGuardId: string | null
     userId: string
-    flatId: string
+    flatId: string | null
     societyId: string
     createdAt: Date
     updatedAt: Date
@@ -2358,7 +2358,7 @@ readonly fields: PreApprovedEntryFieldRefs;
 export interface Prisma__PreApprovedEntryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  flat<T extends Prisma.FlatDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FlatDefaultArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  flat<T extends Prisma.PreApprovedEntry$flatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreApprovedEntry$flatArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   society<T extends Prisma.SocietyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SocietyDefaultArgs<ExtArgs>>): Prisma.Prisma__SocietyClient<runtime.Types.Result.GetResult<Prisma.$SocietyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   schedule<T extends Prisma.PreApprovedEntry$scheduleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreApprovedEntry$scheduleArgs<ExtArgs>>): Prisma.Prisma__PreApprovedScheduleClient<runtime.Types.Result.GetResult<Prisma.$PreApprovedSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   meta<T extends Prisma.PreApprovedEntry$metaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreApprovedEntry$metaArgs<ExtArgs>>): Prisma.Prisma__PreApprovedMetaClient<runtime.Types.Result.GetResult<Prisma.$PreApprovedMetaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2802,6 +2802,25 @@ export type PreApprovedEntryDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many PreApprovedEntries to delete.
    */
   limit?: number
+}
+
+/**
+ * PreApprovedEntry.flat
+ */
+export type PreApprovedEntry$flatArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Flat
+   */
+  select?: Prisma.FlatSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Flat
+   */
+  omit?: Prisma.FlatOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FlatInclude<ExtArgs> | null
+  where?: Prisma.FlatWhereInput
 }
 
 /**

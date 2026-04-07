@@ -70,6 +70,7 @@ export const ModelName = {
   StaffBooking: 'StaffBooking',
   StaffReview: 'StaffReview',
   Vehicle: 'Vehicle',
+  ParkingViolation: 'ParkingViolation',
   VisitorFrequency: 'VisitorFrequency',
   PaymentReminder: 'PaymentReminder',
   GatePass: 'GatePass',
@@ -530,6 +531,29 @@ export const VehicleScalarFieldEnum = {
 } as const
 
 export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeof VehicleScalarFieldEnum]
+
+
+export const ParkingViolationScalarFieldEnum = {
+  id: 'id',
+  vehicleId: 'vehicleId',
+  vehicleNumber: 'vehicleNumber',
+  type: 'type',
+  description: 'description',
+  source: 'source',
+  penaltyAmount: 'penaltyAmount',
+  addedToInvoice: 'addedToInvoice',
+  invoiceId: 'invoiceId',
+  reportedById: 'reportedById',
+  societyId: 'societyId',
+  status: 'status',
+  resolvedAt: 'resolvedAt',
+  resolvedById: 'resolvedById',
+  resolutionNote: 'resolutionNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ParkingViolationScalarFieldEnum = (typeof ParkingViolationScalarFieldEnum)[keyof typeof ParkingViolationScalarFieldEnum]
 
 
 export const VisitorFrequencyScalarFieldEnum = {

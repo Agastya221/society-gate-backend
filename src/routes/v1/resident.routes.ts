@@ -13,6 +13,10 @@ import pollRoutes from '../../modules/poll/poll.routes';
 import amenityRoutes from '../../modules/amenity/amenity.routes';
 import { prisma } from '../../utils/Client';
 import { authenticate } from '../../middlewares/auth.middleware';
+import {
+  fileComplaint,
+  listViolations,
+} from '../../modules/vehicle/parking-violation.controller';
 
 const router = Router();
 
@@ -32,6 +36,10 @@ router.use('/vehicles', vehicleRoutes);            // /api/v1/resident/vehicles
 router.use('/documents', documentRoutes);          // /api/v1/resident/documents
 router.use('/polls', pollRoutes);                  // /api/v1/resident/polls
 router.use('/amenities', amenityRoutes);           // /api/v1/resident/amenities
+
+// Parking complaints (resident can report, not issue official violations)
+router.post('/parking/complaints', authenticate, fileComplaint);
+router.get('/parking/complaints', authenticate, listViolations);  // scoped to own complaints in controller
 
 // Dues — society-level payment reminders for the resident's society
 router.get('/dues', authenticate, async (req: Request, res: Response) => {

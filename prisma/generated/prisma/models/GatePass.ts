@@ -278,7 +278,7 @@ export type GatePassGroupByOutputType = {
   title: string
   description: string | null
   requestedById: string
-  flatId: string
+  flatId: string | null
   societyId: string
   validFrom: Date
   validUntil: Date
@@ -329,7 +329,7 @@ export type GatePassWhereInput = {
   title?: Prisma.StringFilter<"GatePass"> | string
   description?: Prisma.StringNullableFilter<"GatePass"> | string | null
   requestedById?: Prisma.StringFilter<"GatePass"> | string
-  flatId?: Prisma.StringFilter<"GatePass"> | string
+  flatId?: Prisma.StringNullableFilter<"GatePass"> | string | null
   societyId?: Prisma.StringFilter<"GatePass"> | string
   validFrom?: Prisma.DateTimeFilter<"GatePass"> | Date | string
   validUntil?: Prisma.DateTimeFilter<"GatePass"> | Date | string
@@ -351,7 +351,7 @@ export type GatePassWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"GatePass"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GatePass"> | Date | string
   requestedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
@@ -363,7 +363,7 @@ export type GatePassOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   requestedById?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   validFrom?: Prisma.SortOrder
   validUntil?: Prisma.SortOrder
@@ -401,7 +401,7 @@ export type GatePassWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"GatePass"> | string
   description?: Prisma.StringNullableFilter<"GatePass"> | string | null
   requestedById?: Prisma.StringFilter<"GatePass"> | string
-  flatId?: Prisma.StringFilter<"GatePass"> | string
+  flatId?: Prisma.StringNullableFilter<"GatePass"> | string | null
   societyId?: Prisma.StringFilter<"GatePass"> | string
   validFrom?: Prisma.DateTimeFilter<"GatePass"> | Date | string
   validUntil?: Prisma.DateTimeFilter<"GatePass"> | Date | string
@@ -422,7 +422,7 @@ export type GatePassWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"GatePass"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GatePass"> | Date | string
   requestedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "qrToken">
@@ -434,7 +434,7 @@ export type GatePassOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   requestedById?: Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   validFrom?: Prisma.SortOrder
   validUntil?: Prisma.SortOrder
@@ -470,7 +470,7 @@ export type GatePassScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"GatePass"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"GatePass"> | string | null
   requestedById?: Prisma.StringWithAggregatesFilter<"GatePass"> | string
-  flatId?: Prisma.StringWithAggregatesFilter<"GatePass"> | string
+  flatId?: Prisma.StringNullableWithAggregatesFilter<"GatePass"> | string | null
   societyId?: Prisma.StringWithAggregatesFilter<"GatePass"> | string
   validFrom?: Prisma.DateTimeWithAggregatesFilter<"GatePass"> | Date | string
   validUntil?: Prisma.DateTimeWithAggregatesFilter<"GatePass"> | Date | string
@@ -518,7 +518,7 @@ export type GatePassCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   requestedBy: Prisma.UserCreateNestedOneWithoutRequestedGatePassesInput
-  flat: Prisma.FlatCreateNestedOneWithoutGatePassesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGatePassesInput
   society: Prisma.SocietyCreateNestedOneWithoutGatePassesInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGatePassesInput
 }
@@ -530,7 +530,7 @@ export type GatePassUncheckedCreateInput = {
   title: string
   description?: string | null
   requestedById: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   validFrom: Date | string
   validUntil: Date | string
@@ -578,7 +578,7 @@ export type GatePassUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedGatePassesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGatePassesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGatePassesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutGatePassesNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGatePassesNestedInput
 }
@@ -590,7 +590,7 @@ export type GatePassUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedById?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -620,7 +620,7 @@ export type GatePassCreateManyInput = {
   title: string
   description?: string | null
   requestedById: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   validFrom: Date | string
   validUntil: Date | string
@@ -676,7 +676,7 @@ export type GatePassUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedById?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1014,7 +1014,7 @@ export type GatePassCreateWithoutSocietyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   requestedBy: Prisma.UserCreateNestedOneWithoutRequestedGatePassesInput
-  flat: Prisma.FlatCreateNestedOneWithoutGatePassesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGatePassesInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGatePassesInput
 }
 
@@ -1025,7 +1025,7 @@ export type GatePassUncheckedCreateWithoutSocietyInput = {
   title: string
   description?: string | null
   requestedById: string
-  flatId: string
+  flatId?: string | null
   validFrom: Date | string
   validUntil: Date | string
   vehicleNumber?: string | null
@@ -1083,7 +1083,7 @@ export type GatePassScalarWhereInput = {
   title?: Prisma.StringFilter<"GatePass"> | string
   description?: Prisma.StringNullableFilter<"GatePass"> | string | null
   requestedById?: Prisma.StringFilter<"GatePass"> | string
-  flatId?: Prisma.StringFilter<"GatePass"> | string
+  flatId?: Prisma.StringNullableFilter<"GatePass"> | string | null
   societyId?: Prisma.StringFilter<"GatePass"> | string
   validFrom?: Prisma.DateTimeFilter<"GatePass"> | Date | string
   validUntil?: Prisma.DateTimeFilter<"GatePass"> | Date | string
@@ -1214,7 +1214,7 @@ export type GatePassCreateWithoutRequestedByInput = {
   attachments?: Prisma.GatePassCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutGatePassesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGatePassesInput
   society: Prisma.SocietyCreateNestedOneWithoutGatePassesInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGatePassesInput
 }
@@ -1225,7 +1225,7 @@ export type GatePassUncheckedCreateWithoutRequestedByInput = {
   status?: $Enums.GatePassStatus
   title: string
   description?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   validFrom: Date | string
   validUntil: Date | string
@@ -1283,7 +1283,7 @@ export type GatePassCreateWithoutApprovedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   requestedBy: Prisma.UserCreateNestedOneWithoutRequestedGatePassesInput
-  flat: Prisma.FlatCreateNestedOneWithoutGatePassesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutGatePassesInput
   society: Prisma.SocietyCreateNestedOneWithoutGatePassesInput
 }
 
@@ -1294,7 +1294,7 @@ export type GatePassUncheckedCreateWithoutApprovedByInput = {
   title: string
   description?: string | null
   requestedById: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   validFrom: Date | string
   validUntil: Date | string
@@ -1365,7 +1365,7 @@ export type GatePassCreateManySocietyInput = {
   title: string
   description?: string | null
   requestedById: string
-  flatId: string
+  flatId?: string | null
   validFrom: Date | string
   validUntil: Date | string
   vehicleNumber?: string | null
@@ -1412,7 +1412,7 @@ export type GatePassUpdateWithoutSocietyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedGatePassesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGatePassesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGatePassesNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGatePassesNestedInput
 }
 
@@ -1423,7 +1423,7 @@ export type GatePassUncheckedUpdateWithoutSocietyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedById?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicleNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1452,7 +1452,7 @@ export type GatePassUncheckedUpdateManyWithoutSocietyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedById?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicleNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1596,7 +1596,7 @@ export type GatePassCreateManyRequestedByInput = {
   status?: $Enums.GatePassStatus
   title: string
   description?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   validFrom: Date | string
   validUntil: Date | string
@@ -1626,7 +1626,7 @@ export type GatePassCreateManyApprovedByInput = {
   title: string
   description?: string | null
   requestedById: string
-  flatId: string
+  flatId?: string | null
   societyId: string
   validFrom: Date | string
   validUntil: Date | string
@@ -1672,7 +1672,7 @@ export type GatePassUpdateWithoutRequestedByInput = {
   attachments?: Prisma.GatePassUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGatePassesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGatePassesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutGatePassesNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGatePassesNestedInput
 }
@@ -1683,7 +1683,7 @@ export type GatePassUncheckedUpdateWithoutRequestedByInput = {
   status?: Prisma.EnumGatePassStatusFieldUpdateOperationsInput | $Enums.GatePassStatus
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1712,7 +1712,7 @@ export type GatePassUncheckedUpdateManyWithoutRequestedByInput = {
   status?: Prisma.EnumGatePassStatusFieldUpdateOperationsInput | $Enums.GatePassStatus
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1760,7 +1760,7 @@ export type GatePassUpdateWithoutApprovedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedGatePassesNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutGatePassesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutGatePassesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutGatePassesNestedInput
 }
 
@@ -1771,7 +1771,7 @@ export type GatePassUncheckedUpdateWithoutApprovedByInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedById?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1800,7 +1800,7 @@ export type GatePassUncheckedUpdateManyWithoutApprovedByInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedById?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validUntil?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1853,7 +1853,7 @@ export type GatePassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   updatedAt?: boolean
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GatePass$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.GatePass$approvedByArgs<ExtArgs>
 }, ExtArgs["result"]["gatePass"]>
@@ -1887,7 +1887,7 @@ export type GatePassSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   updatedAt?: boolean
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GatePass$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.GatePass$approvedByArgs<ExtArgs>
 }, ExtArgs["result"]["gatePass"]>
@@ -1921,7 +1921,7 @@ export type GatePassSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   updatedAt?: boolean
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GatePass$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.GatePass$approvedByArgs<ExtArgs>
 }, ExtArgs["result"]["gatePass"]>
@@ -1959,19 +1959,19 @@ export type GatePassSelectScalar = {
 export type GatePassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "title" | "description" | "requestedById" | "flatId" | "societyId" | "validFrom" | "validUntil" | "vehicleNumber" | "driverName" | "driverPhone" | "itemsList" | "workerName" | "workerPhone" | "companyName" | "approvedById" | "approvedAt" | "rejectionReason" | "qrToken" | "isUsed" | "usedAt" | "usedByGuardId" | "attachments" | "createdAt" | "updatedAt", ExtArgs["result"]["gatePass"]>
 export type GatePassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GatePass$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.GatePass$approvedByArgs<ExtArgs>
 }
 export type GatePassIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GatePass$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.GatePass$approvedByArgs<ExtArgs>
 }
 export type GatePassIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.GatePass$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.GatePass$approvedByArgs<ExtArgs>
 }
@@ -1980,7 +1980,7 @@ export type $GatePassPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "GatePass"
   objects: {
     requestedBy: Prisma.$UserPayload<ExtArgs>
-    flat: Prisma.$FlatPayload<ExtArgs>
+    flat: Prisma.$FlatPayload<ExtArgs> | null
     society: Prisma.$SocietyPayload<ExtArgs>
     approvedBy: Prisma.$UserPayload<ExtArgs> | null
   }
@@ -1991,7 +1991,7 @@ export type $GatePassPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     title: string
     description: string | null
     requestedById: string
-    flatId: string
+    flatId: string | null
     societyId: string
     validFrom: Date
     validUntil: Date
@@ -2407,7 +2407,7 @@ readonly fields: GatePassFieldRefs;
 export interface Prisma__GatePassClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   requestedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  flat<T extends Prisma.FlatDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FlatDefaultArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  flat<T extends Prisma.GatePass$flatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GatePass$flatArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   society<T extends Prisma.SocietyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SocietyDefaultArgs<ExtArgs>>): Prisma.Prisma__SocietyClient<runtime.Types.Result.GetResult<Prisma.$SocietyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   approvedBy<T extends Prisma.GatePass$approvedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GatePass$approvedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -2859,6 +2859,25 @@ export type GatePassDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many GatePasses to delete.
    */
   limit?: number
+}
+
+/**
+ * GatePass.flat
+ */
+export type GatePass$flatArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Flat
+   */
+  select?: Prisma.FlatSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Flat
+   */
+  omit?: Prisma.FlatOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FlatInclude<ExtArgs> | null
+  where?: Prisma.FlatWhereInput
 }
 
 /**

@@ -347,6 +347,7 @@ export type SocietyWhereInput = {
   societyDocuments?: Prisma.SocietyDocumentListRelationFilter
   polls?: Prisma.PollListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  parkingViolations?: Prisma.ParkingViolationListRelationFilter
 }
 
 export type SocietyOrderByWithRelationInput = {
@@ -398,6 +399,7 @@ export type SocietyOrderByWithRelationInput = {
   societyDocuments?: Prisma.SocietyDocumentOrderByRelationAggregateInput
   polls?: Prisma.PollOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  parkingViolations?: Prisma.ParkingViolationOrderByRelationAggregateInput
 }
 
 export type SocietyWhereUniqueInput = Prisma.AtLeast<{
@@ -452,6 +454,7 @@ export type SocietyWhereUniqueInput = Prisma.AtLeast<{
   societyDocuments?: Prisma.SocietyDocumentListRelationFilter
   polls?: Prisma.PollListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  parkingViolations?: Prisma.ParkingViolationListRelationFilter
 }, "id">
 
 export type SocietyOrderByWithAggregationInput = {
@@ -551,6 +554,7 @@ export type SocietyCreateInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateInput = {
@@ -602,6 +606,7 @@ export type SocietyUncheckedCreateInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUpdateInput = {
@@ -653,6 +658,7 @@ export type SocietyUpdateInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateInput = {
@@ -704,6 +710,7 @@ export type SocietyUncheckedUpdateInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateManyInput = {
@@ -1086,6 +1093,20 @@ export type SocietyUpdateOneRequiredWithoutVehiclesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutVehiclesInput, Prisma.SocietyUpdateWithoutVehiclesInput>, Prisma.SocietyUncheckedUpdateWithoutVehiclesInput>
 }
 
+export type SocietyCreateNestedOneWithoutParkingViolationsInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutParkingViolationsInput, Prisma.SocietyUncheckedCreateWithoutParkingViolationsInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutParkingViolationsInput
+  connect?: Prisma.SocietyWhereUniqueInput
+}
+
+export type SocietyUpdateOneRequiredWithoutParkingViolationsNestedInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutParkingViolationsInput, Prisma.SocietyUncheckedCreateWithoutParkingViolationsInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutParkingViolationsInput
+  upsert?: Prisma.SocietyUpsertWithoutParkingViolationsInput
+  connect?: Prisma.SocietyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutParkingViolationsInput, Prisma.SocietyUpdateWithoutParkingViolationsInput>, Prisma.SocietyUncheckedUpdateWithoutParkingViolationsInput>
+}
+
 export type SocietyCreateNestedOneWithoutVisitorFrequenciesInput = {
   create?: Prisma.XOR<Prisma.SocietyCreateWithoutVisitorFrequenciesInput, Prisma.SocietyUncheckedCreateWithoutVisitorFrequenciesInput>
   connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutVisitorFrequenciesInput
@@ -1374,6 +1395,7 @@ export type SocietyCreateWithoutInvoicesInput = {
   postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutInvoicesInput = {
@@ -1424,6 +1446,7 @@ export type SocietyUncheckedCreateWithoutInvoicesInput = {
   postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutInvoicesInput = {
@@ -1490,6 +1513,7 @@ export type SocietyUpdateWithoutInvoicesInput = {
   postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutInvoicesInput = {
@@ -1540,6 +1564,7 @@ export type SocietyUncheckedUpdateWithoutInvoicesInput = {
   postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutRegistrationRequestInput = {
@@ -1590,6 +1615,7 @@ export type SocietyCreateWithoutRegistrationRequestInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutRegistrationRequestInput = {
@@ -1640,6 +1666,7 @@ export type SocietyUncheckedCreateWithoutRegistrationRequestInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutRegistrationRequestInput = {
@@ -1706,6 +1733,7 @@ export type SocietyUpdateWithoutRegistrationRequestInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutRegistrationRequestInput = {
@@ -1756,6 +1784,7 @@ export type SocietyUncheckedUpdateWithoutRegistrationRequestInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGatePointsInput = {
@@ -1806,6 +1835,7 @@ export type SocietyCreateWithoutGatePointsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGatePointsInput = {
@@ -1856,6 +1886,7 @@ export type SocietyUncheckedCreateWithoutGatePointsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGatePointsInput = {
@@ -1922,6 +1953,7 @@ export type SocietyUpdateWithoutGatePointsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGatePointsInput = {
@@ -1972,6 +2004,7 @@ export type SocietyUncheckedUpdateWithoutGatePointsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutBlocksInput = {
@@ -2022,6 +2055,7 @@ export type SocietyCreateWithoutBlocksInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutBlocksInput = {
@@ -2072,6 +2106,7 @@ export type SocietyUncheckedCreateWithoutBlocksInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutBlocksInput = {
@@ -2138,6 +2173,7 @@ export type SocietyUpdateWithoutBlocksInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutBlocksInput = {
@@ -2188,6 +2224,7 @@ export type SocietyUncheckedUpdateWithoutBlocksInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutFlatsInput = {
@@ -2238,6 +2275,7 @@ export type SocietyCreateWithoutFlatsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutFlatsInput = {
@@ -2288,6 +2326,7 @@ export type SocietyUncheckedCreateWithoutFlatsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutFlatsInput = {
@@ -2354,6 +2393,7 @@ export type SocietyUpdateWithoutFlatsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutFlatsInput = {
@@ -2404,6 +2444,7 @@ export type SocietyUncheckedUpdateWithoutFlatsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutUsersInput = {
@@ -2454,6 +2495,7 @@ export type SocietyCreateWithoutUsersInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutUsersInput = {
@@ -2504,6 +2546,7 @@ export type SocietyUncheckedCreateWithoutUsersInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutUsersInput = {
@@ -2570,6 +2613,7 @@ export type SocietyUpdateWithoutUsersInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutUsersInput = {
@@ -2620,6 +2664,7 @@ export type SocietyUncheckedUpdateWithoutUsersInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutEntriesInput = {
@@ -2670,6 +2715,7 @@ export type SocietyCreateWithoutEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutEntriesInput = {
@@ -2720,6 +2766,7 @@ export type SocietyUncheckedCreateWithoutEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutEntriesInput = {
@@ -2786,6 +2833,7 @@ export type SocietyUpdateWithoutEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutEntriesInput = {
@@ -2836,6 +2884,7 @@ export type SocietyUncheckedUpdateWithoutEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGuestInvitesInput = {
@@ -2886,6 +2935,7 @@ export type SocietyCreateWithoutGuestInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGuestInvitesInput = {
@@ -2936,6 +2986,7 @@ export type SocietyUncheckedCreateWithoutGuestInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGuestInvitesInput = {
@@ -3002,6 +3053,7 @@ export type SocietyUpdateWithoutGuestInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGuestInvitesInput = {
@@ -3052,6 +3104,7 @@ export type SocietyUncheckedUpdateWithoutGuestInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPartyInvitesInput = {
@@ -3102,6 +3155,7 @@ export type SocietyCreateWithoutPartyInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPartyInvitesInput = {
@@ -3152,6 +3206,7 @@ export type SocietyUncheckedCreateWithoutPartyInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPartyInvitesInput = {
@@ -3218,6 +3273,7 @@ export type SocietyUpdateWithoutPartyInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPartyInvitesInput = {
@@ -3268,6 +3324,7 @@ export type SocietyUncheckedUpdateWithoutPartyInvitesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGuestEntryLogsInput = {
@@ -3318,6 +3375,7 @@ export type SocietyCreateWithoutGuestEntryLogsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGuestEntryLogsInput = {
@@ -3368,6 +3426,7 @@ export type SocietyUncheckedCreateWithoutGuestEntryLogsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGuestEntryLogsInput = {
@@ -3434,6 +3493,7 @@ export type SocietyUpdateWithoutGuestEntryLogsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGuestEntryLogsInput = {
@@ -3484,6 +3544,7 @@ export type SocietyUncheckedUpdateWithoutGuestEntryLogsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutDomesticStaffInput = {
@@ -3534,6 +3595,7 @@ export type SocietyCreateWithoutDomesticStaffInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutDomesticStaffInput = {
@@ -3584,6 +3646,7 @@ export type SocietyUncheckedCreateWithoutDomesticStaffInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutDomesticStaffInput = {
@@ -3650,6 +3713,7 @@ export type SocietyUpdateWithoutDomesticStaffInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutDomesticStaffInput = {
@@ -3700,6 +3764,7 @@ export type SocietyUncheckedUpdateWithoutDomesticStaffInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutStaffAttendanceInput = {
@@ -3750,6 +3815,7 @@ export type SocietyCreateWithoutStaffAttendanceInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutStaffAttendanceInput = {
@@ -3800,6 +3866,7 @@ export type SocietyUncheckedCreateWithoutStaffAttendanceInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutStaffAttendanceInput = {
@@ -3866,6 +3933,7 @@ export type SocietyUpdateWithoutStaffAttendanceInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutStaffAttendanceInput = {
@@ -3916,6 +3984,7 @@ export type SocietyUncheckedUpdateWithoutStaffAttendanceInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutStaffBookingsInput = {
@@ -3966,6 +4035,7 @@ export type SocietyCreateWithoutStaffBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutStaffBookingsInput = {
@@ -4016,6 +4086,7 @@ export type SocietyUncheckedCreateWithoutStaffBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutStaffBookingsInput = {
@@ -4082,6 +4153,7 @@ export type SocietyUpdateWithoutStaffBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutStaffBookingsInput = {
@@ -4132,6 +4204,7 @@ export type SocietyUncheckedUpdateWithoutStaffBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutVehiclesInput = {
@@ -4182,6 +4255,7 @@ export type SocietyCreateWithoutVehiclesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutVehiclesInput = {
@@ -4232,6 +4306,7 @@ export type SocietyUncheckedCreateWithoutVehiclesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutVehiclesInput = {
@@ -4298,6 +4373,7 @@ export type SocietyUpdateWithoutVehiclesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutVehiclesInput = {
@@ -4323,6 +4399,227 @@ export type SocietyUncheckedUpdateWithoutVehiclesInput = {
   flats?: Prisma.FlatUncheckedUpdateManyWithoutSocietyNestedInput
   entries?: Prisma.EntryUncheckedUpdateManyWithoutSocietyNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUncheckedUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUncheckedUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUncheckedUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyCreateWithoutParkingViolationsInput = {
+  id?: string
+  name: string
+  address: string
+  city: string
+  state: string
+  pincode: string
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  totalFlats?: number
+  isActive?: boolean
+  monthlyFee?: number
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyUncheckedCreateWithoutParkingViolationsInput = {
+  id?: string
+  name: string
+  address: string
+  city: string
+  state: string
+  pincode: string
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  totalFlats?: number
+  isActive?: boolean
+  monthlyFee?: number
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockUncheckedCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatUncheckedCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointUncheckedCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityUncheckedCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorUncheckedCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyCreateOrConnectWithoutParkingViolationsInput = {
+  where: Prisma.SocietyWhereUniqueInput
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutParkingViolationsInput, Prisma.SocietyUncheckedCreateWithoutParkingViolationsInput>
+}
+
+export type SocietyUpsertWithoutParkingViolationsInput = {
+  update: Prisma.XOR<Prisma.SocietyUpdateWithoutParkingViolationsInput, Prisma.SocietyUncheckedUpdateWithoutParkingViolationsInput>
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutParkingViolationsInput, Prisma.SocietyUncheckedCreateWithoutParkingViolationsInput>
+  where?: Prisma.SocietyWhereInput
+}
+
+export type SocietyUpdateToOneWithWhereWithoutParkingViolationsInput = {
+  where?: Prisma.SocietyWhereInput
+  data: Prisma.XOR<Prisma.SocietyUpdateWithoutParkingViolationsInput, Prisma.SocietyUncheckedUpdateWithoutParkingViolationsInput>
+}
+
+export type SocietyUpdateWithoutParkingViolationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyUncheckedUpdateWithoutParkingViolationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUncheckedUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUncheckedUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutSocietyNestedInput
   gatePoints?: Prisma.GatePointUncheckedUpdateManyWithoutSocietyNestedInput
   visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutSocietyNestedInput
   paymentReminders?: Prisma.PaymentReminderUncheckedUpdateManyWithoutSocietyNestedInput
@@ -4398,6 +4695,7 @@ export type SocietyCreateWithoutVisitorFrequenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutVisitorFrequenciesInput = {
@@ -4448,6 +4746,7 @@ export type SocietyUncheckedCreateWithoutVisitorFrequenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutVisitorFrequenciesInput = {
@@ -4514,6 +4813,7 @@ export type SocietyUpdateWithoutVisitorFrequenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutVisitorFrequenciesInput = {
@@ -4564,6 +4864,7 @@ export type SocietyUncheckedUpdateWithoutVisitorFrequenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPaymentRemindersInput = {
@@ -4614,6 +4915,7 @@ export type SocietyCreateWithoutPaymentRemindersInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPaymentRemindersInput = {
@@ -4664,6 +4966,7 @@ export type SocietyUncheckedCreateWithoutPaymentRemindersInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPaymentRemindersInput = {
@@ -4730,6 +5033,7 @@ export type SocietyUpdateWithoutPaymentRemindersInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPaymentRemindersInput = {
@@ -4780,6 +5084,7 @@ export type SocietyUncheckedUpdateWithoutPaymentRemindersInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGatePassesInput = {
@@ -4830,6 +5135,7 @@ export type SocietyCreateWithoutGatePassesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGatePassesInput = {
@@ -4880,6 +5186,7 @@ export type SocietyUncheckedCreateWithoutGatePassesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGatePassesInput = {
@@ -4946,6 +5253,7 @@ export type SocietyUpdateWithoutGatePassesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGatePassesInput = {
@@ -4996,6 +5304,7 @@ export type SocietyUncheckedUpdateWithoutGatePassesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutNoticesInput = {
@@ -5046,6 +5355,7 @@ export type SocietyCreateWithoutNoticesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutNoticesInput = {
@@ -5096,6 +5406,7 @@ export type SocietyUncheckedCreateWithoutNoticesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutNoticesInput = {
@@ -5162,6 +5473,7 @@ export type SocietyUpdateWithoutNoticesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutNoticesInput = {
@@ -5212,6 +5524,7 @@ export type SocietyUncheckedUpdateWithoutNoticesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutAmenitiesInput = {
@@ -5262,6 +5575,7 @@ export type SocietyCreateWithoutAmenitiesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutAmenitiesInput = {
@@ -5312,6 +5626,7 @@ export type SocietyUncheckedCreateWithoutAmenitiesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutAmenitiesInput = {
@@ -5378,6 +5693,7 @@ export type SocietyUpdateWithoutAmenitiesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutAmenitiesInput = {
@@ -5428,6 +5744,7 @@ export type SocietyUncheckedUpdateWithoutAmenitiesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutAmenityBookingsInput = {
@@ -5478,6 +5795,7 @@ export type SocietyCreateWithoutAmenityBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutAmenityBookingsInput = {
@@ -5528,6 +5846,7 @@ export type SocietyUncheckedCreateWithoutAmenityBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutAmenityBookingsInput = {
@@ -5594,6 +5913,7 @@ export type SocietyUpdateWithoutAmenityBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutAmenityBookingsInput = {
@@ -5644,6 +5964,7 @@ export type SocietyUncheckedUpdateWithoutAmenityBookingsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutComplaintsInput = {
@@ -5694,6 +6015,7 @@ export type SocietyCreateWithoutComplaintsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutComplaintsInput = {
@@ -5744,6 +6066,7 @@ export type SocietyUncheckedCreateWithoutComplaintsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutComplaintsInput = {
@@ -5810,6 +6133,7 @@ export type SocietyUpdateWithoutComplaintsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutComplaintsInput = {
@@ -5860,6 +6184,7 @@ export type SocietyUncheckedUpdateWithoutComplaintsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutEmergenciesInput = {
@@ -5910,6 +6235,7 @@ export type SocietyCreateWithoutEmergenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutEmergenciesInput = {
@@ -5960,6 +6286,7 @@ export type SocietyUncheckedCreateWithoutEmergenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutEmergenciesInput = {
@@ -6026,6 +6353,7 @@ export type SocietyUpdateWithoutEmergenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutEmergenciesInput = {
@@ -6076,6 +6404,7 @@ export type SocietyUncheckedUpdateWithoutEmergenciesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutVendorsInput = {
@@ -6126,6 +6455,7 @@ export type SocietyCreateWithoutVendorsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutVendorsInput = {
@@ -6176,6 +6506,7 @@ export type SocietyUncheckedCreateWithoutVendorsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutVendorsInput = {
@@ -6242,6 +6573,7 @@ export type SocietyUpdateWithoutVendorsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutVendorsInput = {
@@ -6292,6 +6624,7 @@ export type SocietyUncheckedUpdateWithoutVendorsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutCommunityPostsInput = {
@@ -6342,6 +6675,7 @@ export type SocietyCreateWithoutCommunityPostsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutCommunityPostsInput = {
@@ -6392,6 +6726,7 @@ export type SocietyUncheckedCreateWithoutCommunityPostsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutCommunityPostsInput = {
@@ -6458,6 +6793,7 @@ export type SocietyUpdateWithoutCommunityPostsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutCommunityPostsInput = {
@@ -6508,6 +6844,7 @@ export type SocietyUncheckedUpdateWithoutCommunityPostsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPostCommentsInput = {
@@ -6558,6 +6895,7 @@ export type SocietyCreateWithoutPostCommentsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPostCommentsInput = {
@@ -6608,6 +6946,7 @@ export type SocietyUncheckedCreateWithoutPostCommentsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPostCommentsInput = {
@@ -6674,6 +7013,7 @@ export type SocietyUpdateWithoutPostCommentsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPostCommentsInput = {
@@ -6724,6 +7064,7 @@ export type SocietyUncheckedUpdateWithoutPostCommentsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutSocietyDocumentsInput = {
@@ -6774,6 +7115,7 @@ export type SocietyCreateWithoutSocietyDocumentsInput = {
   postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutSocietyDocumentsInput = {
@@ -6824,6 +7166,7 @@ export type SocietyUncheckedCreateWithoutSocietyDocumentsInput = {
   postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutSocietyDocumentsInput = {
@@ -6890,6 +7233,7 @@ export type SocietyUpdateWithoutSocietyDocumentsInput = {
   postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutSocietyDocumentsInput = {
@@ -6940,6 +7284,7 @@ export type SocietyUncheckedUpdateWithoutSocietyDocumentsInput = {
   postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPollsInput = {
@@ -6990,6 +7335,7 @@ export type SocietyCreateWithoutPollsInput = {
   postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPollsInput = {
@@ -7040,6 +7386,7 @@ export type SocietyUncheckedCreateWithoutPollsInput = {
   postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPollsInput = {
@@ -7106,6 +7453,7 @@ export type SocietyUpdateWithoutPollsInput = {
   postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPollsInput = {
@@ -7156,6 +7504,7 @@ export type SocietyUncheckedUpdateWithoutPollsInput = {
   postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutOnboardingRequestsInput = {
@@ -7206,6 +7555,7 @@ export type SocietyCreateWithoutOnboardingRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutOnboardingRequestsInput = {
@@ -7256,6 +7606,7 @@ export type SocietyUncheckedCreateWithoutOnboardingRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutOnboardingRequestsInput = {
@@ -7322,6 +7673,7 @@ export type SocietyUpdateWithoutOnboardingRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutOnboardingRequestsInput = {
@@ -7372,6 +7724,7 @@ export type SocietyUncheckedUpdateWithoutOnboardingRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutNotificationsInput = {
@@ -7422,6 +7775,7 @@ export type SocietyCreateWithoutNotificationsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutNotificationsInput = {
@@ -7472,6 +7826,7 @@ export type SocietyUncheckedCreateWithoutNotificationsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutNotificationsInput = {
@@ -7538,6 +7893,7 @@ export type SocietyUpdateWithoutNotificationsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutNotificationsInput = {
@@ -7588,6 +7944,7 @@ export type SocietyUncheckedUpdateWithoutNotificationsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutEntryRequestsInput = {
@@ -7638,6 +7995,7 @@ export type SocietyCreateWithoutEntryRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutEntryRequestsInput = {
@@ -7688,6 +8046,7 @@ export type SocietyUncheckedCreateWithoutEntryRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutEntryRequestsInput = {
@@ -7754,6 +8113,7 @@ export type SocietyUpdateWithoutEntryRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutEntryRequestsInput = {
@@ -7804,6 +8164,7 @@ export type SocietyUncheckedUpdateWithoutEntryRequestsInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPreApprovedEntriesInput = {
@@ -7854,6 +8215,7 @@ export type SocietyCreateWithoutPreApprovedEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPreApprovedEntriesInput = {
@@ -7904,6 +8266,7 @@ export type SocietyUncheckedCreateWithoutPreApprovedEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPreApprovedEntriesInput = {
@@ -7970,6 +8333,7 @@ export type SocietyUpdateWithoutPreApprovedEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPreApprovedEntriesInput = {
@@ -8020,6 +8384,7 @@ export type SocietyUncheckedUpdateWithoutPreApprovedEntriesInput = {
   societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 
@@ -8058,6 +8423,7 @@ export type SocietyCountOutputType = {
   societyDocuments: number
   polls: number
   invoices: number
+  parkingViolations: number
 }
 
 export type SocietyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -8091,6 +8457,7 @@ export type SocietyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   societyDocuments?: boolean | SocietyCountOutputTypeCountSocietyDocumentsArgs
   polls?: boolean | SocietyCountOutputTypeCountPollsArgs
   invoices?: boolean | SocietyCountOutputTypeCountInvoicesArgs
+  parkingViolations?: boolean | SocietyCountOutputTypeCountParkingViolationsArgs
 }
 
 /**
@@ -8313,6 +8680,13 @@ export type SocietyCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Type
   where?: Prisma.InvoiceWhereInput
 }
 
+/**
+ * SocietyCountOutputType without action
+ */
+export type SocietyCountOutputTypeCountParkingViolationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ParkingViolationWhereInput
+}
+
 
 export type SocietySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -8363,6 +8737,7 @@ export type SocietySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   societyDocuments?: boolean | Prisma.Society$societyDocumentsArgs<ExtArgs>
   polls?: boolean | Prisma.Society$pollsArgs<ExtArgs>
   invoices?: boolean | Prisma.Society$invoicesArgs<ExtArgs>
+  parkingViolations?: boolean | Prisma.Society$parkingViolationsArgs<ExtArgs>
   _count?: boolean | Prisma.SocietyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["society"]>
 
@@ -8459,6 +8834,7 @@ export type SocietyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   societyDocuments?: boolean | Prisma.Society$societyDocumentsArgs<ExtArgs>
   polls?: boolean | Prisma.Society$pollsArgs<ExtArgs>
   invoices?: boolean | Prisma.Society$invoicesArgs<ExtArgs>
+  parkingViolations?: boolean | Prisma.Society$parkingViolationsArgs<ExtArgs>
   _count?: boolean | Prisma.SocietyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SocietyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -8498,6 +8874,7 @@ export type $SocietyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     societyDocuments: Prisma.$SocietyDocumentPayload<ExtArgs>[]
     polls: Prisma.$PollPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    parkingViolations: Prisma.$ParkingViolationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -8942,6 +9319,7 @@ export interface Prisma__SocietyClient<T, Null = never, ExtArgs extends runtime.
   societyDocuments<T extends Prisma.Society$societyDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$societyDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocietyDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   polls<T extends Prisma.Society$pollsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$pollsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PollPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Society$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  parkingViolations<T extends Prisma.Society$parkingViolationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$parkingViolationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParkingViolationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10112,6 +10490,30 @@ export type Society$invoicesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * Society.parkingViolations
+ */
+export type Society$parkingViolationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ParkingViolation
+   */
+  select?: Prisma.ParkingViolationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ParkingViolation
+   */
+  omit?: Prisma.ParkingViolationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ParkingViolationInclude<ExtArgs> | null
+  where?: Prisma.ParkingViolationWhereInput
+  orderBy?: Prisma.ParkingViolationOrderByWithRelationInput | Prisma.ParkingViolationOrderByWithRelationInput[]
+  cursor?: Prisma.ParkingViolationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ParkingViolationScalarFieldEnum | Prisma.ParkingViolationScalarFieldEnum[]
 }
 
 /**

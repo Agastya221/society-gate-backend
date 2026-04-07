@@ -6,6 +6,11 @@ import partyInviteRoutes from '../../modules/party-invite/party-invite.routes';
 import preApprovedRoutes from '../../modules/pre-approved-entry/pre-approved-entry.routes';
 import { authenticate, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { getEntries } from '../../modules/gate-scan/gate-scan.controller';
+import {
+  lookupVehicle,
+  issueViolation,
+  listViolations,
+} from '../../modules/vehicle/parking-violation.controller';
 import { prisma } from '../../utils/Client';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { Request, Response } from 'express';
@@ -18,6 +23,12 @@ const router = Router();
 
 // Entries log — accessible by residents (flat-scoped) and guards (society-wide)
 router.get('/entries', authenticate, ensureSameSociety, getEntries);
+
+// Parking — guard can lookup vehicles and issue violations
+router.get('/parking/lookup', authenticate, ensureSameSociety, lookupVehicle);
+router.get('/parking/violations', authenticate, ensureSameSociety, listViolations);
+router.post('/parking/violations', authenticate, ensureSameSociety, issueViolation);
+router.post('/parking/vehicles/:vehicleId/violations', authenticate, ensureSameSociety, issueViolation);
 
 // Flat search — used by guard "New Entry" screen
 router.get('/flats/search', authenticate, ensureSameSociety, async (req: Request, res: Response) => {

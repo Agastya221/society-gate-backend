@@ -325,7 +325,7 @@ export type EntryGroupByOutputType = {
   packageCount: number | null
   wasAutoApproved: boolean
   autoApprovalReason: string | null
-  flatId: string
+  flatId: string | null
   societyId: string
   gatePointId: string | null
   createdById: string
@@ -378,7 +378,7 @@ export type EntryWhereInput = {
   packageCount?: Prisma.IntNullableFilter<"Entry"> | number | null
   wasAutoApproved?: Prisma.BoolFilter<"Entry"> | boolean
   autoApprovalReason?: Prisma.StringNullableFilter<"Entry"> | string | null
-  flatId?: Prisma.StringFilter<"Entry"> | string
+  flatId?: Prisma.StringNullableFilter<"Entry"> | string | null
   societyId?: Prisma.StringFilter<"Entry"> | string
   gatePointId?: Prisma.StringNullableFilter<"Entry"> | string | null
   createdById?: Prisma.StringFilter<"Entry"> | string
@@ -392,7 +392,7 @@ export type EntryWhereInput = {
   rejectionReason?: Prisma.StringNullableFilter<"Entry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Entry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Entry"> | Date | string
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   gatePoint?: Prisma.XOR<Prisma.GatePointNullableScalarRelationFilter, Prisma.GatePointWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -416,7 +416,7 @@ export type EntryOrderByWithRelationInput = {
   packageCount?: Prisma.SortOrderInput | Prisma.SortOrder
   wasAutoApproved?: Prisma.SortOrder
   autoApprovalReason?: Prisma.SortOrderInput | Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   gatePointId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -457,7 +457,7 @@ export type EntryWhereUniqueInput = Prisma.AtLeast<{
   packageCount?: Prisma.IntNullableFilter<"Entry"> | number | null
   wasAutoApproved?: Prisma.BoolFilter<"Entry"> | boolean
   autoApprovalReason?: Prisma.StringNullableFilter<"Entry"> | string | null
-  flatId?: Prisma.StringFilter<"Entry"> | string
+  flatId?: Prisma.StringNullableFilter<"Entry"> | string | null
   societyId?: Prisma.StringFilter<"Entry"> | string
   gatePointId?: Prisma.StringNullableFilter<"Entry"> | string | null
   createdById?: Prisma.StringFilter<"Entry"> | string
@@ -471,7 +471,7 @@ export type EntryWhereUniqueInput = Prisma.AtLeast<{
   rejectionReason?: Prisma.StringNullableFilter<"Entry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Entry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Entry"> | Date | string
-  flat?: Prisma.XOR<Prisma.FlatScalarRelationFilter, Prisma.FlatWhereInput>
+  flat?: Prisma.XOR<Prisma.FlatNullableScalarRelationFilter, Prisma.FlatWhereInput> | null
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   gatePoint?: Prisma.XOR<Prisma.GatePointNullableScalarRelationFilter, Prisma.GatePointWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -495,7 +495,7 @@ export type EntryOrderByWithAggregationInput = {
   packageCount?: Prisma.SortOrderInput | Prisma.SortOrder
   wasAutoApproved?: Prisma.SortOrder
   autoApprovalReason?: Prisma.SortOrderInput | Prisma.SortOrder
-  flatId?: Prisma.SortOrder
+  flatId?: Prisma.SortOrderInput | Prisma.SortOrder
   societyId?: Prisma.SortOrder
   gatePointId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -533,7 +533,7 @@ export type EntryScalarWhereWithAggregatesInput = {
   packageCount?: Prisma.IntNullableWithAggregatesFilter<"Entry"> | number | null
   wasAutoApproved?: Prisma.BoolWithAggregatesFilter<"Entry"> | boolean
   autoApprovalReason?: Prisma.StringNullableWithAggregatesFilter<"Entry"> | string | null
-  flatId?: Prisma.StringWithAggregatesFilter<"Entry"> | string
+  flatId?: Prisma.StringNullableWithAggregatesFilter<"Entry"> | string | null
   societyId?: Prisma.StringWithAggregatesFilter<"Entry"> | string
   gatePointId?: Prisma.StringNullableWithAggregatesFilter<"Entry"> | string | null
   createdById?: Prisma.StringWithAggregatesFilter<"Entry"> | string
@@ -570,7 +570,7 @@ export type EntryCreateInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
   gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
@@ -594,7 +594,7 @@ export type EntryUncheckedCreateInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -632,7 +632,7 @@ export type EntryUpdateInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
   gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
@@ -656,7 +656,7 @@ export type EntryUncheckedUpdateInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -687,7 +687,7 @@ export type EntryCreateManyInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -740,7 +740,7 @@ export type EntryUncheckedUpdateManyInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1212,7 +1212,7 @@ export type EntryCreateWithoutSocietyInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEntriesInput
@@ -1235,7 +1235,7 @@ export type EntryUncheckedCreateWithoutSocietyInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   gatePointId?: string | null
   createdById: string
   approvedById?: string | null
@@ -1294,7 +1294,7 @@ export type EntryScalarWhereInput = {
   packageCount?: Prisma.IntNullableFilter<"Entry"> | number | null
   wasAutoApproved?: Prisma.BoolFilter<"Entry"> | boolean
   autoApprovalReason?: Prisma.StringNullableFilter<"Entry"> | string | null
-  flatId?: Prisma.StringFilter<"Entry"> | string
+  flatId?: Prisma.StringNullableFilter<"Entry"> | string | null
   societyId?: Prisma.StringFilter<"Entry"> | string
   gatePointId?: Prisma.StringNullableFilter<"Entry"> | string | null
   createdById?: Prisma.StringFilter<"Entry"> | string
@@ -1331,7 +1331,7 @@ export type EntryCreateWithoutGatePointInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEntriesInput
@@ -1354,7 +1354,7 @@ export type EntryUncheckedCreateWithoutGatePointInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdById: string
   approvedById?: string | null
@@ -1503,7 +1503,7 @@ export type EntryCreateWithoutCreatedByInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
   gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEntriesInput
@@ -1526,7 +1526,7 @@ export type EntryUncheckedCreateWithoutCreatedByInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   approvedById?: string | null
@@ -1573,7 +1573,7 @@ export type EntryCreateWithoutApprovedByInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
   gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
@@ -1596,7 +1596,7 @@ export type EntryUncheckedCreateWithoutApprovedByInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -1675,7 +1675,7 @@ export type EntryCreateWithoutDomesticStaffInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
   gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
@@ -1698,7 +1698,7 @@ export type EntryUncheckedCreateWithoutDomesticStaffInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -1761,7 +1761,7 @@ export type EntryCreateWithoutEntryRequestInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
   gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
@@ -1784,7 +1784,7 @@ export type EntryUncheckedCreateWithoutEntryRequestInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -1837,7 +1837,7 @@ export type EntryUpdateWithoutEntryRequestInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
   gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
@@ -1860,7 +1860,7 @@ export type EntryUncheckedUpdateWithoutEntryRequestInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1897,7 +1897,7 @@ export type EntryCreateWithoutPreApprovedEntryInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  flat: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
   society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
   gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
@@ -1920,7 +1920,7 @@ export type EntryUncheckedCreateWithoutPreApprovedEntryInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -1976,7 +1976,7 @@ export type EntryCreateManySocietyInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   gatePointId?: string | null
   createdById: string
   approvedById?: string | null
@@ -2012,7 +2012,7 @@ export type EntryUpdateWithoutSocietyInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedEntriesNestedInput
@@ -2035,7 +2035,7 @@ export type EntryUncheckedUpdateWithoutSocietyInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2065,7 +2065,7 @@ export type EntryUncheckedUpdateManyWithoutSocietyInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2094,7 +2094,7 @@ export type EntryCreateManyGatePointInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   createdById: string
   approvedById?: string | null
@@ -2130,7 +2130,7 @@ export type EntryUpdateWithoutGatePointInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedEntriesNestedInput
@@ -2153,7 +2153,7 @@ export type EntryUncheckedUpdateWithoutGatePointInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2183,7 +2183,7 @@ export type EntryUncheckedUpdateManyWithoutGatePointInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2330,7 +2330,7 @@ export type EntryCreateManyCreatedByInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   approvedById?: string | null
@@ -2359,7 +2359,7 @@ export type EntryCreateManyApprovedByInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -2395,7 +2395,7 @@ export type EntryUpdateWithoutCreatedByInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
   gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedEntriesNestedInput
@@ -2418,7 +2418,7 @@ export type EntryUncheckedUpdateWithoutCreatedByInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2448,7 +2448,7 @@ export type EntryUncheckedUpdateManyWithoutCreatedByInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2484,7 +2484,7 @@ export type EntryUpdateWithoutApprovedByInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
   gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
@@ -2507,7 +2507,7 @@ export type EntryUncheckedUpdateWithoutApprovedByInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2537,7 +2537,7 @@ export type EntryUncheckedUpdateManyWithoutApprovedByInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2566,7 +2566,7 @@ export type EntryCreateManyDomesticStaffInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -2602,7 +2602,7 @@ export type EntryUpdateWithoutDomesticStaffInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
   gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
@@ -2625,7 +2625,7 @@ export type EntryUncheckedUpdateWithoutDomesticStaffInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2655,7 +2655,7 @@ export type EntryUncheckedUpdateManyWithoutDomesticStaffInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2684,7 +2684,7 @@ export type EntryCreateManyPreApprovedEntryInput = {
   packageCount?: number | null
   wasAutoApproved?: boolean
   autoApprovalReason?: string | null
-  flatId: string
+  flatId?: string | null
   societyId: string
   gatePointId?: string | null
   createdById: string
@@ -2720,7 +2720,7 @@ export type EntryUpdateWithoutPreApprovedEntryInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  flat?: Prisma.FlatUpdateOneRequiredWithoutEntriesNestedInput
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
   gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
@@ -2743,7 +2743,7 @@ export type EntryUncheckedUpdateWithoutPreApprovedEntryInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2773,7 +2773,7 @@ export type EntryUncheckedUpdateManyWithoutPreApprovedEntryInput = {
   packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2818,7 +2818,7 @@ export type EntrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.Entry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   gatePoint?: boolean | Prisma.Entry$gatePointArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2856,7 +2856,7 @@ export type EntrySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.Entry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   gatePoint?: boolean | Prisma.Entry$gatePointArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2893,7 +2893,7 @@ export type EntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.Entry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   gatePoint?: boolean | Prisma.Entry$gatePointArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2934,7 +2934,7 @@ export type EntrySelectScalar = {
 
 export type EntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "visitorName" | "visitorPhone" | "visitorType" | "visitorPhoto" | "purpose" | "vehicleNumber" | "companyName" | "packageCount" | "wasAutoApproved" | "autoApprovalReason" | "flatId" | "societyId" | "gatePointId" | "createdById" | "approvedById" | "approvedAt" | "checkInTime" | "checkOutTime" | "domesticStaffId" | "preApprovedEntryId" | "remarks" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["entry"]>
 export type EntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.Entry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   gatePoint?: boolean | Prisma.Entry$gatePointArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2944,7 +2944,7 @@ export type EntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   entryRequest?: boolean | Prisma.Entry$entryRequestArgs<ExtArgs>
 }
 export type EntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.Entry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   gatePoint?: boolean | Prisma.Entry$gatePointArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2953,7 +2953,7 @@ export type EntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   preApprovedEntry?: boolean | Prisma.Entry$preApprovedEntryArgs<ExtArgs>
 }
 export type EntryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  flat?: boolean | Prisma.FlatDefaultArgs<ExtArgs>
+  flat?: boolean | Prisma.Entry$flatArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   gatePoint?: boolean | Prisma.Entry$gatePointArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2965,7 +2965,7 @@ export type EntryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type $EntryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Entry"
   objects: {
-    flat: Prisma.$FlatPayload<ExtArgs>
+    flat: Prisma.$FlatPayload<ExtArgs> | null
     society: Prisma.$SocietyPayload<ExtArgs>
     gatePoint: Prisma.$GatePointPayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs>
@@ -2988,7 +2988,7 @@ export type $EntryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     packageCount: number | null
     wasAutoApproved: boolean
     autoApprovalReason: string | null
-    flatId: string
+    flatId: string | null
     societyId: string
     gatePointId: string | null
     createdById: string
@@ -3396,7 +3396,7 @@ readonly fields: EntryFieldRefs;
  */
 export interface Prisma__EntryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  flat<T extends Prisma.FlatDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FlatDefaultArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  flat<T extends Prisma.Entry$flatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Entry$flatArgs<ExtArgs>>): Prisma.Prisma__FlatClient<runtime.Types.Result.GetResult<Prisma.$FlatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   society<T extends Prisma.SocietyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SocietyDefaultArgs<ExtArgs>>): Prisma.Prisma__SocietyClient<runtime.Types.Result.GetResult<Prisma.$SocietyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   gatePoint<T extends Prisma.Entry$gatePointArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Entry$gatePointArgs<ExtArgs>>): Prisma.Prisma__GatePointClient<runtime.Types.Result.GetResult<Prisma.$GatePointPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -3853,6 +3853,25 @@ export type EntryDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Entries to delete.
    */
   limit?: number
+}
+
+/**
+ * Entry.flat
+ */
+export type Entry$flatArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Flat
+   */
+  select?: Prisma.FlatSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Flat
+   */
+  omit?: Prisma.FlatOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FlatInclude<ExtArgs> | null
+  where?: Prisma.FlatWhereInput
 }
 
 /**

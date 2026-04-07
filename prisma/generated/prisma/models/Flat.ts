@@ -786,10 +786,12 @@ export type FlatCreateNestedOneWithoutEntriesInput = {
   connect?: Prisma.FlatWhereUniqueInput
 }
 
-export type FlatUpdateOneRequiredWithoutEntriesNestedInput = {
+export type FlatUpdateOneWithoutEntriesNestedInput = {
   create?: Prisma.XOR<Prisma.FlatCreateWithoutEntriesInput, Prisma.FlatUncheckedCreateWithoutEntriesInput>
   connectOrCreate?: Prisma.FlatCreateOrConnectWithoutEntriesInput
   upsert?: Prisma.FlatUpsertWithoutEntriesInput
+  disconnect?: Prisma.FlatWhereInput | boolean
+  delete?: Prisma.FlatWhereInput | boolean
   connect?: Prisma.FlatWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutEntriesInput, Prisma.FlatUpdateWithoutEntriesInput>, Prisma.FlatUncheckedUpdateWithoutEntriesInput>
 }
@@ -800,10 +802,12 @@ export type FlatCreateNestedOneWithoutGuestInvitesInput = {
   connect?: Prisma.FlatWhereUniqueInput
 }
 
-export type FlatUpdateOneRequiredWithoutGuestInvitesNestedInput = {
+export type FlatUpdateOneWithoutGuestInvitesNestedInput = {
   create?: Prisma.XOR<Prisma.FlatCreateWithoutGuestInvitesInput, Prisma.FlatUncheckedCreateWithoutGuestInvitesInput>
   connectOrCreate?: Prisma.FlatCreateOrConnectWithoutGuestInvitesInput
   upsert?: Prisma.FlatUpsertWithoutGuestInvitesInput
+  disconnect?: Prisma.FlatWhereInput | boolean
+  delete?: Prisma.FlatWhereInput | boolean
   connect?: Prisma.FlatWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutGuestInvitesInput, Prisma.FlatUpdateWithoutGuestInvitesInput>, Prisma.FlatUncheckedUpdateWithoutGuestInvitesInput>
 }
@@ -814,10 +818,12 @@ export type FlatCreateNestedOneWithoutPartyInvitesInput = {
   connect?: Prisma.FlatWhereUniqueInput
 }
 
-export type FlatUpdateOneRequiredWithoutPartyInvitesNestedInput = {
+export type FlatUpdateOneWithoutPartyInvitesNestedInput = {
   create?: Prisma.XOR<Prisma.FlatCreateWithoutPartyInvitesInput, Prisma.FlatUncheckedCreateWithoutPartyInvitesInput>
   connectOrCreate?: Prisma.FlatCreateOrConnectWithoutPartyInvitesInput
   upsert?: Prisma.FlatUpsertWithoutPartyInvitesInput
+  disconnect?: Prisma.FlatWhereInput | boolean
+  delete?: Prisma.FlatWhereInput | boolean
   connect?: Prisma.FlatWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutPartyInvitesInput, Prisma.FlatUpdateWithoutPartyInvitesInput>, Prisma.FlatUncheckedUpdateWithoutPartyInvitesInput>
 }
@@ -900,10 +906,12 @@ export type FlatCreateNestedOneWithoutVehiclesInput = {
   connect?: Prisma.FlatWhereUniqueInput
 }
 
-export type FlatUpdateOneRequiredWithoutVehiclesNestedInput = {
+export type FlatUpdateOneWithoutVehiclesNestedInput = {
   create?: Prisma.XOR<Prisma.FlatCreateWithoutVehiclesInput, Prisma.FlatUncheckedCreateWithoutVehiclesInput>
   connectOrCreate?: Prisma.FlatCreateOrConnectWithoutVehiclesInput
   upsert?: Prisma.FlatUpsertWithoutVehiclesInput
+  disconnect?: Prisma.FlatWhereInput | boolean
+  delete?: Prisma.FlatWhereInput | boolean
   connect?: Prisma.FlatWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutVehiclesInput, Prisma.FlatUpdateWithoutVehiclesInput>, Prisma.FlatUncheckedUpdateWithoutVehiclesInput>
 }
@@ -928,10 +936,12 @@ export type FlatCreateNestedOneWithoutGatePassesInput = {
   connect?: Prisma.FlatWhereUniqueInput
 }
 
-export type FlatUpdateOneRequiredWithoutGatePassesNestedInput = {
+export type FlatUpdateOneWithoutGatePassesNestedInput = {
   create?: Prisma.XOR<Prisma.FlatCreateWithoutGatePassesInput, Prisma.FlatUncheckedCreateWithoutGatePassesInput>
   connectOrCreate?: Prisma.FlatCreateOrConnectWithoutGatePassesInput
   upsert?: Prisma.FlatUpsertWithoutGatePassesInput
+  disconnect?: Prisma.FlatWhereInput | boolean
+  delete?: Prisma.FlatWhereInput | boolean
   connect?: Prisma.FlatWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutGatePassesInput, Prisma.FlatUpdateWithoutGatePassesInput>, Prisma.FlatUncheckedUpdateWithoutGatePassesInput>
 }
@@ -1016,10 +1026,12 @@ export type FlatCreateNestedOneWithoutPreApprovedEntriesInput = {
   connect?: Prisma.FlatWhereUniqueInput
 }
 
-export type FlatUpdateOneRequiredWithoutPreApprovedEntriesNestedInput = {
+export type FlatUpdateOneWithoutPreApprovedEntriesNestedInput = {
   create?: Prisma.XOR<Prisma.FlatCreateWithoutPreApprovedEntriesInput, Prisma.FlatUncheckedCreateWithoutPreApprovedEntriesInput>
   connectOrCreate?: Prisma.FlatCreateOrConnectWithoutPreApprovedEntriesInput
   upsert?: Prisma.FlatUpsertWithoutPreApprovedEntriesInput
+  disconnect?: Prisma.FlatWhereInput | boolean
+  delete?: Prisma.FlatWhereInput | boolean
   connect?: Prisma.FlatWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutPreApprovedEntriesInput, Prisma.FlatUpdateWithoutPreApprovedEntriesInput>, Prisma.FlatUncheckedUpdateWithoutPreApprovedEntriesInput>
 }

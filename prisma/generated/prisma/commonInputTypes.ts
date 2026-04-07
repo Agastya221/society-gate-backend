@@ -545,6 +545,57 @@ export type EnumVehicleStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumVehicleStatusFilter<$PrismaModel>
 }
 
+export type EnumViolationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationType | Prisma.EnumViolationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationTypeFilter<$PrismaModel> | $Enums.ViolationType
+}
+
+export type EnumViolationSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationSource | Prisma.EnumViolationSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationSourceFilter<$PrismaModel> | $Enums.ViolationSource
+}
+
+export type EnumViolationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationStatus | Prisma.EnumViolationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationStatusFilter<$PrismaModel> | $Enums.ViolationStatus
+}
+
+export type EnumViolationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationType | Prisma.EnumViolationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationTypeWithAggregatesFilter<$PrismaModel> | $Enums.ViolationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumViolationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumViolationTypeFilter<$PrismaModel>
+}
+
+export type EnumViolationSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationSource | Prisma.EnumViolationSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationSourceWithAggregatesFilter<$PrismaModel> | $Enums.ViolationSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumViolationSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumViolationSourceFilter<$PrismaModel>
+}
+
+export type EnumViolationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationStatus | Prisma.EnumViolationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationStatusWithAggregatesFilter<$PrismaModel> | $Enums.ViolationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumViolationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumViolationStatusFilter<$PrismaModel>
+}
+
 export type EnumGatePassTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.GatePassType | Prisma.EnumGatePassTypeFieldRefInput<$PrismaModel>
   in?: $Enums.GatePassType[] | Prisma.ListEnumGatePassTypeFieldRefInput<$PrismaModel>
@@ -1609,6 +1660,57 @@ export type NestedEnumVehicleStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumVehicleStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumVehicleStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumViolationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationType | Prisma.EnumViolationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationTypeFilter<$PrismaModel> | $Enums.ViolationType
+}
+
+export type NestedEnumViolationSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationSource | Prisma.EnumViolationSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationSourceFilter<$PrismaModel> | $Enums.ViolationSource
+}
+
+export type NestedEnumViolationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationStatus | Prisma.EnumViolationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationStatusFilter<$PrismaModel> | $Enums.ViolationStatus
+}
+
+export type NestedEnumViolationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationType | Prisma.EnumViolationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationType[] | Prisma.ListEnumViolationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationTypeWithAggregatesFilter<$PrismaModel> | $Enums.ViolationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumViolationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumViolationTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumViolationSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationSource | Prisma.EnumViolationSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationSource[] | Prisma.ListEnumViolationSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationSourceWithAggregatesFilter<$PrismaModel> | $Enums.ViolationSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumViolationSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumViolationSourceFilter<$PrismaModel>
+}
+
+export type NestedEnumViolationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ViolationStatus | Prisma.EnumViolationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ViolationStatus[] | Prisma.ListEnumViolationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumViolationStatusWithAggregatesFilter<$PrismaModel> | $Enums.ViolationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumViolationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumViolationStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumGatePassTypeFilter<$PrismaModel = never> = {

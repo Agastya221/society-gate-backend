@@ -295,10 +295,42 @@ export const NotificationType = {
   STAFF_CHECKIN: 'STAFF_CHECKIN',
   STAFF_CHECKOUT: 'STAFF_CHECKOUT',
   GUEST_ENTRY: 'GUEST_ENTRY',
+  PARKING_VIOLATION: 'PARKING_VIOLATION',
+  PARKING_COMPLAINT: 'PARKING_COMPLAINT',
   SYSTEM: 'SYSTEM'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const ViolationType = {
+  WRONG_PARKING: 'WRONG_PARKING',
+  DOUBLE_PARKING: 'DOUBLE_PARKING',
+  BLOCKING_GATE: 'BLOCKING_GATE',
+  UNAUTHORIZED_SPOT: 'UNAUTHORIZED_SPOT',
+  NO_STICKER: 'NO_STICKER',
+  OTHER: 'OTHER'
+} as const
+
+export type ViolationType = (typeof ViolationType)[keyof typeof ViolationType]
+
+
+export const ViolationSource = {
+  OFFICIAL: 'OFFICIAL',
+  COMPLAINT: 'COMPLAINT'
+} as const
+
+export type ViolationSource = (typeof ViolationSource)[keyof typeof ViolationSource]
+
+
+export const ViolationStatus = {
+  OPEN: 'OPEN',
+  NOTIFIED: 'NOTIFIED',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type ViolationStatus = (typeof ViolationStatus)[keyof typeof ViolationStatus]
 
 
 export const EntryRequestStatus = {
