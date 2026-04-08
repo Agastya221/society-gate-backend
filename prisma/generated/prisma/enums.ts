@@ -474,6 +474,15 @@ export const PreApprovedEntryStatus = {
 export type PreApprovedEntryStatus = (typeof PreApprovedEntryStatus)[keyof typeof PreApprovedEntryStatus]
 
 
+export const SubscriptionCycle = {
+  MONTHLY: 'MONTHLY',
+  QUARTERLY: 'QUARTERLY',
+  ANNUALLY: 'ANNUALLY'
+} as const
+
+export type SubscriptionCycle = (typeof SubscriptionCycle)[keyof typeof SubscriptionCycle]
+
+
 export const PreApprovedVerificationType = {
   NONE: 'NONE',
   VEHICLE_LAST4: 'VEHICLE_LAST4',

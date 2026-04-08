@@ -49,6 +49,7 @@ export type SocietyMinAggregateOutputType = {
   totalFlats: number | null
   isActive: boolean | null
   monthlyFee: number | null
+  subscriptionCycle: $Enums.SubscriptionCycle | null
   lastPaidDate: Date | null
   nextDueDate: Date | null
   paymentStatus: $Enums.PaymentStatus | null
@@ -69,6 +70,7 @@ export type SocietyMaxAggregateOutputType = {
   totalFlats: number | null
   isActive: boolean | null
   monthlyFee: number | null
+  subscriptionCycle: $Enums.SubscriptionCycle | null
   lastPaidDate: Date | null
   nextDueDate: Date | null
   paymentStatus: $Enums.PaymentStatus | null
@@ -89,6 +91,7 @@ export type SocietyCountAggregateOutputType = {
   totalFlats: number
   isActive: number
   monthlyFee: number
+  subscriptionCycle: number
   lastPaidDate: number
   nextDueDate: number
   paymentStatus: number
@@ -121,6 +124,7 @@ export type SocietyMinAggregateInputType = {
   totalFlats?: true
   isActive?: true
   monthlyFee?: true
+  subscriptionCycle?: true
   lastPaidDate?: true
   nextDueDate?: true
   paymentStatus?: true
@@ -141,6 +145,7 @@ export type SocietyMaxAggregateInputType = {
   totalFlats?: true
   isActive?: true
   monthlyFee?: true
+  subscriptionCycle?: true
   lastPaidDate?: true
   nextDueDate?: true
   paymentStatus?: true
@@ -161,6 +166,7 @@ export type SocietyCountAggregateInputType = {
   totalFlats?: true
   isActive?: true
   monthlyFee?: true
+  subscriptionCycle?: true
   lastPaidDate?: true
   nextDueDate?: true
   paymentStatus?: true
@@ -268,6 +274,7 @@ export type SocietyGroupByOutputType = {
   totalFlats: number
   isActive: boolean
   monthlyFee: number
+  subscriptionCycle: $Enums.SubscriptionCycle
   lastPaidDate: Date | null
   nextDueDate: Date
   paymentStatus: $Enums.PaymentStatus
@@ -311,6 +318,7 @@ export type SocietyWhereInput = {
   totalFlats?: Prisma.IntFilter<"Society"> | number
   isActive?: Prisma.BoolFilter<"Society"> | boolean
   monthlyFee?: Prisma.FloatFilter<"Society"> | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFilter<"Society"> | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.DateTimeNullableFilter<"Society"> | Date | string | null
   nextDueDate?: Prisma.DateTimeFilter<"Society"> | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFilter<"Society"> | $Enums.PaymentStatus
@@ -363,6 +371,7 @@ export type SocietyOrderByWithRelationInput = {
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrderInput | Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
@@ -418,6 +427,7 @@ export type SocietyWhereUniqueInput = Prisma.AtLeast<{
   totalFlats?: Prisma.IntFilter<"Society"> | number
   isActive?: Prisma.BoolFilter<"Society"> | boolean
   monthlyFee?: Prisma.FloatFilter<"Society"> | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFilter<"Society"> | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.DateTimeNullableFilter<"Society"> | Date | string | null
   nextDueDate?: Prisma.DateTimeFilter<"Society"> | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFilter<"Society"> | $Enums.PaymentStatus
@@ -470,6 +480,7 @@ export type SocietyOrderByWithAggregationInput = {
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrderInput | Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
@@ -498,6 +509,7 @@ export type SocietyScalarWhereWithAggregatesInput = {
   totalFlats?: Prisma.IntWithAggregatesFilter<"Society"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Society"> | boolean
   monthlyFee?: Prisma.FloatWithAggregatesFilter<"Society"> | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleWithAggregatesFilter<"Society"> | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Society"> | Date | string | null
   nextDueDate?: Prisma.DateTimeWithAggregatesFilter<"Society"> | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusWithAggregatesFilter<"Society"> | $Enums.PaymentStatus
@@ -518,6 +530,7 @@ export type SocietyCreateInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -570,6 +583,7 @@ export type SocietyUncheckedCreateInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -622,6 +636,7 @@ export type SocietyUpdateInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -674,6 +689,7 @@ export type SocietyUncheckedUpdateInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -726,6 +742,7 @@ export type SocietyCreateManyInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -746,6 +763,7 @@ export type SocietyUpdateManyMutationInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -766,6 +784,7 @@ export type SocietyUncheckedUpdateManyInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -786,6 +805,7 @@ export type SocietyCountOrderByAggregateInput = {
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
@@ -811,6 +831,7 @@ export type SocietyMaxOrderByAggregateInput = {
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
@@ -831,6 +852,7 @@ export type SocietyMinOrderByAggregateInput = {
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
@@ -879,6 +901,10 @@ export type FloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type EnumSubscriptionCycleFieldUpdateOperationsInput = {
+  set?: $Enums.SubscriptionCycle
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -1360,6 +1386,7 @@ export type SocietyCreateWithoutInvoicesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -1411,6 +1438,7 @@ export type SocietyUncheckedCreateWithoutInvoicesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -1478,6 +1506,7 @@ export type SocietyUpdateWithoutInvoicesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -1529,6 +1558,7 @@ export type SocietyUncheckedUpdateWithoutInvoicesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -1580,6 +1610,7 @@ export type SocietyCreateWithoutRegistrationRequestInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -1631,6 +1662,7 @@ export type SocietyUncheckedCreateWithoutRegistrationRequestInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -1698,6 +1730,7 @@ export type SocietyUpdateWithoutRegistrationRequestInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -1749,6 +1782,7 @@ export type SocietyUncheckedUpdateWithoutRegistrationRequestInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -1800,6 +1834,7 @@ export type SocietyCreateWithoutGatePointsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -1851,6 +1886,7 @@ export type SocietyUncheckedCreateWithoutGatePointsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -1918,6 +1954,7 @@ export type SocietyUpdateWithoutGatePointsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -1969,6 +2006,7 @@ export type SocietyUncheckedUpdateWithoutGatePointsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2020,6 +2058,7 @@ export type SocietyCreateWithoutBlocksInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2071,6 +2110,7 @@ export type SocietyUncheckedCreateWithoutBlocksInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2138,6 +2178,7 @@ export type SocietyUpdateWithoutBlocksInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2189,6 +2230,7 @@ export type SocietyUncheckedUpdateWithoutBlocksInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2240,6 +2282,7 @@ export type SocietyCreateWithoutFlatsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2291,6 +2334,7 @@ export type SocietyUncheckedCreateWithoutFlatsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2358,6 +2402,7 @@ export type SocietyUpdateWithoutFlatsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2409,6 +2454,7 @@ export type SocietyUncheckedUpdateWithoutFlatsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2460,6 +2506,7 @@ export type SocietyCreateWithoutUsersInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2511,6 +2558,7 @@ export type SocietyUncheckedCreateWithoutUsersInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2578,6 +2626,7 @@ export type SocietyUpdateWithoutUsersInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2629,6 +2678,7 @@ export type SocietyUncheckedUpdateWithoutUsersInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2680,6 +2730,7 @@ export type SocietyCreateWithoutEntriesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2731,6 +2782,7 @@ export type SocietyUncheckedCreateWithoutEntriesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2798,6 +2850,7 @@ export type SocietyUpdateWithoutEntriesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2849,6 +2902,7 @@ export type SocietyUncheckedUpdateWithoutEntriesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -2900,6 +2954,7 @@ export type SocietyCreateWithoutGuestInvitesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -2951,6 +3006,7 @@ export type SocietyUncheckedCreateWithoutGuestInvitesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3018,6 +3074,7 @@ export type SocietyUpdateWithoutGuestInvitesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3069,6 +3126,7 @@ export type SocietyUncheckedUpdateWithoutGuestInvitesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3120,6 +3178,7 @@ export type SocietyCreateWithoutPartyInvitesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3171,6 +3230,7 @@ export type SocietyUncheckedCreateWithoutPartyInvitesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3238,6 +3298,7 @@ export type SocietyUpdateWithoutPartyInvitesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3289,6 +3350,7 @@ export type SocietyUncheckedUpdateWithoutPartyInvitesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3340,6 +3402,7 @@ export type SocietyCreateWithoutGuestEntryLogsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3391,6 +3454,7 @@ export type SocietyUncheckedCreateWithoutGuestEntryLogsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3458,6 +3522,7 @@ export type SocietyUpdateWithoutGuestEntryLogsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3509,6 +3574,7 @@ export type SocietyUncheckedUpdateWithoutGuestEntryLogsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3560,6 +3626,7 @@ export type SocietyCreateWithoutDomesticStaffInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3611,6 +3678,7 @@ export type SocietyUncheckedCreateWithoutDomesticStaffInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3678,6 +3746,7 @@ export type SocietyUpdateWithoutDomesticStaffInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3729,6 +3798,7 @@ export type SocietyUncheckedUpdateWithoutDomesticStaffInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3780,6 +3850,7 @@ export type SocietyCreateWithoutStaffAttendanceInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3831,6 +3902,7 @@ export type SocietyUncheckedCreateWithoutStaffAttendanceInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -3898,6 +3970,7 @@ export type SocietyUpdateWithoutStaffAttendanceInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -3949,6 +4022,7 @@ export type SocietyUncheckedUpdateWithoutStaffAttendanceInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4000,6 +4074,7 @@ export type SocietyCreateWithoutStaffBookingsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4051,6 +4126,7 @@ export type SocietyUncheckedCreateWithoutStaffBookingsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4118,6 +4194,7 @@ export type SocietyUpdateWithoutStaffBookingsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4169,6 +4246,7 @@ export type SocietyUncheckedUpdateWithoutStaffBookingsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4220,6 +4298,7 @@ export type SocietyCreateWithoutVehiclesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4271,6 +4350,7 @@ export type SocietyUncheckedCreateWithoutVehiclesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4338,6 +4418,7 @@ export type SocietyUpdateWithoutVehiclesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4389,6 +4470,7 @@ export type SocietyUncheckedUpdateWithoutVehiclesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4440,6 +4522,7 @@ export type SocietyCreateWithoutParkingViolationsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4491,6 +4574,7 @@ export type SocietyUncheckedCreateWithoutParkingViolationsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4558,6 +4642,7 @@ export type SocietyUpdateWithoutParkingViolationsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4609,6 +4694,7 @@ export type SocietyUncheckedUpdateWithoutParkingViolationsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4660,6 +4746,7 @@ export type SocietyCreateWithoutVisitorFrequenciesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4711,6 +4798,7 @@ export type SocietyUncheckedCreateWithoutVisitorFrequenciesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4778,6 +4866,7 @@ export type SocietyUpdateWithoutVisitorFrequenciesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4829,6 +4918,7 @@ export type SocietyUncheckedUpdateWithoutVisitorFrequenciesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -4880,6 +4970,7 @@ export type SocietyCreateWithoutPaymentRemindersInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4931,6 +5022,7 @@ export type SocietyUncheckedCreateWithoutPaymentRemindersInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -4998,6 +5090,7 @@ export type SocietyUpdateWithoutPaymentRemindersInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5049,6 +5142,7 @@ export type SocietyUncheckedUpdateWithoutPaymentRemindersInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5100,6 +5194,7 @@ export type SocietyCreateWithoutGatePassesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5151,6 +5246,7 @@ export type SocietyUncheckedCreateWithoutGatePassesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5218,6 +5314,7 @@ export type SocietyUpdateWithoutGatePassesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5269,6 +5366,7 @@ export type SocietyUncheckedUpdateWithoutGatePassesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5320,6 +5418,7 @@ export type SocietyCreateWithoutNoticesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5371,6 +5470,7 @@ export type SocietyUncheckedCreateWithoutNoticesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5438,6 +5538,7 @@ export type SocietyUpdateWithoutNoticesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5489,6 +5590,7 @@ export type SocietyUncheckedUpdateWithoutNoticesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5540,6 +5642,7 @@ export type SocietyCreateWithoutAmenitiesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5591,6 +5694,7 @@ export type SocietyUncheckedCreateWithoutAmenitiesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5658,6 +5762,7 @@ export type SocietyUpdateWithoutAmenitiesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5709,6 +5814,7 @@ export type SocietyUncheckedUpdateWithoutAmenitiesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5760,6 +5866,7 @@ export type SocietyCreateWithoutAmenityBookingsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5811,6 +5918,7 @@ export type SocietyUncheckedCreateWithoutAmenityBookingsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -5878,6 +5986,7 @@ export type SocietyUpdateWithoutAmenityBookingsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5929,6 +6038,7 @@ export type SocietyUncheckedUpdateWithoutAmenityBookingsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -5980,6 +6090,7 @@ export type SocietyCreateWithoutComplaintsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6031,6 +6142,7 @@ export type SocietyUncheckedCreateWithoutComplaintsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6098,6 +6210,7 @@ export type SocietyUpdateWithoutComplaintsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6149,6 +6262,7 @@ export type SocietyUncheckedUpdateWithoutComplaintsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6200,6 +6314,7 @@ export type SocietyCreateWithoutEmergenciesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6251,6 +6366,7 @@ export type SocietyUncheckedCreateWithoutEmergenciesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6318,6 +6434,7 @@ export type SocietyUpdateWithoutEmergenciesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6369,6 +6486,7 @@ export type SocietyUncheckedUpdateWithoutEmergenciesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6420,6 +6538,7 @@ export type SocietyCreateWithoutVendorsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6471,6 +6590,7 @@ export type SocietyUncheckedCreateWithoutVendorsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6538,6 +6658,7 @@ export type SocietyUpdateWithoutVendorsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6589,6 +6710,7 @@ export type SocietyUncheckedUpdateWithoutVendorsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6640,6 +6762,7 @@ export type SocietyCreateWithoutCommunityPostsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6691,6 +6814,7 @@ export type SocietyUncheckedCreateWithoutCommunityPostsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6758,6 +6882,7 @@ export type SocietyUpdateWithoutCommunityPostsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6809,6 +6934,7 @@ export type SocietyUncheckedUpdateWithoutCommunityPostsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -6860,6 +6986,7 @@ export type SocietyCreateWithoutPostCommentsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6911,6 +7038,7 @@ export type SocietyUncheckedCreateWithoutPostCommentsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -6978,6 +7106,7 @@ export type SocietyUpdateWithoutPostCommentsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7029,6 +7158,7 @@ export type SocietyUncheckedUpdateWithoutPostCommentsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7080,6 +7210,7 @@ export type SocietyCreateWithoutSocietyDocumentsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7131,6 +7262,7 @@ export type SocietyUncheckedCreateWithoutSocietyDocumentsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7198,6 +7330,7 @@ export type SocietyUpdateWithoutSocietyDocumentsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7249,6 +7382,7 @@ export type SocietyUncheckedUpdateWithoutSocietyDocumentsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7300,6 +7434,7 @@ export type SocietyCreateWithoutPollsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7351,6 +7486,7 @@ export type SocietyUncheckedCreateWithoutPollsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7418,6 +7554,7 @@ export type SocietyUpdateWithoutPollsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7469,6 +7606,7 @@ export type SocietyUncheckedUpdateWithoutPollsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7520,6 +7658,7 @@ export type SocietyCreateWithoutOnboardingRequestsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7571,6 +7710,7 @@ export type SocietyUncheckedCreateWithoutOnboardingRequestsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7638,6 +7778,7 @@ export type SocietyUpdateWithoutOnboardingRequestsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7689,6 +7830,7 @@ export type SocietyUncheckedUpdateWithoutOnboardingRequestsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7740,6 +7882,7 @@ export type SocietyCreateWithoutNotificationsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7791,6 +7934,7 @@ export type SocietyUncheckedCreateWithoutNotificationsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -7858,6 +8002,7 @@ export type SocietyUpdateWithoutNotificationsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7909,6 +8054,7 @@ export type SocietyUncheckedUpdateWithoutNotificationsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -7960,6 +8106,7 @@ export type SocietyCreateWithoutEntryRequestsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -8011,6 +8158,7 @@ export type SocietyUncheckedCreateWithoutEntryRequestsInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -8078,6 +8226,7 @@ export type SocietyUpdateWithoutEntryRequestsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -8129,6 +8278,7 @@ export type SocietyUncheckedUpdateWithoutEntryRequestsInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -8180,6 +8330,7 @@ export type SocietyCreateWithoutPreApprovedEntriesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -8231,6 +8382,7 @@ export type SocietyUncheckedCreateWithoutPreApprovedEntriesInput = {
   totalFlats?: number
   isActive?: boolean
   monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
   nextDueDate: Date | string
   paymentStatus?: $Enums.PaymentStatus
@@ -8298,6 +8450,7 @@ export type SocietyUpdateWithoutPreApprovedEntriesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -8349,6 +8502,7 @@ export type SocietyUncheckedUpdateWithoutPreApprovedEntriesInput = {
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -8701,6 +8855,7 @@ export type SocietySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   totalFlats?: boolean
   isActive?: boolean
   monthlyFee?: boolean
+  subscriptionCycle?: boolean
   lastPaidDate?: boolean
   nextDueDate?: boolean
   paymentStatus?: boolean
@@ -8754,6 +8909,7 @@ export type SocietySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   totalFlats?: boolean
   isActive?: boolean
   monthlyFee?: boolean
+  subscriptionCycle?: boolean
   lastPaidDate?: boolean
   nextDueDate?: boolean
   paymentStatus?: boolean
@@ -8774,6 +8930,7 @@ export type SocietySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   totalFlats?: boolean
   isActive?: boolean
   monthlyFee?: boolean
+  subscriptionCycle?: boolean
   lastPaidDate?: boolean
   nextDueDate?: boolean
   paymentStatus?: boolean
@@ -8794,6 +8951,7 @@ export type SocietySelectScalar = {
   totalFlats?: boolean
   isActive?: boolean
   monthlyFee?: boolean
+  subscriptionCycle?: boolean
   lastPaidDate?: boolean
   nextDueDate?: boolean
   paymentStatus?: boolean
@@ -8801,7 +8959,7 @@ export type SocietySelectScalar = {
   updatedAt?: boolean
 }
 
-export type SocietyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "address" | "city" | "state" | "pincode" | "contactName" | "contactPhone" | "contactEmail" | "totalFlats" | "isActive" | "monthlyFee" | "lastPaidDate" | "nextDueDate" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["society"]>
+export type SocietyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "address" | "city" | "state" | "pincode" | "contactName" | "contactPhone" | "contactEmail" | "totalFlats" | "isActive" | "monthlyFee" | "subscriptionCycle" | "lastPaidDate" | "nextDueDate" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["society"]>
 export type SocietyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Society$usersArgs<ExtArgs>
   blocks?: boolean | Prisma.Society$blocksArgs<ExtArgs>
@@ -8889,6 +9047,7 @@ export type $SocietyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     totalFlats: number
     isActive: boolean
     monthlyFee: number
+    subscriptionCycle: $Enums.SubscriptionCycle
     lastPaidDate: Date | null
     nextDueDate: Date
     paymentStatus: $Enums.PaymentStatus
@@ -9361,6 +9520,7 @@ export interface SocietyFieldRefs {
   readonly totalFlats: Prisma.FieldRef<"Society", 'Int'>
   readonly isActive: Prisma.FieldRef<"Society", 'Boolean'>
   readonly monthlyFee: Prisma.FieldRef<"Society", 'Float'>
+  readonly subscriptionCycle: Prisma.FieldRef<"Society", 'SubscriptionCycle'>
   readonly lastPaidDate: Prisma.FieldRef<"Society", 'DateTime'>
   readonly nextDueDate: Prisma.FieldRef<"Society", 'DateTime'>
   readonly paymentStatus: Prisma.FieldRef<"Society", 'PaymentStatus'>

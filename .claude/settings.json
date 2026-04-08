@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout 8 npx ts-node -e \"require\\(''./src/app''\\)\")"
+      "Bash(timeout 8 npx ts-node -e \"require\\(''./src/app''\\)\")",
+      "Bash(npx tsx:*)",
+      "Bash(mkdir -p prisma/migrations/20260408000000_baseline)",
+      "Bash(PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION=\"yes\" npx prisma migrate reset --force)"
     ]
   }
 }

@@ -5,31 +5,32 @@ import { asyncHandler } from '../../utils/ResponseHandler';
 const familyService = new FamilyService();
 
 export class FamilyController {
-  // Invite family member
-  inviteFamilyMember = asyncHandler(async (req: Request, res: Response) => {
-    const { phone, name, email, familyRole } = req.body;
+  // Add family member (Primary resident only)
+  addFamilyMember = asyncHandler(async (req: Request, res: Response) => {
+    const { phone, name, familyRole } = req.body;
     const primaryResidentId = req.user!.id;
 
-    const familyMember = await familyService.inviteFamilyMember({
+    const result = await familyService.addFamilyMember({
       phone,
       name,
-      email,
       familyRole,
       primaryResidentId,
     });
 
+    const message = result.isNew
+      ? 'Family member added. They will be linked when they log in with this number.'
+      : 'Existing user linked to your flat as a family member.';
+
     res.status(201).json({
       success: true,
-      message: 'Family member invited successfully. They need to verify OTP to activate account.',
-      data: familyMember,
+      message,
+      data: result.member,
     });
   });
 
   // Get all family members
   getFamilyMembers = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user!.id;
-
-    const familyMembers = await familyService.getFamilyMembers(userId);
+    const familyMembers = await familyService.getFamilyMembers(req.user!.id);
 
     res.status(200).json({
       success: true,
@@ -40,9 +41,7 @@ export class FamilyController {
   // Remove family member
   removeFamilyMember = asyncHandler(async (req: Request, res: Response) => {
     const { memberId } = req.params;
-    const primaryResidentId = req.user!.id;
-
-    const result = await familyService.removeFamilyMember(String(memberId), primaryResidentId);
+    const result = await familyService.removeFamilyMember(String(memberId), req.user!.id);
 
     res.status(200).json({
       success: true,
@@ -54,18 +53,13 @@ export class FamilyController {
   updateFamilyRole = asyncHandler(async (req: Request, res: Response) => {
     const { memberId } = req.params;
     const { familyRole } = req.body;
-    const primaryResidentId = req.user!.id;
 
-    const updatedMember = await familyService.updateFamilyRole(
-      String(memberId),
-      familyRole,
-      primaryResidentId
-    );
+    const updated = await familyService.updateFamilyRole(String(memberId), familyRole, req.user!.id);
 
     res.status(200).json({
       success: true,
       message: 'Family role updated successfully',
-      data: updatedMember,
+      data: updated,
     });
   });
 }

@@ -1,24 +1,25 @@
 import { Router } from 'express';
 import { FamilyController } from './family.controller';
 import { authenticateResidentApp } from '../../middlewares/auth.middleware';
+import { validate } from '../../middlewares/validate.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
+import { addFamilyMemberSchema, updateFamilyRoleSchema } from '../../schemas';
 
 const router = Router();
 const familyController = new FamilyController();
 
-// All routes require resident authentication
 router.use(authenticateResidentApp);
 
-// Invite family member (Primary resident only)
-router.post('/invite', clearCacheAfter(['api:family*']), familyController.inviteFamilyMember);
+// Add family member (name + phone, optional role)
+router.post('/add', validate({ body: addFamilyMemberSchema }), clearCacheAfter(['api:family*']), familyController.addFamilyMember);
 
 // Get all family members in user's flat
 router.get('/', cache({ ttl: 300, keyPrefix: 'family', varyBy: ['userId', 'societyId'] }), familyController.getFamilyMembers);
 
-// Remove family member (Primary resident only)
+// Remove family member
 router.delete('/:memberId', clearCacheAfter(['api:family*']), familyController.removeFamilyMember);
 
-// Update family role (Primary resident only)
-router.patch('/:memberId/role', clearCacheAfter(['api:family*']), familyController.updateFamilyRole);
+// Update family role
+router.patch('/:memberId/role', validate({ body: updateFamilyRoleSchema }), clearCacheAfter(['api:family*']), familyController.updateFamilyRole);
 
 export default router;

@@ -368,6 +368,12 @@ enum PreApprovedEntryStatus {
   CANCELLED
 }
 
+enum SubscriptionCycle {
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+}
+
 enum PreApprovedVerificationType {
   NONE
   VEHICLE_LAST4
@@ -414,10 +420,11 @@ model Society {
   isActive Boolean @default(true)
 
   // Payment tracking
-  monthlyFee    Float         @default(500) // ₹500/month
-  lastPaidDate  DateTime?
-  nextDueDate   DateTime // When to remind
-  paymentStatus PaymentStatus @default(PENDING)
+  monthlyFee        Float             @default(500) // ₹500/month
+  subscriptionCycle SubscriptionCycle @default(MONTHLY)
+  lastPaidDate      DateTime?
+  nextDueDate       DateTime // When to remind
+  paymentStatus     PaymentStatus     @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

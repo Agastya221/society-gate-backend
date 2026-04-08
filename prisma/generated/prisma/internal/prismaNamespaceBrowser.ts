@@ -129,6 +129,7 @@ export const SocietyScalarFieldEnum = {
   totalFlats: 'totalFlats',
   isActive: 'isActive',
   monthlyFee: 'monthlyFee',
+  subscriptionCycle: 'subscriptionCycle',
   lastPaidDate: 'lastPaidDate',
   nextDueDate: 'nextDueDate',
   paymentStatus: 'paymentStatus',

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { UserController } from './user.controller';
+import { SettingsController } from '../settings/settings.controller';
 import {
   authenticateResidentApp,
   authenticateGuardApp,
@@ -23,6 +24,7 @@ import {
 
 const router = Router();
 const userController = new UserController();
+const settingsController = new SettingsController();
 
 // ============================================
 // PUBLIC ROUTES — MSG91 Widget Auth
@@ -77,6 +79,13 @@ router.get(
   authorize('ADMIN'),
   cache({ ttl: 300, keyPrefix: 'user:guards', varyBy: ['societyId'] }),
   userController.getGuards
+);
+
+// Settings Summary — works for onboarding and approved residents
+router.get(
+  '/resident-app/settings-summary',
+  authenticateForOnboarding,
+  settingsController.getResidentSettingsSummary
 );
 
 // Update FCM Token (Resident App) — allow inactive users (new users after first login)

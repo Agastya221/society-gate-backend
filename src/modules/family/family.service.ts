@@ -1,37 +1,31 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { FamilyRole } from '../../../prisma/generated/prisma/enums';
-import { validatePhoneNumber, validateEmail, validateRequiredFields } from '../../utils/validation';
+import { validatePhoneNumber, validateRequiredFields } from '../../utils/validation';
 
 const MAX_FAMILY_MEMBERS = 6;
 
 export class FamilyService {
   // ============================================
-  // INVITE FAMILY MEMBER (Primary Resident Only)
+  // ADD FAMILY MEMBER (Primary Resident Only)
+  // Post-approval: just name + phone, no OTP flow.
+  // The family member gets linked to the flat immediately.
+  // They activate their account when they first log in via OTP.
   // ============================================
-  async inviteFamilyMember(data: {
+  async addFamilyMember(data: {
     phone: string;
     name: string;
-    email?: string;
-    familyRole: FamilyRole;
+    familyRole?: FamilyRole;
     primaryResidentId: string;
   }) {
-    const { phone, name, email, familyRole, primaryResidentId } = data;
+    const { phone, name, familyRole, primaryResidentId } = data;
 
-    // Validate inputs
-    validateRequiredFields(data, ['phone', 'name', 'familyRole'], 'Family Member Invitation');
+    validateRequiredFields({ phone, name }, ['phone', 'name'], 'Add Family Member');
     validatePhoneNumber(phone);
-    if (email) {
-      validateEmail(email);
-    }
 
-    // Check if primary resident exists and is active
+    // Verify primary resident is approved and active
     const primaryResident = await prisma.user.findUnique({
       where: { id: primaryResidentId },
-      include: {
-        flat: true,
-        familyMembers: true,
-      },
     });
 
     if (!primaryResident) {
@@ -39,77 +33,93 @@ export class FamilyService {
     }
 
     if (!primaryResident.isActive) {
-      throw new AppError('Primary resident account is not active', 403);
+      throw new AppError('Your account is not active', 403);
     }
 
     if (!primaryResident.isPrimaryResident) {
-      throw new AppError('Only primary residents can invite family members', 403);
+      throw new AppError('Only the primary resident of a flat can add family members', 403);
     }
 
-    if (!primaryResident.flatId) {
-      throw new AppError('Primary resident must be assigned to a flat', 400);
+    if (!primaryResident.flatId || !primaryResident.societyId) {
+      throw new AppError('You must be assigned to a flat before adding family members', 400);
     }
 
-    // CRITICAL FIX: Check family member count (including primary + invited but not yet active)
-    const currentMemberCount = await prisma.user.count({
+    // Count active + pending family members (anyone linked to the flat)
+    const currentCount = await prisma.user.count({
       where: {
         flatId: primaryResident.flatId,
         role: 'RESIDENT',
-        OR: [
-          { isActive: true }, // Active residents
-          {
-            isActive: false,
-            primaryResidentId: { not: null }, // Invited family members (inactive but invited)
-          },
-        ],
+        id: { not: primaryResidentId },
       },
     });
 
-    if (currentMemberCount >= MAX_FAMILY_MEMBERS) {
-      throw new AppError(`Maximum ${MAX_FAMILY_MEMBERS} family members allowed per flat`, 400);
+    if (currentCount >= MAX_FAMILY_MEMBERS) {
+      throw new AppError(`Maximum ${MAX_FAMILY_MEMBERS} additional family members allowed per flat`, 400);
     }
 
-    // Check if phone already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { phone },
-    });
+    // Check if this phone is already in the system
+    const existingUser = await prisma.user.findUnique({ where: { phone } });
 
     if (existingUser) {
-      throw new AppError('Phone number already registered', 400);
+      // If already in the system: link them to this flat if they have no flat
+      if (existingUser.flatId) {
+        throw new AppError('This phone number is already registered to a flat', 400);
+      }
+
+      // Link existing user to this flat as a family member
+      const linked = await prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          name: name || existingUser.name,
+          flatId: primaryResident.flatId,
+          societyId: primaryResident.societyId,
+          isPrimaryResident: false,
+          familyRole: familyRole ?? null,
+          primaryResidentId,
+          // Keep their existing isActive state
+        },
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          familyRole: true,
+          isActive: true,
+          isPrimaryResident: true,
+        },
+      });
+
+      return { member: linked, isNew: false };
     }
 
-    // Create family member (inactive, pending OTP verification)
-    const familyMember = await prisma.user.create({
+    // Create a new pre-linked user record (inactive until they login via OTP)
+    const member = await prisma.user.create({
       data: {
         phone,
         name,
-        email,
         role: 'RESIDENT',
         flatId: primaryResident.flatId,
         societyId: primaryResident.societyId,
         isPrimaryResident: false,
-        familyRole,
+        familyRole: familyRole ?? null,
         primaryResidentId,
-        isActive: false, // Will be activated after OTP verification
+        isActive: false, // activated on first OTP login
         isOwner: false,
       },
-      include: {
-        flat: true,
-        primaryResident: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        familyRole: true,
+        isActive: true,
+        isPrimaryResident: true,
       },
     });
 
-    return familyMember;
+    return { member, isNew: true };
   }
 
   // ============================================
-  // GET FAMILY MEMBERS (by flatId or userId)
+  // GET FAMILY MEMBERS (by flatId)
   // ============================================
   async getFamilyMembers(userId: string) {
     const user = await prisma.user.findUnique({
@@ -137,7 +147,7 @@ export class FamilyService {
         createdAt: true,
       },
       orderBy: [
-        { isPrimaryResident: 'desc' }, // Primary first
+        { isPrimaryResident: 'desc' },
         { createdAt: 'asc' },
       ],
     });
@@ -149,7 +159,6 @@ export class FamilyService {
   // REMOVE FAMILY MEMBER (Primary Resident Only)
   // ============================================
   async removeFamilyMember(memberId: string, primaryResidentId: string) {
-    // Verify primary resident
     const primaryResident = await prisma.user.findUnique({
       where: { id: primaryResidentId },
     });
@@ -158,7 +167,6 @@ export class FamilyService {
       throw new AppError('Only primary residents can remove family members', 403);
     }
 
-    // Get member to remove
     const member = await prisma.user.findUnique({
       where: { id: memberId },
     });
@@ -167,29 +175,27 @@ export class FamilyService {
       throw new AppError('Family member not found', 404);
     }
 
-    // Can't remove self
     if (member.id === primaryResidentId) {
       throw new AppError('Primary resident cannot remove themselves', 400);
     }
 
-    // Verify member is in same flat
     if (member.flatId !== primaryResident.flatId) {
       throw new AppError('Can only remove family members from your own flat', 403);
     }
 
-    // Verify member is not primary
     if (member.isPrimaryResident) {
-      throw new AppError('Cannot remove primary resident', 400);
+      throw new AppError('Cannot remove the primary resident', 400);
     }
 
-    // Soft delete: set isActive to false
+    // Unlink from flat but keep the user account (they may re-register elsewhere)
     await prisma.user.update({
       where: { id: memberId },
       data: {
         isActive: false,
-        flatId: null, // Remove from flat
+        flatId: null,
         societyId: null,
         primaryResidentId: null,
+        familyRole: null,
       },
     });
 
@@ -200,7 +206,6 @@ export class FamilyService {
   // UPDATE FAMILY ROLE (Primary Resident Only)
   // ============================================
   async updateFamilyRole(memberId: string, newRole: FamilyRole, primaryResidentId: string) {
-    // Verify primary resident
     const primaryResident = await prisma.user.findUnique({
       where: { id: primaryResidentId },
     });
@@ -209,7 +214,6 @@ export class FamilyService {
       throw new AppError('Only primary residents can update family roles', 403);
     }
 
-    // Get member
     const member = await prisma.user.findUnique({
       where: { id: memberId },
     });
@@ -218,17 +222,15 @@ export class FamilyService {
       throw new AppError('Family member not found', 404);
     }
 
-    // Verify member is in same flat
     if (member.flatId !== primaryResident.flatId) {
       throw new AppError('Can only update family members from your own flat', 403);
     }
 
-    // Can't update primary resident's role
     if (member.isPrimaryResident) {
       throw new AppError('Cannot update primary resident role', 400);
     }
 
-    const updatedMember = await prisma.user.update({
+    const updated = await prisma.user.update({
       where: { id: memberId },
       data: { familyRole: newRole },
       select: {
@@ -239,6 +241,6 @@ export class FamilyService {
       },
     });
 
-    return updatedMember;
+    return updated;
   }
 }

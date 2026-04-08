@@ -71,6 +71,13 @@ export type FloatFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
 }
 
+export type EnumSubscriptionCycleFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubscriptionCycle | Prisma.EnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  in?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubscriptionCycleFilter<$PrismaModel> | $Enums.SubscriptionCycle
+}
+
 export type DateTimeNullableFilter<$PrismaModel = never> = {
   equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
   in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -179,6 +186,16 @@ export type FloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type EnumSubscriptionCycleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubscriptionCycle | Prisma.EnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  in?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubscriptionCycleWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionCycle
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSubscriptionCycleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSubscriptionCycleFilter<$PrismaModel>
 }
 
 export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -1195,6 +1212,13 @@ export type NestedFloatFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
 }
 
+export type NestedEnumSubscriptionCycleFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubscriptionCycle | Prisma.EnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  in?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubscriptionCycleFilter<$PrismaModel> | $Enums.SubscriptionCycle
+}
+
 export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
   in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -1307,6 +1331,16 @@ export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumSubscriptionCycleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubscriptionCycle | Prisma.EnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  in?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubscriptionCycle[] | Prisma.ListEnumSubscriptionCycleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubscriptionCycleWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionCycle
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSubscriptionCycleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSubscriptionCycleFilter<$PrismaModel>
 }
 
 export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {

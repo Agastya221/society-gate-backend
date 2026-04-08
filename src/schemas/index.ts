@@ -410,10 +410,14 @@ export const presignedUrlSchema = z.object({
 
 const familyRoleEnum = z.enum(['SPOUSE', 'CHILD', 'PARENT', 'SIBLING', 'OTHER']);
 
+// Simple add: name + phone required, role optional (no email, no OTP flow)
 export const addFamilyMemberSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100),
   phone: phoneSchema,
-  email: z.string().email().optional(),
+  name: z.string().min(1, 'Name is required').max(100),
+  familyRole: familyRoleEnum.optional(),
+});
+
+export const updateFamilyRoleSchema = z.object({
   familyRole: familyRoleEnum,
 });
 

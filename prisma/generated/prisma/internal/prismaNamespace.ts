@@ -3980,6 +3980,7 @@ export const SocietyScalarFieldEnum = {
   totalFlats: 'totalFlats',
   isActive: 'isActive',
   monthlyFee: 'monthlyFee',
+  subscriptionCycle: 'subscriptionCycle',
   lastPaidDate: 'lastPaidDate',
   nextDueDate: 'nextDueDate',
   paymentStatus: 'paymentStatus',
@@ -4999,6 +5000,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SubscriptionCycle'
+ */
+export type EnumSubscriptionCycleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionCycle'>
+    
+
+
+/**
+ * Reference to a field of type 'SubscriptionCycle[]'
+ */
+export type ListEnumSubscriptionCycleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionCycle[]'>
     
 
 
