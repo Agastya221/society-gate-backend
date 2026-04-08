@@ -38,26 +38,34 @@ export class SettingsService {
 
     if (flat) {
       [familyCount, vehicleCount] = await Promise.all([
+        // Count only explicitly linked family members (via primaryResidentId),
+        // excluding the requesting user so a family member doesn't count themselves.
         prisma.user.count({
           where: {
             flatId: flat.id,
             role: 'RESIDENT',
             isActive: true,
-            id: { not: userId }, // exclude requesting user
+            primaryResidentId: { not: null },
+            id: { not: userId },
           },
         }),
+        // status:ACTIVE = admin-approved; isActive guards against soft-deleted records
         prisma.vehicle.count({
           where: {
             flatId: flat.id,
             status: 'ACTIVE',
+            isActive: true,
           },
         }),
       ]);
 
+      // Filter both the assignment and the staff record — staff soft-delete only
+      // flips DomesticStaff.isActive, leaving assignments untouched.
       const activeAssignments = await prisma.staffFlatAssignment.findMany({
         where: {
           flatId: flat.id,
           isActive: true,
+          domesticStaff: { isActive: true },
         },
         select: {
           domesticStaff: { select: { name: true } },

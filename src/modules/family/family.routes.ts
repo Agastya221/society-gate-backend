@@ -11,7 +11,9 @@ const familyController = new FamilyController();
 router.use(authenticateResidentApp);
 
 // Add family member (name + phone, optional role)
+// /invite kept as a backwards-compatible alias
 router.post('/add', validate({ body: addFamilyMemberSchema }), clearCacheAfter(['api:family*']), familyController.addFamilyMember);
+router.post('/invite', validate({ body: addFamilyMemberSchema }), clearCacheAfter(['api:family*']), familyController.addFamilyMember);
 
 // Get all family members in user's flat
 router.get('/', cache({ ttl: 300, keyPrefix: 'family', varyBy: ['userId', 'societyId'] }), familyController.getFamilyMembers);

@@ -61,6 +61,11 @@ export class FamilyService {
     const existingUser = await prisma.user.findUnique({ where: { phone } });
 
     if (existingUser) {
+      // Only RESIDENT accounts can be added as family members
+      if (existingUser.role !== 'RESIDENT') {
+        throw new AppError('This phone number belongs to a non-resident account and cannot be added as a family member', 400);
+      }
+
       // If already in the system: link them to this flat if they have no flat
       if (existingUser.flatId) {
         throw new AppError('This phone number is already registered to a flat', 400);

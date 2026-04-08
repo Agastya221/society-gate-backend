@@ -1,12 +1,23 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import type { Prisma } from '../../types';
+import type { SubscriptionCycle } from '../../../prisma/generated/prisma/enums';
+
+function nextDueDateFromCycle(from: Date, cycle: SubscriptionCycle): Date {
+  const d = new Date(from);
+  switch (cycle) {
+    case 'QUARTERLY': d.setMonth(d.getMonth() + 3); break;
+    case 'ANNUALLY':  d.setFullYear(d.getFullYear() + 1); break;
+    case 'MONTHLY':
+    default:          d.setMonth(d.getMonth() + 1); break;
+  }
+  return d;
+}
 
 export class SocietyService {
   async createSociety(data: Omit<Prisma.SocietyUncheckedCreateInput, 'nextDueDate' | 'isActive'>) {
-    // Set next due date (30 days from now)
-    const nextDueDate = new Date();
-    nextDueDate.setDate(nextDueDate.getDate() + 30);
+    const cycle = (data.subscriptionCycle as SubscriptionCycle | undefined) ?? 'MONTHLY';
+    const nextDueDate = nextDueDateFromCycle(new Date(), cycle);
 
     const society = await prisma.society.create({
       data: {
@@ -114,8 +125,12 @@ export class SocietyService {
 
   async markPaymentPaid(societyId: string) {
     const today = new Date();
-    const nextDueDate = new Date(today);
-    nextDueDate.setDate(nextDueDate.getDate() + 30);
+    const existing = await prisma.society.findUnique({
+      where: { id: societyId },
+      select: { subscriptionCycle: true },
+    });
+    if (!existing) throw new AppError('Society not found', 404);
+    const nextDueDate = nextDueDateFromCycle(today, existing.subscriptionCycle);
 
     const society = await prisma.society.update({
       where: { id: societyId },

@@ -5,6 +5,7 @@ import {
   authenticateResidentApp,
   authenticateGuardApp,
   authenticateForOnboarding,
+  authenticateResidentForOnboarding,
   authorize,
   authenticate,
 } from '../../middlewares/auth.middleware';
@@ -81,17 +82,17 @@ router.get(
   userController.getGuards
 );
 
-// Settings Summary — works for onboarding and approved residents
+// Settings Summary — works for onboarding and approved residents (residents only, not guards)
 router.get(
   '/resident-app/settings-summary',
-  authenticateForOnboarding,
+  authenticateResidentForOnboarding,
   settingsController.getResidentSettingsSummary
 );
 
-// Update FCM Token (Resident App) — allow inactive users (new users after first login)
+// Update FCM Token (Resident App) — allow inactive/onboarding residents but not guards
 router.patch(
   '/resident-app/fcm-token',
-  authenticateForOnboarding,
+  authenticateResidentForOnboarding,
   validate({ body: updateFcmTokenSchema }),
   clearCacheAfter(['api:user*']),
   userController.updateFcmToken

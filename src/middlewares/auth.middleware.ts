@@ -141,6 +141,30 @@ export const authenticateForOnboarding = async (
 };
 
 // ============================================
+// ONBOARDING AUTH — resident roles only
+// Same as authenticateForOnboarding but restricted to RESIDENT/ADMIN/SUPER_ADMIN.
+// Use this for endpoints that are resident-facing but must also work pre-approval.
+// ============================================
+
+export const authenticateResidentForOnboarding = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  await authenticateForOnboarding(req, res, (err?: unknown) => {
+    if (err) return next(err);
+    if (!req.user) return next(new AppError('Authentication failed', 401));
+
+    const allowed = ['RESIDENT', 'ADMIN', 'SUPER_ADMIN'];
+    if (!allowed.includes(req.user.role)) {
+      return next(new AppError('Access denied. This endpoint is for residents only.', 403));
+    }
+
+    next();
+  });
+};
+
+// ============================================
 // APP-SPECIFIC AUTHENTICATION
 // ============================================
 
