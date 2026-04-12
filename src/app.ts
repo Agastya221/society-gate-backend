@@ -2,8 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { RedisStore } from 'rate-limit-redis';
 import { errorHandler } from './middlewares/error.middleware';
-import { isRedisAvailable } from './config/redis';
+import { redis, isRedisAvailable } from './config/redis';
 import { prisma } from './utils/Client';
 import logger from './utils/logger';
 
@@ -29,22 +30,31 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' })); // Reduced from 10mb to prevent memory exhaustion
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting - general API
+// Redis store for rate limiting - handles connection failures gracefully
+const createRedisStore = (prefix: string) =>
+  new RedisStore({
+    sendCommand: (command: string, ...args: string[]) => redis.call(command, ...args) as Promise<any>,
+    prefix: `rl:${prefix}:`,
+  });
+
+// Rate limiting - general API (increased limits)
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 200, // Increased from 100
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests, please try again later.' },
+  store: createRedisStore('api'),
 });
 
 // Stricter rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 30, // Increased from 20
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many login attempts, please try again later.' },
+  store: createRedisStore('auth'),
 });
 
 app.use('/api/', apiLimiter);
