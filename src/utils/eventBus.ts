@@ -40,6 +40,8 @@ export interface AppEvents {
     emergencyId: string;
     societyId: string;
     type: string;
+    severity: 'CRITICAL' | 'STANDARD';
+    blockId: string | null;   // for STANDARD tier — notify same-block residents
     location?: string;
     description?: string;
     reporterName: string;
@@ -55,6 +57,7 @@ export interface AppEvents {
     reporterId: string;
     resolverName: string;
     societyId: string;
+    notifiedUsers: string[];  // original alert audience — for all-clear guarantee
   };
   'emergency.false-alarm': {
     emergencyId: string;

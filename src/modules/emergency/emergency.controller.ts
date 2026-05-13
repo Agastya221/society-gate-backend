@@ -66,7 +66,7 @@ export const getMyEmergencies = async (req: Request, res: Response) => {
 export const getEmergencyById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const emergency = await emergencyService.getEmergencyById(String(id));
+    const emergency = await emergencyService.getEmergencyById(String(id), req.user!.societyId!);
 
     res.status(200).json({
       success: true,

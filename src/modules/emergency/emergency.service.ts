@@ -7,17 +7,47 @@ import type {
   Prisma,
 } from '../../types';
 
+// ─── Severity Tiers ────────────────────────────────────────────────────────
+// CRITICAL → broadcast to ALL users in the society (residents + staff)
+// STANDARD → staff (ADMIN/GUARD) + reporter's block residents only
+const CRITICAL_TYPES = ['FIRE', 'MEDICAL', 'SECURITY', 'VIOLENCE'] as const;
+export type EmergencySeverity = 'CRITICAL' | 'STANDARD';
+
+export function getEmergencySeverity(type: string): EmergencySeverity {
+  return (CRITICAL_TYPES as readonly string[]).includes(type) ? 'CRITICAL' : 'STANDARD';
+}
+
 export class EmergencyService {
   async createEmergency(data: CreateEmergencyDTO, reportedById: string) {
-    // auto-attach reporter's flat if frontend didn't send one
-    if (!data.flatId) {
-      const reporter = await prisma.user.findUnique({
-        where: { id: reportedById },
-        select: { flatId: true },
+    // ── Point 1: Rate limiting ──────────────────────────────────────────────
+    // Residents may not create a second emergency if they already have one
+    // ACTIVE in the last 5 minutes (admins/guards are exempt).
+    const reporter = await prisma.user.findUnique({
+      where: { id: reportedById },
+      select: { flatId: true, role: true },
+    });
+
+    if (reporter?.role === 'RESIDENT') {
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      const recentActive = await prisma.emergency.findFirst({
+        where: {
+          reportedById,
+          status: 'ACTIVE',
+          createdAt: { gte: fiveMinutesAgo },
+        },
+        select: { id: true },
       });
-      if (reporter?.flatId) {
-        data.flatId = reporter.flatId;
+      if (recentActive) {
+        throw new AppError(
+          'You already have an active emergency. Please resolve it or wait 5 minutes before reporting another.',
+          429
+        );
       }
+    }
+
+    // Auto-attach reporter's flat if frontend didn't send one
+    if (!data.flatId && reporter?.flatId) {
+      data.flatId = reporter.flatId;
     }
 
     const emergency = await prisma.emergency.create({
@@ -28,18 +58,22 @@ export class EmergencyService {
       },
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
-        flat: true,
+        flat: { include: { block: { select: { id: true, name: true } } } },
         society: { select: { id: true, name: true } },
       },
     });
 
-    // ARCH-3: Emit event - listener handles notifications, socket broadcast, and alert tracking
+    const severity = getEmergencySeverity(emergency.type);
+
+    // ARCH-3: Emit event — listener handles notifications, socket broadcast, alert tracking
     eventBus.emit('emergency.created', {
       emergencyId: emergency.id,
       societyId: data.societyId,
       type: emergency.type,
-      location: emergency.location || undefined,
-      description: emergency.description || undefined,
+      severity,
+      blockId: emergency.flat?.block?.id ?? null,
+      location: emergency.location ?? undefined,
+      description: emergency.description ?? undefined,
       reporterName: emergency.reportedBy?.name || 'A resident',
     });
 
@@ -95,9 +129,9 @@ export class EmergencyService {
     return { emergencies };
   }
 
-  async getEmergencyById(emergencyId: string) {
-    const emergency = await prisma.emergency.findUnique({
-      where: { id: emergencyId },
+  async getEmergencyById(emergencyId: string, societyId: string) {
+    const emergency = await prisma.emergency.findFirst({
+      where: { id: emergencyId, societyId },
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
         flat: true,
@@ -137,7 +171,7 @@ export class EmergencyService {
       },
     });
 
-    // ARCH-3: Emit event - listener handles notification and socket broadcast
+    // ARCH-3: Emit event — listener handles notification and socket broadcast
     eventBus.emit('emergency.responded', {
       emergencyId,
       reporterId: emergency.reportedById,
@@ -148,43 +182,58 @@ export class EmergencyService {
     return updatedEmergency;
   }
 
+  // ── Point 4: Idempotent atomic resolve ──────────────────────────────────
+  // Uses updateMany with status guard so concurrent requests cannot both
+  // succeed — only one transitions ACTIVE → RESOLVED. The second gets 409.
   async resolveEmergency(emergencyId: string, notes: string, respondedById: string) {
-    const emergency = await prisma.emergency.findUnique({
+    const existing = await prisma.emergency.findUnique({
       where: { id: emergencyId },
+      select: { id: true, status: true, reportedById: true, societyId: true, respondedById: true, notifiedUsers: true },
     });
 
-    if (!emergency) {
+    if (!existing) {
       throw new AppError('Emergency not found', 404);
     }
 
-    const updatedEmergency = await prisma.emergency.update({
-      where: { id: emergencyId },
+    const result = await prisma.emergency.updateMany({
+      where: { id: emergencyId, status: 'ACTIVE' },
       data: {
         status: 'RESOLVED',
         resolvedAt: new Date(),
         notes,
-        respondedById: respondedById || emergency.respondedById,
+        respondedById: respondedById || existing.respondedById,
       },
+    });
+
+    if (result.count === 0) {
+      throw new AppError('Emergency is already resolved or closed', 409);
+    }
+
+    const updatedEmergency = await prisma.emergency.findUnique({
+      where: { id: emergencyId },
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
         respondedBy: { select: { id: true, name: true, phone: true } },
       },
     });
 
-    // ARCH-3: Emit event - listener handles notification and socket broadcast
+    // ARCH-3: Emit event — listener handles notification and socket broadcast
     eventBus.emit('emergency.resolved', {
       emergencyId,
-      reporterId: emergency.reportedById,
-      resolverName: updatedEmergency.respondedBy?.name || 'Staff',
-      societyId: emergency.societyId,
+      reporterId: existing.reportedById,
+      resolverName: updatedEmergency?.respondedBy?.name || 'Staff',
+      societyId: existing.societyId,
+      notifiedUsers: existing.notifiedUsers as string[],
     });
 
     return updatedEmergency;
   }
 
+  // ── Point 4: Idempotent atomic false alarm ──────────────────────────────
   async markAsFalseAlarm(emergencyId: string, notes: string, userId: string) {
     const emergency = await prisma.emergency.findUnique({
       where: { id: emergencyId },
+      select: { id: true, status: true, reportedById: true, societyId: true, type: true, notifiedUsers: true },
     });
 
     if (!emergency) {
@@ -199,8 +248,8 @@ export class EmergencyService {
       throw new AppError('Only the reporter or an admin can mark this as false alarm', 403);
     }
 
-    const updatedEmergency = await prisma.emergency.update({
-      where: { id: emergencyId },
+    const result = await prisma.emergency.updateMany({
+      where: { id: emergencyId, status: 'ACTIVE' },
       data: {
         status: 'FALSE_ALARM',
         resolvedAt: new Date(),
@@ -208,15 +257,19 @@ export class EmergencyService {
       },
     });
 
+    if (result.count === 0) {
+      throw new AppError('Emergency is already resolved or closed', 409);
+    }
+
     eventBus.emit('emergency.false-alarm', {
       emergencyId,
       societyId: emergency.societyId,
       type: emergency.type,
-      notifiedUsers: emergency.notifiedUsers,
+      notifiedUsers: emergency.notifiedUsers as string[],
       cancelledByReporter: isReporter,
     });
 
-    return updatedEmergency;
+    return prisma.emergency.findUnique({ where: { id: emergencyId } });
   }
 
   async getActiveEmergencies(societyId: string) {
@@ -233,5 +286,41 @@ export class EmergencyService {
     });
 
     return emergencies;
+  }
+
+  // ── Point 3: Auto-expiry ────────────────────────────────────────────────
+  // Called by a scheduled job every 15 minutes.
+  // Any emergency ACTIVE for > 2 hours is auto-resolved.
+  async expireStaleEmergencies() {
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+
+    const stale = await prisma.emergency.findMany({
+      where: { status: 'ACTIVE', createdAt: { lt: twoHoursAgo } },
+      select: { id: true, societyId: true, type: true, notifiedUsers: true, reportedById: true },
+    });
+
+    if (stale.length === 0) return { expired: 0 };
+
+    await prisma.emergency.updateMany({
+      where: { id: { in: stale.map((e) => e.id) }, status: 'ACTIVE' },
+      data: {
+        status: 'RESOLVED',
+        resolvedAt: new Date(),
+        notes: 'Auto-expired after 2 hours of inactivity',
+      },
+    });
+
+    // Fire resolution events so all-clear sockets/pushes are sent
+    for (const e of stale) {
+      eventBus.emit('emergency.resolved', {
+        emergencyId: e.id,
+        reporterId: e.reportedById,
+        resolverName: 'System',
+        societyId: e.societyId,
+        notifiedUsers: e.notifiedUsers as string[],
+      });
+    }
+
+    return { expired: stale.length };
   }
 }

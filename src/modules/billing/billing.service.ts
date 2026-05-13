@@ -178,7 +178,7 @@ export class BillingService {
               block: { select: { name: true } },
               residents: {
                 where: { isPrimaryResident: true, isActive: true },
-                select: { name: true },
+                select: { name: true, phone: true },
               },
             },
           },
@@ -218,11 +218,26 @@ export class BillingService {
       flatNumber: inv.flat.flatNumber,
       blockName: inv.flat.block?.name ?? null,
       residentName: inv.flat.residents[0]?.name ?? 'Unassigned',
+      residentPhone: inv.flat.residents[0]?.phone ?? null,
       lineItems: inv.lineItems,
       createdAt: inv.createdAt,
     }));
 
+    // Summary totals
+    const summary = {
+      totalCount: total,
+      paidCount: formatted.filter((r) => r.status === 'PAID').length,
+      pendingCount: formatted.filter((r) => r.status === 'PENDING').length,
+      overdueCount: formatted.filter((r) => r.status === 'OVERDUE').length,
+      waivedCount: formatted.filter((r) => r.status === 'WAIVED').length,
+      collectedAmount: formatted.filter((r) => r.status === 'PAID').reduce((sum, r) => sum + r.totalAmount, 0),
+      outstandingAmount: formatted
+        .filter((r) => r.status === 'PENDING' || r.status === 'OVERDUE')
+        .reduce((sum, r) => sum + r.totalAmount, 0),
+    };
+
     return {
+      summary,
       data: formatted,
       pagination: {
         total,

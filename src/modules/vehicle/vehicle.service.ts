@@ -30,7 +30,7 @@ export class VehicleService {
         userId,
         flatId,
         societyId,
-        status: 'PENDING',
+        status: 'ACTIVE',
       },
       include: {
         flat: { select: { flatNumber: true } },
@@ -146,11 +146,14 @@ export class VehicleService {
   }
 
   // ============================================
-  // VEHICLE SEARCH (by plate number)
+  // VEHICLE SEARCH (by plate number) — status-aware
+  // Accepts vehicleNumber, q, or plateNumber param.
+  // Returns found:true + status for any registered vehicle,
+  // found:false only when no record exists in the society.
   // ============================================
 
-  async searchVehicle(vehicleNumber: string, societyId: string) {
-    const normalized = vehicleNumber.toUpperCase().replace(/\s/g, '');
+  async searchVehicle(query: string, societyId: string) {
+    const normalized = query.toUpperCase().replace(/\s/g, '');
 
     const vehicle = await prisma.vehicle.findFirst({
       where: {
@@ -164,8 +167,15 @@ export class VehicleService {
       },
     });
 
-    if (!vehicle) throw new AppError('Vehicle not found', 404);
+    if (!vehicle) {
+      return { found: false, vehicle: null };
+    }
 
-    return vehicle;
+    return {
+      found: true,
+      vehicle,
+      status: vehicle.status,
+      isApproved: vehicle.status === 'ACTIVE',
+    };
   }
 }

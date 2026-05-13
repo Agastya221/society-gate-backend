@@ -32,7 +32,7 @@ const penaltySchema = z.object({
 router.post(
   '/generate',
   validate({ body: generateInvoicesSchema }),
-  clearCacheAfter(['api:billing*', 'api:dues*']),
+  clearCacheAfter(['billing:*']),
   generateInvoices,
 );
 
@@ -40,7 +40,7 @@ router.post(
 router.post(
   '/penalty',
   validate({ body: penaltySchema }),
-  clearCacheAfter(['api:billing*', 'api:dues*']),
+  clearCacheAfter(['billing:*']),
   applyPenalty,
 );
 
@@ -54,14 +54,14 @@ router.get(
 // PATCH /admin/billing/invoices/:id/paid
 router.patch(
   '/invoices/:id/paid',
-  clearCacheAfter(['api:billing*', 'api:dues*']),
+  clearCacheAfter(['billing:*']),
   markInvoicePaid,
 );
 
 // PATCH /admin/billing/invoices/:id/waive
 router.patch(
   '/invoices/:id/waive',
-  clearCacheAfter(['api:billing*', 'api:dues*']),
+  clearCacheAfter(['billing:*']),
   waiveInvoice,
 );
 

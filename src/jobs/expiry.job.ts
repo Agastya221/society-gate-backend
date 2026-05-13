@@ -5,8 +5,11 @@ import { notificationService } from '../modules/notification/notification.servic
 import { eventBus } from '../utils/eventBus';
 import { accessControlEngine } from '../modules/access-control/access-control.engine';
 import { accessControlCache } from '../modules/access-control/access-control.cache';
+import { EmergencyService } from '../modules/emergency/emergency.service';
 import type { PreApprovedEntryWithRelations } from '../types';
 import logger from '../utils/logger';
+
+const emergencyService = new EmergencyService();
 
 // ARCH-4: Each job is an exported function for future worker extraction
 
@@ -263,5 +266,15 @@ cron.schedule('0 3 * * *', cleanupOldNotifications);
 cron.schedule('*/5 * * * *', expirePreApprovedEntries);
 cron.schedule('* * * * *', releaseStaleEntryLocks);
 cron.schedule('*/10 * * * *', notifyExpiringEntries);
+cron.schedule('*/15 * * * *', async () => {
+  try {
+    const result = await emergencyService.expireStaleEmergencies();
+    if (result.expired > 0) {
+      logger.info({ count: result.expired }, 'Auto-expired stale emergencies');
+    }
+  } catch (error) {
+    logger.error({ error }, 'Error auto-expiring stale emergencies');
+  }
+});
 
 logger.info('Cron jobs scheduled');

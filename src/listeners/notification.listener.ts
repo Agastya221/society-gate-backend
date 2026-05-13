@@ -4,6 +4,7 @@ import { pushService } from '../services/push.service';
 import { emitToSociety, SOCKET_EVENTS } from '../utils/socket';
 import { prisma } from '../utils/Client';
 import logger from '../utils/logger';
+import { getEmergencySeverity } from '../modules/emergency/emergency.service';
 
 // ARCH-3: Notification listeners decoupled from business logic.
 // Each handler listens for a domain event and sends the appropriate notifications.
@@ -159,52 +160,102 @@ eventBus.on('emergency.created', async (payload) => {
   try {
     const locationInfo = payload.location ? ` at ${payload.location}` : '';
     const descriptionInfo = payload.description ? ` - ${payload.description}` : '';
+    const severity = payload.severity ?? getEmergencySeverity(payload.type);
 
-    const staffNotifications = await notificationService.sendToSocietyStaff(
-      payload.societyId,
-      ['ADMIN', 'GUARD'],
-      {
-        type: 'EMERGENCY_ALERT',
-        title: `Emergency: ${payload.type}`,
-        message: `${payload.reporterName} reported a ${payload.type} emergency${locationInfo}${descriptionInfo}`,
-        data: {
-          emergencyId: payload.emergencyId,
-          type: payload.type,
-          location: payload.location,
-          reportedBy: payload.reporterName,
-        },
-        referenceId: payload.emergencyId,
-        referenceType: 'Emergency',
-        societyId: payload.societyId,
-      }
-    );
+    // ── Point 2: Severity-tiered audience ──────────────────────────────────
+    // CRITICAL → all active society users
+    // STANDARD → staff (ADMIN/SUPER_ADMIN/GUARD) + same-block residents only
+    let targetUserIds: string[];
+
+    if (severity === 'CRITICAL') {
+      const users = await prisma.user.findMany({
+        where: { societyId: payload.societyId, isActive: true, role: { in: ['RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'] } },
+        select: { id: true },
+      });
+      targetUserIds = users.map((u) => u.id);
+    } else {
+      // Staff always gets it
+      const staff = await prisma.user.findMany({
+        where: { societyId: payload.societyId, isActive: true, role: { in: ['ADMIN', 'SUPER_ADMIN', 'GUARD'] } },
+        select: { id: true },
+      });
+      // Same-block residents (if blockId is known), otherwise no residents
+      const blockResidents = payload.blockId
+        ? await prisma.user.findMany({
+            where: {
+              societyId: payload.societyId,
+              isActive: true,
+              role: 'RESIDENT',
+              flat: { blockId: payload.blockId },
+            },
+            select: { id: true },
+          })
+        : [];
+      const staffIds = new Set(staff.map((u) => u.id));
+      targetUserIds = [
+        ...staff.map((u) => u.id),
+        ...blockResidents.filter((u) => !staffIds.has(u.id)).map((u) => u.id),
+      ];
+    }
+
+    const title = `🚨 Emergency: ${payload.type}`;
+    const message = `${payload.reporterName} reported a ${payload.type} emergency${locationInfo}${descriptionInfo}`;
+    const notifPayload = {
+      type: 'EMERGENCY_ALERT' as const,
+      title,
+      message,
+      data: {
+        emergencyId: payload.emergencyId,
+        type: payload.type,
+        severity,
+        location: payload.location,
+        reportedBy: payload.reporterName,
+      },
+      referenceId: payload.emergencyId,
+      referenceType: 'Emergency',
+      societyId: payload.societyId,
+    };
+
+    // ── Point 5: Batched in-app notification insert ────────────────────────
+    // One DB round-trip for all users instead of N individual inserts.
+    if (targetUserIds.length > 0) {
+      await prisma.notification.createMany({
+        data: targetUserIds.map((userId) => ({
+          userId,
+          societyId: payload.societyId,
+          type: notifPayload.type,
+          title: notifPayload.title,
+          message: notifPayload.message,
+          data: notifPayload.data as object,
+          referenceId: notifPayload.referenceId,
+          referenceType: notifPayload.referenceType,
+        })),
+        skipDuplicates: true,
+      });
+    }
 
     emitToSociety(payload.societyId, SOCKET_EVENTS.EMERGENCY_ALERT, {
       id: payload.emergencyId,
       type: payload.type,
+      severity,
       location: payload.location,
       reportedBy: payload.reporterName,
     });
 
-    const notifiedUserIds = staffNotifications.map((n) => n.userId);
+    // Store notified user IDs so all-clear reaches the exact same audience
     await prisma.emergency.update({
       where: { id: payload.emergencyId },
-      data: {
-        alertsSent: true,
-        notifiedUsers: notifiedUserIds,
-      },
+      data: { alertsSent: true, notifiedUsers: targetUserIds },
     });
 
-    const ALERT_ALL = ['FIRE', 'LIFT_STUCK'];
-    const emergencyRoles = ALERT_ALL.includes(payload.type)
-      ? ['ADMIN', 'GUARD', 'RESIDENT'] as ('ADMIN' | 'GUARD' | 'RESIDENT')[]
-      : ['ADMIN', 'GUARD'] as ('ADMIN' | 'GUARD')[];
-
-    pushService.sendToSocietyStaff(payload.societyId, emergencyRoles, {
-      title: `Emergency: ${payload.type}`,
-      body: payload.description ?? 'Immediate response required',
-      data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, type: payload.type },
-    }).catch((err) => logger.error({ err }, 'Push failed: emergency.created'));
+    // FCM push — best-effort, chunked in batches of 500 by sendToUsers
+    if (targetUserIds.length > 0) {
+      pushService.sendToUsers(targetUserIds, {
+        title,
+        body: payload.description ?? 'Immediate response required',
+        data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, type: payload.type, severity },
+      }).catch((err) => logger.error({ err }, 'Push failed: emergency.created'));
+    }
   } catch (error) {
     logger.error({ error, event: 'emergency.created', payload }, 'Failed to send emergency notification');
   }
@@ -233,24 +284,38 @@ eventBus.on('emergency.responded', async (payload) => {
 
 eventBus.on('emergency.resolved', async (payload) => {
   try {
-    await notificationService.sendToUser(payload.reporterId, {
-      type: 'EMERGENCY_ALERT',
-      title: 'Emergency Resolved',
-      message: `Your emergency has been resolved by ${payload.resolverName}`,
-      referenceId: payload.emergencyId,
-      referenceType: 'Emergency',
-      societyId: payload.societyId,
+    // ── Point 6: All-clear guarantee ────────────────────────────────────────
+    // Fan out to the exact same audience that received the original alert.
+    const resolverLabel = payload.resolverName === 'System' ? 'auto-expired after 2 hours' : `resolved by ${payload.resolverName}`;
+    const notifiedUsers: string[] = Array.isArray(payload.notifiedUsers) && payload.notifiedUsers.length > 0
+      ? payload.notifiedUsers
+      : [payload.reporterId];
+
+    // Batched all-clear insert
+    await prisma.notification.createMany({
+      data: notifiedUsers.map((userId) => ({
+        userId,
+        societyId: payload.societyId,
+        type: 'EMERGENCY_ALERT' as const,
+        title: '✅ Emergency Resolved',
+        message: `The emergency has been ${resolverLabel}.`,
+        referenceId: payload.emergencyId,
+        referenceType: 'Emergency',
+      })),
+      skipDuplicates: true,
     });
 
     emitToSociety(payload.societyId, SOCKET_EVENTS.EMERGENCY_UPDATE, {
       id: payload.emergencyId,
       status: 'RESOLVED',
+      resolvedBy: payload.resolverName,
     });
 
-    pushService.sendToUser(payload.reporterId, {
-      title: 'Emergency resolved',
-      body: `Your emergency has been resolved by ${payload.resolverName}`,
-      data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId },
+    // FCM all-clear push to full notified audience
+    pushService.sendToUsers(notifiedUsers, {
+      title: '✅ Emergency Resolved',
+      body: `The emergency has been ${resolverLabel}.`,
+      data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, status: 'RESOLVED' },
     }).catch((err) => logger.error({ err }, 'Push failed: emergency.resolved'));
   } catch (error) {
     logger.error({ error, event: 'emergency.resolved', payload }, 'Failed to send emergency resolved notification');

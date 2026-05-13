@@ -13,7 +13,7 @@ export const registerVehicle = async (req: Request, res: Response) => {
       req.user!.flatId!,
       req.user!.societyId!
     );
-    res.status(201).json({ success: true, message: 'Vehicle registered. Pending admin approval.', data: vehicle });
+    res.status(201).json({ success: true, message: 'Vehicle registered successfully.', data: vehicle });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
   }
@@ -73,12 +73,13 @@ export const approveVehicle = async (req: Request, res: Response) => {
 
 export const searchVehicle = async (req: Request, res: Response) => {
   try {
-    const vehicleNumber = req.query.vehicleNumber as string;
-    if (!vehicleNumber) {
-      return res.status(400).json({ success: false, message: 'vehicleNumber query param is required' });
+    // Accept vehicleNumber, q, or plateNumber for frontend compatibility
+    const rawQuery = (req.query.vehicleNumber ?? req.query.q ?? req.query.plateNumber) as string | undefined;
+    if (!rawQuery) {
+      return res.status(400).json({ success: false, message: 'Provide vehicleNumber, q, or plateNumber as query param' });
     }
-    const vehicle = await vehicleService.searchVehicle(vehicleNumber, req.user!.societyId!);
-    res.status(200).json({ success: true, data: vehicle });
+    const result = await vehicleService.searchVehicle(rawQuery, req.user!.societyId!);
+    res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
   }

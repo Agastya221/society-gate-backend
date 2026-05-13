@@ -21,7 +21,7 @@ router.delete('/:id', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheA
 router.get('/', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 120, keyPrefix: 'vehicles', varyBy: ['societyId'] }), getAllVehicles);
 router.patch('/:id/approve', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['vehicles:*']), approveVehicle);
 
-// Search (guard + admin + resident)
-router.get('/search', cache({ ttl: 30, keyPrefix: 'vehicles' }), searchVehicle);
+// Search (guard + admin + resident) — cache varies per society + query
+router.get('/search', cache({ ttl: 30, keyPrefix: 'vehicles', varyBy: ['societyId', 'vehicleNumber', 'q', 'plateNumber'] }), searchVehicle);
 
 export default router;

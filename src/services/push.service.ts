@@ -77,7 +77,7 @@ class PushService {
 
   async sendToSocietyStaff(
     societyId: string,
-    roles: ('ADMIN' | 'GUARD' | 'RESIDENT')[],
+    roles: ('ADMIN' | 'SUPER_ADMIN' | 'GUARD' | 'RESIDENT')[],
     payload: PushPayload
   ): Promise<void> {
     if (!isFirebaseAvailable()) {
