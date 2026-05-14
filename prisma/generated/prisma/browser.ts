@@ -33,6 +33,11 @@ export type Invoice = Prisma.InvoiceModel
  */
 export type InvoiceLineItem = Prisma.InvoiceLineItemModel
 /**
+ * Model PaymentTransaction
+ * 
+ */
+export type PaymentTransaction = Prisma.PaymentTransactionModel
+/**
  * Model SocietyRegistrationRequest
  * 
  */

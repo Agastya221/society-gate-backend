@@ -73,6 +73,26 @@ export const InvoiceStatus = {
 export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus]
 
 
+export const PaymentProvider = {
+  CASHFREE: 'CASHFREE'
+} as const
+
+export type PaymentProvider = (typeof PaymentProvider)[keyof typeof PaymentProvider]
+
+
+export const PaymentTransactionStatus = {
+  CREATED: 'CREATED',
+  ACTIVE: 'ACTIVE',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  USER_DROPPED: 'USER_DROPPED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PaymentTransactionStatus = (typeof PaymentTransactionStatus)[keyof typeof PaymentTransactionStatus]
+
+
 export const FamilyRole = {
   SPOUSE: 'SPOUSE',
   CHILD: 'CHILD',

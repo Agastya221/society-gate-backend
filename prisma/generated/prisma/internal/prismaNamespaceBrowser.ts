@@ -54,6 +54,7 @@ export const ModelName = {
   Society: 'Society',
   Invoice: 'Invoice',
   InvoiceLineItem: 'InvoiceLineItem',
+  PaymentTransaction: 'PaymentTransaction',
   SocietyRegistrationRequest: 'SocietyRegistrationRequest',
   GatePoint: 'GatePoint',
   Block: 'Block',
@@ -168,6 +169,29 @@ export const InvoiceLineItemScalarFieldEnum = {
 } as const
 
 export type InvoiceLineItemScalarFieldEnum = (typeof InvoiceLineItemScalarFieldEnum)[keyof typeof InvoiceLineItemScalarFieldEnum]
+
+
+export const PaymentTransactionScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  status: 'status',
+  amount: 'amount',
+  currency: 'currency',
+  cashfreeOrderId: 'cashfreeOrderId',
+  cashfreeCfOrderId: 'cashfreeCfOrderId',
+  cashfreePaymentId: 'cashfreePaymentId',
+  paymentSessionId: 'paymentSessionId',
+  idempotencyKey: 'idempotencyKey',
+  webhookEventType: 'webhookEventType',
+  webhookReceivedAt: 'webhookReceivedAt',
+  rawResponse: 'rawResponse',
+  rawWebhook: 'rawWebhook',
+  invoiceId: 'invoiceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentTransactionScalarFieldEnum = (typeof PaymentTransactionScalarFieldEnum)[keyof typeof PaymentTransactionScalarFieldEnum]
 
 
 export const SocietyRegistrationRequestScalarFieldEnum = {

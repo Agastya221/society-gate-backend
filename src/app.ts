@@ -27,7 +27,12 @@ app.use((_req, res, next) => {
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '1mb' })); // Reduced from 10mb to prevent memory exhaustion
+app.use(express.json({
+  limit: '1mb',
+  verify: (req, _res, buf) => {
+    (req as express.Request & { rawBody?: Buffer }).rawBody = Buffer.from(buf);
+  },
+})); // Reduced from 10mb to prevent memory exhaustion
 app.use(express.urlencoded({ extended: true }));
 
 // Redis store for rate limiting - handles connection failures gracefully

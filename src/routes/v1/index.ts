@@ -8,6 +8,7 @@ import adminRoutes from './admin.routes';
 import guardRoutes from './guard.routes';
 import uploadRoutes from '../../modules/upload/upload.routes';
 import societyRegistrationRoutes from '../../modules/society-registration/society-registration.routes';
+import paymentRoutes from '../../modules/payment/payment.routes';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use('/resident', residentRoutes);      // /api/v1/resident/*
 router.use('/admin', adminRoutes);            // /api/v1/admin/*
 router.use('/guard', guardRoutes);            // /api/v1/guard/*
 router.use('/upload', uploadRoutes);          // /api/v1/upload
+router.use('/payments', paymentRoutes);       // /api/v1/payments
 router.use('/society-registration', societyRegistrationRoutes); // /api/v1/society-registration
 
 export default router;

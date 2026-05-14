@@ -63,6 +63,20 @@ enum InvoiceStatus {
   WAIVED
 }
 
+enum PaymentProvider {
+  CASHFREE
+}
+
+enum PaymentTransactionStatus {
+  CREATED
+  ACTIVE
+  SUCCESS
+  FAILED
+  USER_DROPPED
+  EXPIRED
+  CANCELLED
+}
+
 enum FamilyRole {
   SPOUSE
   CHILD
@@ -489,7 +503,8 @@ model Invoice {
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
-  lineItems InvoiceLineItem[]
+  lineItems           InvoiceLineItem[]
+  paymentTransactions PaymentTransaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -510,6 +525,35 @@ model InvoiceLineItem {
   createdAt   DateTime @default(now())
 
   @@index([invoiceId])
+}
+
+model PaymentTransaction {
+  id     String                   @id @default(uuid())
+  provider PaymentProvider        @default(CASHFREE)
+  status PaymentTransactionStatus @default(CREATED)
+
+  amount   Float
+  currency String @default("INR")
+
+  cashfreeOrderId     String  @unique
+  cashfreeCfOrderId   String?
+  cashfreePaymentId   String? @unique
+  paymentSessionId    String?
+  idempotencyKey      String  @unique
+  webhookEventType    String?
+  webhookReceivedAt   DateTime?
+
+  rawResponse Json?
+  rawWebhook  Json?
+
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([invoiceId, status])
+  @@index([provider, status])
 }
 
 model SocietyRegistrationRequest {
