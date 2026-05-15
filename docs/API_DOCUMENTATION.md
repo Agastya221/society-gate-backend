@@ -26,7 +26,8 @@
    - [Vendors](#62-vendors)
 7. [Admin](#7-admin)
    - [Societies](#71-societies)
-   - [Reports](#72-reports)
+   - [Intercom Contacts](#72-intercom-contacts)
+   - [Reports](#73-reports)
 8. [Upload](#8-upload)
 9. [Society Registration](#9-society-registration)
 10. [Enums Reference](#10-enums-reference)
@@ -2183,7 +2184,86 @@ Authorization: Bearer <admin_token>
 
 ---
 
-### 7.2 Reports
+### 7.2 Intercom Contacts
+
+#### Get Intercom Contacts
+```http
+GET /admin/intercom/contacts?search=A-101&page=1&limit=100&includeGuards=true
+Authorization: Bearer <admin_token>
+```
+
+Returns real callable contacts for the Resident Admin app's Alerts -> Intercom tab. Results are scoped to the admin's society. Super admins must pass `societyId`.
+
+**Query Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `search` | string | Optional search by resident name, phone, email, flat number, or block name |
+| `page` | number | Page number, default `1` |
+| `limit` | number | Page size, default `100`, max `500` |
+| `includeGuards` | boolean | Include gate security contacts, default `true` |
+| `includeInactive` | boolean | Include inactive users, default `false` |
+| `societyId` | string | Required only for super admin users |
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Alok Pandey",
+      "phone": "+919876543210",
+      "email": "alok@example.com",
+      "photoUrl": null,
+      "initials": "AP",
+      "contactType": "RESIDENT",
+      "role": "RESIDENT",
+      "subtitle": "Flat A-101",
+      "flat": {
+        "id": "uuid",
+        "flatNumber": "A-101",
+        "blockName": null
+      },
+      "isOwner": true,
+      "isPrimaryResident": true,
+      "isActive": true
+    },
+    {
+      "id": "uuid",
+      "name": "Gate Security",
+      "phone": "+919876543211",
+      "email": null,
+      "photoUrl": null,
+      "initials": "GS",
+      "contactType": "SECURITY",
+      "role": "GUARD",
+      "subtitle": "Security",
+      "flat": null,
+      "isOwner": null,
+      "isPrimaryResident": null,
+      "isActive": true
+    }
+  ],
+  "pagination": {
+    "total": 2,
+    "page": 1,
+    "limit": 100,
+    "pages": 1
+  },
+  "meta": {
+    "societyId": "uuid",
+    "residents": 1,
+    "guards": 1
+  }
+}
+```
+
+**Errors:** 400 if super admin omits `societyId` | 403 cross-society access denied
+
+---
+
+### 7.3 Reports
 
 #### Get Dashboard Stats
 ```http

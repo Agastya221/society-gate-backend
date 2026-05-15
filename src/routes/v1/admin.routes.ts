@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { z } from 'zod';
 import societyRoutes from '../../modules/society/society.routes';
 import reportsRoutes from '../../modules/reports/reports.routes';
 import vehicleRoutes from '../../modules/vehicle/vehicle.routes';
@@ -12,6 +13,7 @@ import {
   getAdminStaffDirectory,
   getAdminStaffAttendance,
 } from '../../modules/admin/admin-staff.controller';
+import { getAdminIntercomContacts } from '../../modules/admin/admin-intercom.controller';
 import {
   listForAdmin,
   adminCancelEntry,
@@ -33,6 +35,24 @@ import {
 
 const router = Router();
 
+const queryBoolean = z.preprocess((value) => {
+  if (typeof value !== 'string') return value;
+
+  const normalized = value.toLowerCase();
+  if (normalized === 'true') return true;
+  if (normalized === 'false') return false;
+  return value;
+}, z.boolean());
+
+const adminIntercomContactsQuerySchema = z.object({
+  societyId: z.string().uuid().optional(),
+  search: z.string().trim().max(100).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(500).default(100),
+  includeGuards: queryBoolean.default(true),
+  includeInactive: queryBoolean.default(false),
+});
+
 // ---- Existing modules ----
 router.use('/societies', societyRoutes);  // /api/v1/admin/societies
 router.use('/reports', reportsRoutes);    // /api/v1/admin/reports
@@ -45,6 +65,16 @@ router.use('/notices', noticeRoutes);     // /api/v1/admin/notices
 router.use('/billing', billingRoutes);         // /api/v1/admin/billing/...
 router.use('/broadcast', broadcastRoutes);     // /api/v1/admin/broadcast
 router.use('/notifications', adminNotificationRoutes); // /api/v1/admin/notifications
+
+// GET /api/v1/admin/intercom/contacts
+router.get(
+  '/intercom/contacts',
+  authenticate,
+  authorize('ADMIN', 'SUPER_ADMIN'),
+  validate({ query: adminIntercomContactsQuerySchema }),
+  cache({ ttl: 120, keyPrefix: 'admin:intercom', varyBy: ['societyId', 'role'] }),
+  getAdminIntercomContacts,
+);
 
 // Alias: /api/v1/admin/dues → billing dues list (matches frontend audit spec)
 import { listDues } from '../../modules/billing/billing.controller';
