@@ -13,6 +13,10 @@ import v1Routes from './routes/v1';
 
 const app = express();
 
+// Render runs the app behind a proxy; trust the first hop so rate limiting
+// can use the real client IP from X-Forwarded-For.
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(helmet());
 
