@@ -127,10 +127,15 @@ export class SocietyRegistrationService {
         },
       });
 
+      const requestedBy = await tx.user.findUnique({
+        where: { id: request.requestedById },
+        select: { role: true },
+      });
+
       const updatedUser = await tx.user.update({
         where: { id: request.requestedById },
         data: {
-          role: 'ADMIN',
+          role: requestedBy?.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'ADMIN',
           societyId: society.id,
           isActive: true,
         },

@@ -51,22 +51,29 @@ export class UserService {
       );
     }
 
-    // 3. Phone uniqueness check
+    // 3. Reuse an existing account if the owner already registered in the app
     const existingUser = await prisma.user.findUnique({ where: { phone: data.phone } });
-    if (existingUser) {
-      throw new AppError('This phone number is already registered.', 409);
-    }
 
-    // 4. Create SUPER_ADMIN
-    const superAdmin = await prisma.user.create({
-      data: {
-        phone: data.phone,
-        name: sanitizeString(data.name),
-        email: data.email,
-        role: 'SUPER_ADMIN',
-        isActive: true,
-      },
-    });
+    // 4. Create or promote SUPER_ADMIN
+    const superAdmin = existingUser
+      ? await prisma.user.update({
+          where: { id: existingUser.id },
+          data: {
+            name: sanitizeString(data.name),
+            email: data.email ?? existingUser.email,
+            role: 'SUPER_ADMIN',
+            isActive: true,
+          },
+        })
+      : await prisma.user.create({
+          data: {
+            phone: data.phone,
+            name: sanitizeString(data.name),
+            email: data.email,
+            role: 'SUPER_ADMIN',
+            isActive: true,
+          },
+        });
 
     // 5. Issue tokens — same pattern as residentWidgetVerify
     const accessToken = generateAccessToken(
