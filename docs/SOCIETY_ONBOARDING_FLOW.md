@@ -195,3 +195,5 @@ Society registration:
 - `APPROVED`
 - `REJECTED`
 
+encahment 
+Enhancement: Add a branch at the start for "Join via Invite Code." If a user enters a code, they skip the search and flat selection, moving straight to document upload.

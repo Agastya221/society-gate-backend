@@ -41,8 +41,76 @@ router.use('/amenities', amenityRoutes);           // /api/v1/resident/amenities
 router.post('/parking/complaints', authenticate, fileComplaint);
 router.get('/parking/complaints', authenticate, listViolations);  // scoped to own complaints in controller
 
-// Dues — society-level payment reminders for the resident's society
+// Dues — flat-level invoices for the logged-in user.
+// Admins can also be residents, so this route intentionally scopes by flatId
+// instead of role.
 router.get('/dues', authenticate, async (req: Request, res: Response) => {
+  try {
+    const { societyId, flatId } = req.user!;
+    if (!societyId || !flatId) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    const dues = await prisma.invoice.findMany({
+      where: { societyId, flatId },
+      orderBy: { dueDate: 'asc' },
+      include: {
+        society: { select: { name: true } },
+        flat: {
+          select: {
+            flatNumber: true,
+            block: { select: { name: true } },
+          },
+        },
+        lineItems: {
+          select: { id: true, description: true, amount: true },
+        },
+      },
+    });
+
+    return res.status(200).json({ success: true, data: dues.map(formatInvoiceDue) });
+  } catch {
+    return res.status(500).json({ success: false, message: 'Failed to fetch dues' });
+  }
+});
+
+router.get('/dues/:id', authenticate, async (req: Request, res: Response) => {
+  try {
+    const { societyId, flatId } = req.user!;
+    const dueId = req.params.id as string;
+    if (!societyId || !flatId) {
+      return res.status(404).json({ success: false, message: 'Due record not found' });
+    }
+
+    const due = await prisma.invoice.findFirst({
+      where: { id: dueId, societyId, flatId },
+      include: {
+        society: { select: { name: true } },
+        flat: {
+          select: {
+            flatNumber: true,
+            block: { select: { name: true } },
+          },
+        },
+        lineItems: {
+          select: { id: true, description: true, amount: true },
+        },
+      },
+    });
+
+    if (!due) {
+      return res.status(404).json({ success: false, message: 'Due record not found' });
+    }
+
+    return res.status(200).json({ success: true, data: formatInvoiceDue(due) });
+  } catch {
+    return res.status(500).json({ success: false, message: 'Failed to fetch due details' });
+  }
+});
+
+// Society-level dues/reminders for the account itself. These are not resident
+// invoice IDs and must not be sent to the invoice Cashfree endpoint.
+router.get('/society-dues', authenticate, async (req: Request, res: Response) => {
   try {
     const societyId = req.user!.societyId;
     if (!societyId) {
@@ -56,8 +124,51 @@ router.get('/dues', authenticate, async (req: Request, res: Response) => {
 
     return res.status(200).json({ success: true, data: dues });
   } catch {
-    return res.status(500).json({ success: false, message: 'Failed to fetch dues' });
+    return res.status(500).json({ success: false, message: 'Failed to fetch society dues' });
   }
 });
+
+function formatInvoiceDue(invoice: {
+  id: string;
+  societyId: string;
+  flatId: string;
+  month: string;
+  amount: number;
+  penalty: number;
+  totalAmount: number;
+  status: string;
+  description: string | null;
+  dueDate: Date;
+  paidAt: Date | null;
+  createdAt: Date;
+  society: { name: string };
+  flat: { flatNumber: string; block: { name: string } | null };
+  lineItems: Array<{ id: string; description: string; amount: number }>;
+}) {
+  return {
+    id: invoice.id,
+    societyId: invoice.societyId,
+    flatId: invoice.flatId,
+    month: invoice.month,
+    amount: invoice.amount,
+    penalty: invoice.penalty,
+    totalAmount: invoice.totalAmount,
+    status: invoice.status,
+    isPaid: invoice.status === 'PAID',
+    description: invoice.description,
+    dueDate: invoice.dueDate,
+    paidAt: invoice.paidAt,
+    societyName: invoice.society.name,
+    flatNumber: invoice.flat.flatNumber,
+    blockName: invoice.flat.block?.name ?? null,
+    lineItems: invoice.lineItems.map((item) => ({
+      id: item.id,
+      label: item.description,
+      description: item.description,
+      amount: item.amount,
+    })),
+    createdAt: invoice.createdAt,
+  };
+}
 
 export default router;
