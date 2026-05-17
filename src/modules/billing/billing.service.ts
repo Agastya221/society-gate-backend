@@ -1,5 +1,7 @@
 import { prisma } from '../../utils/Client';
 import logger from '../../utils/logger';
+import { NotificationType } from '../../../prisma/generated/prisma/enums';
+import { notificationService } from '../notification/notification.service';
 
 // ============================================
 // BILLING SERVICE
@@ -279,6 +281,86 @@ export class BillingService {
       where: { id: invoiceId },
       data: { status: 'WAIVED' },
     });
+  }
+
+  // -----------------------------------------------------------------------
+  // 6. SEND INVOICE REMINDER
+  // -----------------------------------------------------------------------
+  async sendInvoiceReminder(invoiceId: string, societyId: string) {
+    const invoice = await prisma.invoice.findFirst({
+      where: { id: invoiceId, societyId },
+      include: {
+        society: { select: { name: true } },
+        flat: {
+          select: {
+            id: true,
+            flatNumber: true,
+            block: { select: { name: true } },
+          },
+        },
+      },
+    });
+
+    if (!invoice) throw new Error('Invoice not found');
+    if (invoice.status === 'PAID') throw new Error('Invoice already paid');
+    if (invoice.status === 'WAIVED') throw new Error('Invoice has been waived');
+
+    const recipients = await prisma.user.findMany({
+      where: {
+        flatId: invoice.flatId,
+        societyId,
+        isActive: true,
+        role: { in: ['RESIDENT', 'ADMIN'] },
+      },
+      select: { id: true },
+    });
+
+    const amountText = `₹${invoice.totalAmount.toLocaleString('en-IN')}`;
+    const dueDateText = invoice.dueDate.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+    const flatLabel = `${invoice.flat.block?.name ? `${invoice.flat.block.name}-` : ''}${invoice.flat.flatNumber}`;
+
+    const notifications = await Promise.all(
+      recipients.map((recipient) =>
+        notificationService.sendToUser(recipient.id, {
+          type: NotificationType.SYSTEM,
+          title: 'Payment Reminder',
+          message: `${amountText} is pending for ${invoice.month}. Please pay by ${dueDateText}.`,
+          referenceId: invoice.id,
+          referenceType: 'Invoice',
+          societyId,
+          data: {
+            invoiceId: invoice.id,
+            month: invoice.month,
+            totalAmount: invoice.totalAmount,
+            dueDate: invoice.dueDate.toISOString(),
+            status: invoice.status,
+            flatId: invoice.flatId,
+            flatNumber: invoice.flat.flatNumber,
+            blockName: invoice.flat.block?.name ?? null,
+            societyName: invoice.society.name,
+          },
+        }),
+      ),
+    );
+
+    logger.info(
+      { societyId, invoiceId, sent: notifications.length, flatId: invoice.flatId },
+      '🔔 [BILLING] Invoice reminder sent',
+    );
+
+    return {
+      invoiceId: invoice.id,
+      sent: notifications.length,
+      flat: flatLabel,
+      message:
+        notifications.length > 0
+          ? `Reminder sent to ${notifications.length} account(s) for flat ${flatLabel}`
+          : `No active resident account found for flat ${flatLabel}`,
+    };
   }
 }
 

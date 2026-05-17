@@ -87,3 +87,15 @@ export const waiveInvoice = async (req: Request, res: Response) => {
     return res.status(400).json({ success: false, message: getErrorMessage(error) });
   }
 };
+
+// POST /admin/billing/invoices/:id/reminder
+export const sendInvoiceReminder = async (req: Request, res: Response) => {
+  try {
+    const societyId = req.user!.societyId as string;
+    const id = req.params.id as string;
+    const result = await billingService.sendInvoiceReminder(id, societyId);
+    return res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: getErrorMessage(error) });
+  }
+};

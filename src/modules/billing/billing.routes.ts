@@ -9,6 +9,7 @@ import {
   listDues,
   markInvoicePaid,
   waiveInvoice,
+  sendInvoiceReminder,
 } from './billing.controller';
 
 const router = Router();
@@ -63,6 +64,12 @@ router.patch(
   '/invoices/:id/waive',
   clearCacheAfter(['billing:*']),
   waiveInvoice,
+);
+
+// POST /admin/billing/invoices/:id/reminder
+router.post(
+  '/invoices/:id/reminder',
+  sendInvoiceReminder,
 );
 
 export default router;
