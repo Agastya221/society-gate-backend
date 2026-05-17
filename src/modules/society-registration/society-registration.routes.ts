@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { SocietyRegistrationController } from './society-registration.controller';
-import { authenticate, authorize } from '../../middlewares/auth.middleware';
+import { authenticate, authenticateResidentForOnboarding, authorize } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 import {
@@ -11,10 +11,10 @@ import {
 const router = Router();
 const controller = new SocietyRegistrationController();
 
-// RESIDENT — authenticated users only
+// RESIDENT — allow pre-approval/inactive users to request a new society
 router.post(
   '/request',
-  authenticate,
+  authenticateResidentForOnboarding,
   validate({ body: submitSocietyRegistrationSchema }),
   clearCacheAfter(['api:society-registration*']),
   controller.submitRequest
@@ -22,7 +22,7 @@ router.post(
 
 router.get(
   '/my-status',
-  authenticate,
+  authenticateResidentForOnboarding,
   cache({ ttl: 300, keyPrefix: 'society-registration', varyBy: ['userId'] }),
   controller.getMyStatus
 );
