@@ -134,10 +134,12 @@ export class OnboardingService {
       }>;
     }
   ) {
-    // 1. Check if user already has an active onboarding request
+    // 1. Prevent duplicate active requests for the same flat.
     const existingRequest = await prisma.onboardingRequest.findFirst({
       where: {
         userId,
+        societyId: data.societyId,
+        flatId: data.flatId,
         status: {
           in: ['DRAFT', 'PENDING_DOCS', 'PENDING_APPROVAL', 'RESUBMIT_REQUESTED'],
         },
@@ -145,7 +147,20 @@ export class OnboardingService {
     });
 
     if (existingRequest) {
-      throw new AppError('You already have an active onboarding request', 400);
+      throw new AppError('You already have an active onboarding request for this flat', 400);
+    }
+
+    const existingMembership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId,
+        societyId: data.societyId,
+        flatId: data.flatId,
+        isActive: true,
+      },
+    });
+
+    if (existingMembership) {
+      throw new AppError('You are already linked to this flat', 400);
     }
 
     // 2. Check if flat already has an owner (if applying as owner)
@@ -168,6 +183,18 @@ export class OnboardingService {
       });
 
       if (flat?.currentOwnerId) {
+        throw new AppError('This flat already has an approved owner', 400);
+      }
+
+      const existingOwnerMembership = await prisma.userFlatMembership.findFirst({
+        where: {
+          flatId: data.flatId,
+          isOwner: true,
+          isActive: true,
+        },
+      });
+
+      if (existingOwnerMembership) {
         throw new AppError('This flat already has an approved owner', 400);
       }
     }
@@ -492,24 +519,75 @@ export class OnboardingService {
       });
 
       // 2. Check if this is the first resident for this flat
-      const existingResidents = await tx.user.count({
+      const existingResidents = await tx.userFlatMembership.count({
         where: {
           flatId: request.flatId,
           isActive: true,
-          role: 'RESIDENT',
+          role: { in: ['RESIDENT', 'ADMIN', 'SUPER_ADMIN'] },
         },
       });
 
-      const isPrimaryResident = existingResidents === 0;
+      if (existingResidents === 0) {
+        const legacyResidents = await tx.user.count({
+          where: {
+            flatId: request.flatId,
+            isActive: true,
+          },
+        });
+
+        if (legacyResidents > 0) {
+          await tx.userFlatMembership.createMany({
+            data: await tx.user.findMany({
+              where: {
+                flatId: request.flatId,
+                societyId: request.societyId,
+                isActive: true,
+              },
+              select: {
+                id: true,
+                societyId: true,
+                flatId: true,
+                role: true,
+                isOwner: true,
+                isPrimaryResident: true,
+              },
+            }).then((users) =>
+              users
+                .filter((user) => user.societyId && user.flatId)
+                .map((user) => ({
+                  userId: user.id,
+                  societyId: user.societyId!,
+                  flatId: user.flatId!,
+                  role: user.role,
+                  residentType: user.isOwner ? 'OWNER' : 'TENANT',
+                  isOwner: user.isOwner,
+                  isPrimary: user.isPrimaryResident,
+                  isActive: true,
+                  isDefault: true,
+                }))
+            ),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      const activeFlatMembers = await tx.userFlatMembership.count({
+        where: {
+          flatId: request.flatId,
+          isActive: true,
+        },
+      });
+
+      const isPrimaryResident = activeFlatMembers === 0;
 
       // 3. CRITICAL FIX: Validate owner constraint before approval
       if (request.residentType === 'OWNER') {
-        const existingOwner = await tx.user.findFirst({
+        const existingOwner = await tx.userFlatMembership.findFirst({
           where: {
             flatId: request.flatId,
             isOwner: true,
             isActive: true,
-            id: { not: request.userId }, // Exclude the current user
+            userId: { not: request.userId },
           },
         });
 
@@ -518,17 +596,61 @@ export class OnboardingService {
         }
       }
 
+      const activeRole =
+        request.user.role === 'SUPER_ADMIN'
+          ? 'SUPER_ADMIN'
+          : request.user.role === 'ADMIN' && request.user.societyId === request.societyId
+            ? 'ADMIN'
+            : 'RESIDENT';
+
       // 4. Update user
       await tx.user.update({
         where: { id: request.userId },
         data: {
           isActive: true,
+          role: activeRole,
           societyId: request.societyId,
           flatId: request.flatId,
           isOwner: request.residentType === 'OWNER',
           isPrimaryResident, // Set as primary if first resident
         },
       });
+
+      const existingFlatMembership = await tx.userFlatMembership.findFirst({
+        where: {
+          userId: request.userId,
+          societyId: request.societyId,
+          flatId: request.flatId,
+        },
+      });
+
+      if (existingFlatMembership) {
+        await tx.userFlatMembership.update({
+          where: { id: existingFlatMembership.id },
+          data: {
+            role: activeRole,
+            residentType: request.residentType,
+            isOwner: request.residentType === 'OWNER',
+            isPrimary: isPrimaryResident,
+            isActive: true,
+            isDefault: true,
+          },
+        });
+      } else {
+        await tx.userFlatMembership.create({
+          data: {
+            userId: request.userId,
+            societyId: request.societyId,
+            flatId: request.flatId,
+            role: activeRole,
+            residentType: request.residentType,
+            isOwner: request.residentType === 'OWNER',
+            isPrimary: isPrimaryResident,
+            isActive: true,
+            isDefault: true,
+          },
+        });
+      }
 
       // 5. Update flat occupancy
       const updateData: Prisma.FlatUncheckedUpdateInput = {

@@ -475,6 +475,7 @@ model Society {
   polls               Poll[]
   invoices            Invoice[]
   parkingViolations   ParkingViolation[]
+  flatMemberships     UserFlatMembership[]
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
@@ -698,6 +699,7 @@ model Flat {
   partyInvites         PartyInvite[]
   preApprovedEntries   PreApprovedEntry[]
   invoices             Invoice[]
+  userMemberships      UserFlatMembership[]
 
   @@unique([societyId, flatNumber])
   @@index([societyId])
@@ -773,13 +775,14 @@ model User {
   pollVotes    PollVote[] @relation("PollVoter")
 
   // Onboarding relations
-  onboardingRequest   OnboardingRequest?   @relation("ResidentOnboarding")
+  onboardingRequests  OnboardingRequest[]  @relation("ResidentOnboarding")
   reviewedOnboardings OnboardingRequest[]  @relation("OnboardingReviewer")
   onboardingAuditLogs OnboardingAuditLog[]
 
   // Society Registration
   societyRegistrationRequests SocietyRegistrationRequest[] @relation("SocietyRegistrationRequests")
   societyRegistrationReviews  SocietyRegistrationRequest[] @relation("SocietyRegistrationReviews")
+  flatMemberships             UserFlatMembership[]
 
   // Notification relations
   notifications Notification[]
@@ -818,6 +821,34 @@ model User {
   @@index([phone])
   @@index([email])
   @@index([refreshToken])
+}
+
+model UserFlatMembership {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  flatId String?
+  flat   Flat?   @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  role         Role         @default(RESIDENT)
+  residentType ResidentType?
+
+  isOwner   Boolean @default(false)
+  isPrimary Boolean @default(false)
+  isActive  Boolean @default(true)
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, isActive])
+  @@index([societyId, role, isActive])
+  @@index([flatId, isActive])
 }
 
 // --------------------
@@ -2022,7 +2053,7 @@ model OnboardingRequest {
   id String @id @default(uuid())
 
   // Resident
-  userId String @unique
+  userId String
   user   User   @relation("ResidentOnboarding", fields: [userId], references: [id], onDelete: Cascade)
 
   // Target location

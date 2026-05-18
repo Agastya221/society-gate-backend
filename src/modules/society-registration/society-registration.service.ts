@@ -175,10 +175,12 @@ export class SocietyRegistrationService {
         adminFlatId = flat.id;
       }
 
+      const activeRole = requestedBy?.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'ADMIN';
+
       const updatedUser = await tx.user.update({
         where: { id: request.requestedById },
         data: {
-          role: requestedBy?.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'ADMIN',
+          role: activeRole,
           societyId: society.id,
           flatId: adminFlatId,
           isActive: true,
@@ -188,6 +190,20 @@ export class SocietyRegistrationService {
         select: {
           id: true, name: true, phone: true,
           email: true, role: true, societyId: true, flatId: true,
+        },
+      });
+
+      await tx.userFlatMembership.create({
+        data: {
+          userId: request.requestedById,
+          societyId: society.id,
+          flatId: adminFlatId,
+          role: 'ADMIN',
+          residentType: shouldCreateAdminFlat ? request.adminResidentType ?? 'OWNER' : undefined,
+          isOwner: shouldCreateAdminFlat ? request.adminResidentType === 'OWNER' : false,
+          isPrimary: shouldCreateAdminFlat,
+          isActive: true,
+          isDefault: true,
         },
       });
 

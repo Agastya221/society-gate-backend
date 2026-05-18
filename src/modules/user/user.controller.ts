@@ -104,6 +104,26 @@ export class UserController {
     });
   });
 
+  getContexts = asyncHandler(async (req: Request, res: Response) => {
+    const result = await userService.getContexts(req.user!.id);
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  });
+
+  switchContext = asyncHandler(async (req: Request, res: Response) => {
+    const { membershipId } = req.body;
+    const result = await userService.switchContext(req.user!.id, membershipId);
+
+    res.json({
+      success: true,
+      message: 'Context switched successfully',
+      data: result,
+    });
+  });
+
   // Update Profile
   updateProfile = asyncHandler(async (req: Request, res: Response) => {
     const user = await userService.updateProfile(req.user!.id, req.body);

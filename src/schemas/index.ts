@@ -92,6 +92,10 @@ export const updateFcmTokenSchema = z.object({
   deviceType: z.enum(['android', 'ios']),
 });
 
+export const switchContextSchema = z.object({
+  membershipId: uuidSchema,
+});
+
 export const createGuardSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
   phone: phoneSchema,

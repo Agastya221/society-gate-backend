@@ -20,6 +20,7 @@ import {
   toggleUserStatusSchema,
   bootstrapSuperAdminSchema,
   updateFcmTokenSchema,
+  switchContextSchema,
   idParams,
 } from '../../schemas';
 
@@ -60,6 +61,23 @@ router.post('/logout', authenticate, userController.logout);
 // Get Profile
 router.get('/resident-app/profile', authenticateResidentApp, cache({ ttl: 300, keyPrefix: 'user:profile', varyBy: ['userId'] }), userController.getProfile);
 
+// Get all societies/flats/roles the user can switch into
+router.get(
+  '/resident-app/contexts',
+  authenticateResidentForOnboarding,
+  cache({ ttl: 120, keyPrefix: 'user:contexts', varyBy: ['userId'] }),
+  userController.getContexts
+);
+
+// Switch the active society/flat context used by existing APIs
+router.post(
+  '/resident-app/switch-context',
+  authenticateResidentApp,
+  validate({ body: switchContextSchema }),
+  clearCacheAfter(['api:user*']),
+  userController.switchContext
+);
+
 // Update Profile
 router.patch('/resident-app/profile', authenticateResidentApp, validate({ body: updateProfileSchema }), clearCacheAfter(['api:user*']), userController.updateProfile);
 
@@ -67,7 +85,7 @@ router.patch('/resident-app/profile', authenticateResidentApp, validate({ body: 
 router.post(
   '/resident-app/create-guard',
   authenticateResidentApp,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SUPER_ADMIN'),
   validate({ body: createGuardSchema }),
   clearCacheAfter(['api:user*']),
   userController.createGuard
@@ -77,7 +95,7 @@ router.post(
 router.get(
   '/resident-app/guards',
   authenticateResidentApp,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SUPER_ADMIN'),
   cache({ ttl: 300, keyPrefix: 'user:guards', varyBy: ['societyId'] }),
   userController.getGuards
 );
@@ -102,7 +120,7 @@ router.patch(
 router.patch(
   '/resident-app/users/:id/status',
   authenticateResidentApp,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SUPER_ADMIN'),
   validate({ params: idParams, body: toggleUserStatusSchema }),
   clearCacheAfter(['api:user*']),
   userController.toggleUserStatus

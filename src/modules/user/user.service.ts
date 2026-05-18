@@ -136,6 +136,7 @@ export class UserService {
       });
 
       const { password: _, refreshToken: __, ...safe } = user;
+      const contexts = await this.getContexts(user.id);
 
       // Tell frontend which panel to show based on role
       const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(user.role)
@@ -144,6 +145,7 @@ export class UserService {
 
       return {
         accessToken, refreshToken, user: safe,
+        contexts,
         requiresOnboarding: !user.isActive || !user.societyId,
         onboardingStatus: onboardingRequest?.status || 'NOT_STARTED',
         appType: 'RESIDENT_APP',
@@ -168,8 +170,10 @@ export class UserService {
     });
 
     const { password: _, refreshToken: __, ...safe } = user;
+    const contexts = await this.getContexts(user.id);
     return {
       accessToken, refreshToken, user: safe,
+      contexts,
       requiresOnboarding: true,
       onboardingStatus: 'DRAFT',
       appType: 'RESIDENT_APP',
@@ -211,13 +215,14 @@ export class UserService {
     });
 
     const { password: _, refreshToken: __, ...safe } = user;
+    const contexts = await this.getContexts(user.id);
 
     // Tell the frontend which panel to show based on role
     const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(user.role)
       ? 'ADMIN_PANEL'
       : 'RESIDENT_PANEL';
 
-    return { accessToken, refreshToken, user: safe, appType: 'RESIDENT_APP', redirectTo };
+    return { accessToken, refreshToken, user: safe, contexts, appType: 'RESIDENT_APP', redirectTo };
   }
 
   // ============================================
@@ -275,8 +280,11 @@ export class UserService {
 
     const admin = await prisma.user.findUnique({ where: { id: adminId } });
 
-    if (!admin || admin.role !== 'ADMIN') {
+    if (!admin || !['ADMIN', 'SUPER_ADMIN'].includes(admin.role)) {
       throw new AppError('Only admin can create guard accounts', 403);
+    }
+    if (!admin.societyId) {
+      throw new AppError('Select a society before creating guard accounts', 400);
     }
 
     const existingUser = await prisma.user.findUnique({ where: { phone: data.phone } });
@@ -292,6 +300,16 @@ export class UserService {
         isActive: true,
       },
       include: { society: true },
+    });
+
+    await prisma.userFlatMembership.create({
+      data: {
+        userId: guard.id,
+        societyId: guard.societyId!,
+        role: 'GUARD',
+        isActive: true,
+        isDefault: true,
+      },
     });
 
     const { password: _, ...guardWithoutPassword } = guard;
@@ -311,6 +329,188 @@ export class UserService {
 
     const { password: _, refreshToken: __, ...userWithoutSensitive } = user;
     return userWithoutSensitive;
+  }
+
+  // ============================================
+  // RESIDENT APP - MULTI SOCIETY / FLAT CONTEXTS
+  // ============================================
+  async getContexts(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        flatMemberships: {
+          where: { isActive: true },
+          include: {
+            society: {
+              select: {
+                id: true,
+                name: true,
+                address: true,
+                city: true,
+                state: true,
+                pincode: true,
+                isActive: true,
+              },
+            },
+            flat: {
+              select: {
+                id: true,
+                flatNumber: true,
+                floor: true,
+                block: { select: { id: true, name: true } },
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
+    if (!user) throw new AppError('User not found', 404);
+
+    const contexts = user.flatMemberships.map((membership) => {
+      const blockName = membership.flat?.block?.name ?? null;
+      const flatNumber = membership.flat?.flatNumber ?? null;
+      const flatLabel = flatNumber
+        ? [blockName, flatNumber].filter(Boolean).join(' - ')
+        : 'Society Admin';
+
+      const isActiveContext =
+        user.societyId === membership.societyId &&
+        user.flatId === membership.flatId &&
+        (user.role === membership.role || user.role === 'SUPER_ADMIN');
+
+      return {
+        membershipId: membership.id,
+        societyId: membership.societyId,
+        societyName: membership.society.name,
+        societyCity: membership.society.city,
+        societyIsActive: membership.society.isActive,
+        flatId: membership.flatId,
+        flatNumber,
+        blockId: membership.flat?.block?.id ?? null,
+        blockName,
+        floor: membership.flat?.floor ?? null,
+        label: flatLabel,
+        subtitle: membership.society.name,
+        role: membership.role,
+        residentType: membership.residentType,
+        isOwner: membership.isOwner,
+        isPrimary: membership.isPrimary,
+        isDefault: membership.isDefault,
+        isActiveContext,
+      };
+    });
+
+    const societies = contexts.reduce<Array<{
+      societyId: string;
+      societyName: string;
+      societyCity: string;
+      contexts: typeof contexts;
+    }>>((groups, context) => {
+      let group = groups.find((item) => item.societyId === context.societyId);
+      if (!group) {
+        group = {
+          societyId: context.societyId,
+          societyName: context.societyName,
+          societyCity: context.societyCity,
+          contexts: [],
+        };
+        groups.push(group);
+      }
+      group.contexts.push(context);
+      return groups;
+    }, []);
+
+    return {
+      activeContext: contexts.find((context) => context.isActiveContext) ?? null,
+      contexts,
+      societies,
+    };
+  }
+
+  async switchContext(userId: string, membershipId: string) {
+    const [user, membership] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId } }),
+      prisma.userFlatMembership.findFirst({
+        where: { id: membershipId, userId, isActive: true },
+        include: {
+          society: true,
+          flat: { include: { block: true } },
+        },
+      }),
+    ]);
+
+    if (!user || !user.isActive) {
+      throw new AppError('User not found or inactive', 401);
+    }
+
+    if (!membership) {
+      throw new AppError('Context not found for this user', 404);
+    }
+
+    if (!membership.society.isActive) {
+      throw new AppError('Society is inactive', 403);
+    }
+
+    const nextRole = user.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : membership.role;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        role: nextRole,
+        societyId: membership.societyId,
+        flatId: membership.flatId,
+        isOwner: membership.isOwner,
+        isPrimaryResident: membership.isPrimary,
+      },
+      include: { flat: true, society: true },
+    });
+
+    const accessToken = generateAccessToken(
+      updatedUser.id,
+      updatedUser.role,
+      updatedUser.societyId,
+      updatedUser.flatId,
+      'RESIDENT_APP',
+    );
+    const refreshToken = generateRefreshToken(
+      updatedUser.id,
+      updatedUser.role,
+      updatedUser.societyId,
+      updatedUser.flatId,
+      'RESIDENT_APP',
+    );
+
+    await prisma.user.update({
+      where: { id: updatedUser.id },
+      data: { refreshToken, lastTokenRefresh: new Date() },
+    });
+
+    await prisma.userFlatMembership.updateMany({
+      where: { userId: updatedUser.id },
+      data: { isDefault: false },
+    });
+    await prisma.userFlatMembership.update({
+      where: { id: membership.id },
+      data: { isDefault: true },
+    });
+
+    const { password: _, refreshToken: __, ...safe } = updatedUser;
+    const contexts = await this.getContexts(updatedUser.id);
+
+    const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(updatedUser.role)
+      ? 'ADMIN_PANEL'
+      : 'RESIDENT_PANEL';
+
+    return {
+      accessToken,
+      refreshToken,
+      user: safe,
+      contexts,
+      appType: 'RESIDENT_APP',
+      redirectTo,
+    };
   }
 
   // ============================================

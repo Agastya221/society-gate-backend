@@ -19,7 +19,10 @@ export class SettingsService {
           },
         },
         society: true,
-        onboardingRequest: true,
+        onboardingRequests: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
     });
 
@@ -141,7 +144,7 @@ export class SettingsService {
         email: user.email ?? null,
         photoUrl: user.photoUrl ?? null,
         isActive: user.isActive,
-        onboardingStatus: user.onboardingRequest?.status ?? 'NOT_STARTED',
+        onboardingStatus: user.onboardingRequests[0]?.status ?? 'NOT_STARTED',
       },
       completion: {
         percentage,
