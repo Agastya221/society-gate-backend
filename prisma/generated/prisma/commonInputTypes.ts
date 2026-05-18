@@ -360,6 +360,13 @@ export type FloatNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
 }
 
+export type EnumResidentTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResidentType | Prisma.EnumResidentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumResidentTypeNullableFilter<$PrismaModel> | $Enums.ResidentType | null
+}
+
 export type EnumSocietyRegistrationStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.SocietyRegistrationStatus | Prisma.EnumSocietyRegistrationStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SocietyRegistrationStatus[] | Prisma.ListEnumSocietyRegistrationStatusFieldRefInput<$PrismaModel>
@@ -397,6 +404,16 @@ export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+}
+
+export type EnumResidentTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResidentType | Prisma.EnumResidentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumResidentTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ResidentType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResidentTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResidentTypeNullableFilter<$PrismaModel>
 }
 
 export type EnumSocietyRegistrationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -1501,6 +1518,13 @@ export type NestedFloatNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
 }
 
+export type NestedEnumResidentTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResidentType | Prisma.EnumResidentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumResidentTypeNullableFilter<$PrismaModel> | $Enums.ResidentType | null
+}
+
 export type NestedEnumSocietyRegistrationStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.SocietyRegistrationStatus | Prisma.EnumSocietyRegistrationStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SocietyRegistrationStatus[] | Prisma.ListEnumSocietyRegistrationStatusFieldRefInput<$PrismaModel>
@@ -1538,6 +1562,16 @@ export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumResidentTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResidentType | Prisma.EnumResidentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ResidentType[] | Prisma.ListEnumResidentTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumResidentTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ResidentType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResidentTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResidentTypeNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumSocietyRegistrationStatusWithAggregatesFilter<$PrismaModel = never> = {

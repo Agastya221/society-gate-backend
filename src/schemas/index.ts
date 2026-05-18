@@ -436,6 +436,34 @@ export const submitSocietyRegistrationSchema = z.object({
   contactEmail: z.string().email('Invalid email').optional(),
   totalFlats: z.number().int().positive().optional(),
   monthlyFee: z.number().positive().optional(),
+  applicantIsMember: z.boolean().optional().default(false),
+  adminBlockName: z.string().min(1, 'Block name is required').max(100).optional(),
+  adminFlatNumber: z.string().min(1, 'Flat number is required').max(50).optional(),
+  adminResidentType: residentTypeEnum.optional(),
+}).superRefine((data, ctx) => {
+  if (!data.applicantIsMember) return;
+
+  if (!data.adminBlockName?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Block/tower name is required when applicant is a society member',
+      path: ['adminBlockName'],
+    });
+  }
+  if (!data.adminFlatNumber?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Flat number is required when applicant is a society member',
+      path: ['adminFlatNumber'],
+    });
+  }
+  if (!data.adminResidentType) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Resident type is required when applicant is a society member',
+      path: ['adminResidentType'],
+    });
+  }
 });
 
 export const rejectSocietyRegistrationSchema = z.object({

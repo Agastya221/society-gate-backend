@@ -910,6 +910,10 @@ export interface SubmitSocietyRegistrationDTO {
   contactEmail?: string;
   totalFlats?: number;
   monthlyFee?: number;
+  applicantIsMember?: boolean;
+  adminBlockName?: string;
+  adminFlatNumber?: string;
+  adminResidentType?: ResidentType;
 }
 
 export interface SocietyRegistrationFilters {

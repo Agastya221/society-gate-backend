@@ -51,6 +51,10 @@ export type SocietyRegistrationRequestMinAggregateOutputType = {
   contactEmail: string | null
   totalFlats: number | null
   monthlyFee: number | null
+  applicantIsMember: boolean | null
+  adminBlockName: string | null
+  adminFlatNumber: string | null
+  adminResidentType: $Enums.ResidentType | null
   status: $Enums.SocietyRegistrationStatus | null
   reviewedById: string | null
   reviewedAt: Date | null
@@ -73,6 +77,10 @@ export type SocietyRegistrationRequestMaxAggregateOutputType = {
   contactEmail: string | null
   totalFlats: number | null
   monthlyFee: number | null
+  applicantIsMember: boolean | null
+  adminBlockName: string | null
+  adminFlatNumber: string | null
+  adminResidentType: $Enums.ResidentType | null
   status: $Enums.SocietyRegistrationStatus | null
   reviewedById: string | null
   reviewedAt: Date | null
@@ -95,6 +103,10 @@ export type SocietyRegistrationRequestCountAggregateOutputType = {
   contactEmail: number
   totalFlats: number
   monthlyFee: number
+  applicantIsMember: number
+  adminBlockName: number
+  adminFlatNumber: number
+  adminResidentType: number
   status: number
   reviewedById: number
   reviewedAt: number
@@ -129,6 +141,10 @@ export type SocietyRegistrationRequestMinAggregateInputType = {
   contactEmail?: true
   totalFlats?: true
   monthlyFee?: true
+  applicantIsMember?: true
+  adminBlockName?: true
+  adminFlatNumber?: true
+  adminResidentType?: true
   status?: true
   reviewedById?: true
   reviewedAt?: true
@@ -151,6 +167,10 @@ export type SocietyRegistrationRequestMaxAggregateInputType = {
   contactEmail?: true
   totalFlats?: true
   monthlyFee?: true
+  applicantIsMember?: true
+  adminBlockName?: true
+  adminFlatNumber?: true
+  adminResidentType?: true
   status?: true
   reviewedById?: true
   reviewedAt?: true
@@ -173,6 +193,10 @@ export type SocietyRegistrationRequestCountAggregateInputType = {
   contactEmail?: true
   totalFlats?: true
   monthlyFee?: true
+  applicantIsMember?: true
+  adminBlockName?: true
+  adminFlatNumber?: true
+  adminResidentType?: true
   status?: true
   reviewedById?: true
   reviewedAt?: true
@@ -282,6 +306,10 @@ export type SocietyRegistrationRequestGroupByOutputType = {
   contactEmail: string | null
   totalFlats: number | null
   monthlyFee: number | null
+  applicantIsMember: boolean
+  adminBlockName: string | null
+  adminFlatNumber: string | null
+  adminResidentType: $Enums.ResidentType | null
   status: $Enums.SocietyRegistrationStatus
   reviewedById: string | null
   reviewedAt: Date | null
@@ -327,6 +355,10 @@ export type SocietyRegistrationRequestWhereInput = {
   contactEmail?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
   totalFlats?: Prisma.IntNullableFilter<"SocietyRegistrationRequest"> | number | null
   monthlyFee?: Prisma.FloatNullableFilter<"SocietyRegistrationRequest"> | number | null
+  applicantIsMember?: Prisma.BoolFilter<"SocietyRegistrationRequest"> | boolean
+  adminBlockName?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
+  adminFlatNumber?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
+  adminResidentType?: Prisma.EnumResidentTypeNullableFilter<"SocietyRegistrationRequest"> | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFilter<"SocietyRegistrationRequest"> | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"SocietyRegistrationRequest"> | Date | string | null
@@ -352,6 +384,10 @@ export type SocietyRegistrationRequestOrderByWithRelationInput = {
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   totalFlats?: Prisma.SortOrderInput | Prisma.SortOrder
   monthlyFee?: Prisma.SortOrderInput | Prisma.SortOrder
+  applicantIsMember?: Prisma.SortOrder
+  adminBlockName?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminFlatNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminResidentType?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -381,6 +417,10 @@ export type SocietyRegistrationRequestWhereUniqueInput = Prisma.AtLeast<{
   contactEmail?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
   totalFlats?: Prisma.IntNullableFilter<"SocietyRegistrationRequest"> | number | null
   monthlyFee?: Prisma.FloatNullableFilter<"SocietyRegistrationRequest"> | number | null
+  applicantIsMember?: Prisma.BoolFilter<"SocietyRegistrationRequest"> | boolean
+  adminBlockName?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
+  adminFlatNumber?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
+  adminResidentType?: Prisma.EnumResidentTypeNullableFilter<"SocietyRegistrationRequest"> | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFilter<"SocietyRegistrationRequest"> | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"SocietyRegistrationRequest"> | Date | string | null
@@ -405,6 +445,10 @@ export type SocietyRegistrationRequestOrderByWithAggregationInput = {
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   totalFlats?: Prisma.SortOrderInput | Prisma.SortOrder
   monthlyFee?: Prisma.SortOrderInput | Prisma.SortOrder
+  applicantIsMember?: Prisma.SortOrder
+  adminBlockName?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminFlatNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminResidentType?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -435,6 +479,10 @@ export type SocietyRegistrationRequestScalarWhereWithAggregatesInput = {
   contactEmail?: Prisma.StringNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | string | null
   totalFlats?: Prisma.IntNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | number | null
   monthlyFee?: Prisma.FloatNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | number | null
+  applicantIsMember?: Prisma.BoolWithAggregatesFilter<"SocietyRegistrationRequest"> | boolean
+  adminBlockName?: Prisma.StringNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | string | null
+  adminFlatNumber?: Prisma.StringNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | string | null
+  adminResidentType?: Prisma.EnumResidentTypeNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusWithAggregatesFilter<"SocietyRegistrationRequest"> | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.StringNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SocietyRegistrationRequest"> | Date | string | null
@@ -456,6 +504,10 @@ export type SocietyRegistrationRequestCreateInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -479,6 +531,10 @@ export type SocietyRegistrationRequestUncheckedCreateInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -500,6 +556,10 @@ export type SocietyRegistrationRequestUpdateInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -523,6 +583,10 @@ export type SocietyRegistrationRequestUncheckedUpdateInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -545,6 +609,10 @@ export type SocietyRegistrationRequestCreateManyInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -566,6 +634,10 @@ export type SocietyRegistrationRequestUpdateManyMutationInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -586,6 +658,10 @@ export type SocietyRegistrationRequestUncheckedUpdateManyInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -613,6 +689,10 @@ export type SocietyRegistrationRequestCountOrderByAggregateInput = {
   contactEmail?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  applicantIsMember?: Prisma.SortOrder
+  adminBlockName?: Prisma.SortOrder
+  adminFlatNumber?: Prisma.SortOrder
+  adminResidentType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
@@ -640,6 +720,10 @@ export type SocietyRegistrationRequestMaxOrderByAggregateInput = {
   contactEmail?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  applicantIsMember?: Prisma.SortOrder
+  adminBlockName?: Prisma.SortOrder
+  adminFlatNumber?: Prisma.SortOrder
+  adminResidentType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
@@ -662,6 +746,10 @@ export type SocietyRegistrationRequestMinOrderByAggregateInput = {
   contactEmail?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
+  applicantIsMember?: Prisma.SortOrder
+  adminBlockName?: Prisma.SortOrder
+  adminFlatNumber?: Prisma.SortOrder
+  adminResidentType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
@@ -730,6 +818,10 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type NullableEnumResidentTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ResidentType | null
 }
 
 export type EnumSocietyRegistrationStatusFieldUpdateOperationsInput = {
@@ -834,6 +926,10 @@ export type SocietyRegistrationRequestCreateWithoutSocietyInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -856,6 +952,10 @@ export type SocietyRegistrationRequestUncheckedCreateWithoutSocietyInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -892,6 +992,10 @@ export type SocietyRegistrationRequestUpdateWithoutSocietyInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -914,6 +1018,10 @@ export type SocietyRegistrationRequestUncheckedUpdateWithoutSocietyInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -934,6 +1042,10 @@ export type SocietyRegistrationRequestCreateWithoutRequestedByInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -955,6 +1067,10 @@ export type SocietyRegistrationRequestUncheckedCreateWithoutRequestedByInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -986,6 +1102,10 @@ export type SocietyRegistrationRequestCreateWithoutReviewedByInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1008,6 +1128,10 @@ export type SocietyRegistrationRequestUncheckedCreateWithoutReviewedByInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1058,6 +1182,10 @@ export type SocietyRegistrationRequestScalarWhereInput = {
   contactEmail?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
   totalFlats?: Prisma.IntNullableFilter<"SocietyRegistrationRequest"> | number | null
   monthlyFee?: Prisma.FloatNullableFilter<"SocietyRegistrationRequest"> | number | null
+  applicantIsMember?: Prisma.BoolFilter<"SocietyRegistrationRequest"> | boolean
+  adminBlockName?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
+  adminFlatNumber?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
+  adminResidentType?: Prisma.EnumResidentTypeNullableFilter<"SocietyRegistrationRequest"> | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFilter<"SocietyRegistrationRequest"> | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.StringNullableFilter<"SocietyRegistrationRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"SocietyRegistrationRequest"> | Date | string | null
@@ -1095,6 +1223,10 @@ export type SocietyRegistrationRequestCreateManyRequestedByInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1117,6 +1249,10 @@ export type SocietyRegistrationRequestCreateManyReviewedByInput = {
   contactEmail?: string | null
   totalFlats?: number | null
   monthlyFee?: number | null
+  applicantIsMember?: boolean
+  adminBlockName?: string | null
+  adminFlatNumber?: string | null
+  adminResidentType?: $Enums.ResidentType | null
   status?: $Enums.SocietyRegistrationStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1137,6 +1273,10 @@ export type SocietyRegistrationRequestUpdateWithoutRequestedByInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1158,6 +1298,10 @@ export type SocietyRegistrationRequestUncheckedUpdateWithoutRequestedByInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1179,6 +1323,10 @@ export type SocietyRegistrationRequestUncheckedUpdateManyWithoutRequestedByInput
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1200,6 +1348,10 @@ export type SocietyRegistrationRequestUpdateWithoutReviewedByInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1222,6 +1374,10 @@ export type SocietyRegistrationRequestUncheckedUpdateWithoutReviewedByInput = {
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1243,6 +1399,10 @@ export type SocietyRegistrationRequestUncheckedUpdateManyWithoutReviewedByInput 
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalFlats?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   monthlyFee?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  applicantIsMember?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adminBlockName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminFlatNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminResidentType?: Prisma.NullableEnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType | null
   status?: Prisma.EnumSocietyRegistrationStatusFieldUpdateOperationsInput | $Enums.SocietyRegistrationStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1266,6 +1426,10 @@ export type SocietyRegistrationRequestSelect<ExtArgs extends runtime.Types.Exten
   contactEmail?: boolean
   totalFlats?: boolean
   monthlyFee?: boolean
+  applicantIsMember?: boolean
+  adminBlockName?: boolean
+  adminFlatNumber?: boolean
+  adminResidentType?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1291,6 +1455,10 @@ export type SocietyRegistrationRequestSelectCreateManyAndReturn<ExtArgs extends 
   contactEmail?: boolean
   totalFlats?: boolean
   monthlyFee?: boolean
+  applicantIsMember?: boolean
+  adminBlockName?: boolean
+  adminFlatNumber?: boolean
+  adminResidentType?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1316,6 +1484,10 @@ export type SocietyRegistrationRequestSelectUpdateManyAndReturn<ExtArgs extends 
   contactEmail?: boolean
   totalFlats?: boolean
   monthlyFee?: boolean
+  applicantIsMember?: boolean
+  adminBlockName?: boolean
+  adminFlatNumber?: boolean
+  adminResidentType?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1341,6 +1513,10 @@ export type SocietyRegistrationRequestSelectScalar = {
   contactEmail?: boolean
   totalFlats?: boolean
   monthlyFee?: boolean
+  applicantIsMember?: boolean
+  adminBlockName?: boolean
+  adminFlatNumber?: boolean
+  adminResidentType?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1348,7 +1524,7 @@ export type SocietyRegistrationRequestSelectScalar = {
   societyId?: boolean
 }
 
-export type SocietyRegistrationRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "requestedById" | "societyName" | "address" | "city" | "state" | "pincode" | "contactName" | "contactPhone" | "contactEmail" | "totalFlats" | "monthlyFee" | "status" | "reviewedById" | "reviewedAt" | "rejectionReason" | "societyId", ExtArgs["result"]["societyRegistrationRequest"]>
+export type SocietyRegistrationRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "requestedById" | "societyName" | "address" | "city" | "state" | "pincode" | "contactName" | "contactPhone" | "contactEmail" | "totalFlats" | "monthlyFee" | "applicantIsMember" | "adminBlockName" | "adminFlatNumber" | "adminResidentType" | "status" | "reviewedById" | "reviewedAt" | "rejectionReason" | "societyId", ExtArgs["result"]["societyRegistrationRequest"]>
 export type SocietyRegistrationRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reviewedBy?: boolean | Prisma.SocietyRegistrationRequest$reviewedByArgs<ExtArgs>
@@ -1387,6 +1563,10 @@ export type $SocietyRegistrationRequestPayload<ExtArgs extends runtime.Types.Ext
     contactEmail: string | null
     totalFlats: number | null
     monthlyFee: number | null
+    applicantIsMember: boolean
+    adminBlockName: string | null
+    adminFlatNumber: string | null
+    adminResidentType: $Enums.ResidentType | null
     status: $Enums.SocietyRegistrationStatus
     reviewedById: string | null
     reviewedAt: Date | null
@@ -1832,6 +2012,10 @@ export interface SocietyRegistrationRequestFieldRefs {
   readonly contactEmail: Prisma.FieldRef<"SocietyRegistrationRequest", 'String'>
   readonly totalFlats: Prisma.FieldRef<"SocietyRegistrationRequest", 'Int'>
   readonly monthlyFee: Prisma.FieldRef<"SocietyRegistrationRequest", 'Float'>
+  readonly applicantIsMember: Prisma.FieldRef<"SocietyRegistrationRequest", 'Boolean'>
+  readonly adminBlockName: Prisma.FieldRef<"SocietyRegistrationRequest", 'String'>
+  readonly adminFlatNumber: Prisma.FieldRef<"SocietyRegistrationRequest", 'String'>
+  readonly adminResidentType: Prisma.FieldRef<"SocietyRegistrationRequest", 'ResidentType'>
   readonly status: Prisma.FieldRef<"SocietyRegistrationRequest", 'SocietyRegistrationStatus'>
   readonly reviewedById: Prisma.FieldRef<"SocietyRegistrationRequest", 'String'>
   readonly reviewedAt: Prisma.FieldRef<"SocietyRegistrationRequest", 'DateTime'>

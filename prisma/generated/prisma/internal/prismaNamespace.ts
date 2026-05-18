@@ -4134,6 +4134,10 @@ export const SocietyRegistrationRequestScalarFieldEnum = {
   contactEmail: 'contactEmail',
   totalFlats: 'totalFlats',
   monthlyFee: 'monthlyFee',
+  applicantIsMember: 'applicantIsMember',
+  adminBlockName: 'adminBlockName',
+  adminFlatNumber: 'adminFlatNumber',
+  adminResidentType: 'adminResidentType',
   status: 'status',
   reviewedById: 'reviewedById',
   reviewedAt: 'reviewedAt',
@@ -5200,6 +5204,20 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'ResidentType'
+ */
+export type EnumResidentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResidentType'>
+    
+
+
+/**
+ * Reference to a field of type 'ResidentType[]'
+ */
+export type ListEnumResidentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResidentType[]'>
+    
+
+
+/**
  * Reference to a field of type 'SocietyRegistrationStatus'
  */
 export type EnumSocietyRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyRegistrationStatus'>
@@ -5658,20 +5676,6 @@ export type EnumPollStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'PollStatus[]'
  */
 export type ListEnumPollStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PollStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'ResidentType'
- */
-export type EnumResidentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResidentType'>
-    
-
-
-/**
- * Reference to a field of type 'ResidentType[]'
- */
-export type ListEnumResidentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResidentType[]'>
     
 
 

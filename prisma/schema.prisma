@@ -577,6 +577,13 @@ model SocietyRegistrationRequest {
   totalFlats   Int?
   monthlyFee   Float?
 
+  // Optional first-admin flat claim. If false, approved admin can manage
+  // the society but will not get resident flat-level features.
+  applicantIsMember Boolean       @default(false)
+  adminBlockName    String?
+  adminFlatNumber   String?
+  adminResidentType ResidentType?
+
   // Review tracking
   status          SocietyRegistrationStatus @default(PENDING)
   reviewedById    String?

@@ -6,6 +6,12 @@ import type { SubmitSocietyRegistrationDTO, SocietyRegistrationFilters } from '.
 export class SocietyRegistrationService {
 
   async submitRequest(userId: string, data: SubmitSocietyRegistrationDTO) {
+    if (data.applicantIsMember) {
+      if (!data.adminBlockName?.trim() || !data.adminFlatNumber?.trim() || !data.adminResidentType) {
+        throw new AppError('Block, flat number, and resident type are required when you are a society member.', 400);
+      }
+    }
+
     const existing = await prisma.societyRegistrationRequest.findFirst({
       where: {
         requestedById: userId,
@@ -20,7 +26,13 @@ export class SocietyRegistrationService {
     }
 
     const request = await prisma.societyRegistrationRequest.create({
-      data: { requestedById: userId, ...data },
+      data: {
+        requestedById: userId,
+        ...data,
+        adminBlockName: data.applicantIsMember ? data.adminBlockName?.trim() : undefined,
+        adminFlatNumber: data.applicantIsMember ? data.adminFlatNumber?.trim() : undefined,
+        adminResidentType: data.applicantIsMember ? data.adminResidentType : undefined,
+      },
       include: {
         requestedBy: {
           select: { id: true, name: true, phone: true, email: true },
@@ -129,19 +141,53 @@ export class SocietyRegistrationService {
 
       const requestedBy = await tx.user.findUnique({
         where: { id: request.requestedById },
-        select: { role: true },
+        select: { role: true, name: true, phone: true, email: true },
       });
+
+      let adminFlatId: string | null = null;
+      const shouldCreateAdminFlat =
+        request.applicantIsMember &&
+        !!request.adminBlockName?.trim() &&
+        !!request.adminFlatNumber?.trim();
+
+      if (shouldCreateAdminFlat) {
+        const block = await tx.block.create({
+          data: {
+            societyId: society.id,
+            name: request.adminBlockName!.trim(),
+          },
+        });
+
+        const residentType = request.adminResidentType ?? 'OWNER';
+        const flat = await tx.flat.create({
+          data: {
+            societyId: society.id,
+            blockId: block.id,
+            flatNumber: request.adminFlatNumber!.trim(),
+            isOccupied: true,
+            ownerName: request.contactName || requestedBy?.name || undefined,
+            ownerPhone: request.contactPhone || requestedBy?.phone || undefined,
+            ownerEmail: request.contactEmail || requestedBy?.email || undefined,
+            currentOwnerId: residentType === 'OWNER' ? request.requestedById : undefined,
+            currentTenantId: residentType === 'TENANT' ? request.requestedById : undefined,
+          },
+        });
+        adminFlatId = flat.id;
+      }
 
       const updatedUser = await tx.user.update({
         where: { id: request.requestedById },
         data: {
           role: requestedBy?.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'ADMIN',
           societyId: society.id,
+          flatId: adminFlatId,
           isActive: true,
+          isOwner: shouldCreateAdminFlat ? request.adminResidentType === 'OWNER' : false,
+          isPrimaryResident: shouldCreateAdminFlat,
         },
         select: {
           id: true, name: true, phone: true,
-          email: true, role: true, societyId: true,
+          email: true, role: true, societyId: true, flatId: true,
         },
       });
 
