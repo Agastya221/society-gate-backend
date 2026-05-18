@@ -396,6 +396,11 @@ export class UserService {
         role: membership.role,
         residentType: membership.residentType,
         isOwner: membership.isOwner,
+        isLivingHere: membership.isLivingHere,
+        canUseDailyGateFeatures:
+          membership.role !== 'RESIDENT' ||
+          membership.residentType !== 'OWNER' ||
+          membership.isLivingHere,
         isPrimary: membership.isPrimary,
         isDefault: membership.isDefault,
         isActiveContext,

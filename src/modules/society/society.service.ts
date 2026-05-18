@@ -1,6 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import type { Prisma } from '../../types';
+import type { AuthenticatedUser, Prisma } from '../../types';
 import type { SubscriptionCycle } from '../../../prisma/generated/prisma/enums';
 
 function nextDueDateFromCycle(from: Date, cycle: SubscriptionCycle): Date {
@@ -15,6 +15,12 @@ function nextDueDateFromCycle(from: Date, cycle: SubscriptionCycle): Date {
 }
 
 export class SocietyService {
+  private assertCanManageSociety(user: AuthenticatedUser, societyId: string) {
+    if (user.role === 'SUPER_ADMIN') return;
+    if (user.role === 'ADMIN' && user.societyId === societyId) return;
+    throw new AppError('You can manage flats only for your active society', 403);
+  }
+
   async createSociety(data: Omit<Prisma.SocietyUncheckedCreateInput, 'nextDueDate' | 'isActive'>) {
     const cycle = (data.subscriptionCycle as SubscriptionCycle | undefined) ?? 'MONTHLY';
     const nextDueDate = nextDueDateFromCycle(new Date(), cycle);
@@ -53,6 +59,129 @@ export class SocietyService {
     });
 
     return society;
+  }
+
+  async createBlock(
+    societyId: string,
+    data: { name: string; totalFloors?: number; description?: string },
+    user: AuthenticatedUser
+  ) {
+    this.assertCanManageSociety(user, societyId);
+
+    const name = data.name?.trim();
+    if (!name) throw new AppError('Block name is required', 400);
+
+    const society = await prisma.society.findUnique({ where: { id: societyId }, select: { id: true } });
+    if (!society) throw new AppError('Society not found', 404);
+
+    return prisma.block.create({
+      data: {
+        societyId,
+        name,
+        totalFloors: data.totalFloors,
+        description: data.description?.trim() || undefined,
+      },
+    });
+  }
+
+  private async findOrCreateBlock(societyId: string, blockName: string) {
+    const name = blockName.trim();
+    if (!name) throw new AppError('Block name is required', 400);
+
+    const existing = await prisma.block.findUnique({
+      where: { societyId_name: { societyId, name } },
+    });
+
+    if (existing) return existing;
+
+    return prisma.block.create({
+      data: { societyId, name },
+    });
+  }
+
+  async createFlat(
+    societyId: string,
+    data: {
+      blockName: string;
+      flatNumber: string;
+      floor?: string;
+      ownerName?: string;
+      ownerPhone?: string;
+      ownerEmail?: string;
+    },
+    user: AuthenticatedUser
+  ) {
+    this.assertCanManageSociety(user, societyId);
+
+    const society = await prisma.society.findUnique({ where: { id: societyId }, select: { id: true } });
+    if (!society) throw new AppError('Society not found', 404);
+
+    const flatNumber = data.flatNumber?.trim();
+    if (!flatNumber) throw new AppError('Flat number is required', 400);
+
+    const block = await this.findOrCreateBlock(societyId, data.blockName);
+
+    return prisma.flat.create({
+      data: {
+        societyId,
+        blockId: block.id,
+        flatNumber,
+        floor: data.floor?.trim() || undefined,
+        ownerName: data.ownerName?.trim() || undefined,
+        ownerPhone: data.ownerPhone?.trim() || undefined,
+        ownerEmail: data.ownerEmail?.trim() || undefined,
+      },
+      include: { block: true },
+    });
+  }
+
+  async updateFlat(
+    societyId: string,
+    flatId: string,
+    data: {
+      blockName?: string;
+      flatNumber?: string;
+      floor?: string;
+      ownerName?: string;
+      ownerPhone?: string;
+      ownerEmail?: string;
+      isActive?: boolean;
+    },
+    user: AuthenticatedUser
+  ) {
+    this.assertCanManageSociety(user, societyId);
+
+    const flat = await prisma.flat.findFirst({ where: { id: flatId, societyId } });
+    if (!flat) throw new AppError('Flat not found', 404);
+
+    const block = data.blockName ? await this.findOrCreateBlock(societyId, data.blockName) : null;
+
+    return prisma.flat.update({
+      where: { id: flatId },
+      data: {
+        blockId: block?.id,
+        flatNumber: data.flatNumber?.trim(),
+        floor: data.floor?.trim() || undefined,
+        ownerName: data.ownerName?.trim() || undefined,
+        ownerPhone: data.ownerPhone?.trim() || undefined,
+        ownerEmail: data.ownerEmail?.trim() || undefined,
+        isActive: data.isActive,
+      },
+      include: { block: true },
+    });
+  }
+
+  async deactivateFlat(societyId: string, flatId: string, user: AuthenticatedUser) {
+    this.assertCanManageSociety(user, societyId);
+
+    const flat = await prisma.flat.findFirst({ where: { id: flatId, societyId } });
+    if (!flat) throw new AppError('Flat not found', 404);
+
+    return prisma.flat.update({
+      where: { id: flatId },
+      data: { isActive: false },
+      include: { block: true },
+    });
   }
 
   async getSocieties(filters?: { city?: string; isActive?: boolean; page?: number; limit?: number }) {

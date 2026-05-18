@@ -160,6 +160,7 @@ export interface AppEvents {
     flatNumber: string;
     blockName: string;
     residentType: string;
+    isLivingHere?: boolean;
     userId: string;
   };
   'onboarding.approved': {

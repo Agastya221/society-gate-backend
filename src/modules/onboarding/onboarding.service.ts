@@ -58,6 +58,7 @@ export class OnboardingService {
       where: {
         societyId,
         isActive: true,
+        name: { not: 'Admin' },
       },
       select: {
         id: true,
@@ -125,15 +126,34 @@ export class OnboardingService {
       blockId: string;
       flatId: string;
       residentType: 'OWNER' | 'TENANT';
+      isLivingHere?: boolean;
       documents: Array<{
         type: DocumentType;
-        url: string;
-        fileName: string;
-        fileSize: number;
-        mimeType: string;
+        url?: string;
+        s3Key?: string;
+        fileName?: string;
+        fileSize?: number;
+        mimeType?: string;
       }>;
     }
   ) {
+    const flat = await prisma.flat.findFirst({
+      where: {
+        id: data.flatId,
+        societyId: data.societyId,
+        blockId: data.blockId,
+        isActive: true,
+      },
+    });
+
+    if (!flat) {
+      throw new AppError('Selected flat was not found in this society', 404);
+    }
+
+    const isLivingHere = data.residentType === 'OWNER'
+      ? data.isLivingHere ?? true
+      : true;
+
     // 1. Prevent duplicate active requests for the same flat.
     const existingRequest = await prisma.onboardingRequest.findFirst({
       where: {
@@ -177,11 +197,6 @@ export class OnboardingService {
         throw new AppError('This flat already has an owner claim pending/approved', 400);
       }
 
-      // Also check if flat has currentOwnerId set
-      const flat = await prisma.flat.findUnique({
-        where: { id: data.flatId },
-      });
-
       if (flat?.currentOwnerId) {
         throw new AppError('This flat already has an approved owner', 400);
       }
@@ -211,15 +226,16 @@ export class OnboardingService {
           blockId: data.blockId,
           flatId: data.flatId,
           residentType: data.residentType,
+          isLivingHere,
           status: 'PENDING_APPROVAL',
           submittedAt: new Date(),
           documents: {
             create: data.documents.map((doc) => ({
               documentType: doc.type,
-              documentUrl: doc.url,
-              fileName: doc.fileName,
-              fileSize: doc.fileSize,
-              mimeType: doc.mimeType,
+              documentUrl: doc.url ?? doc.s3Key ?? '',
+              fileName: doc.fileName ?? doc.s3Key?.split('/').pop() ?? 'document',
+              fileSize: doc.fileSize ?? 0,
+              mimeType: doc.mimeType ?? 'application/octet-stream',
             })),
           },
         },
@@ -241,6 +257,7 @@ export class OnboardingService {
           newStatus: 'PENDING_APPROVAL',
           metadata: {
             documentsCount: data.documents.length,
+            isLivingHere,
           },
         },
       });
@@ -248,7 +265,7 @@ export class OnboardingService {
       return onboardingRequest;
     });
 
-    return {
+    const result = {
       requestId: request.id,
       status: request.status,
       submittedAt: request.submittedAt,
@@ -266,9 +283,12 @@ export class OnboardingService {
         flatNumber: request.flat?.flatNumber || '',
         blockName: request.block?.name || '',
         residentType: request.residentType,
+        isLivingHere: request.isLivingHere,
         userId,
       });
     });
+
+    return result;
   }
 
   // ============================================
@@ -316,6 +336,10 @@ export class OnboardingService {
       block: request.block.name,
       flat: request.flat.flatNumber,
       residentType: request.residentType,
+      isLivingHere: request.isLivingHere,
+      ownerOccupancy: request.residentType === 'OWNER'
+        ? request.isLivingHere ? 'RESIDING_OWNER' : 'NON_RESIDING_OWNER'
+        : null,
       submittedAt: request.submittedAt,
       approvedAt: request.approvedAt,
       rejectedAt: request.rejectedAt,
@@ -404,6 +428,10 @@ export class OnboardingService {
           block: req.block.name,
         },
         residentType: req.residentType,
+        isLivingHere: req.isLivingHere,
+        ownerOccupancy: req.residentType === 'OWNER'
+          ? req.isLivingHere ? 'RESIDING_OWNER' : 'NON_RESIDING_OWNER'
+          : null,
         status: req.status,
         submittedAt: req.submittedAt,
         documentsCount: req._count.documents,
@@ -464,6 +492,10 @@ export class OnboardingService {
       block: request.block.name,
       flat: request.flat.flatNumber,
       residentType: request.residentType,
+      isLivingHere: request.isLivingHere,
+      ownerOccupancy: request.residentType === 'OWNER'
+        ? request.isLivingHere ? 'RESIDING_OWNER' : 'NON_RESIDING_OWNER'
+        : null,
       status: request.status,
       submittedAt: request.submittedAt,
       approvedAt: request.approvedAt,
@@ -561,6 +593,7 @@ export class OnboardingService {
                   role: user.role,
                   residentType: user.isOwner ? 'OWNER' : 'TENANT',
                   isOwner: user.isOwner,
+                  isLivingHere: true,
                   isPrimary: user.isPrimaryResident,
                   isActive: true,
                   isDefault: true,
@@ -631,6 +664,7 @@ export class OnboardingService {
             role: activeRole,
             residentType: request.residentType,
             isOwner: request.residentType === 'OWNER',
+            isLivingHere: request.residentType === 'OWNER' ? request.isLivingHere : true,
             isPrimary: isPrimaryResident,
             isActive: true,
             isDefault: true,
@@ -645,6 +679,7 @@ export class OnboardingService {
             role: activeRole,
             residentType: request.residentType,
             isOwner: request.residentType === 'OWNER',
+            isLivingHere: request.residentType === 'OWNER' ? request.isLivingHere : true,
             isPrimary: isPrimaryResident,
             isActive: true,
             isDefault: true,
@@ -846,7 +881,7 @@ export class OnboardingService {
   // HELPER: VALIDATE DOCUMENTS
   // ============================================
   private validateDocuments(
-    documents: Array<{ type: DocumentType }>,
+    documents: Array<{ type: DocumentType; url?: string; s3Key?: string }>,
     residentType: 'OWNER' | 'TENANT'
   ) {
     if (documents.length === 0) {
@@ -854,6 +889,10 @@ export class OnboardingService {
     }
 
     const documentTypes = documents.map((d) => d.type);
+
+    if (documents.some((doc) => !doc.url && !doc.s3Key)) {
+      throw new AppError('Each document must include an uploaded file key', 400);
+    }
 
     if (residentType === 'OWNER') {
       // Owner must have ownership proof

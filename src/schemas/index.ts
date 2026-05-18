@@ -377,6 +377,7 @@ export const createOnboardingSchema = z.object({
   blockId: uuidSchema,
   flatId: uuidSchema,
   residentType: residentTypeEnum,
+  isLivingHere: z.boolean().optional(),
 });
 
 // ============================================

@@ -56,7 +56,7 @@ export class OnboardingController {
     // ============================================
     submitRequest = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.user!.id;
-        const { societyId, blockId, flatId, residentType, documents } = req.body;
+        const { societyId, blockId, flatId, residentType, isLivingHere, documents } = req.body;
 
         if (!societyId || !blockId || !flatId || !residentType || !documents) {
             throw new AppError('Missing required fields', 400);
@@ -75,6 +75,7 @@ export class OnboardingController {
             blockId,
             flatId,
             residentType,
+            isLivingHere,
             documents,
         });
 

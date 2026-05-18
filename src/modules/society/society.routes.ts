@@ -23,6 +23,34 @@ router.get(
   societyController.getSocieties
 );
 
+router.post(
+  '/:id/blocks',
+  authorize('SUPER_ADMIN', 'ADMIN'),
+  clearCacheAfter(['society:*', 'api:onboarding*']),
+  societyController.createBlock
+);
+
+router.post(
+  '/:id/flats',
+  authorize('SUPER_ADMIN', 'ADMIN'),
+  clearCacheAfter(['society:*', 'api:onboarding*']),
+  societyController.createFlat
+);
+
+router.patch(
+  '/:id/flats/:flatId',
+  authorize('SUPER_ADMIN', 'ADMIN'),
+  clearCacheAfter(['society:*', 'api:onboarding*']),
+  societyController.updateFlat
+);
+
+router.delete(
+  '/:id/flats/:flatId',
+  authorize('SUPER_ADMIN', 'ADMIN'),
+  clearCacheAfter(['society:*', 'api:onboarding*']),
+  societyController.deactivateFlat
+);
+
 router.patch(
   '/:id/payment-paid',
   authorize('SUPER_ADMIN'),

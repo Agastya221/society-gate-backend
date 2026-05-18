@@ -5,43 +5,11 @@ import type { SubmitSocietyRegistrationDTO, SocietyRegistrationFilters } from '.
 
 export class SocietyRegistrationService {
 
-  async submitRequest(userId: string, data: SubmitSocietyRegistrationDTO) {
-    if (data.applicantIsMember) {
-      if (!data.adminBlockName?.trim() || !data.adminFlatNumber?.trim() || !data.adminResidentType) {
-        throw new AppError('Block, flat number, and resident type are required when you are a society member.', 400);
-      }
-    }
-
-    const existing = await prisma.societyRegistrationRequest.findFirst({
-      where: {
-        requestedById: userId,
-        status: { in: ['PENDING', 'APPROVED'] },
-      },
-    });
-    if (existing) {
-      throw new AppError(
-        'You already have an active society registration request. Status: ' + existing.status,
-        409
-      );
-    }
-
-    const request = await prisma.societyRegistrationRequest.create({
-      data: {
-        requestedById: userId,
-        ...data,
-        adminBlockName: data.applicantIsMember ? data.adminBlockName?.trim() : undefined,
-        adminFlatNumber: data.applicantIsMember ? data.adminFlatNumber?.trim() : undefined,
-        adminResidentType: data.applicantIsMember ? data.adminResidentType : undefined,
-      },
-      include: {
-        requestedBy: {
-          select: { id: true, name: true, phone: true, email: true },
-        },
-      },
-    });
-
-    logger.info(`[SOCIETY_REG] Request submitted — id: ${request.id} | user: ${userId}`);
-    return request;
+  async submitRequest(_userId: string, _data: SubmitSocietyRegistrationDTO) {
+    throw new AppError(
+      'Society setup is handled by the S-Gate back office. Please search for an already activated society or contact S-Gate support to onboard your society.',
+      403
+    );
   }
 
   async getMyRequestStatus(userId: string) {
@@ -201,6 +169,7 @@ export class SocietyRegistrationService {
           role: 'ADMIN',
           residentType: shouldCreateAdminFlat ? request.adminResidentType ?? 'OWNER' : undefined,
           isOwner: shouldCreateAdminFlat ? request.adminResidentType === 'OWNER' : false,
+          isLivingHere: shouldCreateAdminFlat,
           isPrimary: shouldCreateAdminFlat,
           isActive: true,
           isDefault: true,

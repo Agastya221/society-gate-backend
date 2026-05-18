@@ -838,10 +838,11 @@ model UserFlatMembership {
   role         Role         @default(RESIDENT)
   residentType ResidentType?
 
-  isOwner   Boolean @default(false)
-  isPrimary Boolean @default(false)
-  isActive  Boolean @default(true)
-  isDefault Boolean @default(false)
+  isOwner      Boolean @default(false)
+  isLivingHere Boolean @default(true)
+  isPrimary    Boolean @default(false)
+  isActive     Boolean @default(true)
+  isDefault    Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2068,6 +2069,7 @@ model OnboardingRequest {
 
   // Resident type
   residentType ResidentType // OWNER or TENANT
+  isLivingHere Boolean      @default(true) // OWNER only: false = non-residing owner
 
   // Status
   status OnboardingStatus @default(DRAFT)

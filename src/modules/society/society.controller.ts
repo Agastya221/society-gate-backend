@@ -15,6 +15,46 @@ export class SocietyController {
     });
   });
 
+  createBlock = asyncHandler(async (req: Request, res: Response) => {
+    const block = await societyService.createBlock(String(req.params.id), req.body, req.user!);
+
+    res.status(201).json({
+      success: true,
+      message: 'Block created successfully',
+      data: block,
+    });
+  });
+
+  createFlat = asyncHandler(async (req: Request, res: Response) => {
+    const flat = await societyService.createFlat(String(req.params.id), req.body, req.user!);
+
+    res.status(201).json({
+      success: true,
+      message: 'Flat created successfully',
+      data: flat,
+    });
+  });
+
+  updateFlat = asyncHandler(async (req: Request, res: Response) => {
+    const flat = await societyService.updateFlat(String(req.params.id), String(req.params.flatId), req.body, req.user!);
+
+    res.json({
+      success: true,
+      message: 'Flat updated successfully',
+      data: flat,
+    });
+  });
+
+  deactivateFlat = asyncHandler(async (req: Request, res: Response) => {
+    const flat = await societyService.deactivateFlat(String(req.params.id), String(req.params.flatId), req.user!);
+
+    res.json({
+      success: true,
+      message: 'Flat deactivated successfully',
+      data: flat,
+    });
+  });
+
   getSocieties = asyncHandler(async (req: Request, res: Response) => {
     const result = await societyService.getSocieties(req.query);
 
