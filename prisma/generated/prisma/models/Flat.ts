@@ -275,6 +275,7 @@ export type FlatWhereInput = {
   partyInvites?: Prisma.PartyInviteListRelationFilter
   preApprovedEntries?: Prisma.PreApprovedEntryListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  userMemberships?: Prisma.UserFlatMembershipListRelationFilter
 }
 
 export type FlatOrderByWithRelationInput = {
@@ -313,6 +314,7 @@ export type FlatOrderByWithRelationInput = {
   partyInvites?: Prisma.PartyInviteOrderByRelationAggregateInput
   preApprovedEntries?: Prisma.PreApprovedEntryOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  userMemberships?: Prisma.UserFlatMembershipOrderByRelationAggregateInput
 }
 
 export type FlatWhereUniqueInput = Prisma.AtLeast<{
@@ -355,6 +357,7 @@ export type FlatWhereUniqueInput = Prisma.AtLeast<{
   partyInvites?: Prisma.PartyInviteListRelationFilter
   preApprovedEntries?: Prisma.PreApprovedEntryListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  userMemberships?: Prisma.UserFlatMembershipListRelationFilter
 }, "id" | "societyId_flatNumber">
 
 export type FlatOrderByWithAggregationInput = {
@@ -431,6 +434,7 @@ export type FlatCreateInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateInput = {
@@ -467,6 +471,7 @@ export type FlatUncheckedCreateInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUpdateInput = {
@@ -503,6 +508,7 @@ export type FlatUpdateInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateInput = {
@@ -539,6 +545,7 @@ export type FlatUncheckedUpdateInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateManyInput = {
@@ -778,6 +785,22 @@ export type FlatUpdateOneWithoutResidentsNestedInput = {
   delete?: Prisma.FlatWhereInput | boolean
   connect?: Prisma.FlatWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutResidentsInput, Prisma.FlatUpdateWithoutResidentsInput>, Prisma.FlatUncheckedUpdateWithoutResidentsInput>
+}
+
+export type FlatCreateNestedOneWithoutUserMembershipsInput = {
+  create?: Prisma.XOR<Prisma.FlatCreateWithoutUserMembershipsInput, Prisma.FlatUncheckedCreateWithoutUserMembershipsInput>
+  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutUserMembershipsInput
+  connect?: Prisma.FlatWhereUniqueInput
+}
+
+export type FlatUpdateOneWithoutUserMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.FlatCreateWithoutUserMembershipsInput, Prisma.FlatUncheckedCreateWithoutUserMembershipsInput>
+  connectOrCreate?: Prisma.FlatCreateOrConnectWithoutUserMembershipsInput
+  upsert?: Prisma.FlatUpsertWithoutUserMembershipsInput
+  disconnect?: Prisma.FlatWhereInput | boolean
+  delete?: Prisma.FlatWhereInput | boolean
+  connect?: Prisma.FlatWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FlatUpdateToOneWithWhereWithoutUserMembershipsInput, Prisma.FlatUpdateWithoutUserMembershipsInput>, Prisma.FlatUncheckedUpdateWithoutUserMembershipsInput>
 }
 
 export type FlatCreateNestedOneWithoutEntriesInput = {
@@ -1069,6 +1092,7 @@ export type FlatCreateWithoutSocietyInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutSocietyInput = {
@@ -1104,6 +1128,7 @@ export type FlatUncheckedCreateWithoutSocietyInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutSocietyInput = {
@@ -1185,6 +1210,7 @@ export type FlatCreateWithoutInvoicesInput = {
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutFlatInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutInvoicesInput = {
@@ -1220,6 +1246,7 @@ export type FlatUncheckedCreateWithoutInvoicesInput = {
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutFlatInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutInvoicesInput = {
@@ -1271,6 +1298,7 @@ export type FlatUpdateWithoutInvoicesInput = {
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutFlatNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutInvoicesInput = {
@@ -1306,6 +1334,7 @@ export type FlatUncheckedUpdateWithoutInvoicesInput = {
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutFlatNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutBlockInput = {
@@ -1341,6 +1370,7 @@ export type FlatCreateWithoutBlockInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutBlockInput = {
@@ -1376,6 +1406,7 @@ export type FlatUncheckedCreateWithoutBlockInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutBlockInput = {
@@ -1437,6 +1468,7 @@ export type FlatCreateWithoutResidentsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutResidentsInput = {
@@ -1472,6 +1504,7 @@ export type FlatUncheckedCreateWithoutResidentsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutResidentsInput = {
@@ -1523,6 +1556,7 @@ export type FlatUpdateWithoutResidentsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutResidentsInput = {
@@ -1540,6 +1574,167 @@ export type FlatUncheckedUpdateWithoutResidentsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutFlatNestedInput
+  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutFlatNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutFlatNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutFlatNestedInput
+  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutFlatNestedInput
+  staffFlatAssignments?: Prisma.StaffFlatAssignmentUncheckedUpdateManyWithoutFlatNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutFlatNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutFlatNestedInput
+  staffReviews?: Prisma.StaffReviewUncheckedUpdateManyWithoutFlatNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput
+  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutFlatNestedInput
+  guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutFlatNestedInput
+  partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
+}
+
+export type FlatCreateWithoutUserMembershipsInput = {
+  id?: string
+  flatNumber: string
+  floor?: string | null
+  ownerName?: string | null
+  ownerPhone?: string | null
+  ownerEmail?: string | null
+  isOccupied?: boolean
+  currentOwnerId?: string | null
+  currentTenantId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  block?: Prisma.BlockCreateNestedOneWithoutFlatsInput
+  society: Prisma.SocietyCreateNestedOneWithoutFlatsInput
+  residents?: Prisma.UserCreateNestedManyWithoutFlatInput
+  entries?: Prisma.EntryCreateNestedManyWithoutFlatInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutFlatInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutFlatInput
+  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutFlatInput
+  gatePasses?: Prisma.GatePassCreateNestedManyWithoutFlatInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutFlatInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutFlatInput
+  emergencies?: Prisma.EmergencyCreateNestedManyWithoutFlatInput
+  staffFlatAssignments?: Prisma.StaffFlatAssignmentCreateNestedManyWithoutFlatInput
+  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutFlatInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutFlatInput
+  staffReviews?: Prisma.StaffReviewCreateNestedManyWithoutFlatInput
+  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutFlatInput
+  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutFlatInput
+  guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutFlatInput
+  partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+}
+
+export type FlatUncheckedCreateWithoutUserMembershipsInput = {
+  id?: string
+  flatNumber: string
+  floor?: string | null
+  blockId?: string | null
+  societyId: string
+  ownerName?: string | null
+  ownerPhone?: string | null
+  ownerEmail?: string | null
+  isOccupied?: boolean
+  currentOwnerId?: string | null
+  currentTenantId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  residents?: Prisma.UserUncheckedCreateNestedManyWithoutFlatInput
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutFlatInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutFlatInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutFlatInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutFlatInput
+  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutFlatInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutFlatInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFlatInput
+  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutFlatInput
+  staffFlatAssignments?: Prisma.StaffFlatAssignmentUncheckedCreateNestedManyWithoutFlatInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutFlatInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutFlatInput
+  staffReviews?: Prisma.StaffReviewUncheckedCreateNestedManyWithoutFlatInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutFlatInput
+  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutFlatInput
+  guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutFlatInput
+  partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+}
+
+export type FlatCreateOrConnectWithoutUserMembershipsInput = {
+  where: Prisma.FlatWhereUniqueInput
+  create: Prisma.XOR<Prisma.FlatCreateWithoutUserMembershipsInput, Prisma.FlatUncheckedCreateWithoutUserMembershipsInput>
+}
+
+export type FlatUpsertWithoutUserMembershipsInput = {
+  update: Prisma.XOR<Prisma.FlatUpdateWithoutUserMembershipsInput, Prisma.FlatUncheckedUpdateWithoutUserMembershipsInput>
+  create: Prisma.XOR<Prisma.FlatCreateWithoutUserMembershipsInput, Prisma.FlatUncheckedCreateWithoutUserMembershipsInput>
+  where?: Prisma.FlatWhereInput
+}
+
+export type FlatUpdateToOneWithWhereWithoutUserMembershipsInput = {
+  where?: Prisma.FlatWhereInput
+  data: Prisma.XOR<Prisma.FlatUpdateWithoutUserMembershipsInput, Prisma.FlatUncheckedUpdateWithoutUserMembershipsInput>
+}
+
+export type FlatUpdateWithoutUserMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  block?: Prisma.BlockUpdateOneWithoutFlatsNestedInput
+  society?: Prisma.SocietyUpdateOneRequiredWithoutFlatsNestedInput
+  residents?: Prisma.UserUpdateManyWithoutFlatNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutFlatNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutFlatNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutFlatNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutFlatNestedInput
+  gatePasses?: Prisma.GatePassUpdateManyWithoutFlatNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutFlatNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutFlatNestedInput
+  emergencies?: Prisma.EmergencyUpdateManyWithoutFlatNestedInput
+  staffFlatAssignments?: Prisma.StaffFlatAssignmentUpdateManyWithoutFlatNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutFlatNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutFlatNestedInput
+  staffReviews?: Prisma.StaffReviewUpdateManyWithoutFlatNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutFlatNestedInput
+  entryRequests?: Prisma.EntryRequestUpdateManyWithoutFlatNestedInput
+  guestInvites?: Prisma.GuestInviteUpdateManyWithoutFlatNestedInput
+  partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+}
+
+export type FlatUncheckedUpdateWithoutUserMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  flatNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societyId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  residents?: Prisma.UserUncheckedUpdateManyWithoutFlatNestedInput
   entries?: Prisma.EntryUncheckedUpdateManyWithoutFlatNestedInput
   domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutFlatNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutFlatNestedInput
@@ -1593,6 +1788,7 @@ export type FlatCreateWithoutEntriesInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutEntriesInput = {
@@ -1628,6 +1824,7 @@ export type FlatUncheckedCreateWithoutEntriesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutEntriesInput = {
@@ -1679,6 +1876,7 @@ export type FlatUpdateWithoutEntriesInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutEntriesInput = {
@@ -1714,6 +1912,7 @@ export type FlatUncheckedUpdateWithoutEntriesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutGuestInvitesInput = {
@@ -1749,6 +1948,7 @@ export type FlatCreateWithoutGuestInvitesInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutGuestInvitesInput = {
@@ -1784,6 +1984,7 @@ export type FlatUncheckedCreateWithoutGuestInvitesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutGuestInvitesInput = {
@@ -1835,6 +2036,7 @@ export type FlatUpdateWithoutGuestInvitesInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutGuestInvitesInput = {
@@ -1870,6 +2072,7 @@ export type FlatUncheckedUpdateWithoutGuestInvitesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutPartyInvitesInput = {
@@ -1905,6 +2108,7 @@ export type FlatCreateWithoutPartyInvitesInput = {
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutPartyInvitesInput = {
@@ -1940,6 +2144,7 @@ export type FlatUncheckedCreateWithoutPartyInvitesInput = {
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutPartyInvitesInput = {
@@ -1991,6 +2196,7 @@ export type FlatUpdateWithoutPartyInvitesInput = {
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutPartyInvitesInput = {
@@ -2026,6 +2232,7 @@ export type FlatUncheckedUpdateWithoutPartyInvitesInput = {
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutDomesticStaffInput = {
@@ -2061,6 +2268,7 @@ export type FlatCreateWithoutDomesticStaffInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutDomesticStaffInput = {
@@ -2096,6 +2304,7 @@ export type FlatUncheckedCreateWithoutDomesticStaffInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutDomesticStaffInput = {
@@ -2147,6 +2356,7 @@ export type FlatUpdateWithoutDomesticStaffInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutDomesticStaffInput = {
@@ -2182,6 +2392,7 @@ export type FlatUncheckedUpdateWithoutDomesticStaffInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffFlatAssignmentsInput = {
@@ -2217,6 +2428,7 @@ export type FlatCreateWithoutStaffFlatAssignmentsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffFlatAssignmentsInput = {
@@ -2252,6 +2464,7 @@ export type FlatUncheckedCreateWithoutStaffFlatAssignmentsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffFlatAssignmentsInput = {
@@ -2303,6 +2516,7 @@ export type FlatUpdateWithoutStaffFlatAssignmentsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffFlatAssignmentsInput = {
@@ -2338,6 +2552,7 @@ export type FlatUncheckedUpdateWithoutStaffFlatAssignmentsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffAttendanceInput = {
@@ -2373,6 +2588,7 @@ export type FlatCreateWithoutStaffAttendanceInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffAttendanceInput = {
@@ -2408,6 +2624,7 @@ export type FlatUncheckedCreateWithoutStaffAttendanceInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffAttendanceInput = {
@@ -2459,6 +2676,7 @@ export type FlatUpdateWithoutStaffAttendanceInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffAttendanceInput = {
@@ -2494,6 +2712,7 @@ export type FlatUncheckedUpdateWithoutStaffAttendanceInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffBookingsInput = {
@@ -2529,6 +2748,7 @@ export type FlatCreateWithoutStaffBookingsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffBookingsInput = {
@@ -2564,6 +2784,7 @@ export type FlatUncheckedCreateWithoutStaffBookingsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffBookingsInput = {
@@ -2615,6 +2836,7 @@ export type FlatUpdateWithoutStaffBookingsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffBookingsInput = {
@@ -2650,6 +2872,7 @@ export type FlatUncheckedUpdateWithoutStaffBookingsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutStaffReviewsInput = {
@@ -2685,6 +2908,7 @@ export type FlatCreateWithoutStaffReviewsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutStaffReviewsInput = {
@@ -2720,6 +2944,7 @@ export type FlatUncheckedCreateWithoutStaffReviewsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutStaffReviewsInput = {
@@ -2771,6 +2996,7 @@ export type FlatUpdateWithoutStaffReviewsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutStaffReviewsInput = {
@@ -2806,6 +3032,7 @@ export type FlatUncheckedUpdateWithoutStaffReviewsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutVehiclesInput = {
@@ -2841,6 +3068,7 @@ export type FlatCreateWithoutVehiclesInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutVehiclesInput = {
@@ -2876,6 +3104,7 @@ export type FlatUncheckedCreateWithoutVehiclesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutVehiclesInput = {
@@ -2927,6 +3156,7 @@ export type FlatUpdateWithoutVehiclesInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutVehiclesInput = {
@@ -2962,6 +3192,7 @@ export type FlatUncheckedUpdateWithoutVehiclesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutVisitorFrequenciesInput = {
@@ -2997,6 +3228,7 @@ export type FlatCreateWithoutVisitorFrequenciesInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutVisitorFrequenciesInput = {
@@ -3032,6 +3264,7 @@ export type FlatUncheckedCreateWithoutVisitorFrequenciesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutVisitorFrequenciesInput = {
@@ -3083,6 +3316,7 @@ export type FlatUpdateWithoutVisitorFrequenciesInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutVisitorFrequenciesInput = {
@@ -3118,6 +3352,7 @@ export type FlatUncheckedUpdateWithoutVisitorFrequenciesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutGatePassesInput = {
@@ -3153,6 +3388,7 @@ export type FlatCreateWithoutGatePassesInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutGatePassesInput = {
@@ -3188,6 +3424,7 @@ export type FlatUncheckedCreateWithoutGatePassesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutGatePassesInput = {
@@ -3239,6 +3476,7 @@ export type FlatUpdateWithoutGatePassesInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutGatePassesInput = {
@@ -3274,6 +3512,7 @@ export type FlatUncheckedUpdateWithoutGatePassesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutAmenityBookingsInput = {
@@ -3309,6 +3548,7 @@ export type FlatCreateWithoutAmenityBookingsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutAmenityBookingsInput = {
@@ -3344,6 +3584,7 @@ export type FlatUncheckedCreateWithoutAmenityBookingsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutAmenityBookingsInput = {
@@ -3395,6 +3636,7 @@ export type FlatUpdateWithoutAmenityBookingsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutAmenityBookingsInput = {
@@ -3430,6 +3672,7 @@ export type FlatUncheckedUpdateWithoutAmenityBookingsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutComplaintsInput = {
@@ -3465,6 +3708,7 @@ export type FlatCreateWithoutComplaintsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutComplaintsInput = {
@@ -3500,6 +3744,7 @@ export type FlatUncheckedCreateWithoutComplaintsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutComplaintsInput = {
@@ -3551,6 +3796,7 @@ export type FlatUpdateWithoutComplaintsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutComplaintsInput = {
@@ -3586,6 +3832,7 @@ export type FlatUncheckedUpdateWithoutComplaintsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutEmergenciesInput = {
@@ -3621,6 +3868,7 @@ export type FlatCreateWithoutEmergenciesInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutEmergenciesInput = {
@@ -3656,6 +3904,7 @@ export type FlatUncheckedCreateWithoutEmergenciesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutEmergenciesInput = {
@@ -3707,6 +3956,7 @@ export type FlatUpdateWithoutEmergenciesInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutEmergenciesInput = {
@@ -3742,6 +3992,7 @@ export type FlatUncheckedUpdateWithoutEmergenciesInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutOnboardingRequestsInput = {
@@ -3777,6 +4028,7 @@ export type FlatCreateWithoutOnboardingRequestsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutOnboardingRequestsInput = {
@@ -3812,6 +4064,7 @@ export type FlatUncheckedCreateWithoutOnboardingRequestsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutOnboardingRequestsInput = {
@@ -3863,6 +4116,7 @@ export type FlatUpdateWithoutOnboardingRequestsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutOnboardingRequestsInput = {
@@ -3898,6 +4152,7 @@ export type FlatUncheckedUpdateWithoutOnboardingRequestsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutEntryRequestsInput = {
@@ -3933,6 +4188,7 @@ export type FlatCreateWithoutEntryRequestsInput = {
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutEntryRequestsInput = {
@@ -3968,6 +4224,7 @@ export type FlatUncheckedCreateWithoutEntryRequestsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutEntryRequestsInput = {
@@ -4019,6 +4276,7 @@ export type FlatUpdateWithoutEntryRequestsInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutEntryRequestsInput = {
@@ -4054,6 +4312,7 @@ export type FlatUncheckedUpdateWithoutEntryRequestsInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateWithoutPreApprovedEntriesInput = {
@@ -4089,6 +4348,7 @@ export type FlatCreateWithoutPreApprovedEntriesInput = {
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutFlatInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutFlatInput
 }
 
 export type FlatUncheckedCreateWithoutPreApprovedEntriesInput = {
@@ -4124,6 +4384,7 @@ export type FlatUncheckedCreateWithoutPreApprovedEntriesInput = {
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutFlatInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutFlatInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutFlatInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutFlatInput
 }
 
 export type FlatCreateOrConnectWithoutPreApprovedEntriesInput = {
@@ -4175,6 +4436,7 @@ export type FlatUpdateWithoutPreApprovedEntriesInput = {
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutFlatNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutPreApprovedEntriesInput = {
@@ -4210,6 +4472,7 @@ export type FlatUncheckedUpdateWithoutPreApprovedEntriesInput = {
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutFlatNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatCreateManySocietyInput = {
@@ -4261,6 +4524,7 @@ export type FlatUpdateWithoutSocietyInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutSocietyInput = {
@@ -4296,6 +4560,7 @@ export type FlatUncheckedUpdateWithoutSocietyInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateManyWithoutSocietyInput = {
@@ -4363,6 +4628,7 @@ export type FlatUpdateWithoutBlockInput = {
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateWithoutBlockInput = {
@@ -4398,6 +4664,7 @@ export type FlatUncheckedUpdateWithoutBlockInput = {
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutFlatNestedInput
   preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutFlatNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutFlatNestedInput
+  userMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutFlatNestedInput
 }
 
 export type FlatUncheckedUpdateManyWithoutBlockInput = {
@@ -4441,6 +4708,7 @@ export type FlatCountOutputType = {
   partyInvites: number
   preApprovedEntries: number
   invoices: number
+  userMemberships: number
 }
 
 export type FlatCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4463,6 +4731,7 @@ export type FlatCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   partyInvites?: boolean | FlatCountOutputTypeCountPartyInvitesArgs
   preApprovedEntries?: boolean | FlatCountOutputTypeCountPreApprovedEntriesArgs
   invoices?: boolean | FlatCountOutputTypeCountInvoicesArgs
+  userMemberships?: boolean | FlatCountOutputTypeCountUserMembershipsArgs
 }
 
 /**
@@ -4608,6 +4877,13 @@ export type FlatCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.InvoiceWhereInput
 }
 
+/**
+ * FlatCountOutputType without action
+ */
+export type FlatCountOutputTypeCountUserMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserFlatMembershipWhereInput
+}
+
 
 export type FlatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4645,6 +4921,7 @@ export type FlatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   partyInvites?: boolean | Prisma.Flat$partyInvitesArgs<ExtArgs>
   preApprovedEntries?: boolean | Prisma.Flat$preApprovedEntriesArgs<ExtArgs>
   invoices?: boolean | Prisma.Flat$invoicesArgs<ExtArgs>
+  userMemberships?: boolean | Prisma.Flat$userMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.FlatCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["flat"]>
 
@@ -4726,6 +5003,7 @@ export type FlatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   partyInvites?: boolean | Prisma.Flat$partyInvitesArgs<ExtArgs>
   preApprovedEntries?: boolean | Prisma.Flat$preApprovedEntriesArgs<ExtArgs>
   invoices?: boolean | Prisma.Flat$invoicesArgs<ExtArgs>
+  userMemberships?: boolean | Prisma.Flat$userMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.FlatCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FlatIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4761,6 +5039,7 @@ export type $FlatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     partyInvites: Prisma.$PartyInvitePayload<ExtArgs>[]
     preApprovedEntries: Prisma.$PreApprovedEntryPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    userMemberships: Prisma.$UserFlatMembershipPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -5192,6 +5471,7 @@ export interface Prisma__FlatClient<T, Null = never, ExtArgs extends runtime.Typ
   partyInvites<T extends Prisma.Flat$partyInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$partyInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartyInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   preApprovedEntries<T extends Prisma.Flat$preApprovedEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$preApprovedEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PreApprovedEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Flat$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userMemberships<T extends Prisma.Flat$userMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flat$userMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserFlatMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6103,6 +6383,30 @@ export type Flat$invoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * Flat.userMemberships
+ */
+export type Flat$userMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserFlatMembership
+   */
+  select?: Prisma.UserFlatMembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserFlatMembership
+   */
+  omit?: Prisma.UserFlatMembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserFlatMembershipInclude<ExtArgs> | null
+  where?: Prisma.UserFlatMembershipWhereInput
+  orderBy?: Prisma.UserFlatMembershipOrderByWithRelationInput | Prisma.UserFlatMembershipOrderByWithRelationInput[]
+  cursor?: Prisma.UserFlatMembershipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserFlatMembershipScalarFieldEnum | Prisma.UserFlatMembershipScalarFieldEnum[]
 }
 
 /**

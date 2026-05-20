@@ -60,6 +60,7 @@ export const ModelName = {
   Block: 'Block',
   Flat: 'Flat',
   User: 'User',
+  UserFlatMembership: 'UserFlatMembership',
   Entry: 'Entry',
   GuestInvite: 'GuestInvite',
   PartyInvite: 'PartyInvite',
@@ -294,6 +295,25 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const UserFlatMembershipScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  societyId: 'societyId',
+  flatId: 'flatId',
+  role: 'role',
+  residentType: 'residentType',
+  isOwner: 'isOwner',
+  isLivingHere: 'isLivingHere',
+  isPrimary: 'isPrimary',
+  isActive: 'isActive',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserFlatMembershipScalarFieldEnum = (typeof UserFlatMembershipScalarFieldEnum)[keyof typeof UserFlatMembershipScalarFieldEnum]
 
 
 export const EntryScalarFieldEnum = {
@@ -914,6 +934,7 @@ export const OnboardingRequestScalarFieldEnum = {
   blockId: 'blockId',
   flatId: 'flatId',
   residentType: 'residentType',
+  isLivingHere: 'isLivingHere',
   status: 'status',
   reviewedById: 'reviewedById',
   reviewedAt: 'reviewedAt',

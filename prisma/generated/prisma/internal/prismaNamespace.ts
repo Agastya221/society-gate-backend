@@ -393,6 +393,7 @@ export const ModelName = {
   Block: 'Block',
   Flat: 'Flat',
   User: 'User',
+  UserFlatMembership: 'UserFlatMembership',
   Entry: 'Entry',
   GuestInvite: 'GuestInvite',
   PartyInvite: 'PartyInvite',
@@ -447,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "invoice" | "invoiceLineItem" | "paymentTransaction" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "parkingViolation" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
+    modelProps: "society" | "invoice" | "invoiceLineItem" | "paymentTransaction" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "userFlatMembership" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "parkingViolation" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1114,6 +1115,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    UserFlatMembership: {
+      payload: Prisma.$UserFlatMembershipPayload<ExtArgs>
+      fields: Prisma.UserFlatMembershipFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserFlatMembershipFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserFlatMembershipFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>
+        }
+        findFirst: {
+          args: Prisma.UserFlatMembershipFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserFlatMembershipFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>
+        }
+        findMany: {
+          args: Prisma.UserFlatMembershipFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>[]
+        }
+        create: {
+          args: Prisma.UserFlatMembershipCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>
+        }
+        createMany: {
+          args: Prisma.UserFlatMembershipCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserFlatMembershipCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>[]
+        }
+        delete: {
+          args: Prisma.UserFlatMembershipDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>
+        }
+        update: {
+          args: Prisma.UserFlatMembershipUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserFlatMembershipDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserFlatMembershipUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserFlatMembershipUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserFlatMembershipUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFlatMembershipPayload>
+        }
+        aggregate: {
+          args: Prisma.UserFlatMembershipAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserFlatMembership>
+        }
+        groupBy: {
+          args: Prisma.UserFlatMembershipGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserFlatMembershipGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserFlatMembershipCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserFlatMembershipCountAggregateOutputType> | number
         }
       }
     }
@@ -4221,6 +4296,25 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const UserFlatMembershipScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  societyId: 'societyId',
+  flatId: 'flatId',
+  role: 'role',
+  residentType: 'residentType',
+  isOwner: 'isOwner',
+  isLivingHere: 'isLivingHere',
+  isPrimary: 'isPrimary',
+  isActive: 'isActive',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserFlatMembershipScalarFieldEnum = (typeof UserFlatMembershipScalarFieldEnum)[keyof typeof UserFlatMembershipScalarFieldEnum]
+
+
 export const EntryScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -4839,6 +4933,7 @@ export const OnboardingRequestScalarFieldEnum = {
   blockId: 'blockId',
   flatId: 'flatId',
   residentType: 'residentType',
+  isLivingHere: 'isLivingHere',
   status: 'status',
   reviewedById: 'reviewedById',
   reviewedAt: 'reviewedAt',
@@ -5950,6 +6045,7 @@ export type GlobalOmitConfig = {
   block?: Prisma.BlockOmit
   flat?: Prisma.FlatOmit
   user?: Prisma.UserOmit
+  userFlatMembership?: Prisma.UserFlatMembershipOmit
   entry?: Prisma.EntryOmit
   guestInvite?: Prisma.GuestInviteOmit
   partyInvite?: Prisma.PartyInviteOmit

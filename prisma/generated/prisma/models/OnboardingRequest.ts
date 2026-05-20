@@ -41,6 +41,7 @@ export type OnboardingRequestMinAggregateOutputType = {
   blockId: string | null
   flatId: string | null
   residentType: $Enums.ResidentType | null
+  isLivingHere: boolean | null
   status: $Enums.OnboardingStatus | null
   reviewedById: string | null
   reviewedAt: Date | null
@@ -61,6 +62,7 @@ export type OnboardingRequestMaxAggregateOutputType = {
   blockId: string | null
   flatId: string | null
   residentType: $Enums.ResidentType | null
+  isLivingHere: boolean | null
   status: $Enums.OnboardingStatus | null
   reviewedById: string | null
   reviewedAt: Date | null
@@ -81,6 +83,7 @@ export type OnboardingRequestCountAggregateOutputType = {
   blockId: number
   flatId: number
   residentType: number
+  isLivingHere: number
   status: number
   reviewedById: number
   reviewedAt: number
@@ -111,6 +114,7 @@ export type OnboardingRequestMinAggregateInputType = {
   blockId?: true
   flatId?: true
   residentType?: true
+  isLivingHere?: true
   status?: true
   reviewedById?: true
   reviewedAt?: true
@@ -131,6 +135,7 @@ export type OnboardingRequestMaxAggregateInputType = {
   blockId?: true
   flatId?: true
   residentType?: true
+  isLivingHere?: true
   status?: true
   reviewedById?: true
   reviewedAt?: true
@@ -151,6 +156,7 @@ export type OnboardingRequestCountAggregateInputType = {
   blockId?: true
   flatId?: true
   residentType?: true
+  isLivingHere?: true
   status?: true
   reviewedById?: true
   reviewedAt?: true
@@ -258,6 +264,7 @@ export type OnboardingRequestGroupByOutputType = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere: boolean
   status: $Enums.OnboardingStatus
   reviewedById: string | null
   reviewedAt: Date | null
@@ -301,6 +308,7 @@ export type OnboardingRequestWhereInput = {
   blockId?: Prisma.StringFilter<"OnboardingRequest"> | string
   flatId?: Prisma.StringFilter<"OnboardingRequest"> | string
   residentType?: Prisma.EnumResidentTypeFilter<"OnboardingRequest"> | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFilter<"OnboardingRequest"> | boolean
   status?: Prisma.EnumOnboardingStatusFilter<"OnboardingRequest"> | $Enums.OnboardingStatus
   reviewedById?: Prisma.StringNullableFilter<"OnboardingRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"OnboardingRequest"> | Date | string | null
@@ -328,6 +336,7 @@ export type OnboardingRequestOrderByWithRelationInput = {
   blockId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   residentType?: Prisma.SortOrder
+  isLivingHere?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -350,14 +359,15 @@ export type OnboardingRequestOrderByWithRelationInput = {
 
 export type OnboardingRequestWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userId?: string
   AND?: Prisma.OnboardingRequestWhereInput | Prisma.OnboardingRequestWhereInput[]
   OR?: Prisma.OnboardingRequestWhereInput[]
   NOT?: Prisma.OnboardingRequestWhereInput | Prisma.OnboardingRequestWhereInput[]
+  userId?: Prisma.StringFilter<"OnboardingRequest"> | string
   societyId?: Prisma.StringFilter<"OnboardingRequest"> | string
   blockId?: Prisma.StringFilter<"OnboardingRequest"> | string
   flatId?: Prisma.StringFilter<"OnboardingRequest"> | string
   residentType?: Prisma.EnumResidentTypeFilter<"OnboardingRequest"> | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFilter<"OnboardingRequest"> | boolean
   status?: Prisma.EnumOnboardingStatusFilter<"OnboardingRequest"> | $Enums.OnboardingStatus
   reviewedById?: Prisma.StringNullableFilter<"OnboardingRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"OnboardingRequest"> | Date | string | null
@@ -376,7 +386,7 @@ export type OnboardingRequestWhereUniqueInput = Prisma.AtLeast<{
   reviewedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   documents?: Prisma.ResidentDocumentListRelationFilter
   auditLogs?: Prisma.OnboardingAuditLogListRelationFilter
-}, "id" | "userId">
+}, "id">
 
 export type OnboardingRequestOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -385,6 +395,7 @@ export type OnboardingRequestOrderByWithAggregationInput = {
   blockId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   residentType?: Prisma.SortOrder
+  isLivingHere?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -413,6 +424,7 @@ export type OnboardingRequestScalarWhereWithAggregatesInput = {
   blockId?: Prisma.StringWithAggregatesFilter<"OnboardingRequest"> | string
   flatId?: Prisma.StringWithAggregatesFilter<"OnboardingRequest"> | string
   residentType?: Prisma.EnumResidentTypeWithAggregatesFilter<"OnboardingRequest"> | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolWithAggregatesFilter<"OnboardingRequest"> | boolean
   status?: Prisma.EnumOnboardingStatusWithAggregatesFilter<"OnboardingRequest"> | $Enums.OnboardingStatus
   reviewedById?: Prisma.StringNullableWithAggregatesFilter<"OnboardingRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OnboardingRequest"> | Date | string | null
@@ -429,6 +441,7 @@ export type OnboardingRequestScalarWhereWithAggregatesInput = {
 export type OnboardingRequestCreateInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -439,7 +452,7 @@ export type OnboardingRequestCreateInput = {
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestInput
+  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestsInput
   society: Prisma.SocietyCreateNestedOneWithoutOnboardingRequestsInput
   block: Prisma.BlockCreateNestedOneWithoutOnboardingRequestsInput
   flat: Prisma.FlatCreateNestedOneWithoutOnboardingRequestsInput
@@ -455,6 +468,7 @@ export type OnboardingRequestUncheckedCreateInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -473,6 +487,7 @@ export type OnboardingRequestUncheckedCreateInput = {
 export type OnboardingRequestUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -483,7 +498,7 @@ export type OnboardingRequestUpdateInput = {
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
@@ -499,6 +514,7 @@ export type OnboardingRequestUncheckedUpdateInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -521,6 +537,7 @@ export type OnboardingRequestCreateManyInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -537,6 +554,7 @@ export type OnboardingRequestCreateManyInput = {
 export type OnboardingRequestUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -556,6 +574,7 @@ export type OnboardingRequestUncheckedUpdateManyInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -579,11 +598,6 @@ export type OnboardingRequestOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type OnboardingRequestNullableScalarRelationFilter = {
-  is?: Prisma.OnboardingRequestWhereInput | null
-  isNot?: Prisma.OnboardingRequestWhereInput | null
-}
-
 export type OnboardingRequestCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -591,6 +605,7 @@ export type OnboardingRequestCountOrderByAggregateInput = {
   blockId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   residentType?: Prisma.SortOrder
+  isLivingHere?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
@@ -615,6 +630,7 @@ export type OnboardingRequestMaxOrderByAggregateInput = {
   blockId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   residentType?: Prisma.SortOrder
+  isLivingHere?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
@@ -635,6 +651,7 @@ export type OnboardingRequestMinOrderByAggregateInput = {
   blockId?: Prisma.SortOrder
   flatId?: Prisma.SortOrder
   residentType?: Prisma.SortOrder
+  isLivingHere?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reviewedById?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
@@ -783,10 +800,11 @@ export type OnboardingRequestUncheckedUpdateManyWithoutFlatNestedInput = {
   deleteMany?: Prisma.OnboardingRequestScalarWhereInput | Prisma.OnboardingRequestScalarWhereInput[]
 }
 
-export type OnboardingRequestCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput
-  connect?: Prisma.OnboardingRequestWhereUniqueInput
+export type OnboardingRequestCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput> | Prisma.OnboardingRequestCreateWithoutUserInput[] | Prisma.OnboardingRequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput | Prisma.OnboardingRequestCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.OnboardingRequestCreateManyUserInputEnvelope
+  connect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
 }
 
 export type OnboardingRequestCreateNestedManyWithoutReviewedByInput = {
@@ -796,10 +814,11 @@ export type OnboardingRequestCreateNestedManyWithoutReviewedByInput = {
   connect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
 }
 
-export type OnboardingRequestUncheckedCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput
-  connect?: Prisma.OnboardingRequestWhereUniqueInput
+export type OnboardingRequestUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput> | Prisma.OnboardingRequestCreateWithoutUserInput[] | Prisma.OnboardingRequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput | Prisma.OnboardingRequestCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.OnboardingRequestCreateManyUserInputEnvelope
+  connect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
 }
 
 export type OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput = {
@@ -809,14 +828,18 @@ export type OnboardingRequestUncheckedCreateNestedManyWithoutReviewedByInput = {
   connect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
 }
 
-export type OnboardingRequestUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput
-  upsert?: Prisma.OnboardingRequestUpsertWithoutUserInput
-  disconnect?: Prisma.OnboardingRequestWhereInput | boolean
-  delete?: Prisma.OnboardingRequestWhereInput | boolean
-  connect?: Prisma.OnboardingRequestWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.OnboardingRequestUpdateToOneWithWhereWithoutUserInput, Prisma.OnboardingRequestUpdateWithoutUserInput>, Prisma.OnboardingRequestUncheckedUpdateWithoutUserInput>
+export type OnboardingRequestUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput> | Prisma.OnboardingRequestCreateWithoutUserInput[] | Prisma.OnboardingRequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput | Prisma.OnboardingRequestCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.OnboardingRequestUpsertWithWhereUniqueWithoutUserInput | Prisma.OnboardingRequestUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.OnboardingRequestCreateManyUserInputEnvelope
+  set?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  disconnect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  delete?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  connect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  update?: Prisma.OnboardingRequestUpdateWithWhereUniqueWithoutUserInput | Prisma.OnboardingRequestUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.OnboardingRequestUpdateManyWithWhereWithoutUserInput | Prisma.OnboardingRequestUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.OnboardingRequestScalarWhereInput | Prisma.OnboardingRequestScalarWhereInput[]
 }
 
 export type OnboardingRequestUpdateManyWithoutReviewedByNestedInput = {
@@ -833,14 +856,18 @@ export type OnboardingRequestUpdateManyWithoutReviewedByNestedInput = {
   deleteMany?: Prisma.OnboardingRequestScalarWhereInput | Prisma.OnboardingRequestScalarWhereInput[]
 }
 
-export type OnboardingRequestUncheckedUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput
-  upsert?: Prisma.OnboardingRequestUpsertWithoutUserInput
-  disconnect?: Prisma.OnboardingRequestWhereInput | boolean
-  delete?: Prisma.OnboardingRequestWhereInput | boolean
-  connect?: Prisma.OnboardingRequestWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.OnboardingRequestUpdateToOneWithWhereWithoutUserInput, Prisma.OnboardingRequestUpdateWithoutUserInput>, Prisma.OnboardingRequestUncheckedUpdateWithoutUserInput>
+export type OnboardingRequestUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput> | Prisma.OnboardingRequestCreateWithoutUserInput[] | Prisma.OnboardingRequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.OnboardingRequestCreateOrConnectWithoutUserInput | Prisma.OnboardingRequestCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.OnboardingRequestUpsertWithWhereUniqueWithoutUserInput | Prisma.OnboardingRequestUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.OnboardingRequestCreateManyUserInputEnvelope
+  set?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  disconnect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  delete?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  connect?: Prisma.OnboardingRequestWhereUniqueInput | Prisma.OnboardingRequestWhereUniqueInput[]
+  update?: Prisma.OnboardingRequestUpdateWithWhereUniqueWithoutUserInput | Prisma.OnboardingRequestUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.OnboardingRequestUpdateManyWithWhereWithoutUserInput | Prisma.OnboardingRequestUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.OnboardingRequestScalarWhereInput | Prisma.OnboardingRequestScalarWhereInput[]
 }
 
 export type OnboardingRequestUncheckedUpdateManyWithoutReviewedByNestedInput = {
@@ -896,6 +923,7 @@ export type OnboardingRequestUpdateOneRequiredWithoutAuditLogsNestedInput = {
 export type OnboardingRequestCreateWithoutSocietyInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -906,7 +934,7 @@ export type OnboardingRequestCreateWithoutSocietyInput = {
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestInput
+  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestsInput
   block: Prisma.BlockCreateNestedOneWithoutOnboardingRequestsInput
   flat: Prisma.FlatCreateNestedOneWithoutOnboardingRequestsInput
   reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedOnboardingsInput
@@ -920,6 +948,7 @@ export type OnboardingRequestUncheckedCreateWithoutSocietyInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -971,6 +1000,7 @@ export type OnboardingRequestScalarWhereInput = {
   blockId?: Prisma.StringFilter<"OnboardingRequest"> | string
   flatId?: Prisma.StringFilter<"OnboardingRequest"> | string
   residentType?: Prisma.EnumResidentTypeFilter<"OnboardingRequest"> | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFilter<"OnboardingRequest"> | boolean
   status?: Prisma.EnumOnboardingStatusFilter<"OnboardingRequest"> | $Enums.OnboardingStatus
   reviewedById?: Prisma.StringNullableFilter<"OnboardingRequest"> | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"OnboardingRequest"> | Date | string | null
@@ -987,6 +1017,7 @@ export type OnboardingRequestScalarWhereInput = {
 export type OnboardingRequestCreateWithoutBlockInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -997,7 +1028,7 @@ export type OnboardingRequestCreateWithoutBlockInput = {
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestInput
+  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestsInput
   society: Prisma.SocietyCreateNestedOneWithoutOnboardingRequestsInput
   flat: Prisma.FlatCreateNestedOneWithoutOnboardingRequestsInput
   reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedOnboardingsInput
@@ -1011,6 +1042,7 @@ export type OnboardingRequestUncheckedCreateWithoutBlockInput = {
   societyId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1055,6 +1087,7 @@ export type OnboardingRequestUpdateManyWithWhereWithoutBlockInput = {
 export type OnboardingRequestCreateWithoutFlatInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1065,7 +1098,7 @@ export type OnboardingRequestCreateWithoutFlatInput = {
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestInput
+  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestsInput
   society: Prisma.SocietyCreateNestedOneWithoutOnboardingRequestsInput
   block: Prisma.BlockCreateNestedOneWithoutOnboardingRequestsInput
   reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedOnboardingsInput
@@ -1079,6 +1112,7 @@ export type OnboardingRequestUncheckedCreateWithoutFlatInput = {
   societyId: string
   blockId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1123,6 +1157,7 @@ export type OnboardingRequestUpdateManyWithWhereWithoutFlatInput = {
 export type OnboardingRequestCreateWithoutUserInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1147,6 +1182,7 @@ export type OnboardingRequestUncheckedCreateWithoutUserInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1167,9 +1203,15 @@ export type OnboardingRequestCreateOrConnectWithoutUserInput = {
   create: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput>
 }
 
+export type OnboardingRequestCreateManyUserInputEnvelope = {
+  data: Prisma.OnboardingRequestCreateManyUserInput | Prisma.OnboardingRequestCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
 export type OnboardingRequestCreateWithoutReviewedByInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1180,7 +1222,7 @@ export type OnboardingRequestCreateWithoutReviewedByInput = {
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestInput
+  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestsInput
   society: Prisma.SocietyCreateNestedOneWithoutOnboardingRequestsInput
   block: Prisma.BlockCreateNestedOneWithoutOnboardingRequestsInput
   flat: Prisma.FlatCreateNestedOneWithoutOnboardingRequestsInput
@@ -1195,6 +1237,7 @@ export type OnboardingRequestUncheckedCreateWithoutReviewedByInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1219,57 +1262,20 @@ export type OnboardingRequestCreateManyReviewedByInputEnvelope = {
   skipDuplicates?: boolean
 }
 
-export type OnboardingRequestUpsertWithoutUserInput = {
+export type OnboardingRequestUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.OnboardingRequestWhereUniqueInput
   update: Prisma.XOR<Prisma.OnboardingRequestUpdateWithoutUserInput, Prisma.OnboardingRequestUncheckedUpdateWithoutUserInput>
   create: Prisma.XOR<Prisma.OnboardingRequestCreateWithoutUserInput, Prisma.OnboardingRequestUncheckedCreateWithoutUserInput>
-  where?: Prisma.OnboardingRequestWhereInput
 }
 
-export type OnboardingRequestUpdateToOneWithWhereWithoutUserInput = {
-  where?: Prisma.OnboardingRequestWhereInput
+export type OnboardingRequestUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.OnboardingRequestWhereUniqueInput
   data: Prisma.XOR<Prisma.OnboardingRequestUpdateWithoutUserInput, Prisma.OnboardingRequestUncheckedUpdateWithoutUserInput>
 }
 
-export type OnboardingRequestUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
-  status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
-  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resubmitReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resubmissionCount?: Prisma.IntFieldUpdateOperationsInput | number
-  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
-  block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
-  flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
-  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedOnboardingsNestedInput
-  documents?: Prisma.ResidentDocumentUpdateManyWithoutOnboardingRequestNestedInput
-  auditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutOnboardingRequestNestedInput
-}
-
-export type OnboardingRequestUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  societyId?: Prisma.StringFieldUpdateOperationsInput | string
-  blockId?: Prisma.StringFieldUpdateOperationsInput | string
-  flatId?: Prisma.StringFieldUpdateOperationsInput | string
-  residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
-  status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
-  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resubmitReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resubmissionCount?: Prisma.IntFieldUpdateOperationsInput | number
-  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  documents?: Prisma.ResidentDocumentUncheckedUpdateManyWithoutOnboardingRequestNestedInput
-  auditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutOnboardingRequestNestedInput
+export type OnboardingRequestUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.OnboardingRequestScalarWhereInput
+  data: Prisma.XOR<Prisma.OnboardingRequestUpdateManyMutationInput, Prisma.OnboardingRequestUncheckedUpdateManyWithoutUserInput>
 }
 
 export type OnboardingRequestUpsertWithWhereUniqueWithoutReviewedByInput = {
@@ -1291,6 +1297,7 @@ export type OnboardingRequestUpdateManyWithWhereWithoutReviewedByInput = {
 export type OnboardingRequestCreateWithoutDocumentsInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1301,7 +1308,7 @@ export type OnboardingRequestCreateWithoutDocumentsInput = {
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestInput
+  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestsInput
   society: Prisma.SocietyCreateNestedOneWithoutOnboardingRequestsInput
   block: Prisma.BlockCreateNestedOneWithoutOnboardingRequestsInput
   flat: Prisma.FlatCreateNestedOneWithoutOnboardingRequestsInput
@@ -1316,6 +1323,7 @@ export type OnboardingRequestUncheckedCreateWithoutDocumentsInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1349,6 +1357,7 @@ export type OnboardingRequestUpdateToOneWithWhereWithoutDocumentsInput = {
 export type OnboardingRequestUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1359,7 +1368,7 @@ export type OnboardingRequestUpdateWithoutDocumentsInput = {
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
@@ -1374,6 +1383,7 @@ export type OnboardingRequestUncheckedUpdateWithoutDocumentsInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1391,6 +1401,7 @@ export type OnboardingRequestUncheckedUpdateWithoutDocumentsInput = {
 export type OnboardingRequestCreateWithoutAuditLogsInput = {
   id?: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1401,7 +1412,7 @@ export type OnboardingRequestCreateWithoutAuditLogsInput = {
   rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestInput
+  user: Prisma.UserCreateNestedOneWithoutOnboardingRequestsInput
   society: Prisma.SocietyCreateNestedOneWithoutOnboardingRequestsInput
   block: Prisma.BlockCreateNestedOneWithoutOnboardingRequestsInput
   flat: Prisma.FlatCreateNestedOneWithoutOnboardingRequestsInput
@@ -1416,6 +1427,7 @@ export type OnboardingRequestUncheckedCreateWithoutAuditLogsInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1449,6 +1461,7 @@ export type OnboardingRequestUpdateToOneWithWhereWithoutAuditLogsInput = {
 export type OnboardingRequestUpdateWithoutAuditLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1459,7 +1472,7 @@ export type OnboardingRequestUpdateWithoutAuditLogsInput = {
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
@@ -1474,6 +1487,7 @@ export type OnboardingRequestUncheckedUpdateWithoutAuditLogsInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1494,6 +1508,7 @@ export type OnboardingRequestCreateManySocietyInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1510,6 +1525,7 @@ export type OnboardingRequestCreateManySocietyInput = {
 export type OnboardingRequestUpdateWithoutSocietyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1520,7 +1536,7 @@ export type OnboardingRequestUpdateWithoutSocietyInput = {
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   reviewedBy?: Prisma.UserUpdateOneWithoutReviewedOnboardingsNestedInput
@@ -1534,6 +1550,7 @@ export type OnboardingRequestUncheckedUpdateWithoutSocietyInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1555,6 +1572,7 @@ export type OnboardingRequestUncheckedUpdateManyWithoutSocietyInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1574,6 +1592,7 @@ export type OnboardingRequestCreateManyBlockInput = {
   societyId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1590,6 +1609,7 @@ export type OnboardingRequestCreateManyBlockInput = {
 export type OnboardingRequestUpdateWithoutBlockInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1600,7 +1620,7 @@ export type OnboardingRequestUpdateWithoutBlockInput = {
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   reviewedBy?: Prisma.UserUpdateOneWithoutReviewedOnboardingsNestedInput
@@ -1614,6 +1634,7 @@ export type OnboardingRequestUncheckedUpdateWithoutBlockInput = {
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1635,6 +1656,7 @@ export type OnboardingRequestUncheckedUpdateManyWithoutBlockInput = {
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1654,6 +1676,7 @@ export type OnboardingRequestCreateManyFlatInput = {
   societyId: string
   blockId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedById?: string | null
   reviewedAt?: Date | string | null
@@ -1670,6 +1693,7 @@ export type OnboardingRequestCreateManyFlatInput = {
 export type OnboardingRequestUpdateWithoutFlatInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1680,7 +1704,7 @@ export type OnboardingRequestUpdateWithoutFlatInput = {
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   reviewedBy?: Prisma.UserUpdateOneWithoutReviewedOnboardingsNestedInput
@@ -1694,6 +1718,7 @@ export type OnboardingRequestUncheckedUpdateWithoutFlatInput = {
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1715,6 +1740,7 @@ export type OnboardingRequestUncheckedUpdateManyWithoutFlatInput = {
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1728,6 +1754,26 @@ export type OnboardingRequestUncheckedUpdateManyWithoutFlatInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type OnboardingRequestCreateManyUserInput = {
+  id?: string
+  societyId: string
+  blockId: string
+  flatId: string
+  residentType: $Enums.ResidentType
+  isLivingHere?: boolean
+  status?: $Enums.OnboardingStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  rejectionReason?: string | null
+  resubmitReason?: string | null
+  resubmissionCount?: number
+  submittedAt?: Date | string | null
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
 export type OnboardingRequestCreateManyReviewedByInput = {
   id?: string
   userId: string
@@ -1735,6 +1781,7 @@ export type OnboardingRequestCreateManyReviewedByInput = {
   blockId: string
   flatId: string
   residentType: $Enums.ResidentType
+  isLivingHere?: boolean
   status?: $Enums.OnboardingStatus
   reviewedAt?: Date | string | null
   rejectionReason?: string | null
@@ -1747,9 +1794,10 @@ export type OnboardingRequestCreateManyReviewedByInput = {
   updatedAt?: Date | string
 }
 
-export type OnboardingRequestUpdateWithoutReviewedByInput = {
+export type OnboardingRequestUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1760,7 +1808,71 @@ export type OnboardingRequestUpdateWithoutReviewedByInput = {
   rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestNestedInput
+  society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
+  block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
+  flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedOnboardingsNestedInput
+  documents?: Prisma.ResidentDocumentUpdateManyWithoutOnboardingRequestNestedInput
+  auditLogs?: Prisma.OnboardingAuditLogUpdateManyWithoutOnboardingRequestNestedInput
+}
+
+export type OnboardingRequestUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  societyId?: Prisma.StringFieldUpdateOperationsInput | string
+  blockId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resubmitReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resubmissionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  documents?: Prisma.ResidentDocumentUncheckedUpdateManyWithoutOnboardingRequestNestedInput
+  auditLogs?: Prisma.OnboardingAuditLogUncheckedUpdateManyWithoutOnboardingRequestNestedInput
+}
+
+export type OnboardingRequestUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  societyId?: Prisma.StringFieldUpdateOperationsInput | string
+  blockId?: Prisma.StringFieldUpdateOperationsInput | string
+  flatId?: Prisma.StringFieldUpdateOperationsInput | string
+  residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resubmitReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resubmissionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OnboardingRequestUpdateWithoutReviewedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resubmitReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resubmissionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   society?: Prisma.SocietyUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   block?: Prisma.BlockUpdateOneRequiredWithoutOnboardingRequestsNestedInput
   flat?: Prisma.FlatUpdateOneRequiredWithoutOnboardingRequestsNestedInput
@@ -1775,6 +1887,7 @@ export type OnboardingRequestUncheckedUpdateWithoutReviewedByInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1796,6 +1909,7 @@ export type OnboardingRequestUncheckedUpdateManyWithoutReviewedByInput = {
   blockId?: Prisma.StringFieldUpdateOperationsInput | string
   flatId?: Prisma.StringFieldUpdateOperationsInput | string
   residentType?: Prisma.EnumResidentTypeFieldUpdateOperationsInput | $Enums.ResidentType
+  isLivingHere?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOnboardingStatusFieldUpdateOperationsInput | $Enums.OnboardingStatus
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1855,6 +1969,7 @@ export type OnboardingRequestSelect<ExtArgs extends runtime.Types.Extensions.Int
   blockId?: boolean
   flatId?: boolean
   residentType?: boolean
+  isLivingHere?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1883,6 +1998,7 @@ export type OnboardingRequestSelectCreateManyAndReturn<ExtArgs extends runtime.T
   blockId?: boolean
   flatId?: boolean
   residentType?: boolean
+  isLivingHere?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1908,6 +2024,7 @@ export type OnboardingRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   blockId?: boolean
   flatId?: boolean
   residentType?: boolean
+  isLivingHere?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1933,6 +2050,7 @@ export type OnboardingRequestSelectScalar = {
   blockId?: boolean
   flatId?: boolean
   residentType?: boolean
+  isLivingHere?: boolean
   status?: boolean
   reviewedById?: boolean
   reviewedAt?: boolean
@@ -1946,7 +2064,7 @@ export type OnboardingRequestSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OnboardingRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "societyId" | "blockId" | "flatId" | "residentType" | "status" | "reviewedById" | "reviewedAt" | "rejectionReason" | "resubmitReason" | "resubmissionCount" | "submittedAt" | "approvedAt" | "rejectedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingRequest"]>
+export type OnboardingRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "societyId" | "blockId" | "flatId" | "residentType" | "isLivingHere" | "status" | "reviewedById" | "reviewedAt" | "rejectionReason" | "resubmitReason" | "resubmissionCount" | "submittedAt" | "approvedAt" | "rejectedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingRequest"]>
 export type OnboardingRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
@@ -1990,6 +2108,7 @@ export type $OnboardingRequestPayload<ExtArgs extends runtime.Types.Extensions.I
     blockId: string
     flatId: string
     residentType: $Enums.ResidentType
+    isLivingHere: boolean
     status: $Enums.OnboardingStatus
     reviewedById: string | null
     reviewedAt: Date | null
@@ -2437,6 +2556,7 @@ export interface OnboardingRequestFieldRefs {
   readonly blockId: Prisma.FieldRef<"OnboardingRequest", 'String'>
   readonly flatId: Prisma.FieldRef<"OnboardingRequest", 'String'>
   readonly residentType: Prisma.FieldRef<"OnboardingRequest", 'ResidentType'>
+  readonly isLivingHere: Prisma.FieldRef<"OnboardingRequest", 'Boolean'>
   readonly status: Prisma.FieldRef<"OnboardingRequest", 'OnboardingStatus'>
   readonly reviewedById: Prisma.FieldRef<"OnboardingRequest", 'String'>
   readonly reviewedAt: Prisma.FieldRef<"OnboardingRequest", 'DateTime'>

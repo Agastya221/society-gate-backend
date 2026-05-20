@@ -83,6 +83,11 @@ export type Flat = Prisma.FlatModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model UserFlatMembership
+ * 
+ */
+export type UserFlatMembership = Prisma.UserFlatMembershipModel
+/**
  * Model Entry
  * 
  */

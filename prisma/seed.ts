@@ -14,7 +14,7 @@ const hoursFromNow= (h: number) => { const x = new Date(); x.setMinutes(x.getMin
 const rand6       = ()           => Math.random().toString(36).slice(2, 8).toUpperCase();
 
 async function main() {
-  console.log('🌱 Seeding Greenfield Heights Society...\n');
+  console.log('🌱 Seeding Dalma Heights Residency, Jamshedpur...\n');
 
   // ════════════════════════════════════════════════════════
   // CLEAN (reverse dependency order)
@@ -59,9 +59,11 @@ async function main() {
   await prisma.onboardingAuditLog.deleteMany();
   await prisma.residentDocument.deleteMany();
   await prisma.onboardingRequest.deleteMany();
+  await prisma.paymentTransaction.deleteMany();
   await prisma.invoiceLineItem.deleteMany();
   await prisma.invoice.deleteMany();
   await prisma.societyRegistrationRequest.deleteMany();
+  await prisma.userFlatMembership.deleteMany();
   await prisma.user.deleteMany();
   await prisma.flat.deleteMany();
   await prisma.block.deleteMany();
@@ -75,14 +77,14 @@ async function main() {
   console.log('🏢 Creating society...');
   const society = await prisma.society.create({
     data: {
-      name: 'Greenfield Heights',
-      address: 'Survey No. 28, Baner Road, Near Balewadi High Street',
-      city: 'Pune',
-      state: 'Maharashtra',
-      pincode: '411045',
-      contactName: 'Agastya Sharma',
+      name: 'Dalma Heights Residency',
+      address: 'Road No. 4, Contractors Area, Bistupur, near Jubilee Park',
+      city: 'Jamshedpur',
+      state: 'Jharkhand',
+      pincode: '831001',
+      contactName: 'Agastya Kumar',
       contactPhone: '6202923165',
-      contactEmail: 'admin@greenfieldheights.in',
+      contactEmail: 'admin@dalmaheights.in',
       totalFlats: 96,
       isActive: true,
       monthlyFee: 4500,
@@ -138,8 +140,9 @@ async function main() {
             blockId: (block as any).id,
             societyId: society.id,
             isOccupied: floor <= 6,
-            ownerName: floor <= 6 ? `Owner of ${prefix}${floor}0${unit}` : undefined,
-            ownerPhone: floor <= 6 ? `98${String(Math.floor(10000000 + Math.random() * 89999999))}` : undefined,
+            ownerName: `Registered Owner of ${prefix}${floor}0${unit}`,
+            ownerPhone: `98${String(Math.floor(10000000 + Math.random() * 89999999))}`,
+            ownerEmail: `owner.${prefix.toLowerCase()}${floor}0${unit}@dalmaheights.in`,
           },
         });
         allFlats.push(f);
@@ -153,9 +156,9 @@ async function main() {
       blockId: adminBlock.id,
       societyId: society.id,
       isOccupied: true,
-      ownerName: 'Greenfield Heights Management',
+      ownerName: 'Dalma Heights Residency Management',
       ownerPhone: '6202923165',
-      ownerEmail: 'admin@greenfieldheights.in',
+      ownerEmail: 'admin@dalmaheights.in',
     },
   });
   const flat = (num: string) => allFlats.find((f: any) => f.flatNumber === num)!;
@@ -178,16 +181,15 @@ async function main() {
   }});
 
   const admin = await prisma.user.create({ data: {
-    name: 'Agastya Sharma',
+    name: 'Agastya Kumar',
     phone: '6202923165',
-    email: 'agastya@greenfieldheights.in',
+    email: 'agastya@dalmaheights.in',
     role: 'ADMIN',
     isActive: true,
     societyId: society.id,
     flatId: flat('A101').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: daysAgo(0),
     lastTokenRefresh: daysAgo(0),
   }});
@@ -195,7 +197,7 @@ async function main() {
   const guard1 = await prisma.user.create({ data: {
     name: 'Rajendra Singh',
     phone: '9800000001',
-    email: 'rajendra.guard@greenfieldheights.in',
+    email: 'rajendra.guard@dalmaheights.in',
     role: 'GUARD',
     isActive: true,
     societyId: society.id,
@@ -204,9 +206,9 @@ async function main() {
   }});
 
   const guard2 = await prisma.user.create({ data: {
-    name: 'Suresh Patil',
+    name: 'Suresh Mahto',
     phone: '9800000002',
-    email: 'suresh.guard@greenfieldheights.in',
+    email: 'suresh.guard@dalmaheights.in',
     role: 'GUARD',
     isActive: true,
     societyId: society.id,
@@ -217,7 +219,7 @@ async function main() {
   const guard3 = await prisma.user.create({ data: {
     name: 'Manoj Kumar',
     phone: '9800000003',
-    email: 'manoj.guard@greenfieldheights.in',
+    email: 'manoj.guard@dalmaheights.in',
     role: 'GUARD',
     isActive: true,
     societyId: society.id,
@@ -227,25 +229,24 @@ async function main() {
 
   // Resident 1 — A101 (Owner, Primary)
   const res1 = await prisma.user.create({ data: {
-    name: 'Amit Sharma',
+    name: 'Amit Sinha',
     phone: '9811000001',
-    email: 'amit.sharma@gmail.com',
+    email: 'amit.sinha@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
     flatId: flat('A101').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: hoursAgo(3),
     lastTokenRefresh: hoursAgo(3),
   }});
 
   // Resident 1 spouse — A101
   const res1spouse = await prisma.user.create({ data: {
-    name: 'Priya Sharma',
+    name: 'Kavita Sinha',
     phone: '9811000002',
-    email: 'priya.sharma@gmail.com',
+    email: 'kavita.sinha@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
@@ -260,96 +261,90 @@ async function main() {
 
   // Resident 2 — A301 (Owner)
   const res2 = await prisma.user.create({ data: {
-    name: 'Dr. Sneha Kulkarni',
+    name: 'Dr. Sneha Singh',
     phone: '9811000004',
-    email: 'sneha.kulkarni@gmail.com',
+    email: 'sneha.singh@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
     flatId: flat('A301').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: hoursAgo(1),
     lastTokenRefresh: hoursAgo(1),
   }});
 
   // Resident 3 — B102 (Tenant)
   const res3 = await prisma.user.create({ data: {
-    name: 'Vikram Chauhan',
+    name: 'Vikram Prasad',
     phone: '9811000006',
-    email: 'vikram.chauhan@gmail.com',
+    email: 'vikram.prasad@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
     flatId: flat('B102').id,
     isOwner: false,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: daysAgo(1),
     lastTokenRefresh: daysAgo(1),
   }});
 
   // Resident 4 — B401 (Owner)
   const res4 = await prisma.user.create({ data: {
-    name: 'Mohan Joshi',
+    name: 'Mohan Agarwal',
     phone: '9811000008',
-    email: 'mohan.joshi@gmail.com',
+    email: 'mohan.agarwal@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
     flatId: flat('B401').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: daysAgo(3),
     lastTokenRefresh: daysAgo(3),
   }});
 
   // Resident 5 — C201 (Owner)
   const res5 = await prisma.user.create({ data: {
-    name: 'Priya Desai',
+    name: 'Priya Kumari',
     phone: '9811000010',
-    email: 'priya.desai@gmail.com',
+    email: 'priya.kumari@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
     flatId: flat('C201').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: hoursAgo(5),
     lastTokenRefresh: hoursAgo(5),
   }});
 
   // Resident 6 — C401 (Owner)
   const res6 = await prisma.user.create({ data: {
-    name: 'Karthik Nair',
+    name: 'Kartik Mahto',
     phone: '9811000011',
-    email: 'karthik.nair@gmail.com',
+    email: 'kartik.mahto@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
     flatId: flat('C401').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: daysAgo(2),
     lastTokenRefresh: daysAgo(2),
   }});
 
   // Resident 7 — B201 (Owner)
   const res7 = await prisma.user.create({ data: {
-    name: 'Anita Mehta',
+    name: 'Anita Gupta',
     phone: '9811000012',
-    email: 'anita.mehta@gmail.com',
+    email: 'anita.gupta@gmail.com',
     role: 'RESIDENT',
     isActive: true,
     societyId: society.id,
     flatId: flat('B201').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: daysAgo(1),
     lastTokenRefresh: daysAgo(1),
   }});
@@ -365,7 +360,6 @@ async function main() {
     flatId: flat('A201').id,
     isOwner: true,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: hoursAgo(10),
     lastTokenRefresh: hoursAgo(10),
   }});
@@ -397,23 +391,39 @@ async function main() {
     flatId: flat('B301').id,
     isOwner: false,
     isPrimaryResident: true,
-    familyRole: null,
     lastLogin: hoursAgo(1),
     lastTokenRefresh: hoursAgo(1),
   }});
 
   // Flat owner info updates
-  await prisma.flat.update({ where: { id: flat('A101').id }, data: { currentOwnerId: res1.id, ownerName: 'Amit Sharma', ownerPhone: '9811000001', ownerEmail: 'amit.sharma@gmail.com' }});
+  await prisma.flat.update({ where: { id: flat('A101').id }, data: { currentOwnerId: res1.id, ownerName: 'Amit Sinha', ownerPhone: '9811000001', ownerEmail: 'amit.sinha@gmail.com' }});
   await prisma.flat.update({ where: { id: flat('A201').id }, data: { currentOwnerId: res8.id, ownerName: 'Rajan Verma', ownerPhone: '9811000013', ownerEmail: 'rajan.verma@gmail.com' }});
   await prisma.flat.update({ where: { id: flat('B301').id }, data: { currentTenantId: javed.id, ownerName: 'Javed Khan', ownerPhone: '9006412619', ownerEmail: 'javed.khan@gmail.com' }});
-  await prisma.flat.update({ where: { id: flat('A301').id }, data: { currentOwnerId: res2.id, ownerName: 'Dr. Sneha Kulkarni', ownerPhone: '9811000004', ownerEmail: 'sneha.kulkarni@gmail.com' }});
-  await prisma.flat.update({ where: { id: flat('B102').id }, data: { currentTenantId: res3.id, ownerName: 'Ramesh Chauhan', ownerPhone: '9811099006', ownerEmail: 'ramesh.chauhan@gmail.com' }});
-  await prisma.flat.update({ where: { id: flat('B201').id }, data: { currentOwnerId: res7.id, ownerName: 'Anita Mehta', ownerPhone: '9811000012', ownerEmail: 'anita.mehta@gmail.com' }});
-  await prisma.flat.update({ where: { id: flat('B401').id }, data: { currentOwnerId: res4.id, ownerName: 'Mohan Joshi', ownerPhone: '9811000008', ownerEmail: 'mohan.joshi@gmail.com' }});
-  await prisma.flat.update({ where: { id: flat('C201').id }, data: { currentOwnerId: res5.id, ownerName: 'Priya Desai', ownerPhone: '9811000010', ownerEmail: 'priya.desai@gmail.com' }});
-  await prisma.flat.update({ where: { id: flat('C401').id }, data: { currentOwnerId: res6.id, ownerName: 'Karthik Nair', ownerPhone: '9811000011', ownerEmail: 'karthik.nair@gmail.com' }});
+  await prisma.flat.update({ where: { id: flat('A301').id }, data: { currentOwnerId: res2.id, ownerName: 'Dr. Sneha Singh', ownerPhone: '9811000004', ownerEmail: 'sneha.singh@gmail.com' }});
+  await prisma.flat.update({ where: { id: flat('B102').id }, data: { currentTenantId: res3.id, ownerName: 'Ramesh Prasad', ownerPhone: '9811099006', ownerEmail: 'ramesh.prasad@gmail.com' }});
+  await prisma.flat.update({ where: { id: flat('B201').id }, data: { currentOwnerId: res7.id, ownerName: 'Anita Gupta', ownerPhone: '9811000012', ownerEmail: 'anita.gupta@gmail.com' }});
+  await prisma.flat.update({ where: { id: flat('B401').id }, data: { currentOwnerId: res4.id, ownerName: 'Mohan Agarwal', ownerPhone: '9811000008', ownerEmail: 'mohan.agarwal@gmail.com' }});
+  await prisma.flat.update({ where: { id: flat('C201').id }, data: { currentOwnerId: res5.id, ownerName: 'Priya Kumari', ownerPhone: '9811000010', ownerEmail: 'priya.kumari@gmail.com' }});
+  await prisma.flat.update({ where: { id: flat('C401').id }, data: { currentOwnerId: res6.id, ownerName: 'Kartik Mahto', ownerPhone: '9811000011', ownerEmail: 'kartik.mahto@gmail.com' }});
 
-  console.log('✅ 13 users (1 super admin, 1 admin, 3 guards, 10 residents incl. 2 family members)\n');
+  console.log('✅ 16 users (1 super admin, 1 admin, 3 guards, 11 residents incl. 2 family members)\n');
+
+  console.log('🏘️ Creating flat memberships...');
+  await prisma.userFlatMembership.createMany({ data: [
+    { userId: admin.id, societyId: society.id, flatId: flat('A101').id, role: 'ADMIN', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res1.id, societyId: society.id, flatId: flat('A101').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res1spouse.id, societyId: society.id, flatId: flat('A101').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: false, isLivingHere: true, isPrimary: false, isActive: true, isDefault: true },
+    { userId: res2.id, societyId: society.id, flatId: flat('A301').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res3.id, societyId: society.id, flatId: flat('B102').id, role: 'RESIDENT', residentType: 'TENANT', isOwner: false, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res4.id, societyId: society.id, flatId: flat('B401').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res5.id, societyId: society.id, flatId: flat('C201').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res6.id, societyId: society.id, flatId: flat('C401').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res7.id, societyId: society.id, flatId: flat('B201').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res8.id, societyId: society.id, flatId: flat('A201').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: res8son.id, societyId: society.id, flatId: flat('A201').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: false, isLivingHere: true, isPrimary: false, isActive: true, isDefault: true },
+    { userId: javed.id, societyId: society.id, flatId: flat('B301').id, role: 'RESIDENT', residentType: 'TENANT', isOwner: false, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+  ]});
+  console.log('✅ 12 flat memberships\n');
 
   // ════════════════════════════════════════════════════════
   // ONBOARDING
@@ -448,7 +458,7 @@ async function main() {
     await prisma.residentDocument.create({ data: {
       onboardingRequestId: req.id,
       documentType: r.type === 'OWNER' ? 'OWNERSHIP_PROOF' : 'TENANT_AGREEMENT',
-      documentUrl: `https://storage.greenfieldheights.in/docs/${r.user.id}-doc.pdf`,
+      documentUrl: `https://storage.dalmaheights.in/docs/${r.user.id}-doc.pdf`,
       fileName: r.type === 'OWNER' ? 'sale_agreement.pdf' : 'rent_agreement.pdf',
       fileSize: 1048576,
       mimeType: 'application/pdf',
@@ -459,7 +469,7 @@ async function main() {
     await prisma.residentDocument.create({ data: {
       onboardingRequestId: req.id,
       documentType: 'AADHAR_CARD',
-      documentUrl: `https://storage.greenfieldheights.in/docs/${r.user.id}-aadhar.pdf`,
+      documentUrl: `https://storage.dalmaheights.in/docs/${r.user.id}-aadhar.pdf`,
       fileName: 'aadhar_card.pdf',
       fileSize: 512000,
       mimeType: 'application/pdf',
@@ -473,7 +483,7 @@ async function main() {
       performedBy: admin.id,
       previousStatus: 'PENDING_APPROVAL',
       newStatus: 'APPROVED',
-      notes: 'All documents verified. Welcome to Greenfield Heights!',
+      notes: 'All documents verified. Welcome to Dalma Heights Residency!',
     }});
   }
   console.log('✅ Onboarding complete with documents & audit logs\n');
@@ -483,13 +493,13 @@ async function main() {
   // ════════════════════════════════════════════════════════
   console.log('🚗 Creating vehicles...');
   const veh1 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12AA1001',
+    vehicleNumber: 'JH05AA1001',
     vehicleType: 'Car',
     model: 'Honda City ZX',
     color: 'Pearl White',
     status: 'ACTIVE',
     parkingSlot: 'A-01',
-    stickerNumber: 'GH-1001',
+    stickerNumber: 'DH-1001',
     lastSeen: hoursAgo(2),
     userId: res1.id,
     flatId: flat('A101').id,
@@ -498,13 +508,13 @@ async function main() {
   }});
 
   const veh2 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12AA1002',
+    vehicleNumber: 'JH05AA1002',
     vehicleType: 'Bike',
     model: 'Royal Enfield Bullet 350',
     color: 'Matte Black',
     status: 'ACTIVE',
     parkingSlot: 'A-02',
-    stickerNumber: 'GH-1002',
+    stickerNumber: 'DH-1002',
     lastSeen: daysAgo(1),
     userId: res1.id,
     flatId: flat('A101').id,
@@ -513,13 +523,13 @@ async function main() {
   }});
 
   const veh3 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12BB2001',
+    vehicleNumber: 'JH05BB2001',
     vehicleType: 'Car',
     model: 'Toyota Innova Crysta',
     color: 'Silky Silver',
     status: 'ACTIVE',
     parkingSlot: 'A-03',
-    stickerNumber: 'GH-2001',
+    stickerNumber: 'DH-2001',
     lastSeen: hoursAgo(4),
     userId: res2.id,
     flatId: flat('A301').id,
@@ -528,13 +538,13 @@ async function main() {
   }});
 
   const veh4 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12CC3001',
+    vehicleNumber: 'JH05CC3001',
     vehicleType: 'Car',
     model: 'Maruti Suzuki Swift VXI',
     color: 'Solid Red',
     status: 'ACTIVE',
     parkingSlot: 'B-01',
-    stickerNumber: 'GH-3001',
+    stickerNumber: 'DH-3001',
     lastSeen: daysAgo(2),
     userId: res3.id,
     flatId: flat('B102').id,
@@ -543,13 +553,13 @@ async function main() {
   }});
 
   const veh5 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12DD4001',
+    vehicleNumber: 'JH05DD4001',
     vehicleType: 'Car',
     model: 'Hyundai Creta SX',
     color: 'Typhoon Silver',
     status: 'ACTIVE',
     parkingSlot: 'B-02',
-    stickerNumber: 'GH-4001',
+    stickerNumber: 'DH-4001',
     lastSeen: hoursAgo(8),
     userId: res4.id,
     flatId: flat('B401').id,
@@ -558,13 +568,13 @@ async function main() {
   }});
 
   const veh6 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12EE5001',
+    vehicleNumber: 'JH05EE5001',
     vehicleType: 'Car',
     model: 'Tata Nexon EV Max',
     color: 'Intensi-Teal',
     status: 'ACTIVE',
     parkingSlot: 'C-01',
-    stickerNumber: 'GH-5001',
+    stickerNumber: 'DH-5001',
     lastSeen: daysAgo(1),
     userId: res5.id,
     flatId: flat('C201').id,
@@ -573,13 +583,13 @@ async function main() {
   }});
 
   const veh7 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12FF6001',
+    vehicleNumber: 'JH05FF6001',
     vehicleType: 'Car',
     model: 'Kia Seltos HTX',
     color: 'Intelligency Blue',
     status: 'PENDING',
     parkingSlot: 'C-02',
-    stickerNumber: 'GH-6001-P',
+    stickerNumber: 'DH-6001-P',
     userId: res6.id,
     flatId: flat('C401').id,
     societyId: society.id,
@@ -587,13 +597,13 @@ async function main() {
   }});
 
   const veh8 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12GG7001',
+    vehicleNumber: 'JH05GG7001',
     vehicleType: 'Bike',
     model: 'Honda Activa 6G',
     color: 'Pearl Sunbeam White',
     status: 'ACTIVE',
     parkingSlot: 'C-03',
-    stickerNumber: 'GH-7001',
+    stickerNumber: 'DH-7001',
     lastSeen: hoursAgo(12),
     userId: res7.id,
     flatId: flat('B201').id,
@@ -602,13 +612,13 @@ async function main() {
   }});
 
   const veh9 = await prisma.vehicle.create({ data: {
-    vehicleNumber: 'MH12HH8001',
+    vehicleNumber: 'JH05HH8001',
     vehicleType: 'Car',
     model: 'Mahindra XUV700 AX7',
     color: 'Dazzling Silver',
     status: 'ACTIVE',
     parkingSlot: 'A-04',
-    stickerNumber: 'GH-8001',
+    stickerNumber: 'DH-8001',
     lastSeen: hoursAgo(6),
     userId: res8.id,
     flatId: flat('A201').id,
@@ -623,7 +633,7 @@ async function main() {
   // ════════════════════════════════════════════════════════
   console.log('🏊 Creating amenities...');
   const gym = await prisma.amenity.create({ data: {
-    name: 'Greenfield Fitness Studio',
+    name: 'Dalma Fitness Studio',
     type: 'GYM',
     description: 'Fully-equipped gym with treadmills, ellipticals, cross-trainers and free weights. Personal trainer available 6–8 AM and 6–8 PM.',
     capacity: 25,
@@ -866,10 +876,10 @@ async function main() {
     staffType: 'MAID',
     experienceYears: 8,
     description: 'Experienced maid specialising in deep cleaning and kitchen work. References available.',
-    languages: ['Hindi', 'Marathi'],
+    languages: ['Hindi', 'Bengali'],
     idProofType: 'Aadhaar',
     idProofNumber: '2345 6789 0123',
-    address: 'Baner Road, Near D-Mart, Pune 411045',
+    address: 'Bistupur Main Road, near Reliance Fresh, Jamshedpur 831001',
     emergencyContact: '9700000099',
     isFullTime: false,
     workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
@@ -903,7 +913,7 @@ async function main() {
     languages: ['Hindi', 'English'],
     idProofType: 'Aadhaar',
     idProofNumber: '3456 7890 1234',
-    address: 'Wakad, Pune 411057',
+    address: 'Mango, Jamshedpur 831012',
     emergencyContact: '9700000098',
     isFullTime: true,
     workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
@@ -927,16 +937,16 @@ async function main() {
   }});
 
   const driver1 = await prisma.domesticStaff.create({ data: {
-    name: 'Ganesh Jadhav',
+    name: 'Ganesh Prasad',
     phone: '9700000003',
-    email: 'ganesh.driver@work.in',
+    email: 'ganesh.prasad.driver@work.in',
     staffType: 'DRIVER',
     experienceYears: 15,
-    description: 'Experienced driver with clean record. Knows Pune and Mumbai routes well. Available for outstation.',
-    languages: ['Hindi', 'Marathi'],
+    description: 'Experienced driver with clean record. Knows Jamshedpur, Ranchi and Kolkata routes well. Available for outstation.',
+    languages: ['Hindi', 'Bengali'],
     idProofType: 'Driving License',
-    idProofNumber: 'MH1420220012345',
-    address: 'Pimple Saudagar, Pune 411027',
+    idProofNumber: 'JH0520220012345',
+    address: 'Kadma, Jamshedpur 831005',
     emergencyContact: '9700000097',
     isFullTime: true,
     workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
@@ -970,7 +980,7 @@ async function main() {
     languages: ['Hindi'],
     idProofType: 'Aadhaar',
     idProofNumber: '4567 8901 2345',
-    address: 'Aundh, Pune 411007',
+    address: 'Sakchi, Jamshedpur 831001',
     emergencyContact: '9700000096',
     isFullTime: false,
     workingDays: ['MON', 'WED', 'FRI'],
@@ -995,16 +1005,16 @@ async function main() {
   }});
 
   const nanny1 = await prisma.domesticStaff.create({ data: {
-    name: 'Kavita Gaikwad',
+    name: 'Kavita Devi',
     phone: '9700000005',
-    email: 'kavita.nanny@work.in',
+    email: 'kavita.devi.nanny@work.in',
     staffType: 'NANNY',
     experienceYears: 6,
     description: 'Trained child caretaker with first aid certification. Specialist for 0–6 years. Montessori trained.',
-    languages: ['Marathi', 'Hindi'],
+    languages: ['Hindi', 'Odia'],
     idProofType: 'Aadhaar',
     idProofNumber: '5678 9012 3456',
-    address: 'Baner, Pune 411045',
+    address: 'Bistupur, Jamshedpur 831001',
     emergencyContact: '9700000095',
     isFullTime: true,
     workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI'],
@@ -1029,16 +1039,16 @@ async function main() {
   }});
 
   const gardener1 = await prisma.domesticStaff.create({ data: {
-    name: 'Balaji Reddy',
+    name: 'Balaji Das',
     phone: '9700000006',
-    email: 'balaji.garden@work.in',
+    email: 'balaji.das.garden@work.in',
     staffType: 'GARDENER',
     experienceYears: 10,
     description: 'Society-level gardening, plant care, and landscaping. Maintains 3 societies. Terrace garden specialist.',
-    languages: ['Telugu', 'Kannada', 'Hindi'],
+    languages: ['Hindi', 'Bengali', 'Odia'],
     idProofType: 'Voter ID',
-    idProofNumber: 'KA/01/234/567890',
-    address: 'Wakad, Pune 411057',
+    idProofNumber: 'JH/05/234/567890',
+    address: 'Mango, Jamshedpur 831012',
     emergencyContact: '9700000094',
     isFullTime: false,
     workingDays: ['MON', 'WED', 'FRI', 'SAT'],
@@ -1063,16 +1073,16 @@ async function main() {
   }});
 
   const cleaner1 = await prisma.domesticStaff.create({ data: {
-    name: 'Pradeep Sharma',
+    name: 'Pradeep Oraon',
     phone: '9700000007',
-    email: 'pradeep.clean@work.in',
+    email: 'pradeep.oraon.clean@work.in',
     staffType: 'CLEANER',
     experienceYears: 4,
     description: 'Society common area cleaning specialist. Handles lobby, corridors, parking area cleaning.',
-    languages: ['Hindi', 'Marathi'],
+    languages: ['Hindi', 'Odia'],
     idProofType: 'Aadhaar',
     idProofNumber: '6789 0123 4567',
-    address: 'Baner Road, Pune 411045',
+    address: 'Bistupur Main Road, Jamshedpur 831001',
     emergencyContact: '9700000093',
     isFullTime: true,
     workingDays: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
@@ -1220,7 +1230,7 @@ async function main() {
     reviewerId: res4.id,
     flatId: flat('B401').id,
     rating: 5,
-    review: 'Very safe and reliable driver. Knows all routes in Pune and Mumbai. Never been late.',
+    review: 'Very safe and reliable driver. Knows all routes in Jamshedpur, Ranchi and Kolkata. Never been late.',
     workQuality: 5,
     punctuality: 5,
     behavior: 5,
@@ -1304,7 +1314,7 @@ async function main() {
     endTime: '22:00',
     durationHours: 16,
     workType: 'Full day outstation trip',
-    requirements: 'Mumbai trip. Need driver from 6 AM. Car will be provided.',
+    requirements: 'Ranchi trip. Need driver from 6 AM. Car will be provided.',
     estimatedCost: 2500,
     status: 'PENDING',
     isPaid: false,
@@ -1342,7 +1352,7 @@ async function main() {
     title: 'New furniture delivery',
     description: 'Moving in new furniture set purchased from HomeTown — 3-seater sofa, dining table, TV unit',
     itemsList: ['Sofa set 3-seater (brown leather)', 'Dining table 6-seater with chairs', 'TV cabinet', 'King size mattress', 'Bookshelf'],
-    vehicleNumber: 'MH14TK5678',
+    vehicleNumber: 'JH05TK5678',
     driverName: 'Raju Movers & Packers',
     driverPhone: '9600000001',
     validFrom: daysFromNow(1),
@@ -1365,7 +1375,7 @@ async function main() {
     workerPhone: '9600000002',
     companyName: 'Cool Tech Service Pvt Ltd',
     itemsList: ['Toolkit', 'Refrigerant gas cylinder R32', 'Cleaning supplies', 'Replacement filters'],
-    vehicleNumber: 'MH14SV1234',
+    vehicleNumber: 'JH05SV1234',
     driverName: 'Sunil Technician',
     driverPhone: '9600000002',
     validFrom: daysFromNow(3),
@@ -1385,7 +1395,7 @@ async function main() {
     title: 'Old furniture removal',
     description: 'Removing old sofa, dining table and wardrobe from flat C201 to donate to NGO',
     itemsList: ['Old 2-seater sofa', 'Dining table 4-seater', 'Wooden wardrobe'],
-    vehicleNumber: 'MH12RT4321',
+    vehicleNumber: 'JH05RT4321',
     driverName: 'NGO Transport',
     driverPhone: '9600000003',
     validFrom: daysFromNow(2),
@@ -1403,7 +1413,7 @@ async function main() {
     title: 'Tenant vacating flat B102',
     description: 'Tenant moving out. Moving all household goods.',
     itemsList: ['All household furniture', 'Electronics — TV, refrigerator, washing machine', 'Beds and mattresses', 'Kitchen utensils', 'Personal belongings'],
-    vehicleNumber: 'MH14MV9876',
+    vehicleNumber: 'JH05MV9876',
     driverName: 'Express Packers',
     driverPhone: '9600000004',
     validFrom: daysFromNow(10),
@@ -1431,7 +1441,7 @@ async function main() {
     visitorPhone: '9840000001',
     visitorType: 'FRIEND',
     purpose: 'Social visit — lunch',
-    vehicleNumber: 'MH12ZZ1111',
+    vehicleNumber: 'JH05ZZ1111',
     wasAutoApproved: false,
     approvedById: res1.id,
     approvedAt: hoursAgo(5),
@@ -1441,7 +1451,7 @@ async function main() {
     societyId: society.id,
     gatePointId: mainGate.id,
     createdById: guard1.id,
-    remarks: 'College friend of Amit Sharma. ID verified.',
+    remarks: 'College friend of Amit Sinha. ID verified.',
   }});
 
   await prisma.entry.create({ data: {
@@ -1489,7 +1499,7 @@ async function main() {
     visitorPhone: '9840000004',
     visitorType: 'SERVICE_PROVIDER',
     purpose: 'Bathroom tap repair — kitchen and bathroom',
-    vehicleNumber: 'MH14PP7777',
+    vehicleNumber: 'JH05PP7777',
     wasAutoApproved: false,
     approvedById: res4.id,
     approvedAt: hoursAgo(28),
@@ -1499,7 +1509,7 @@ async function main() {
     societyId: society.id,
     gatePointId: mainGate.id,
     createdById: guard1.id,
-    remarks: 'Plumber from Sharma Plumbing Services. Tools inspected at gate.',
+    remarks: 'Plumber from Singh Plumbing Services. Tools inspected at gate.',
   }});
 
   await prisma.entry.create({ data: {
@@ -1509,7 +1519,7 @@ async function main() {
     visitorPhone: '9840000005',
     visitorType: 'CAB_DRIVER',
     purpose: 'Cab pickup for resident',
-    vehicleNumber: 'MH12XY9999',
+    vehicleNumber: 'JH05XY9999',
     wasAutoApproved: true,
     autoApprovalReason: 'Pre-approved cab entry — vehicle digits matched',
     checkInTime: hoursAgo(25),
@@ -1552,7 +1562,7 @@ async function main() {
     societyId: society.id,
     gatePointId: mainGate.id,
     createdById: guard2.id,
-    remarks: 'Sister of Dr. Sneha Kulkarni. Aadhaar verified.',
+    remarks: 'Sister of Dr. Sneha Singh. Aadhaar verified.',
   }});
 
   await prisma.entry.create({ data: {
@@ -1581,7 +1591,7 @@ async function main() {
     visitorPhone: '9840000009',
     visitorType: 'SERVICE_PROVIDER',
     purpose: 'Electrical work — MCB replacement and wiring check',
-    vehicleNumber: 'MH14EL2222',
+    vehicleNumber: 'JH05EL2222',
     wasAutoApproved: false,
     approvedById: res8.id,
     approvedAt: daysAgo(2),
@@ -1712,7 +1722,7 @@ async function main() {
 
   await prisma.notice.create({ data: {
     title: 'Monthly Maintenance Due — April 2026',
-    description: `Dear Residents,\n\nMonthly maintenance of ₹4,500 for April 2026 is due by 5th April 2026.\n\nPayment Options:\n• UPI: greenfieldheights@sbi\n• Bank Transfer: A/C 9876543210, IFSC SBIN0012345\n• Cash at Admin Office (Mon–Sat 10 AM–1 PM)\n\nLate fee of ₹200 applicable after 10th April.\n\nRegards,\nManagement Committee`,
+    description: `Dear Residents,\n\nMonthly maintenance of ₹4,500 for April 2026 is due by 5th April 2026.\n\nPayment Options:\n• UPI: dalmaheights@sbi\n• Bank Transfer: A/C 9876543210, IFSC SBIN0012345\n• Cash at Admin Office (Mon–Sat 10 AM–1 PM)\n\nLate fee of ₹200 applicable after 10th April.\n\nRegards,\nManagement Committee`,
     type: 'GENERAL',
     priority: 'HIGH',
     isActive: true,
@@ -1728,7 +1738,7 @@ async function main() {
 
   await prisma.notice.create({ data: {
     title: 'Water Supply Disruption — 12th April (10 AM to 4 PM)',
-    description: `Due to PMC pipeline maintenance work on Baner Road:\n\nDate: 12th April 2026 (Sunday)\nTime: 10:00 AM to 4:00 PM\nAffected: All towers (A, B, C)\n\nPlease store sufficient water in advance. Emergency tanker will be arranged if outage extends beyond 4 PM.\n\nContact maintenance: 9820001234\n\n— Maintenance Team`,
+    description: `Due to JNAC pipeline maintenance work on Bistupur Main Road:\n\nDate: 12th April 2026 (Sunday)\nTime: 10:00 AM to 4:00 PM\nAffected: All towers (A, B, C)\n\nPlease store sufficient water in advance. Emergency tanker will be arranged if outage extends beyond 4 PM.\n\nContact maintenance: 9820001234\n\n— Maintenance Team`,
     type: 'MAINTENANCE',
     priority: 'HIGH',
     isActive: true,
@@ -1743,8 +1753,8 @@ async function main() {
   }});
 
   await prisma.notice.create({ data: {
-    title: 'Summer Camp 2026 Registration Open — Greenfield Kids Club',
-    description: `Attention Parents!\n\nSummer Camp 2026 registration is now open for all Greenfield Heights children.\n\nActivities: Swimming, Art & Craft, Coding, Dance, Yoga\nAge Group: 5–15 years\nDates: 15 April to 15 May 2026\nFee: ₹8,000 (all inclusive)\n\nRegister at admin office or WhatsApp 9820001111.\nLimited seats — first come first served!\n\n— Cultural Committee`,
+    title: 'Summer Camp 2026 Registration Open — Dalma Kids Club',
+    description: `Attention Parents!\n\nSummer Camp 2026 registration is now open for all Dalma Heights Residency children.\n\nActivities: Swimming, Art & Craft, Coding, Dance, Yoga\nAge Group: 5–15 years\nDates: 15 April to 15 May 2026\nFee: ₹8,000 (all inclusive)\n\nRegister at admin office or WhatsApp 9820001111.\nLimited seats — first come first served!\n\n— Cultural Committee`,
     type: 'EVENT',
     priority: 'MEDIUM',
     isActive: true,
@@ -1807,7 +1817,7 @@ async function main() {
 
   await prisma.notice.create({ data: {
     title: 'Emergency Contact Update — Save These Numbers',
-    description: `Please save these important emergency contacts:\n\nPolice: 100\nFire Brigade: 101\nAmbulance: 108\nSociety Emergency: 9820009999 (24x7)\nAdmin Office: 9820001234 (9 AM – 6 PM)\nMaintenance Emergency: 9820005678 (24x7)\nLift AMC (Otis): 1800 209 6000\n\nBMC Water: 1916\nMSEB Power: 1912\nGas Leak: 1906\n\nPlease save these numbers for quick access.\n\n— Management Committee`,
+    description: `Please save these important emergency contacts:\n\nPolice: 100\nFire Brigade: 101\nAmbulance: 108\nSociety Emergency: 9820009999 (24x7)\nAdmin Office: 9820001234 (9 AM – 6 PM)\nMaintenance Emergency: 9820005678 (24x7)\nLift AMC (Otis): 1800 209 6000\n\nJamshedpur Notified Area Committee: 1800 345 6489\nJUSCO/TSUISL Utilities: 0657 664 6000\nGas Leak: 1906\n\nPlease save these numbers for quick access.\n\n— Management Committee`,
     type: 'GENERAL',
     priority: 'LOW',
     isActive: true,
@@ -1938,7 +1948,7 @@ async function main() {
     status: 'OPEN',
     title: 'Broken gym treadmill handle',
     description: 'The handle grip on treadmill #2 in the gym is broken. One side of the handle has completely come off. This is a safety hazard. Please get it repaired or replaced before someone gets hurt.',
-    location: 'Greenfield Fitness Studio — treadmill #2',
+    location: 'Dalma Fitness Studio — treadmill #2',
     images: [],
     reportedById: res8.id,
     flatId: flat('A201').id,
@@ -2007,11 +2017,11 @@ async function main() {
   console.log('🏪 Creating vendors...');
   const vendors = await Promise.all([
     prisma.vendor.create({ data: {
-      name: 'Sharma Plumbing Services',
+      name: 'Singh Plumbing Services',
       category: 'PLUMBER',
       phone: '9500000001',
-      email: 'sharma.plumbing@gmail.com',
-      address: 'Shop 12, Baner Market, Pune 411045',
+      email: 'singh.plumbing@gmail.com',
+      address: 'Shop 12, Bistupur Market, Jamshedpur 831001',
       description: '24x7 plumbing services. 15 years experience. Emergency calls accepted. All plumbing repairs and installations.',
       rating: 4.5,
       totalReviews: 62,
@@ -2030,7 +2040,7 @@ async function main() {
       category: 'ELECTRICIAN',
       phone: '9500000002',
       email: 'powerfix@gmail.com',
-      address: 'Wakad Main Road, Pune 411057',
+      address: 'Mango Main Road, Jamshedpur 831012',
       description: 'Licensed electrician. Wiring, MCB replacement, inverter installation and all electrical repairs.',
       rating: 4.7,
       totalReviews: 48,
@@ -2049,7 +2059,7 @@ async function main() {
       category: 'CARPENTER',
       phone: '9500000003',
       email: 'woodcraft@gmail.com',
-      address: 'Aundh, Pune 411007',
+      address: 'Sakchi, Jamshedpur 831001',
       description: 'Custom furniture, modular kitchen, wardrobes and all carpentry work. Free home visit for quotation.',
       rating: 4.3,
       totalReviews: 35,
@@ -2068,7 +2078,7 @@ async function main() {
       category: 'PAINTER',
       phone: '9500000004',
       email: 'colourcraft@gmail.com',
-      address: 'Baner, Pune 411045',
+      address: 'Bistupur, Jamshedpur 831001',
       description: 'Interior and exterior painting. Asian Paints and Berger authorized dealer. Free colour consultation and quotation.',
       rating: 4.6,
       totalReviews: 27,
@@ -2087,7 +2097,7 @@ async function main() {
       category: 'CLEANER',
       phone: '9500000005',
       email: 'sparkclean@gmail.com',
-      address: 'Pimple Saudagar, Pune 411027',
+      address: 'Kadma, Jamshedpur 831005',
       description: 'Professional deep cleaning, sofa cleaning, carpet shampooing. Eco-friendly certified products used.',
       rating: 4.4,
       totalReviews: 41,
@@ -2106,7 +2116,7 @@ async function main() {
       category: 'GARDENER',
       phone: '9500000006',
       email: 'greenthumb@gmail.com',
-      address: 'Wakad, Pune 411057',
+      address: 'Mango, Jamshedpur 831012',
       description: 'Terrace gardens, indoor plants, society landscaping. Monthly AMC available. Plant supply also.',
       rating: 4.2,
       totalReviews: 19,
@@ -2125,7 +2135,7 @@ async function main() {
       category: 'PEST_CONTROL',
       phone: '9500000007',
       email: 'pestaway@gmail.com',
-      address: 'Balewadi, Pune 411045',
+      address: 'Sonari, Jamshedpur 831001',
       description: 'AMC and one-time pest control. Government certified. Cockroach, termite, rat, and mosquito control.',
       rating: 4.8,
       totalReviews: 53,
@@ -2144,7 +2154,7 @@ async function main() {
       category: 'APPLIANCE_REPAIR',
       phone: '9500000008',
       email: 'applifix@gmail.com',
-      address: 'Baner Road, Pune 411045',
+      address: 'Bistupur Main Road, Jamshedpur 831001',
       description: 'AC, washing machine, refrigerator, microwave and all appliance repair. All brands. Same-day service.',
       rating: 4.6,
       totalReviews: 76,
@@ -2226,7 +2236,7 @@ async function main() {
 
   const post1 = await prisma.communityPost.create({ data: {
     title: 'Diwali Celebration 2026 — Join Us!',
-    content: 'Dear Greenfield family,\n\nWe are organizing a grand Diwali celebration on 20th October 2026 in the clubhouse. Rangoli competition, cultural performances, potluck dinner, and fireworks display!\n\nRSVP by 10th October at the admin office. Families with kids please register children for the drawing competition too.\n\nLet us celebrate together!',
+    content: 'Dear Dalma Heights family,\n\nWe are organizing a grand Diwali celebration on 20th October 2026 in the clubhouse. Rangoli competition, cultural performances, potluck dinner, and fireworks display!\n\nRSVP by 10th October at the admin office. Families with kids please register children for the drawing competition too.\n\nLet us celebrate together!',
     category: 'EVENT',
     isActive: true,
     isPinned: true,
@@ -2298,7 +2308,7 @@ async function main() {
 
   await prisma.communityPost.create({ data: {
     title: 'Annual Badminton Tournament — Registrations Open!',
-    content: 'Annual Greenfield Badminton Tournament 2026!\n\nCategories: Men\'s Singles, Ladies\' Singles, Mixed Doubles\nDate: 25th April 2026\nVenue: Multi-Sport Court\nEntry fee: ₹100 per category\n\nPrize money: ₹3000, ₹1500, ₹750 for top 3 positions.\n\nRegister by 20th April at admin office. Only 16 slots per category — register early!',
+    content: 'Annual Dalma Heights Badminton Tournament 2026!\n\nCategories: Men\'s Singles, Ladies\' Singles, Mixed Doubles\nDate: 25th April 2026\nVenue: Multi-Sport Court\nEntry fee: ₹100 per category\n\nPrize money: ₹3000, ₹1500, ₹750 for top 3 positions.\n\nRegister by 20th April at admin office. Only 16 slots per category — register early!',
     category: 'EVENT',
     isActive: true,
     isPinned: false,
@@ -2353,9 +2363,9 @@ async function main() {
   await prisma.societyDocument.createMany({ data: [
     {
       name: 'Society Bylaws 2024',
-      description: 'Official bylaws governing Greenfield Heights society operations, rules, and regulations.',
+      description: 'Official bylaws governing Dalma Heights Residency society operations, rules, and regulations.',
       category: 'RULES_AND_BYLAWS',
-      fileUrl: 'https://storage.greenfieldheights.in/docs/bylaws-2024.pdf',
+      fileUrl: 'https://storage.dalmaheights.in/docs/bylaws-2024.pdf',
       fileKey: 'docs/bylaws-2024.pdf',
       fileName: 'Society_Bylaws_2024.pdf',
       fileSizeMB: 1.95,
@@ -2368,7 +2378,7 @@ async function main() {
       name: 'Annual Maintenance Budget 2025-26',
       description: 'Detailed budget for society maintenance, infrastructure, and operations for FY 2025-26.',
       category: 'FINANCIAL',
-      fileUrl: 'https://storage.greenfieldheights.in/docs/budget-2025-26.pdf',
+      fileUrl: 'https://storage.dalmaheights.in/docs/budget-2025-26.pdf',
       fileKey: 'docs/budget-2025-26.pdf',
       fileName: 'Annual_Budget_2025-26.pdf',
       fileSizeMB: 1.46,
@@ -2381,7 +2391,7 @@ async function main() {
       name: 'AGM Minutes — March 2026',
       description: 'Minutes of the Annual General Meeting held on 15 March 2026. Decisions and resolutions.',
       category: 'MEETING_MINUTES',
-      fileUrl: 'https://storage.greenfieldheights.in/docs/agm-march-2026.pdf',
+      fileUrl: 'https://storage.dalmaheights.in/docs/agm-march-2026.pdf',
       fileKey: 'docs/agm-march-2026.pdf',
       fileName: 'AGM_Minutes_March2026.pdf',
       fileSizeMB: 0.49,
@@ -2394,7 +2404,7 @@ async function main() {
       name: 'Emergency Contact Directory 2026',
       description: 'Directory of all emergency contacts including hospitals, fire, police, and utility services.',
       category: 'OTHER',
-      fileUrl: 'https://storage.greenfieldheights.in/docs/emergency-contacts.pdf',
+      fileUrl: 'https://storage.dalmaheights.in/docs/emergency-contacts.pdf',
       fileKey: 'docs/emergency-contacts.pdf',
       fileName: 'Emergency_Contacts_2026.pdf',
       fileSizeMB: 0.24,
@@ -2405,9 +2415,9 @@ async function main() {
     },
     {
       name: 'Flat A101 Sale Agreement',
-      description: 'Registered sale agreement for Flat A101 — Amit Sharma.',
+      description: 'Registered sale agreement for Flat A101 — Amit Sinha.',
       category: 'LEGAL',
-      fileUrl: 'https://storage.greenfieldheights.in/docs/a101-sale-agreement.pdf',
+      fileUrl: 'https://storage.dalmaheights.in/docs/a101-sale-agreement.pdf',
       fileKey: 'docs/a101-sale-agreement.pdf',
       fileName: 'A101_Sale_Agreement.pdf',
       fileSizeMB: 2.93,
@@ -2418,9 +2428,9 @@ async function main() {
     },
     {
       name: 'Flat B102 Rent Agreement',
-      description: 'Rental agreement for Flat B102 — Vikram Chauhan as tenant.',
+      description: 'Rental agreement for Flat B102 — Vikram Prasad as tenant.',
       category: 'LEGAL',
-      fileUrl: 'https://storage.greenfieldheights.in/docs/b102-rent-agreement.pdf',
+      fileUrl: 'https://storage.dalmaheights.in/docs/b102-rent-agreement.pdf',
       fileKey: 'docs/b102-rent-agreement.pdf',
       fileName: 'B102_Rent_Agreement.pdf',
       fileSizeMB: 0.98,
@@ -2433,7 +2443,7 @@ async function main() {
       name: 'Society Maintenance Schedule 2026',
       description: 'Annual maintenance schedule for lifts, generators, water tanks, and common areas.',
       category: 'MAINTENANCE',
-      fileUrl: 'https://storage.greenfieldheights.in/docs/maintenance-schedule-2026.pdf',
+      fileUrl: 'https://storage.dalmaheights.in/docs/maintenance-schedule-2026.pdf',
       fileKey: 'docs/maintenance-schedule-2026.pdf',
       fileName: 'Maintenance_Schedule_2026.pdf',
       fileSizeMB: 0.62,
@@ -2526,15 +2536,76 @@ async function main() {
   // ════════════════════════════════════════════════════════
   console.log('💰 Creating invoices...');
 
-  const invoiceFlats = [
+  let paymentSeq = 1;
+  const createPaymentTransaction = async (invoiceId: string, amount: number, paidAt: Date, label: string) => {
+    const seq = String(paymentSeq++).padStart(3, '0');
+    await prisma.paymentTransaction.create({ data: {
+      status: 'SUCCESS',
+      amount,
+      currency: 'INR',
+      cashfreeOrderId: `cf_order_${label}_${seq}`,
+      cashfreeCfOrderId: `cf_${label}_${seq}`,
+      cashfreePaymentId: `pay_${label}_${seq}`,
+      paymentSessionId: `session_${label}_${seq}`,
+      idempotencyKey: `seed_${label}_${seq}`,
+      webhookEventType: 'PAYMENT_SUCCESS_WEBHOOK',
+      webhookReceivedAt: paidAt,
+      rawResponse: {
+        order_status: 'PAID',
+        payment_method: 'upi',
+        payer_city: 'Jamshedpur',
+      },
+      rawWebhook: {
+        event: 'PAYMENT_SUCCESS_WEBHOOK',
+        source: 'seed',
+        society: 'Dalma Heights Residency',
+      },
+      invoiceId,
+      createdAt: paidAt,
+    }});
+  };
+  const createUnpaidPaymentAttempt = async (
+    invoiceId: string,
+    amount: number,
+    status: 'ACTIVE' | 'FAILED' | 'USER_DROPPED' | 'EXPIRED',
+    label: string,
+  ) => {
+    const seq = String(paymentSeq++).padStart(3, '0');
+    await prisma.paymentTransaction.create({ data: {
+      status,
+      amount,
+      currency: 'INR',
+      cashfreeOrderId: `cf_order_${label}_${seq}`,
+      cashfreeCfOrderId: `cf_${label}_${seq}`,
+      cashfreePaymentId: `pay_${label}_${seq}`,
+      paymentSessionId: `session_${label}_${seq}`,
+      idempotencyKey: `seed_${label}_${seq}`,
+      webhookEventType: status === 'ACTIVE' ? 'PAYMENT_LINK_CREATED' : `PAYMENT_${status}`,
+      webhookReceivedAt: hoursAgo(12),
+      rawResponse: {
+        order_status: status,
+        payment_method: 'upi',
+        payer_city: 'Jamshedpur',
+      },
+      rawWebhook: {
+        event: status === 'ACTIVE' ? 'PAYMENT_LINK_CREATED' : `PAYMENT_${status}`,
+        source: 'seed',
+        society: 'Dalma Heights Residency',
+      },
+      invoiceId,
+      createdAt: hoursAgo(12),
+    }});
+  };
+
+  const invoiceFlats: Array<{ flat: any; status: 'PAID' | 'PENDING' | 'OVERDUE'; paidAt?: Date; penalty: number }> = [
     { flat: flat('A101'), status: 'PAID'    as const, paidAt: daysAgo(5),  penalty: 0   },
     { flat: flat('A201'), status: 'PAID'    as const, paidAt: daysAgo(3),  penalty: 0   },
-    { flat: flat('A301'), status: 'PENDING' as const, paidAt: null,         penalty: 0   },
-    { flat: flat('B102'), status: 'OVERDUE' as const, paidAt: null,         penalty: 200 },
+    { flat: flat('A301'), status: 'PENDING' as const,                       penalty: 0   },
+    { flat: flat('B102'), status: 'OVERDUE' as const,                       penalty: 200 },
     { flat: flat('B201'), status: 'PAID'    as const, paidAt: daysAgo(8),  penalty: 0   },
     { flat: flat('B401'), status: 'PAID'    as const, paidAt: daysAgo(10), penalty: 0   },
-    { flat: flat('C201'), status: 'PENDING' as const, paidAt: null,         penalty: 0   },
-    { flat: flat('C401'), status: 'OVERDUE' as const, paidAt: null,         penalty: 200 },
+    { flat: flat('C201'), status: 'PENDING' as const,                       penalty: 0   },
+    { flat: flat('C401'), status: 'OVERDUE' as const,                       penalty: 200 },
   ];
 
   for (const entry of invoiceFlats) {
@@ -2546,7 +2617,7 @@ async function main() {
       status: entry.status,
       description: 'Monthly maintenance fee — April 2026',
       dueDate: new Date('2026-04-05'),
-      paidAt: entry.paidAt,
+      ...(entry.paidAt ? { paidAt: entry.paidAt } : {}),
       flatId: entry.flat.id,
       societyId: society.id,
     }});
@@ -2555,11 +2626,29 @@ async function main() {
       { invoiceId: inv.id, description: 'Monthly Maintenance Fee', amount: 4500 },
       ...(entry.penalty > 0 ? [{ invoiceId: inv.id, description: 'Late Payment Fee', amount: entry.penalty }] : []),
     ]});
+
+    if (entry.status === 'PAID' && entry.paidAt) {
+      await createPaymentTransaction(inv.id, 4500 + entry.penalty, entry.paidAt, `apr_${entry.flat.flatNumber.toLowerCase()}`);
+    } else {
+      const attemptStatusByFlat: Record<string, 'ACTIVE' | 'FAILED' | 'USER_DROPPED' | 'EXPIRED'> = {
+        A301: 'ACTIVE',
+        B102: 'FAILED',
+        C201: 'USER_DROPPED',
+        C401: 'EXPIRED',
+      };
+      await createUnpaidPaymentAttempt(
+        inv.id,
+        4500 + entry.penalty,
+        attemptStatusByFlat[entry.flat.flatNumber],
+        `apr_${entry.flat.flatNumber.toLowerCase()}_unpaid`,
+      );
+    }
   }
 
   // Also create March invoices (all PAID) for history
   const marchFlats = [flat('A101'), flat('A201'), flat('A301'), flat('B102'), flat('B201'), flat('B401'), flat('C201'), flat('C401')];
   for (const f of marchFlats) {
+    const paidAt = daysAgo(35);
     const inv = await prisma.invoice.create({ data: {
       month: 'March 2026',
       amount: 4500,
@@ -2568,7 +2657,7 @@ async function main() {
       status: 'PAID',
       description: 'Monthly maintenance fee — March 2026',
       dueDate: new Date('2026-03-05'),
-      paidAt: daysAgo(35),
+      paidAt,
       flatId: f.id,
       societyId: society.id,
     }});
@@ -2577,9 +2666,10 @@ async function main() {
       description: 'Monthly Maintenance Fee',
       amount: 4500,
     }});
+    await createPaymentTransaction(inv.id, 4500, paidAt, `mar_${f.flatNumber.toLowerCase()}`);
   }
 
-  console.log('✅ 16 invoices (8 April + 8 March)\n');
+  console.log('✅ 16 invoices (8 April + 8 March) + 16 payment transactions (12 successful + 4 unpaid attempts)\n');
 
   // ════════════════════════════════════════════════════════
   // PAYMENT REMINDERS
@@ -2601,7 +2691,7 @@ async function main() {
   const gi1 = await prisma.guestInvite.create({ data: {
     type: 'QUICK',
     status: 'ACTIVE',
-    visitorName: 'Rahul Sharma',
+    visitorName: 'Rahul Sinha',
     visitorPhone: '9900001111',
     validFrom: hoursFromNow(1),
     validUntil: hoursFromNow(6),
@@ -2629,7 +2719,7 @@ async function main() {
     timeFrom: '14:00',
     timeUntil: '19:00',
     passcode: rand6(),
-    maxUses: null,
+    maxUses: 365,
     usedCount: 12,
     note: 'Piano teacher — visits twice weekly on Tuesday and Thursday',
     isPrivate: false,
@@ -2684,7 +2774,7 @@ async function main() {
     inviteType: 'GUEST_INVITE',
     flatId: flat('A101').id,
     guardId: guard1.id,
-    visitorName: 'Rahul Sharma',
+    visitorName: 'Rahul Sinha',
     visitorPhone: '9900001111',
     passcode: gi1.passcode,
     entryTime: hoursAgo(2),
@@ -2701,10 +2791,10 @@ async function main() {
 
   const partyCode = 'GRP-' + rand6().slice(0, 4);
   const party = await prisma.partyInvite.create({ data: {
-    hostName: 'Amit & Priya Sharma',
+    hostName: 'Amit & Kavita Sinha',
     validFrom: daysFromNow(5),
     validUntil: daysFromNow(5),
-    venue: 'Grand Banquet Hall, Greenfield Heights',
+    venue: 'Grand Banquet Hall, Dalma Heights Residency',
     note: 'Dress code: Festive attire. No outside food or drinks.',
     theme: 1,
     maxGuests: 40,
@@ -2719,10 +2809,10 @@ async function main() {
 
   await prisma.partySlot.createMany({ data: [
     { partyInviteId: party.id, code: rand6(), phone: '9900005555', name: 'Rohan Mehta',    addedByResident: true,  claimedAt: daysAgo(1) },
-    { partyInviteId: party.id, code: rand6(), phone: '9900006666', name: 'Sunita Reddy',   addedByResident: true,  claimedAt: daysAgo(2) },
+    { partyInviteId: party.id, code: rand6(), phone: '9900006666', name: 'Sunita Tiwary',  addedByResident: true,  claimedAt: daysAgo(2) },
     { partyInviteId: party.id, code: rand6(), phone: '9900007777', name: 'Arjun Kapoor',   addedByResident: false, claimedAt: daysAgo(1) },
-    { partyInviteId: party.id, code: rand6(), phone: '9900008888', name: 'Divya Nair',     addedByResident: false, claimedAt: daysAgo(1) },
-    { partyInviteId: party.id, code: rand6(), phone: '9900009999', name: 'Sameer Joshi',   addedByResident: false, claimedAt: hoursAgo(3) },
+    { partyInviteId: party.id, code: rand6(), phone: '9900008888', name: 'Divya Singh',    addedByResident: false, claimedAt: daysAgo(1) },
+    { partyInviteId: party.id, code: rand6(), phone: '9900009999', name: 'Sameer Gupta',   addedByResident: false, claimedAt: hoursAgo(3) },
   ]});
 
   console.log('✅ 1 party invite + 5 claimed slots\n');
@@ -2805,7 +2895,7 @@ async function main() {
     mode: 'NORMAL',
     scheduleType: 'RECURRING',
     status: 'ACTIVE',
-    visitorName: 'Ganesh Jadhav',
+    visitorName: 'Ganesh Prasad',
     visitorPhone: '9700000003',
     userId: res4.id,
     flatId: flat('B401').id,
@@ -2875,7 +2965,7 @@ async function main() {
 
   await prisma.parkingViolation.create({ data: {
     vehicleId: veh5.id,
-    vehicleNumber: 'MH12DD4001',
+    vehicleNumber: 'JH05DD4001',
     type: 'WRONG_PARKING',
     source: 'OFFICIAL',
     status: 'RESOLVED',
@@ -2890,12 +2980,12 @@ async function main() {
   }});
 
   await prisma.parkingViolation.create({ data: {
-    vehicleId: null,
-    vehicleNumber: 'DL3CAF1234',
+    vehicleId: veh9.id,
+    vehicleNumber: 'JH05HH8001',
     type: 'UNAUTHORIZED_SPOT',
     source: 'OFFICIAL',
     status: 'OPEN',
-    description: 'Unknown vehicle parked in allocated slot A-01 for 2 consecutive days. Vehicle not registered in society database.',
+    description: 'Resident vehicle parked in allocated slot A-01 for 2 consecutive days without prior parking approval for that bay.',
     penaltyAmount: 1000,
     addedToInvoice: false,
     reportedById: guard2.id,
@@ -2904,7 +2994,7 @@ async function main() {
 
   await prisma.parkingViolation.create({ data: {
     vehicleId: veh4.id,
-    vehicleNumber: 'MH12CC3001',
+    vehicleNumber: 'JH05CC3001',
     type: 'NO_STICKER',
     source: 'COMPLAINT',
     status: 'NOTIFIED',
@@ -2915,7 +3005,7 @@ async function main() {
 
   await prisma.parkingViolation.create({ data: {
     vehicleId: veh2.id,
-    vehicleNumber: 'MH12AA1002',
+    vehicleNumber: 'JH05AA1002',
     type: 'BLOCKING_GATE',
     source: 'OFFICIAL',
     status: 'NOTIFIED',
@@ -2928,7 +3018,7 @@ async function main() {
 
   await prisma.parkingViolation.create({ data: {
     vehicleId: veh7.id,
-    vehicleNumber: 'MH12FF6001',
+    vehicleNumber: 'JH05FF6001',
     type: 'DOUBLE_PARKING',
     source: 'COMPLAINT',
     status: 'OPEN',
@@ -2976,7 +3066,7 @@ async function main() {
     {
       type: 'ONBOARDING_STATUS',
       title: 'Onboarding Approved',
-      message: 'Congratulations! Your onboarding request has been approved. Welcome to Greenfield Heights!',
+      message: 'Congratulations! Your onboarding request has been approved. Welcome to Dalma Heights Residency!',
       userId: res1.id,
       societyId: society.id,
       isRead: true,
@@ -2995,7 +3085,7 @@ async function main() {
     {
       type: 'PARKING_VIOLATION',
       title: 'Parking Violation Issued',
-      message: 'Your vehicle MH12AA1002 has received a parking violation for blocking the service gate. Penalty: ₹300.',
+      message: 'Your vehicle JH05AA1002 has received a parking violation for blocking the service gate. Penalty: ₹300.',
       userId: res1.id,
       societyId: society.id,
       isRead: false,
@@ -3004,7 +3094,7 @@ async function main() {
     {
       type: 'PARKING_COMPLAINT',
       title: 'New Parking Complaint Received',
-      message: 'Vikram Chauhan reported vehicle MH12CC3001 for missing society sticker.',
+      message: 'Vikram Prasad reported vehicle JH05CC3001 for missing society sticker.',
       userId: admin.id,
       societyId: society.id,
       isRead: false,
@@ -3013,11 +3103,11 @@ async function main() {
     {
       type: 'SYSTEM',
       title: 'Gym Now Open for Bookings',
-      message: 'The upgraded Greenfield Fitness Studio is now available for slot booking via the app.',
+      message: 'The upgraded Dalma Fitness Studio is now available for slot booking via the app.',
       userId: res3.id,
       societyId: society.id,
       isRead: false,
-      referenceType: null,
+      referenceType: 'System',
     },
     {
       type: 'DELIVERY_REQUEST',
@@ -3032,7 +3122,7 @@ async function main() {
     {
       type: 'GUEST_ENTRY',
       title: 'Guest Entry Logged',
-      message: 'Rahul Sharma entered your building using your guest invite passcode.',
+      message: 'Rahul Sinha entered your building using your guest invite passcode.',
       userId: res1.id,
       societyId: society.id,
       isRead: true,
@@ -3065,13 +3155,14 @@ async function main() {
   // ════════════════════════════════════════════════════════
   console.log('\n🎉 Seed completed successfully!\n');
   console.log('═'.repeat(55));
-  console.log('       GREENFIELD HEIGHTS — PUNE');
+  console.log('       DALMA HEIGHTS RESIDENCY — JAMSHEDPUR');
   console.log('═'.repeat(55));
-  console.log(`  Society:        Greenfield Heights, Pune`);
+  console.log(`  Society:        Dalma Heights Residency, Jamshedpur`);
   console.log(`  Gate Points:    2 (Main Gate + Service Gate)`);
   console.log(`  Blocks:         4 (Tower A, B, C + Admin)`);
   console.log(`  Flats:          ${allFlats.length} residential + 1 Admin Office`);
-  console.log(`  Users:          12 (1 super, 1 admin, 3 guards, 9 residents)`);
+  console.log(`  Users:          16 (1 super, 1 admin, 3 guards, 11 residents/family)`);
+  console.log(`  Flat Members:   12`);
   console.log(`  Vehicles:       9`);
   console.log(`  Amenities:      6`);
   console.log(`  Bookings:       8`);
@@ -3092,6 +3183,7 @@ async function main() {
   console.log(`  Pre-Approved:   4`);
   console.log(`  Parking Viol:   5`);
   console.log(`  Invoices:       16 (8 April + 8 March)`);
+  console.log(`  Payment Txns:   16 (12 success + 4 unpaid attempts)`);
   console.log(`  Posts:          8 + 8 likes + 8 comments`);
   console.log(`  Polls:          3`);
   console.log(`  Documents:      7`);
@@ -3100,22 +3192,22 @@ async function main() {
   console.log('\n🔑 LOGIN ACCOUNTS:');
   console.log('─'.repeat(55));
   console.log('SUPER ADMIN:     9999900000');
-  console.log('ADMIN:           6202923165  (Agastya Sharma)');
+  console.log('ADMIN:           6202923165  (Agastya Kumar)');
   console.log('GUARD 1:         9800000001  (Rajendra Singh)');
-  console.log('GUARD 2:         9800000002  (Suresh Patil)');
+  console.log('GUARD 2:         9800000002  (Suresh Mahto)');
   console.log('GUARD 3:         9800000003  (Manoj Kumar)');
   console.log('─'.repeat(55));
   console.log('RESIDENTS:');
-  console.log('  9811000001  Amit Sharma          A101  (Owner, Primary)');
-  console.log('  9811000002  Priya Sharma          A101  (Spouse)');
+  console.log('  9811000001  Amit Sinha           A101  (Owner, Primary)');
+  console.log('  9811000002  Kavita Sinha         A101  (Spouse)');
   console.log('  9811000013  Rajan Verma           A201  (Owner, Primary)');
   console.log('  9811000014  Aryan Verma           A201  (Son/Child)');
-  console.log('  9811000004  Dr. Sneha Kulkarni    A301  (Owner, Primary)');
-  console.log('  9811000006  Vikram Chauhan        B102  (Tenant, Primary)');
-  console.log('  9811000012  Anita Mehta           B201  (Owner, Primary)');
-  console.log('  9811000008  Mohan Joshi           B401  (Owner, Primary)');
-  console.log('  9811000010  Priya Desai           C201  (Owner, Primary)');
-  console.log('  9811000011  Karthik Nair          C401  (Owner, Primary)');
+  console.log('  9811000004  Dr. Sneha Singh      A301  (Owner, Primary)');
+  console.log('  9811000006  Vikram Prasad        B102  (Tenant, Primary)');
+  console.log('  9811000012  Anita Gupta          B201  (Owner, Primary)');
+  console.log('  9811000008  Mohan Agarwal        B401  (Owner, Primary)');
+  console.log('  9811000010  Priya Kumari         C201  (Owner, Primary)');
+  console.log('  9811000011  Kartik Mahto         C401  (Owner, Primary)');
   console.log('  9006412619  Javed Khan            B301  (Tenant, Primary)');
   console.log('═'.repeat(55));
 }
