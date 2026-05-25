@@ -503,6 +503,78 @@ export const SubscriptionCycle = {
 export type SubscriptionCycle = (typeof SubscriptionCycle)[keyof typeof SubscriptionCycle]
 
 
+export const SocietyOnboardingStatus = {
+  LEAD: 'LEAD',
+  PROFILE_CREATED: 'PROFILE_CREATED',
+  DOCS_PENDING: 'DOCS_PENDING',
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  VERIFIED: 'VERIFIED',
+  IMPORT_PENDING: 'IMPORT_PENDING',
+  CONFIG_PENDING: 'CONFIG_PENDING',
+  ACTIVE: 'ACTIVE',
+  REJECTED: 'REJECTED'
+} as const
+
+export type SocietyOnboardingStatus = (typeof SocietyOnboardingStatus)[keyof typeof SocietyOnboardingStatus]
+
+
+export const MaintenanceBillingType = {
+  FLAT: 'FLAT',
+  SQUARE_FOOT: 'SQUARE_FOOT',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type MaintenanceBillingType = (typeof MaintenanceBillingType)[keyof typeof MaintenanceBillingType]
+
+
+export const SocietyOnboardingDocumentType = {
+  REGISTRATION_CERTIFICATE: 'REGISTRATION_CERTIFICATE',
+  AUTHORIZED_SIGNATORY_ID: 'AUTHORIZED_SIGNATORY_ID',
+  PAN_PROOF: 'PAN_PROOF',
+  GST_PROOF: 'GST_PROOF',
+  BANK_PROOF: 'BANK_PROOF',
+  LOGO: 'LOGO',
+  OTHER: 'OTHER'
+} as const
+
+export type SocietyOnboardingDocumentType = (typeof SocietyOnboardingDocumentType)[keyof typeof SocietyOnboardingDocumentType]
+
+
+export const SocietyOnboardingDocumentStatus = {
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type SocietyOnboardingDocumentStatus = (typeof SocietyOnboardingDocumentStatus)[keyof typeof SocietyOnboardingDocumentStatus]
+
+
+export const SocietyImportBatchStatus = {
+  VALIDATED: 'VALIDATED',
+  VALIDATION_FAILED: 'VALIDATION_FAILED',
+  COMMITTED: 'COMMITTED'
+} as const
+
+export type SocietyImportBatchStatus = (typeof SocietyImportBatchStatus)[keyof typeof SocietyImportBatchStatus]
+
+
+export const FlatOccupancyStatus = {
+  OWNER_OCCUPIED: 'OWNER_OCCUPIED',
+  RENTED: 'RENTED',
+  VACANT: 'VACANT'
+} as const
+
+export type FlatOccupancyStatus = (typeof FlatOccupancyStatus)[keyof typeof FlatOccupancyStatus]
+
+
+export const GateDeviceStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type GateDeviceStatus = (typeof GateDeviceStatus)[keyof typeof GateDeviceStatus]
+
+
 export const PreApprovedVerificationType = {
   NONE: 'NONE',
   VEHICLE_LAST4: 'VEHICLE_LAST4',

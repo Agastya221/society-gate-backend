@@ -420,6 +420,11 @@ export const ModelName = {
   PostLike: 'PostLike',
   PostComment: 'PostComment',
   SocietyDocument: 'SocietyDocument',
+  SocietyOnboardingDocument: 'SocietyOnboardingDocument',
+  SocietyImportBatch: 'SocietyImportBatch',
+  SocietyImportRowError: 'SocietyImportRowError',
+  SocietyRuleConfig: 'SocietyRuleConfig',
+  GateDevice: 'GateDevice',
   Poll: 'Poll',
   PollOption: 'PollOption',
   PollVote: 'PollVote',
@@ -448,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "invoice" | "invoiceLineItem" | "paymentTransaction" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "userFlatMembership" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "parkingViolation" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
+    modelProps: "society" | "invoice" | "invoiceLineItem" | "paymentTransaction" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "userFlatMembership" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "parkingViolation" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "societyOnboardingDocument" | "societyImportBatch" | "societyImportRowError" | "societyRuleConfig" | "gateDevice" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3116,6 +3121,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SocietyOnboardingDocument: {
+      payload: Prisma.$SocietyOnboardingDocumentPayload<ExtArgs>
+      fields: Prisma.SocietyOnboardingDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SocietyOnboardingDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SocietyOnboardingDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.SocietyOnboardingDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SocietyOnboardingDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.SocietyOnboardingDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.SocietyOnboardingDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.SocietyOnboardingDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SocietyOnboardingDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.SocietyOnboardingDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>
+        }
+        update: {
+          args: Prisma.SocietyOnboardingDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.SocietyOnboardingDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SocietyOnboardingDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SocietyOnboardingDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.SocietyOnboardingDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyOnboardingDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.SocietyOnboardingDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSocietyOnboardingDocument>
+        }
+        groupBy: {
+          args: Prisma.SocietyOnboardingDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyOnboardingDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SocietyOnboardingDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyOnboardingDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
+    SocietyImportBatch: {
+      payload: Prisma.$SocietyImportBatchPayload<ExtArgs>
+      fields: Prisma.SocietyImportBatchFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SocietyImportBatchFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SocietyImportBatchFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>
+        }
+        findFirst: {
+          args: Prisma.SocietyImportBatchFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SocietyImportBatchFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>
+        }
+        findMany: {
+          args: Prisma.SocietyImportBatchFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>[]
+        }
+        create: {
+          args: Prisma.SocietyImportBatchCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>
+        }
+        createMany: {
+          args: Prisma.SocietyImportBatchCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SocietyImportBatchCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>[]
+        }
+        delete: {
+          args: Prisma.SocietyImportBatchDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>
+        }
+        update: {
+          args: Prisma.SocietyImportBatchUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>
+        }
+        deleteMany: {
+          args: Prisma.SocietyImportBatchDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SocietyImportBatchUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SocietyImportBatchUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>[]
+        }
+        upsert: {
+          args: Prisma.SocietyImportBatchUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportBatchPayload>
+        }
+        aggregate: {
+          args: Prisma.SocietyImportBatchAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSocietyImportBatch>
+        }
+        groupBy: {
+          args: Prisma.SocietyImportBatchGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyImportBatchGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SocietyImportBatchCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyImportBatchCountAggregateOutputType> | number
+        }
+      }
+    }
+    SocietyImportRowError: {
+      payload: Prisma.$SocietyImportRowErrorPayload<ExtArgs>
+      fields: Prisma.SocietyImportRowErrorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SocietyImportRowErrorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SocietyImportRowErrorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>
+        }
+        findFirst: {
+          args: Prisma.SocietyImportRowErrorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SocietyImportRowErrorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>
+        }
+        findMany: {
+          args: Prisma.SocietyImportRowErrorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>[]
+        }
+        create: {
+          args: Prisma.SocietyImportRowErrorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>
+        }
+        createMany: {
+          args: Prisma.SocietyImportRowErrorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SocietyImportRowErrorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>[]
+        }
+        delete: {
+          args: Prisma.SocietyImportRowErrorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>
+        }
+        update: {
+          args: Prisma.SocietyImportRowErrorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>
+        }
+        deleteMany: {
+          args: Prisma.SocietyImportRowErrorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SocietyImportRowErrorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SocietyImportRowErrorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>[]
+        }
+        upsert: {
+          args: Prisma.SocietyImportRowErrorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyImportRowErrorPayload>
+        }
+        aggregate: {
+          args: Prisma.SocietyImportRowErrorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSocietyImportRowError>
+        }
+        groupBy: {
+          args: Prisma.SocietyImportRowErrorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyImportRowErrorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SocietyImportRowErrorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyImportRowErrorCountAggregateOutputType> | number
+        }
+      }
+    }
+    SocietyRuleConfig: {
+      payload: Prisma.$SocietyRuleConfigPayload<ExtArgs>
+      fields: Prisma.SocietyRuleConfigFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SocietyRuleConfigFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SocietyRuleConfigFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>
+        }
+        findFirst: {
+          args: Prisma.SocietyRuleConfigFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SocietyRuleConfigFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>
+        }
+        findMany: {
+          args: Prisma.SocietyRuleConfigFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>[]
+        }
+        create: {
+          args: Prisma.SocietyRuleConfigCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>
+        }
+        createMany: {
+          args: Prisma.SocietyRuleConfigCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SocietyRuleConfigCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>[]
+        }
+        delete: {
+          args: Prisma.SocietyRuleConfigDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>
+        }
+        update: {
+          args: Prisma.SocietyRuleConfigUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>
+        }
+        deleteMany: {
+          args: Prisma.SocietyRuleConfigDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SocietyRuleConfigUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SocietyRuleConfigUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>[]
+        }
+        upsert: {
+          args: Prisma.SocietyRuleConfigUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SocietyRuleConfigPayload>
+        }
+        aggregate: {
+          args: Prisma.SocietyRuleConfigAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSocietyRuleConfig>
+        }
+        groupBy: {
+          args: Prisma.SocietyRuleConfigGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyRuleConfigGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SocietyRuleConfigCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SocietyRuleConfigCountAggregateOutputType> | number
+        }
+      }
+    }
+    GateDevice: {
+      payload: Prisma.$GateDevicePayload<ExtArgs>
+      fields: Prisma.GateDeviceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GateDeviceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GateDeviceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>
+        }
+        findFirst: {
+          args: Prisma.GateDeviceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GateDeviceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>
+        }
+        findMany: {
+          args: Prisma.GateDeviceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>[]
+        }
+        create: {
+          args: Prisma.GateDeviceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>
+        }
+        createMany: {
+          args: Prisma.GateDeviceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GateDeviceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>[]
+        }
+        delete: {
+          args: Prisma.GateDeviceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>
+        }
+        update: {
+          args: Prisma.GateDeviceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>
+        }
+        deleteMany: {
+          args: Prisma.GateDeviceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GateDeviceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GateDeviceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>[]
+        }
+        upsert: {
+          args: Prisma.GateDeviceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GateDevicePayload>
+        }
+        aggregate: {
+          args: Prisma.GateDeviceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGateDevice>
+        }
+        groupBy: {
+          args: Prisma.GateDeviceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GateDeviceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GateDeviceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GateDeviceCountAggregateOutputType> | number
+        }
+      }
+    }
     Poll: {
       payload: Prisma.$PollPayload<ExtArgs>
       fields: Prisma.PollFieldRefs
@@ -4120,15 +4495,29 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const SocietyScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  registeredName: 'registeredName',
+  registrationNumber: 'registrationNumber',
   address: 'address',
   city: 'city',
   state: 'state',
   pincode: 'pincode',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  logoUrl: 'logoUrl',
+  logoKey: 'logoKey',
   contactName: 'contactName',
   contactPhone: 'contactPhone',
   contactEmail: 'contactEmail',
+  bankAccountNumber: 'bankAccountNumber',
+  bankIfsc: 'bankIfsc',
+  bankBranchName: 'bankBranchName',
+  panNumber: 'panNumber',
+  gstin: 'gstin',
+  maintenanceBillingType: 'maintenanceBillingType',
+  maintenanceBillingConfig: 'maintenanceBillingConfig',
   totalFlats: 'totalFlats',
   isActive: 'isActive',
+  onboardingStatus: 'onboardingStatus',
   monthlyFee: 'monthlyFee',
   subscriptionCycle: 'subscriptionCycle',
   lastPaidDate: 'lastPaidDate',
@@ -4258,8 +4647,10 @@ export const FlatScalarFieldEnum = {
   ownerPhone: 'ownerPhone',
   ownerEmail: 'ownerEmail',
   isOccupied: 'isOccupied',
+  occupancyStatus: 'occupancyStatus',
   currentOwnerId: 'currentOwnerId',
   currentTenantId: 'currentTenantId',
+  squareFeet: 'squareFeet',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -4888,6 +5279,89 @@ export const SocietyDocumentScalarFieldEnum = {
 export type SocietyDocumentScalarFieldEnum = (typeof SocietyDocumentScalarFieldEnum)[keyof typeof SocietyDocumentScalarFieldEnum]
 
 
+export const SocietyOnboardingDocumentScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  documentType: 'documentType',
+  status: 'status',
+  fileUrl: 'fileUrl',
+  fileKey: 'fileKey',
+  fileName: 'fileName',
+  fileSizeMB: 'fileSizeMB',
+  fileType: 'fileType',
+  uploadedById: 'uploadedById',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  reviewerNotes: 'reviewerNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyOnboardingDocumentScalarFieldEnum = (typeof SocietyOnboardingDocumentScalarFieldEnum)[keyof typeof SocietyOnboardingDocumentScalarFieldEnum]
+
+
+export const SocietyImportBatchScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  status: 'status',
+  fileName: 'fileName',
+  totalRows: 'totalRows',
+  validRows: 'validRows',
+  errorRows: 'errorRows',
+  rawRows: 'rawRows',
+  summary: 'summary',
+  uploadedById: 'uploadedById',
+  committedById: 'committedById',
+  committedAt: 'committedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyImportBatchScalarFieldEnum = (typeof SocietyImportBatchScalarFieldEnum)[keyof typeof SocietyImportBatchScalarFieldEnum]
+
+
+export const SocietyImportRowErrorScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  rowNumber: 'rowNumber',
+  field: 'field',
+  message: 'message',
+  rowData: 'rowData',
+  createdAt: 'createdAt'
+} as const
+
+export type SocietyImportRowErrorScalarFieldEnum = (typeof SocietyImportRowErrorScalarFieldEnum)[keyof typeof SocietyImportRowErrorScalarFieldEnum]
+
+
+export const SocietyRuleConfigScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  deliveryCheckInRequired: 'deliveryCheckInRequired',
+  guestParkingHours: 'guestParkingHours',
+  visitorOtpRequired: 'visitorOtpRequired',
+  customRules: 'customRules',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyRuleConfigScalarFieldEnum = (typeof SocietyRuleConfigScalarFieldEnum)[keyof typeof SocietyRuleConfigScalarFieldEnum]
+
+
+export const GateDeviceScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  gatePointId: 'gatePointId',
+  deviceName: 'deviceName',
+  deviceIdentifier: 'deviceIdentifier',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GateDeviceScalarFieldEnum = (typeof GateDeviceScalarFieldEnum)[keyof typeof GateDeviceScalarFieldEnum]
+
+
 export const PollScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -5128,14 +5602,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -5143,6 +5609,14 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -5162,6 +5636,48 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenanceBillingType'
+ */
+export type EnumMaintenanceBillingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceBillingType'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenanceBillingType[]'
+ */
+export type ListEnumMaintenanceBillingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceBillingType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -5187,16 +5703,16 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'Float'
+ * Reference to a field of type 'SocietyOnboardingStatus'
  */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+export type EnumSocietyOnboardingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyOnboardingStatus'>
     
 
 
 /**
- * Reference to a field of type 'Float[]'
+ * Reference to a field of type 'SocietyOnboardingStatus[]'
  */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+export type ListEnumSocietyOnboardingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyOnboardingStatus[]'>
     
 
 
@@ -5285,20 +5801,6 @@ export type ListEnumPaymentTransactionStatusFieldRefInput<$PrismaModel> = FieldR
 
 
 /**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
  * Reference to a field of type 'ResidentType'
  */
 export type EnumResidentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResidentType'>
@@ -5323,6 +5825,20 @@ export type EnumSocietyRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefI
  * Reference to a field of type 'SocietyRegistrationStatus[]'
  */
 export type ListEnumSocietyRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyRegistrationStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FlatOccupancyStatus'
+ */
+export type EnumFlatOccupancyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FlatOccupancyStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FlatOccupancyStatus[]'
+ */
+export type ListEnumFlatOccupancyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FlatOccupancyStatus[]'>
     
 
 
@@ -5761,6 +6277,62 @@ export type ListEnumDocumentCategoryFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'SocietyOnboardingDocumentType'
+ */
+export type EnumSocietyOnboardingDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyOnboardingDocumentType'>
+    
+
+
+/**
+ * Reference to a field of type 'SocietyOnboardingDocumentType[]'
+ */
+export type ListEnumSocietyOnboardingDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyOnboardingDocumentType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SocietyOnboardingDocumentStatus'
+ */
+export type EnumSocietyOnboardingDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyOnboardingDocumentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SocietyOnboardingDocumentStatus[]'
+ */
+export type ListEnumSocietyOnboardingDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyOnboardingDocumentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SocietyImportBatchStatus'
+ */
+export type EnumSocietyImportBatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyImportBatchStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SocietyImportBatchStatus[]'
+ */
+export type ListEnumSocietyImportBatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocietyImportBatchStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GateDeviceStatus'
+ */
+export type EnumGateDeviceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GateDeviceStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GateDeviceStatus[]'
+ */
+export type ListEnumGateDeviceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GateDeviceStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'PollStatus'
  */
 export type EnumPollStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PollStatus'>
@@ -6072,6 +6644,11 @@ export type GlobalOmitConfig = {
   postLike?: Prisma.PostLikeOmit
   postComment?: Prisma.PostCommentOmit
   societyDocument?: Prisma.SocietyDocumentOmit
+  societyOnboardingDocument?: Prisma.SocietyOnboardingDocumentOmit
+  societyImportBatch?: Prisma.SocietyImportBatchOmit
+  societyImportRowError?: Prisma.SocietyImportRowErrorOmit
+  societyRuleConfig?: Prisma.SocietyRuleConfigOmit
+  gateDevice?: Prisma.GateDeviceOmit
   poll?: Prisma.PollOmit
   pollOption?: Prisma.PollOptionOmit
   pollVote?: Prisma.PollVoteOmit

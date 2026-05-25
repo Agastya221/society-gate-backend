@@ -130,26 +130,35 @@ export class UserService {
         data: { refreshToken, lastTokenRefresh: new Date(), lastLogin: new Date() },
       });
 
-      const onboardingRequest = await prisma.onboardingRequest.findFirst({
-        where: { userId: user.id },
-        orderBy: { createdAt: 'desc' },
-      });
+      const [onboardingRequest, societyState] = await Promise.all([
+        prisma.onboardingRequest.findFirst({
+          where: { userId: user.id },
+          orderBy: { createdAt: 'desc' },
+        }),
+        user.societyId
+          ? prisma.society.findUnique({
+              where: { id: user.societyId },
+              select: { isActive: true, onboardingStatus: true },
+            })
+          : Promise.resolve(null),
+      ]);
 
       const { password: _, refreshToken: __, ...safe } = user;
       const contexts = await this.getContexts(user.id);
-
-      // Tell frontend which panel to show based on role
-      const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(user.role)
-        ? 'ADMIN_PANEL'
-        : 'RESIDENT_PANEL';
+      const loginState = this.resolveResidentAppLoginState({
+        role: user.role,
+        isActive: user.isActive,
+        societyId: user.societyId,
+        onboardingStatus: onboardingRequest?.status || 'NOT_STARTED',
+        societyIsActive: societyState?.isActive ?? null,
+        societyOnboardingStatus: societyState?.onboardingStatus ?? null,
+      });
 
       return {
         accessToken, refreshToken, user: safe,
         contexts,
-        requiresOnboarding: !user.isActive || !user.societyId,
-        onboardingStatus: onboardingRequest?.status || 'NOT_STARTED',
+        ...loginState,
         appType: 'RESIDENT_APP',
-        redirectTo,
       };
     }
 
@@ -176,8 +185,98 @@ export class UserService {
       contexts,
       requiresOnboarding: true,
       onboardingStatus: 'DRAFT',
+      nextAction: 'START_ONBOARDING',
       appType: 'RESIDENT_APP',
       redirectTo: 'ONBOARDING',
+    };
+  }
+
+  private resolveResidentAppLoginState(input: {
+    role: string;
+    isActive: boolean;
+    societyId: string | null;
+    onboardingStatus: string;
+    societyIsActive: boolean | null;
+    societyOnboardingStatus: string | null;
+  }) {
+    if (input.role === 'ADMIN' || input.role === 'SUPER_ADMIN') {
+      return {
+        requiresOnboarding: false,
+        onboardingStatus: input.onboardingStatus,
+        societyOnboardingStatus: input.societyOnboardingStatus,
+        nextAction: 'OPEN_ADMIN_PANEL',
+        redirectTo: 'ADMIN_PANEL',
+      };
+    }
+
+    if (
+      input.societyId &&
+      (input.societyIsActive === false ||
+        (input.societyOnboardingStatus && input.societyOnboardingStatus !== 'ACTIVE'))
+    ) {
+      return {
+        requiresOnboarding: true,
+        onboardingStatus: input.onboardingStatus,
+        societyOnboardingStatus: input.societyOnboardingStatus,
+        nextAction: 'WAIT_FOR_SOCIETY_ACTIVATION',
+        redirectTo: 'ONBOARDING_STATUS',
+      };
+    }
+
+    switch (input.onboardingStatus) {
+      case 'PENDING_APPROVAL':
+        return {
+          requiresOnboarding: true,
+          onboardingStatus: input.onboardingStatus,
+          societyOnboardingStatus: input.societyOnboardingStatus,
+          nextAction: 'WAIT_FOR_APPROVAL',
+          redirectTo: 'ONBOARDING_STATUS',
+        };
+      case 'RESUBMIT_REQUESTED':
+        return {
+          requiresOnboarding: true,
+          onboardingStatus: input.onboardingStatus,
+          societyOnboardingStatus: input.societyOnboardingStatus,
+          nextAction: 'RESUBMIT_DOCUMENTS',
+          redirectTo: 'ONBOARDING_RESUBMIT',
+        };
+      case 'REJECTED':
+        return {
+          requiresOnboarding: true,
+          onboardingStatus: input.onboardingStatus,
+          societyOnboardingStatus: input.societyOnboardingStatus,
+          nextAction: 'REAPPLY',
+          redirectTo: 'ONBOARDING_STATUS',
+        };
+      case 'DRAFT':
+      case 'PENDING_DOCS':
+        return {
+          requiresOnboarding: true,
+          onboardingStatus: input.onboardingStatus,
+          societyOnboardingStatus: input.societyOnboardingStatus,
+          nextAction: 'COMPLETE_ONBOARDING',
+          redirectTo: 'ONBOARDING',
+        };
+      default:
+        break;
+    }
+
+    if (!input.isActive || !input.societyId) {
+      return {
+        requiresOnboarding: true,
+        onboardingStatus: input.onboardingStatus,
+        societyOnboardingStatus: input.societyOnboardingStatus,
+        nextAction: 'START_ONBOARDING',
+        redirectTo: 'ONBOARDING',
+      };
+    }
+
+    return {
+      requiresOnboarding: false,
+      onboardingStatus: input.onboardingStatus === 'NOT_STARTED' ? 'COMPLETED' : input.onboardingStatus,
+      societyOnboardingStatus: input.societyOnboardingStatus,
+      nextAction: 'OPEN_RESIDENT_PANEL',
+      redirectTo: 'RESIDENT_PANEL',
     };
   }
 

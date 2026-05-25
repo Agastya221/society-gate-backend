@@ -264,7 +264,7 @@ enum ViolationType {
 }
 
 enum ViolationSource {
-  OFFICIAL  // Admin or Guard — can carry penalty
+  OFFICIAL // Admin or Guard — can carry penalty
   COMPLAINT // Resident report — admin reviews, can escalate
 }
 
@@ -388,6 +388,57 @@ enum SubscriptionCycle {
   ANNUALLY
 }
 
+enum SocietyOnboardingStatus {
+  LEAD
+  PROFILE_CREATED
+  DOCS_PENDING
+  PENDING_VERIFICATION
+  VERIFIED
+  IMPORT_PENDING
+  CONFIG_PENDING
+  ACTIVE
+  REJECTED
+}
+
+enum MaintenanceBillingType {
+  FLAT
+  SQUARE_FOOT
+  CUSTOM
+}
+
+enum SocietyOnboardingDocumentType {
+  REGISTRATION_CERTIFICATE
+  AUTHORIZED_SIGNATORY_ID
+  PAN_PROOF
+  GST_PROOF
+  BANK_PROOF
+  LOGO
+  OTHER
+}
+
+enum SocietyOnboardingDocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum SocietyImportBatchStatus {
+  VALIDATED
+  VALIDATION_FAILED
+  COMMITTED
+}
+
+enum FlatOccupancyStatus {
+  OWNER_OCCUPIED
+  RENTED
+  VACANT
+}
+
+enum GateDeviceStatus {
+  ACTIVE
+  INACTIVE
+}
+
 enum PreApprovedVerificationType {
   NONE
   VEHICLE_LAST4
@@ -415,23 +466,39 @@ enum HelpCategory {
 // --------------------
 
 model Society {
-  id      String @id @default(uuid())
-  name    String
-  address String
-  city    String
-  state   String
-  pincode String
+  id                 String  @id @default(uuid())
+  name               String
+  registeredName     String?
+  registrationNumber String?
+  address            String
+  city               String
+  state              String
+  pincode            String
+  latitude           Float?
+  longitude          Float?
+  logoUrl            String?
+  logoKey            String?
 
   // Contact details
   contactName  String
   contactPhone String
   contactEmail String?
 
+  // Financial and legal setup
+  bankAccountNumber        String?
+  bankIfsc                 String?
+  bankBranchName           String?
+  panNumber                String?
+  gstin                    String?
+  maintenanceBillingType   MaintenanceBillingType @default(FLAT)
+  maintenanceBillingConfig Json?
+
   // Simple config
   totalFlats Int @default(0)
 
   // Status
-  isActive Boolean @default(true)
+  isActive         Boolean                 @default(true)
+  onboardingStatus SocietyOnboardingStatus @default(ACTIVE)
 
   // Payment tracking
   monthlyFee        Float             @default(500) // ₹500/month
@@ -476,9 +543,14 @@ model Society {
   invoices            Invoice[]
   parkingViolations   ParkingViolation[]
   flatMemberships     UserFlatMembership[]
+  onboardingDocuments SocietyOnboardingDocument[]
+  importBatches       SocietyImportBatch[]
+  ruleConfig          SocietyRuleConfig?
+  gateDevices         GateDevice[]
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
+  @@index([onboardingStatus, isActive])
 }
 
 // --------------------
@@ -487,10 +559,10 @@ model Society {
 
 model Invoice {
   id          String        @id @default(uuid())
-  month       String        // e.g. "April 2024"
-  amount      Float         // Base amount
+  month       String // e.g. "April 2024"
+  amount      Float // Base amount
   penalty     Float         @default(0) // Accumulated late fees
-  totalAmount Float         // amount + penalty (computed on create/update)
+  totalAmount Float // amount + penalty (computed on create/update)
   status      InvoiceStatus @default(PENDING)
   description String?
   dueDate     DateTime
@@ -518,10 +590,10 @@ model Invoice {
 }
 
 model InvoiceLineItem {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   invoiceId   String
-  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  description String  // "Monthly Maintenance", "Late Fee"
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String // "Monthly Maintenance", "Late Fee"
   amount      Float
   createdAt   DateTime @default(now())
 
@@ -529,20 +601,20 @@ model InvoiceLineItem {
 }
 
 model PaymentTransaction {
-  id     String                   @id @default(uuid())
-  provider PaymentProvider        @default(CASHFREE)
-  status PaymentTransactionStatus @default(CREATED)
+  id       String                   @id @default(uuid())
+  provider PaymentProvider          @default(CASHFREE)
+  status   PaymentTransactionStatus @default(CREATED)
 
   amount   Float
   currency String @default("INR")
 
-  cashfreeOrderId     String  @unique
-  cashfreeCfOrderId   String?
-  cashfreePaymentId   String? @unique
-  paymentSessionId    String?
-  idempotencyKey      String  @unique
-  webhookEventType    String?
-  webhookReceivedAt   DateTime?
+  cashfreeOrderId   String    @unique
+  cashfreeCfOrderId String?
+  cashfreePaymentId String?   @unique
+  paymentSessionId  String?
+  idempotencyKey    String    @unique
+  webhookEventType  String?
+  webhookReceivedAt DateTime?
 
   rawResponse Json?
   rawWebhook  Json?
@@ -613,6 +685,7 @@ model GatePoint {
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
   entries Entry[]
+  devices GateDevice[]
 
   createdAt DateTime @default(now())
 
@@ -669,9 +742,11 @@ model Flat {
   ownerEmail String?
 
   // Occupancy tracking
-  isOccupied      Boolean @default(false)
+  isOccupied      Boolean             @default(false)
+  occupancyStatus FlatOccupancyStatus @default(VACANT)
   currentOwnerId  String? // User ID of current owner
   currentTenantId String? // User ID of current tenant
+  squareFeet      Float?
 
   // Status
   isActive Boolean @default(true)
@@ -768,7 +843,11 @@ model User {
   postComments   PostComment[]   @relation("CommentAuthor")
 
   // Documents
-  uploadedDocuments SocietyDocument[] @relation("DocumentUploader")
+  uploadedDocuments                  SocietyDocument[]           @relation("DocumentUploader")
+  uploadedSocietyOnboardingDocuments SocietyOnboardingDocument[] @relation("SocietyOnboardingDocumentUploader")
+  reviewedSocietyOnboardingDocuments SocietyOnboardingDocument[] @relation("SocietyOnboardingDocumentReviewer")
+  societyImportBatches               SocietyImportBatch[]        @relation("SocietyImportBatchUploader")
+  committedSocietyImportBatches      SocietyImportBatch[]        @relation("SocietyImportBatchCommitter")
 
   // Polls
   createdPolls Poll[]     @relation("PollCreator")
@@ -783,6 +862,7 @@ model User {
   societyRegistrationRequests SocietyRegistrationRequest[] @relation("SocietyRegistrationRequests")
   societyRegistrationReviews  SocietyRegistrationRequest[] @relation("SocietyRegistrationReviews")
   flatMemberships             UserFlatMembership[]
+  invitedGateDevices          GateDevice[]                 @relation("GateDeviceCreator")
 
   // Notification relations
   notifications Notification[]
@@ -801,8 +881,8 @@ model User {
   preApprovedUsages  PreApprovedUsage[] @relation("PreApprovedUsageGuard")
 
   // Parking violation relations
-  reportedViolations  ParkingViolation[] @relation("ViolationReporter")
-  resolvedViolations  ParkingViolation[] @relation("ViolationResolver")
+  reportedViolations ParkingViolation[] @relation("ViolationReporter")
+  resolvedViolations ParkingViolation[] @relation("ViolationResolver")
 
   // Push notifications
   fcmToken   String? // Device push token, updated on every login
@@ -835,7 +915,7 @@ model UserFlatMembership {
   flatId String?
   flat   Flat?   @relation(fields: [flatId], references: [id], onDelete: Cascade)
 
-  role         Role         @default(RESIDENT)
+  role         Role          @default(RESIDENT)
   residentType ResidentType?
 
   isOwner      Boolean @default(false)
@@ -1063,7 +1143,7 @@ model GuestEntryLog {
 
   flatId  String?
   guardId String
-  guard   User   @relation("GuestEntryGuard", fields: [guardId], references: [id])
+  guard   User    @relation("GuestEntryGuard", fields: [guardId], references: [id])
 
   visitorName  String
   visitorPhone String?
@@ -1336,13 +1416,13 @@ model StaffReview {
 // --------------------
 
 enum VehicleStatus {
-  PENDING  // Awaiting admin approval
-  ACTIVE   // Approved
+  PENDING // Awaiting admin approval
+  ACTIVE // Approved
   REJECTED // Rejected by admin
 }
 
 model Vehicle {
-  id            String        @id @default(uuid())
+  id            String  @id @default(uuid())
   vehicleNumber String
   vehicleType   String // Car, Bike, Bicycle, Other
   model         String?
@@ -1365,7 +1445,7 @@ model Vehicle {
 
   // Flat (optional — guards/outside admins may not have a flat)
   flatId String?
-  flat   Flat?  @relation(fields: [flatId], references: [id])
+  flat   Flat?   @relation(fields: [flatId], references: [id])
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
@@ -1387,29 +1467,29 @@ model Vehicle {
 // --------------------
 
 model ParkingViolation {
-  id            String          @id @default(uuid())
+  id String @id @default(uuid())
 
   // Vehicle — nullable so residents can report unknown/unregistered vehicles
   vehicleId     String?
-  vehicle       Vehicle?        @relation(fields: [vehicleId], references: [id])
-  vehicleNumber String          // always stored for display even if unregistered
+  vehicle       Vehicle? @relation(fields: [vehicleId], references: [id])
+  vehicleNumber String // always stored for display even if unregistered
 
-  type          ViolationType
-  description   String?
+  type        ViolationType
+  description String?
 
-  source        ViolationSource @default(OFFICIAL)
+  source ViolationSource @default(OFFICIAL)
 
   // Penalty (OFFICIAL only)
   penaltyAmount  Float?
-  addedToInvoice Boolean        @default(false)
-  invoiceId      String?        // set when penalty is pushed to monthly invoice
+  addedToInvoice Boolean @default(false)
+  invoiceId      String? // set when penalty is pushed to monthly invoice
 
   // Who filed it
-  reportedById  String
-  reportedBy    User            @relation("ViolationReporter", fields: [reportedById], references: [id])
+  reportedById String
+  reportedBy   User   @relation("ViolationReporter", fields: [reportedById], references: [id])
 
-  societyId     String
-  society       Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 
   // Resolution
   status         ViolationStatus @default(OPEN)
@@ -1604,7 +1684,7 @@ model Amenity {
   description String?
 
   // Capacity & timing
-  capacity          Int?    // Max people allowed
+  capacity          Int? // Max people allowed
   openTime          String? // "06:00"
   closeTime         String? // "22:00"
   timings           String? // Human-readable e.g. "6:00 AM - 10:00 PM"
@@ -1960,11 +2040,11 @@ model SocietyDocument {
   category    DocumentCategory
 
   // File info
-  fileUrl     String // S3 URL
-  fileKey     String // S3 key for deletion
-  fileName    String
-  fileSizeMB  Float
-  fileType    String // PDF, PNG, etc.
+  fileUrl    String // S3 URL
+  fileKey    String // S3 key for deletion
+  fileName   String
+  fileSizeMB Float
+  fileType   String // PDF, PNG, etc.
 
   // Scope
   isAdminDoc Boolean @default(false) // true = visible to all residents, false = personal
@@ -1983,6 +2063,122 @@ model SocietyDocument {
   @@index([uploadedById, isAdminDoc])
 }
 
+model SocietyOnboardingDocument {
+  id String @id @default(uuid())
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  documentType SocietyOnboardingDocumentType
+  status       SocietyOnboardingDocumentStatus @default(PENDING)
+
+  fileUrl    String
+  fileKey    String
+  fileName   String
+  fileSizeMB Float
+  fileType   String
+
+  uploadedById String
+  uploadedBy   User   @relation("SocietyOnboardingDocumentUploader", fields: [uploadedById], references: [id])
+
+  reviewedById  String?
+  reviewedBy    User?     @relation("SocietyOnboardingDocumentReviewer", fields: [reviewedById], references: [id])
+  reviewedAt    DateTime?
+  reviewerNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, documentType])
+  @@index([societyId, status])
+}
+
+model SocietyImportBatch {
+  id String @id @default(uuid())
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  status SocietyImportBatchStatus
+
+  fileName  String?
+  totalRows Int     @default(0)
+  validRows Int     @default(0)
+  errorRows Int     @default(0)
+
+  rawRows Json?
+  summary Json?
+
+  uploadedById String
+  uploadedBy   User   @relation("SocietyImportBatchUploader", fields: [uploadedById], references: [id])
+
+  committedById String?
+  committedBy   User?     @relation("SocietyImportBatchCommitter", fields: [committedById], references: [id])
+  committedAt   DateTime?
+
+  rowErrors SocietyImportRowError[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status])
+  @@index([uploadedById])
+}
+
+model SocietyImportRowError {
+  id String @id @default(uuid())
+
+  batchId String
+  batch   SocietyImportBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  rowNumber Int
+  field     String?
+  message   String
+  rowData   Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([batchId, rowNumber])
+}
+
+model SocietyRuleConfig {
+  id String @id @default(uuid())
+
+  societyId String  @unique
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  deliveryCheckInRequired Boolean @default(true)
+  guestParkingHours       Int     @default(4)
+  visitorOtpRequired      Boolean @default(true)
+  customRules             Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GateDevice {
+  id String @id @default(uuid())
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  gatePointId String
+  gatePoint   GatePoint @relation(fields: [gatePointId], references: [id], onDelete: Cascade)
+
+  deviceName       String
+  deviceIdentifier String?
+  status           GateDeviceStatus @default(ACTIVE)
+
+  createdById String?
+  createdBy   User?   @relation("GateDeviceCreator", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status])
+  @@index([gatePointId, status])
+}
+
 // --------------------
 // POLLS / ELECTIONS
 // --------------------
@@ -1999,9 +2195,9 @@ model Poll {
   description String?
   status      PollStatus @default(ACTIVE)
 
-  isAnonymous  Boolean   @default(false) // Hide who voted for what
-  allowMultiple Boolean  @default(false) // Allow multiple option votes
-  votingEndsAt DateTime?
+  isAnonymous   Boolean   @default(false) // Hide who voted for what
+  allowMultiple Boolean   @default(false) // Allow multiple option votes
+  votingEndsAt  DateTime?
 
   createdById String
   createdBy   User    @relation("PollCreator", fields: [createdById], references: [id])
@@ -2030,9 +2226,9 @@ model PollOption {
 }
 
 model PollVote {
-  id       String @id @default(uuid())
-  pollId   String
-  optionId String
+  id        String @id @default(uuid())
+  pollId    String
+  optionId  String
   votedById String
 
   poll   Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
@@ -2264,7 +2460,7 @@ model PreApprovedEntry {
   userId    String
   user      User    @relation("PreApprovedEntryCreator", fields: [userId], references: [id])
   flatId    String?
-  flat      Flat?    @relation(fields: [flatId], references: [id])
+  flat      Flat?   @relation(fields: [flatId], references: [id])
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
 

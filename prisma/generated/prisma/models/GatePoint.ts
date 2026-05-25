@@ -184,6 +184,7 @@ export type GatePointWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"GatePoint"> | Date | string
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   entries?: Prisma.EntryListRelationFilter
+  devices?: Prisma.GateDeviceListRelationFilter
 }
 
 export type GatePointOrderByWithRelationInput = {
@@ -194,6 +195,7 @@ export type GatePointOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   society?: Prisma.SocietyOrderByWithRelationInput
   entries?: Prisma.EntryOrderByRelationAggregateInput
+  devices?: Prisma.GateDeviceOrderByRelationAggregateInput
 }
 
 export type GatePointWhereUniqueInput = Prisma.AtLeast<{
@@ -207,6 +209,7 @@ export type GatePointWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"GatePoint"> | Date | string
   society?: Prisma.XOR<Prisma.SocietyScalarRelationFilter, Prisma.SocietyWhereInput>
   entries?: Prisma.EntryListRelationFilter
+  devices?: Prisma.GateDeviceListRelationFilter
 }, "id">
 
 export type GatePointOrderByWithAggregationInput = {
@@ -238,6 +241,7 @@ export type GatePointCreateInput = {
   createdAt?: Date | string
   society: Prisma.SocietyCreateNestedOneWithoutGatePointsInput
   entries?: Prisma.EntryCreateNestedManyWithoutGatePointInput
+  devices?: Prisma.GateDeviceCreateNestedManyWithoutGatePointInput
 }
 
 export type GatePointUncheckedCreateInput = {
@@ -247,6 +251,7 @@ export type GatePointUncheckedCreateInput = {
   societyId: string
   createdAt?: Date | string
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutGatePointInput
+  devices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutGatePointInput
 }
 
 export type GatePointUpdateInput = {
@@ -256,6 +261,7 @@ export type GatePointUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   society?: Prisma.SocietyUpdateOneRequiredWithoutGatePointsNestedInput
   entries?: Prisma.EntryUpdateManyWithoutGatePointNestedInput
+  devices?: Prisma.GateDeviceUpdateManyWithoutGatePointNestedInput
 }
 
 export type GatePointUncheckedUpdateInput = {
@@ -265,6 +271,7 @@ export type GatePointUncheckedUpdateInput = {
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.EntryUncheckedUpdateManyWithoutGatePointNestedInput
+  devices?: Prisma.GateDeviceUncheckedUpdateManyWithoutGatePointNestedInput
 }
 
 export type GatePointCreateManyInput = {
@@ -329,6 +336,11 @@ export type GatePointNullableScalarRelationFilter = {
   isNot?: Prisma.GatePointWhereInput | null
 }
 
+export type GatePointScalarRelationFilter = {
+  is?: Prisma.GatePointWhereInput
+  isNot?: Prisma.GatePointWhereInput
+}
+
 export type GatePointCreateNestedManyWithoutSocietyInput = {
   create?: Prisma.XOR<Prisma.GatePointCreateWithoutSocietyInput, Prisma.GatePointUncheckedCreateWithoutSocietyInput> | Prisma.GatePointCreateWithoutSocietyInput[] | Prisma.GatePointUncheckedCreateWithoutSocietyInput[]
   connectOrCreate?: Prisma.GatePointCreateOrConnectWithoutSocietyInput | Prisma.GatePointCreateOrConnectWithoutSocietyInput[]
@@ -387,12 +399,27 @@ export type GatePointUpdateOneWithoutEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GatePointUpdateToOneWithWhereWithoutEntriesInput, Prisma.GatePointUpdateWithoutEntriesInput>, Prisma.GatePointUncheckedUpdateWithoutEntriesInput>
 }
 
+export type GatePointCreateNestedOneWithoutDevicesInput = {
+  create?: Prisma.XOR<Prisma.GatePointCreateWithoutDevicesInput, Prisma.GatePointUncheckedCreateWithoutDevicesInput>
+  connectOrCreate?: Prisma.GatePointCreateOrConnectWithoutDevicesInput
+  connect?: Prisma.GatePointWhereUniqueInput
+}
+
+export type GatePointUpdateOneRequiredWithoutDevicesNestedInput = {
+  create?: Prisma.XOR<Prisma.GatePointCreateWithoutDevicesInput, Prisma.GatePointUncheckedCreateWithoutDevicesInput>
+  connectOrCreate?: Prisma.GatePointCreateOrConnectWithoutDevicesInput
+  upsert?: Prisma.GatePointUpsertWithoutDevicesInput
+  connect?: Prisma.GatePointWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GatePointUpdateToOneWithWhereWithoutDevicesInput, Prisma.GatePointUpdateWithoutDevicesInput>, Prisma.GatePointUncheckedUpdateWithoutDevicesInput>
+}
+
 export type GatePointCreateWithoutSocietyInput = {
   id?: string
   name: string
   isActive?: boolean
   createdAt?: Date | string
   entries?: Prisma.EntryCreateNestedManyWithoutGatePointInput
+  devices?: Prisma.GateDeviceCreateNestedManyWithoutGatePointInput
 }
 
 export type GatePointUncheckedCreateWithoutSocietyInput = {
@@ -401,6 +428,7 @@ export type GatePointUncheckedCreateWithoutSocietyInput = {
   isActive?: boolean
   createdAt?: Date | string
   entries?: Prisma.EntryUncheckedCreateNestedManyWithoutGatePointInput
+  devices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutGatePointInput
 }
 
 export type GatePointCreateOrConnectWithoutSocietyInput = {
@@ -446,6 +474,7 @@ export type GatePointCreateWithoutEntriesInput = {
   isActive?: boolean
   createdAt?: Date | string
   society: Prisma.SocietyCreateNestedOneWithoutGatePointsInput
+  devices?: Prisma.GateDeviceCreateNestedManyWithoutGatePointInput
 }
 
 export type GatePointUncheckedCreateWithoutEntriesInput = {
@@ -454,6 +483,7 @@ export type GatePointUncheckedCreateWithoutEntriesInput = {
   isActive?: boolean
   societyId: string
   createdAt?: Date | string
+  devices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutGatePointInput
 }
 
 export type GatePointCreateOrConnectWithoutEntriesInput = {
@@ -478,6 +508,7 @@ export type GatePointUpdateWithoutEntriesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   society?: Prisma.SocietyUpdateOneRequiredWithoutGatePointsNestedInput
+  devices?: Prisma.GateDeviceUpdateManyWithoutGatePointNestedInput
 }
 
 export type GatePointUncheckedUpdateWithoutEntriesInput = {
@@ -486,6 +517,59 @@ export type GatePointUncheckedUpdateWithoutEntriesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   societyId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  devices?: Prisma.GateDeviceUncheckedUpdateManyWithoutGatePointNestedInput
+}
+
+export type GatePointCreateWithoutDevicesInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  society: Prisma.SocietyCreateNestedOneWithoutGatePointsInput
+  entries?: Prisma.EntryCreateNestedManyWithoutGatePointInput
+}
+
+export type GatePointUncheckedCreateWithoutDevicesInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  societyId: string
+  createdAt?: Date | string
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutGatePointInput
+}
+
+export type GatePointCreateOrConnectWithoutDevicesInput = {
+  where: Prisma.GatePointWhereUniqueInput
+  create: Prisma.XOR<Prisma.GatePointCreateWithoutDevicesInput, Prisma.GatePointUncheckedCreateWithoutDevicesInput>
+}
+
+export type GatePointUpsertWithoutDevicesInput = {
+  update: Prisma.XOR<Prisma.GatePointUpdateWithoutDevicesInput, Prisma.GatePointUncheckedUpdateWithoutDevicesInput>
+  create: Prisma.XOR<Prisma.GatePointCreateWithoutDevicesInput, Prisma.GatePointUncheckedCreateWithoutDevicesInput>
+  where?: Prisma.GatePointWhereInput
+}
+
+export type GatePointUpdateToOneWithWhereWithoutDevicesInput = {
+  where?: Prisma.GatePointWhereInput
+  data: Prisma.XOR<Prisma.GatePointUpdateWithoutDevicesInput, Prisma.GatePointUncheckedUpdateWithoutDevicesInput>
+}
+
+export type GatePointUpdateWithoutDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  society?: Prisma.SocietyUpdateOneRequiredWithoutGatePointsNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutGatePointNestedInput
+}
+
+export type GatePointUncheckedUpdateWithoutDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  societyId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutGatePointNestedInput
 }
 
 export type GatePointCreateManySocietyInput = {
@@ -501,6 +585,7 @@ export type GatePointUpdateWithoutSocietyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.EntryUpdateManyWithoutGatePointNestedInput
+  devices?: Prisma.GateDeviceUpdateManyWithoutGatePointNestedInput
 }
 
 export type GatePointUncheckedUpdateWithoutSocietyInput = {
@@ -509,6 +594,7 @@ export type GatePointUncheckedUpdateWithoutSocietyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.EntryUncheckedUpdateManyWithoutGatePointNestedInput
+  devices?: Prisma.GateDeviceUncheckedUpdateManyWithoutGatePointNestedInput
 }
 
 export type GatePointUncheckedUpdateManyWithoutSocietyInput = {
@@ -525,10 +611,12 @@ export type GatePointUncheckedUpdateManyWithoutSocietyInput = {
 
 export type GatePointCountOutputType = {
   entries: number
+  devices: number
 }
 
 export type GatePointCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entries?: boolean | GatePointCountOutputTypeCountEntriesArgs
+  devices?: boolean | GatePointCountOutputTypeCountDevicesArgs
 }
 
 /**
@@ -548,6 +636,13 @@ export type GatePointCountOutputTypeCountEntriesArgs<ExtArgs extends runtime.Typ
   where?: Prisma.EntryWhereInput
 }
 
+/**
+ * GatePointCountOutputType without action
+ */
+export type GatePointCountOutputTypeCountDevicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GateDeviceWhereInput
+}
+
 
 export type GatePointSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -557,6 +652,7 @@ export type GatePointSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   createdAt?: boolean
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.GatePoint$entriesArgs<ExtArgs>
+  devices?: boolean | Prisma.GatePoint$devicesArgs<ExtArgs>
   _count?: boolean | Prisma.GatePointCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["gatePoint"]>
 
@@ -590,6 +686,7 @@ export type GatePointOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type GatePointInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.GatePoint$entriesArgs<ExtArgs>
+  devices?: boolean | Prisma.GatePoint$devicesArgs<ExtArgs>
   _count?: boolean | Prisma.GatePointCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GatePointIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -604,6 +701,7 @@ export type $GatePointPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   objects: {
     society: Prisma.$SocietyPayload<ExtArgs>
     entries: Prisma.$EntryPayload<ExtArgs>[]
+    devices: Prisma.$GateDevicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1007,6 +1105,7 @@ export interface Prisma__GatePointClient<T, Null = never, ExtArgs extends runtim
   readonly [Symbol.toStringTag]: "PrismaPromise"
   society<T extends Prisma.SocietyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SocietyDefaultArgs<ExtArgs>>): Prisma.Prisma__SocietyClient<runtime.Types.Result.GetResult<Prisma.$SocietyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   entries<T extends Prisma.GatePoint$entriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GatePoint$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  devices<T extends Prisma.GatePoint$devicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GatePoint$devicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GateDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1458,6 +1557,30 @@ export type GatePoint$entriesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.EntryScalarFieldEnum | Prisma.EntryScalarFieldEnum[]
+}
+
+/**
+ * GatePoint.devices
+ */
+export type GatePoint$devicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GateDevice
+   */
+  select?: Prisma.GateDeviceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GateDevice
+   */
+  omit?: Prisma.GateDeviceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GateDeviceInclude<ExtArgs> | null
+  where?: Prisma.GateDeviceWhereInput
+  orderBy?: Prisma.GateDeviceOrderByWithRelationInput | Prisma.GateDeviceOrderByWithRelationInput[]
+  cursor?: Prisma.GateDeviceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GateDeviceScalarFieldEnum | Prisma.GateDeviceScalarFieldEnum[]
 }
 
 /**

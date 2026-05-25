@@ -16,7 +16,7 @@ router.post(
   '/request',
   authenticateResidentForOnboarding,
   validate({ body: submitSocietyRegistrationSchema }),
-  clearCacheAfter(['api:society-registration*']),
+  clearCacheAfter(['society-registration:*']),
   controller.submitRequest
 );
 
@@ -48,7 +48,7 @@ router.post(
   '/requests/:id/approve',
   authenticate,
   authorize('SUPER_ADMIN'),
-  clearCacheAfter(['api:society-registration*']),
+  clearCacheAfter(['society-registration:*']),
   controller.approveRequest
 );
 
@@ -57,7 +57,7 @@ router.post(
   authenticate,
   authorize('SUPER_ADMIN'),
   validate({ body: rejectSocietyRegistrationSchema }),
-  clearCacheAfter(['api:society-registration*']),
+  clearCacheAfter(['society-registration:*']),
   controller.rejectRequest
 );
 

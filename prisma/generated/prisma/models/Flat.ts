@@ -20,8 +20,18 @@ export type FlatModel = runtime.Types.Result.DefaultSelection<Prisma.$FlatPayloa
 
 export type AggregateFlat = {
   _count: FlatCountAggregateOutputType | null
+  _avg: FlatAvgAggregateOutputType | null
+  _sum: FlatSumAggregateOutputType | null
   _min: FlatMinAggregateOutputType | null
   _max: FlatMaxAggregateOutputType | null
+}
+
+export type FlatAvgAggregateOutputType = {
+  squareFeet: number | null
+}
+
+export type FlatSumAggregateOutputType = {
+  squareFeet: number | null
 }
 
 export type FlatMinAggregateOutputType = {
@@ -34,8 +44,10 @@ export type FlatMinAggregateOutputType = {
   ownerPhone: string | null
   ownerEmail: string | null
   isOccupied: boolean | null
+  occupancyStatus: $Enums.FlatOccupancyStatus | null
   currentOwnerId: string | null
   currentTenantId: string | null
+  squareFeet: number | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,8 +63,10 @@ export type FlatMaxAggregateOutputType = {
   ownerPhone: string | null
   ownerEmail: string | null
   isOccupied: boolean | null
+  occupancyStatus: $Enums.FlatOccupancyStatus | null
   currentOwnerId: string | null
   currentTenantId: string | null
+  squareFeet: number | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -68,14 +82,24 @@ export type FlatCountAggregateOutputType = {
   ownerPhone: number
   ownerEmail: number
   isOccupied: number
+  occupancyStatus: number
   currentOwnerId: number
   currentTenantId: number
+  squareFeet: number
   isActive: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type FlatAvgAggregateInputType = {
+  squareFeet?: true
+}
+
+export type FlatSumAggregateInputType = {
+  squareFeet?: true
+}
 
 export type FlatMinAggregateInputType = {
   id?: true
@@ -87,8 +111,10 @@ export type FlatMinAggregateInputType = {
   ownerPhone?: true
   ownerEmail?: true
   isOccupied?: true
+  occupancyStatus?: true
   currentOwnerId?: true
   currentTenantId?: true
+  squareFeet?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -104,8 +130,10 @@ export type FlatMaxAggregateInputType = {
   ownerPhone?: true
   ownerEmail?: true
   isOccupied?: true
+  occupancyStatus?: true
   currentOwnerId?: true
   currentTenantId?: true
+  squareFeet?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -121,8 +149,10 @@ export type FlatCountAggregateInputType = {
   ownerPhone?: true
   ownerEmail?: true
   isOccupied?: true
+  occupancyStatus?: true
   currentOwnerId?: true
   currentTenantId?: true
+  squareFeet?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -167,6 +197,18 @@ export type FlatAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: FlatAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: FlatSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: FlatMinAggregateInputType
@@ -197,6 +239,8 @@ export type FlatGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: FlatCountAggregateInputType | true
+  _avg?: FlatAvgAggregateInputType
+  _sum?: FlatSumAggregateInputType
   _min?: FlatMinAggregateInputType
   _max?: FlatMaxAggregateInputType
 }
@@ -211,12 +255,16 @@ export type FlatGroupByOutputType = {
   ownerPhone: string | null
   ownerEmail: string | null
   isOccupied: boolean
+  occupancyStatus: $Enums.FlatOccupancyStatus
   currentOwnerId: string | null
   currentTenantId: string | null
+  squareFeet: number | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
   _count: FlatCountAggregateOutputType | null
+  _avg: FlatAvgAggregateOutputType | null
+  _sum: FlatSumAggregateOutputType | null
   _min: FlatMinAggregateOutputType | null
   _max: FlatMaxAggregateOutputType | null
 }
@@ -249,8 +297,10 @@ export type FlatWhereInput = {
   ownerPhone?: Prisma.StringNullableFilter<"Flat"> | string | null
   ownerEmail?: Prisma.StringNullableFilter<"Flat"> | string | null
   isOccupied?: Prisma.BoolFilter<"Flat"> | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFilter<"Flat"> | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.StringNullableFilter<"Flat"> | string | null
   currentTenantId?: Prisma.StringNullableFilter<"Flat"> | string | null
+  squareFeet?: Prisma.FloatNullableFilter<"Flat"> | number | null
   isActive?: Prisma.BoolFilter<"Flat"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Flat"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Flat"> | Date | string
@@ -288,8 +338,10 @@ export type FlatOrderByWithRelationInput = {
   ownerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   isOccupied?: Prisma.SortOrder
+  occupancyStatus?: Prisma.SortOrder
   currentOwnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   currentTenantId?: Prisma.SortOrderInput | Prisma.SortOrder
+  squareFeet?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -331,8 +383,10 @@ export type FlatWhereUniqueInput = Prisma.AtLeast<{
   ownerPhone?: Prisma.StringNullableFilter<"Flat"> | string | null
   ownerEmail?: Prisma.StringNullableFilter<"Flat"> | string | null
   isOccupied?: Prisma.BoolFilter<"Flat"> | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFilter<"Flat"> | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.StringNullableFilter<"Flat"> | string | null
   currentTenantId?: Prisma.StringNullableFilter<"Flat"> | string | null
+  squareFeet?: Prisma.FloatNullableFilter<"Flat"> | number | null
   isActive?: Prisma.BoolFilter<"Flat"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Flat"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Flat"> | Date | string
@@ -370,14 +424,18 @@ export type FlatOrderByWithAggregationInput = {
   ownerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   isOccupied?: Prisma.SortOrder
+  occupancyStatus?: Prisma.SortOrder
   currentOwnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   currentTenantId?: Prisma.SortOrderInput | Prisma.SortOrder
+  squareFeet?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FlatCountOrderByAggregateInput
+  _avg?: Prisma.FlatAvgOrderByAggregateInput
   _max?: Prisma.FlatMaxOrderByAggregateInput
   _min?: Prisma.FlatMinOrderByAggregateInput
+  _sum?: Prisma.FlatSumOrderByAggregateInput
 }
 
 export type FlatScalarWhereWithAggregatesInput = {
@@ -393,8 +451,10 @@ export type FlatScalarWhereWithAggregatesInput = {
   ownerPhone?: Prisma.StringNullableWithAggregatesFilter<"Flat"> | string | null
   ownerEmail?: Prisma.StringNullableWithAggregatesFilter<"Flat"> | string | null
   isOccupied?: Prisma.BoolWithAggregatesFilter<"Flat"> | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusWithAggregatesFilter<"Flat"> | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.StringNullableWithAggregatesFilter<"Flat"> | string | null
   currentTenantId?: Prisma.StringNullableWithAggregatesFilter<"Flat"> | string | null
+  squareFeet?: Prisma.FloatNullableWithAggregatesFilter<"Flat"> | number | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Flat"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Flat"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Flat"> | Date | string
@@ -408,8 +468,10 @@ export type FlatCreateInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -447,8 +509,10 @@ export type FlatUncheckedCreateInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -482,8 +546,10 @@ export type FlatUpdateInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -521,8 +587,10 @@ export type FlatUncheckedUpdateInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -558,8 +626,10 @@ export type FlatCreateManyInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -573,8 +643,10 @@ export type FlatUpdateManyMutationInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -590,8 +662,10 @@ export type FlatUncheckedUpdateManyInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -627,11 +701,17 @@ export type FlatCountOrderByAggregateInput = {
   ownerPhone?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   isOccupied?: Prisma.SortOrder
+  occupancyStatus?: Prisma.SortOrder
   currentOwnerId?: Prisma.SortOrder
   currentTenantId?: Prisma.SortOrder
+  squareFeet?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type FlatAvgOrderByAggregateInput = {
+  squareFeet?: Prisma.SortOrder
 }
 
 export type FlatMaxOrderByAggregateInput = {
@@ -644,8 +724,10 @@ export type FlatMaxOrderByAggregateInput = {
   ownerPhone?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   isOccupied?: Prisma.SortOrder
+  occupancyStatus?: Prisma.SortOrder
   currentOwnerId?: Prisma.SortOrder
   currentTenantId?: Prisma.SortOrder
+  squareFeet?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -661,11 +743,17 @@ export type FlatMinOrderByAggregateInput = {
   ownerPhone?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   isOccupied?: Prisma.SortOrder
+  occupancyStatus?: Prisma.SortOrder
   currentOwnerId?: Prisma.SortOrder
   currentTenantId?: Prisma.SortOrder
+  squareFeet?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type FlatSumOrderByAggregateInput = {
+  squareFeet?: Prisma.SortOrder
 }
 
 export type FlatNullableScalarRelationFilter = {
@@ -769,6 +857,10 @@ export type FlatUncheckedUpdateManyWithoutBlockNestedInput = {
   update?: Prisma.FlatUpdateWithWhereUniqueWithoutBlockInput | Prisma.FlatUpdateWithWhereUniqueWithoutBlockInput[]
   updateMany?: Prisma.FlatUpdateManyWithWhereWithoutBlockInput | Prisma.FlatUpdateManyWithWhereWithoutBlockInput[]
   deleteMany?: Prisma.FlatScalarWhereInput | Prisma.FlatScalarWhereInput[]
+}
+
+export type EnumFlatOccupancyStatusFieldUpdateOperationsInput = {
+  set?: $Enums.FlatOccupancyStatus
 }
 
 export type FlatCreateNestedOneWithoutResidentsInput = {
@@ -1067,8 +1159,10 @@ export type FlatCreateWithoutSocietyInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1104,8 +1198,10 @@ export type FlatUncheckedCreateWithoutSocietyInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1170,8 +1266,10 @@ export type FlatScalarWhereInput = {
   ownerPhone?: Prisma.StringNullableFilter<"Flat"> | string | null
   ownerEmail?: Prisma.StringNullableFilter<"Flat"> | string | null
   isOccupied?: Prisma.BoolFilter<"Flat"> | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFilter<"Flat"> | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.StringNullableFilter<"Flat"> | string | null
   currentTenantId?: Prisma.StringNullableFilter<"Flat"> | string | null
+  squareFeet?: Prisma.FloatNullableFilter<"Flat"> | number | null
   isActive?: Prisma.BoolFilter<"Flat"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Flat"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Flat"> | Date | string
@@ -1185,8 +1283,10 @@ export type FlatCreateWithoutInvoicesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1223,8 +1323,10 @@ export type FlatUncheckedCreateWithoutInvoicesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1273,8 +1375,10 @@ export type FlatUpdateWithoutInvoicesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1311,8 +1415,10 @@ export type FlatUncheckedUpdateWithoutInvoicesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1345,8 +1451,10 @@ export type FlatCreateWithoutBlockInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1382,8 +1490,10 @@ export type FlatUncheckedCreateWithoutBlockInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1443,8 +1553,10 @@ export type FlatCreateWithoutResidentsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1481,8 +1593,10 @@ export type FlatUncheckedCreateWithoutResidentsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1531,8 +1645,10 @@ export type FlatUpdateWithoutResidentsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1569,8 +1685,10 @@ export type FlatUncheckedUpdateWithoutResidentsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1603,8 +1721,10 @@ export type FlatCreateWithoutUserMembershipsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1641,8 +1761,10 @@ export type FlatUncheckedCreateWithoutUserMembershipsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1691,8 +1813,10 @@ export type FlatUpdateWithoutUserMembershipsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1729,8 +1853,10 @@ export type FlatUncheckedUpdateWithoutUserMembershipsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1763,8 +1889,10 @@ export type FlatCreateWithoutEntriesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1801,8 +1929,10 @@ export type FlatUncheckedCreateWithoutEntriesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1851,8 +1981,10 @@ export type FlatUpdateWithoutEntriesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1889,8 +2021,10 @@ export type FlatUncheckedUpdateWithoutEntriesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1923,8 +2057,10 @@ export type FlatCreateWithoutGuestInvitesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1961,8 +2097,10 @@ export type FlatUncheckedCreateWithoutGuestInvitesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2011,8 +2149,10 @@ export type FlatUpdateWithoutGuestInvitesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2049,8 +2189,10 @@ export type FlatUncheckedUpdateWithoutGuestInvitesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2083,8 +2225,10 @@ export type FlatCreateWithoutPartyInvitesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2121,8 +2265,10 @@ export type FlatUncheckedCreateWithoutPartyInvitesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2171,8 +2317,10 @@ export type FlatUpdateWithoutPartyInvitesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2209,8 +2357,10 @@ export type FlatUncheckedUpdateWithoutPartyInvitesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2243,8 +2393,10 @@ export type FlatCreateWithoutDomesticStaffInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2281,8 +2433,10 @@ export type FlatUncheckedCreateWithoutDomesticStaffInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2331,8 +2485,10 @@ export type FlatUpdateWithoutDomesticStaffInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2369,8 +2525,10 @@ export type FlatUncheckedUpdateWithoutDomesticStaffInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2403,8 +2561,10 @@ export type FlatCreateWithoutStaffFlatAssignmentsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2441,8 +2601,10 @@ export type FlatUncheckedCreateWithoutStaffFlatAssignmentsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2491,8 +2653,10 @@ export type FlatUpdateWithoutStaffFlatAssignmentsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2529,8 +2693,10 @@ export type FlatUncheckedUpdateWithoutStaffFlatAssignmentsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2563,8 +2729,10 @@ export type FlatCreateWithoutStaffAttendanceInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2601,8 +2769,10 @@ export type FlatUncheckedCreateWithoutStaffAttendanceInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2651,8 +2821,10 @@ export type FlatUpdateWithoutStaffAttendanceInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2689,8 +2861,10 @@ export type FlatUncheckedUpdateWithoutStaffAttendanceInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2723,8 +2897,10 @@ export type FlatCreateWithoutStaffBookingsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2761,8 +2937,10 @@ export type FlatUncheckedCreateWithoutStaffBookingsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2811,8 +2989,10 @@ export type FlatUpdateWithoutStaffBookingsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2849,8 +3029,10 @@ export type FlatUncheckedUpdateWithoutStaffBookingsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2883,8 +3065,10 @@ export type FlatCreateWithoutStaffReviewsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2921,8 +3105,10 @@ export type FlatUncheckedCreateWithoutStaffReviewsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2971,8 +3157,10 @@ export type FlatUpdateWithoutStaffReviewsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3009,8 +3197,10 @@ export type FlatUncheckedUpdateWithoutStaffReviewsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3043,8 +3233,10 @@ export type FlatCreateWithoutVehiclesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3081,8 +3273,10 @@ export type FlatUncheckedCreateWithoutVehiclesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3131,8 +3325,10 @@ export type FlatUpdateWithoutVehiclesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3169,8 +3365,10 @@ export type FlatUncheckedUpdateWithoutVehiclesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3203,8 +3401,10 @@ export type FlatCreateWithoutVisitorFrequenciesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3241,8 +3441,10 @@ export type FlatUncheckedCreateWithoutVisitorFrequenciesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3291,8 +3493,10 @@ export type FlatUpdateWithoutVisitorFrequenciesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3329,8 +3533,10 @@ export type FlatUncheckedUpdateWithoutVisitorFrequenciesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3363,8 +3569,10 @@ export type FlatCreateWithoutGatePassesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3401,8 +3609,10 @@ export type FlatUncheckedCreateWithoutGatePassesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3451,8 +3661,10 @@ export type FlatUpdateWithoutGatePassesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3489,8 +3701,10 @@ export type FlatUncheckedUpdateWithoutGatePassesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3523,8 +3737,10 @@ export type FlatCreateWithoutAmenityBookingsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3561,8 +3777,10 @@ export type FlatUncheckedCreateWithoutAmenityBookingsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3611,8 +3829,10 @@ export type FlatUpdateWithoutAmenityBookingsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3649,8 +3869,10 @@ export type FlatUncheckedUpdateWithoutAmenityBookingsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3683,8 +3905,10 @@ export type FlatCreateWithoutComplaintsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3721,8 +3945,10 @@ export type FlatUncheckedCreateWithoutComplaintsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3771,8 +3997,10 @@ export type FlatUpdateWithoutComplaintsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3809,8 +4037,10 @@ export type FlatUncheckedUpdateWithoutComplaintsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3843,8 +4073,10 @@ export type FlatCreateWithoutEmergenciesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3881,8 +4113,10 @@ export type FlatUncheckedCreateWithoutEmergenciesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3931,8 +4165,10 @@ export type FlatUpdateWithoutEmergenciesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3969,8 +4205,10 @@ export type FlatUncheckedUpdateWithoutEmergenciesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4003,8 +4241,10 @@ export type FlatCreateWithoutOnboardingRequestsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4041,8 +4281,10 @@ export type FlatUncheckedCreateWithoutOnboardingRequestsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4091,8 +4333,10 @@ export type FlatUpdateWithoutOnboardingRequestsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4129,8 +4373,10 @@ export type FlatUncheckedUpdateWithoutOnboardingRequestsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4163,8 +4409,10 @@ export type FlatCreateWithoutEntryRequestsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4201,8 +4449,10 @@ export type FlatUncheckedCreateWithoutEntryRequestsInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4251,8 +4501,10 @@ export type FlatUpdateWithoutEntryRequestsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4289,8 +4541,10 @@ export type FlatUncheckedUpdateWithoutEntryRequestsInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4323,8 +4577,10 @@ export type FlatCreateWithoutPreApprovedEntriesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4361,8 +4617,10 @@ export type FlatUncheckedCreateWithoutPreApprovedEntriesInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4411,8 +4669,10 @@ export type FlatUpdateWithoutPreApprovedEntriesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4449,8 +4709,10 @@ export type FlatUncheckedUpdateWithoutPreApprovedEntriesInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4484,8 +4746,10 @@ export type FlatCreateManySocietyInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4499,8 +4763,10 @@ export type FlatUpdateWithoutSocietyInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4536,8 +4802,10 @@ export type FlatUncheckedUpdateWithoutSocietyInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4572,8 +4840,10 @@ export type FlatUncheckedUpdateManyWithoutSocietyInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4588,8 +4858,10 @@ export type FlatCreateManyBlockInput = {
   ownerPhone?: string | null
   ownerEmail?: string | null
   isOccupied?: boolean
+  occupancyStatus?: $Enums.FlatOccupancyStatus
   currentOwnerId?: string | null
   currentTenantId?: string | null
+  squareFeet?: number | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4603,8 +4875,10 @@ export type FlatUpdateWithoutBlockInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4640,8 +4914,10 @@ export type FlatUncheckedUpdateWithoutBlockInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4676,8 +4952,10 @@ export type FlatUncheckedUpdateManyWithoutBlockInput = {
   ownerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOccupied?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  occupancyStatus?: Prisma.EnumFlatOccupancyStatusFieldUpdateOperationsInput | $Enums.FlatOccupancyStatus
   currentOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentTenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  squareFeet?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4895,8 +5173,10 @@ export type FlatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   ownerPhone?: boolean
   ownerEmail?: boolean
   isOccupied?: boolean
+  occupancyStatus?: boolean
   currentOwnerId?: boolean
   currentTenantId?: boolean
+  squareFeet?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -4935,8 +5215,10 @@ export type FlatSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   ownerPhone?: boolean
   ownerEmail?: boolean
   isOccupied?: boolean
+  occupancyStatus?: boolean
   currentOwnerId?: boolean
   currentTenantId?: boolean
+  squareFeet?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -4954,8 +5236,10 @@ export type FlatSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   ownerPhone?: boolean
   ownerEmail?: boolean
   isOccupied?: boolean
+  occupancyStatus?: boolean
   currentOwnerId?: boolean
   currentTenantId?: boolean
+  squareFeet?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -4973,14 +5257,16 @@ export type FlatSelectScalar = {
   ownerPhone?: boolean
   ownerEmail?: boolean
   isOccupied?: boolean
+  occupancyStatus?: boolean
   currentOwnerId?: boolean
   currentTenantId?: boolean
+  squareFeet?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FlatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "flatNumber" | "floor" | "blockId" | "societyId" | "ownerName" | "ownerPhone" | "ownerEmail" | "isOccupied" | "currentOwnerId" | "currentTenantId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["flat"]>
+export type FlatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "flatNumber" | "floor" | "blockId" | "societyId" | "ownerName" | "ownerPhone" | "ownerEmail" | "isOccupied" | "occupancyStatus" | "currentOwnerId" | "currentTenantId" | "squareFeet" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["flat"]>
 export type FlatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   block?: boolean | Prisma.Flat$blockArgs<ExtArgs>
   society?: boolean | Prisma.SocietyDefaultArgs<ExtArgs>
@@ -5051,8 +5337,10 @@ export type $FlatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     ownerPhone: string | null
     ownerEmail: string | null
     isOccupied: boolean
+    occupancyStatus: $Enums.FlatOccupancyStatus
     currentOwnerId: string | null
     currentTenantId: string | null
+    squareFeet: number | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -5510,8 +5798,10 @@ export interface FlatFieldRefs {
   readonly ownerPhone: Prisma.FieldRef<"Flat", 'String'>
   readonly ownerEmail: Prisma.FieldRef<"Flat", 'String'>
   readonly isOccupied: Prisma.FieldRef<"Flat", 'Boolean'>
+  readonly occupancyStatus: Prisma.FieldRef<"Flat", 'FlatOccupancyStatus'>
   readonly currentOwnerId: Prisma.FieldRef<"Flat", 'String'>
   readonly currentTenantId: Prisma.FieldRef<"Flat", 'String'>
+  readonly squareFeet: Prisma.FieldRef<"Flat", 'Float'>
   readonly isActive: Prisma.FieldRef<"Flat", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Flat", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Flat", 'DateTime'>

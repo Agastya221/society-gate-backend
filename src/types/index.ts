@@ -46,6 +46,13 @@ import {
   VehicleStatus,
   DocumentCategory,
   PollStatus,
+  SocietyOnboardingStatus,
+  MaintenanceBillingType,
+  SocietyOnboardingDocumentType,
+  SocietyOnboardingDocumentStatus,
+  SocietyImportBatchStatus,
+  FlatOccupancyStatus,
+  GateDeviceStatus,
 } from '../../prisma/generated/prisma/client';
 
 import type {
@@ -84,6 +91,11 @@ import type {
   PostLike,
   PostComment,
   SocietyDocument,
+  SocietyOnboardingDocument,
+  SocietyImportBatch,
+  SocietyImportRowError,
+  SocietyRuleConfig,
+  GateDevice,
   Poll,
   PollOption,
   PollVote,
@@ -134,6 +146,13 @@ export {
   VehicleStatus,
   DocumentCategory,
   PollStatus,
+  SocietyOnboardingStatus,
+  MaintenanceBillingType,
+  SocietyOnboardingDocumentType,
+  SocietyOnboardingDocumentStatus,
+  SocietyImportBatchStatus,
+  FlatOccupancyStatus,
+  GateDeviceStatus,
 };
 
 // Re-export model types and Prisma namespace
@@ -173,6 +192,11 @@ export type {
   PostLike,
   PostComment,
   SocietyDocument,
+  SocietyOnboardingDocument,
+  SocietyImportBatch,
+  SocietyImportRowError,
+  SocietyRuleConfig,
+  GateDevice,
   Poll,
   PollOption,
   PollVote,

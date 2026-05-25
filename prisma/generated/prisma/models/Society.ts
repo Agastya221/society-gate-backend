@@ -27,11 +27,15 @@ export type AggregateSociety = {
 }
 
 export type SocietyAvgAggregateOutputType = {
+  latitude: number | null
+  longitude: number | null
   totalFlats: number | null
   monthlyFee: number | null
 }
 
 export type SocietySumAggregateOutputType = {
+  latitude: number | null
+  longitude: number | null
   totalFlats: number | null
   monthlyFee: number | null
 }
@@ -39,15 +43,28 @@ export type SocietySumAggregateOutputType = {
 export type SocietyMinAggregateOutputType = {
   id: string | null
   name: string | null
+  registeredName: string | null
+  registrationNumber: string | null
   address: string | null
   city: string | null
   state: string | null
   pincode: string | null
+  latitude: number | null
+  longitude: number | null
+  logoUrl: string | null
+  logoKey: string | null
   contactName: string | null
   contactPhone: string | null
   contactEmail: string | null
+  bankAccountNumber: string | null
+  bankIfsc: string | null
+  bankBranchName: string | null
+  panNumber: string | null
+  gstin: string | null
+  maintenanceBillingType: $Enums.MaintenanceBillingType | null
   totalFlats: number | null
   isActive: boolean | null
+  onboardingStatus: $Enums.SocietyOnboardingStatus | null
   monthlyFee: number | null
   subscriptionCycle: $Enums.SubscriptionCycle | null
   lastPaidDate: Date | null
@@ -60,15 +77,28 @@ export type SocietyMinAggregateOutputType = {
 export type SocietyMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  registeredName: string | null
+  registrationNumber: string | null
   address: string | null
   city: string | null
   state: string | null
   pincode: string | null
+  latitude: number | null
+  longitude: number | null
+  logoUrl: string | null
+  logoKey: string | null
   contactName: string | null
   contactPhone: string | null
   contactEmail: string | null
+  bankAccountNumber: string | null
+  bankIfsc: string | null
+  bankBranchName: string | null
+  panNumber: string | null
+  gstin: string | null
+  maintenanceBillingType: $Enums.MaintenanceBillingType | null
   totalFlats: number | null
   isActive: boolean | null
+  onboardingStatus: $Enums.SocietyOnboardingStatus | null
   monthlyFee: number | null
   subscriptionCycle: $Enums.SubscriptionCycle | null
   lastPaidDate: Date | null
@@ -81,15 +111,29 @@ export type SocietyMaxAggregateOutputType = {
 export type SocietyCountAggregateOutputType = {
   id: number
   name: number
+  registeredName: number
+  registrationNumber: number
   address: number
   city: number
   state: number
   pincode: number
+  latitude: number
+  longitude: number
+  logoUrl: number
+  logoKey: number
   contactName: number
   contactPhone: number
   contactEmail: number
+  bankAccountNumber: number
+  bankIfsc: number
+  bankBranchName: number
+  panNumber: number
+  gstin: number
+  maintenanceBillingType: number
+  maintenanceBillingConfig: number
   totalFlats: number
   isActive: number
+  onboardingStatus: number
   monthlyFee: number
   subscriptionCycle: number
   lastPaidDate: number
@@ -102,11 +146,15 @@ export type SocietyCountAggregateOutputType = {
 
 
 export type SocietyAvgAggregateInputType = {
+  latitude?: true
+  longitude?: true
   totalFlats?: true
   monthlyFee?: true
 }
 
 export type SocietySumAggregateInputType = {
+  latitude?: true
+  longitude?: true
   totalFlats?: true
   monthlyFee?: true
 }
@@ -114,15 +162,28 @@ export type SocietySumAggregateInputType = {
 export type SocietyMinAggregateInputType = {
   id?: true
   name?: true
+  registeredName?: true
+  registrationNumber?: true
   address?: true
   city?: true
   state?: true
   pincode?: true
+  latitude?: true
+  longitude?: true
+  logoUrl?: true
+  logoKey?: true
   contactName?: true
   contactPhone?: true
   contactEmail?: true
+  bankAccountNumber?: true
+  bankIfsc?: true
+  bankBranchName?: true
+  panNumber?: true
+  gstin?: true
+  maintenanceBillingType?: true
   totalFlats?: true
   isActive?: true
+  onboardingStatus?: true
   monthlyFee?: true
   subscriptionCycle?: true
   lastPaidDate?: true
@@ -135,15 +196,28 @@ export type SocietyMinAggregateInputType = {
 export type SocietyMaxAggregateInputType = {
   id?: true
   name?: true
+  registeredName?: true
+  registrationNumber?: true
   address?: true
   city?: true
   state?: true
   pincode?: true
+  latitude?: true
+  longitude?: true
+  logoUrl?: true
+  logoKey?: true
   contactName?: true
   contactPhone?: true
   contactEmail?: true
+  bankAccountNumber?: true
+  bankIfsc?: true
+  bankBranchName?: true
+  panNumber?: true
+  gstin?: true
+  maintenanceBillingType?: true
   totalFlats?: true
   isActive?: true
+  onboardingStatus?: true
   monthlyFee?: true
   subscriptionCycle?: true
   lastPaidDate?: true
@@ -156,15 +230,29 @@ export type SocietyMaxAggregateInputType = {
 export type SocietyCountAggregateInputType = {
   id?: true
   name?: true
+  registeredName?: true
+  registrationNumber?: true
   address?: true
   city?: true
   state?: true
   pincode?: true
+  latitude?: true
+  longitude?: true
+  logoUrl?: true
+  logoKey?: true
   contactName?: true
   contactPhone?: true
   contactEmail?: true
+  bankAccountNumber?: true
+  bankIfsc?: true
+  bankBranchName?: true
+  panNumber?: true
+  gstin?: true
+  maintenanceBillingType?: true
+  maintenanceBillingConfig?: true
   totalFlats?: true
   isActive?: true
+  onboardingStatus?: true
   monthlyFee?: true
   subscriptionCycle?: true
   lastPaidDate?: true
@@ -264,15 +352,29 @@ export type SocietyGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type SocietyGroupByOutputType = {
   id: string
   name: string
+  registeredName: string | null
+  registrationNumber: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude: number | null
+  longitude: number | null
+  logoUrl: string | null
+  logoKey: string | null
   contactName: string
   contactPhone: string
   contactEmail: string | null
+  bankAccountNumber: string | null
+  bankIfsc: string | null
+  bankBranchName: string | null
+  panNumber: string | null
+  gstin: string | null
+  maintenanceBillingType: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig: runtime.JsonValue | null
   totalFlats: number
   isActive: boolean
+  onboardingStatus: $Enums.SocietyOnboardingStatus
   monthlyFee: number
   subscriptionCycle: $Enums.SubscriptionCycle
   lastPaidDate: Date | null
@@ -308,15 +410,29 @@ export type SocietyWhereInput = {
   NOT?: Prisma.SocietyWhereInput | Prisma.SocietyWhereInput[]
   id?: Prisma.StringFilter<"Society"> | string
   name?: Prisma.StringFilter<"Society"> | string
+  registeredName?: Prisma.StringNullableFilter<"Society"> | string | null
+  registrationNumber?: Prisma.StringNullableFilter<"Society"> | string | null
   address?: Prisma.StringFilter<"Society"> | string
   city?: Prisma.StringFilter<"Society"> | string
   state?: Prisma.StringFilter<"Society"> | string
   pincode?: Prisma.StringFilter<"Society"> | string
+  latitude?: Prisma.FloatNullableFilter<"Society"> | number | null
+  longitude?: Prisma.FloatNullableFilter<"Society"> | number | null
+  logoUrl?: Prisma.StringNullableFilter<"Society"> | string | null
+  logoKey?: Prisma.StringNullableFilter<"Society"> | string | null
   contactName?: Prisma.StringFilter<"Society"> | string
   contactPhone?: Prisma.StringFilter<"Society"> | string
   contactEmail?: Prisma.StringNullableFilter<"Society"> | string | null
+  bankAccountNumber?: Prisma.StringNullableFilter<"Society"> | string | null
+  bankIfsc?: Prisma.StringNullableFilter<"Society"> | string | null
+  bankBranchName?: Prisma.StringNullableFilter<"Society"> | string | null
+  panNumber?: Prisma.StringNullableFilter<"Society"> | string | null
+  gstin?: Prisma.StringNullableFilter<"Society"> | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFilter<"Society"> | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.JsonNullableFilter<"Society">
   totalFlats?: Prisma.IntFilter<"Society"> | number
   isActive?: Prisma.BoolFilter<"Society"> | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFilter<"Society"> | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFilter<"Society"> | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFilter<"Society"> | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.DateTimeNullableFilter<"Society"> | Date | string | null
@@ -357,20 +473,38 @@ export type SocietyWhereInput = {
   invoices?: Prisma.InvoiceListRelationFilter
   parkingViolations?: Prisma.ParkingViolationListRelationFilter
   flatMemberships?: Prisma.UserFlatMembershipListRelationFilter
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentListRelationFilter
+  importBatches?: Prisma.SocietyImportBatchListRelationFilter
+  ruleConfig?: Prisma.XOR<Prisma.SocietyRuleConfigNullableScalarRelationFilter, Prisma.SocietyRuleConfigWhereInput> | null
+  gateDevices?: Prisma.GateDeviceListRelationFilter
 }
 
 export type SocietyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  registeredName?: Prisma.SortOrderInput | Prisma.SortOrder
+  registrationNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
   state?: Prisma.SortOrder
   pincode?: Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankAccountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankIfsc?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankBranchName?: Prisma.SortOrderInput | Prisma.SortOrder
+  panNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  gstin?: Prisma.SortOrderInput | Prisma.SortOrder
+  maintenanceBillingType?: Prisma.SortOrder
+  maintenanceBillingConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  onboardingStatus?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
   subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -411,6 +545,10 @@ export type SocietyOrderByWithRelationInput = {
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
   parkingViolations?: Prisma.ParkingViolationOrderByRelationAggregateInput
   flatMemberships?: Prisma.UserFlatMembershipOrderByRelationAggregateInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentOrderByRelationAggregateInput
+  importBatches?: Prisma.SocietyImportBatchOrderByRelationAggregateInput
+  ruleConfig?: Prisma.SocietyRuleConfigOrderByWithRelationInput
+  gateDevices?: Prisma.GateDeviceOrderByRelationAggregateInput
 }
 
 export type SocietyWhereUniqueInput = Prisma.AtLeast<{
@@ -419,15 +557,29 @@ export type SocietyWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.SocietyWhereInput[]
   NOT?: Prisma.SocietyWhereInput | Prisma.SocietyWhereInput[]
   name?: Prisma.StringFilter<"Society"> | string
+  registeredName?: Prisma.StringNullableFilter<"Society"> | string | null
+  registrationNumber?: Prisma.StringNullableFilter<"Society"> | string | null
   address?: Prisma.StringFilter<"Society"> | string
   city?: Prisma.StringFilter<"Society"> | string
   state?: Prisma.StringFilter<"Society"> | string
   pincode?: Prisma.StringFilter<"Society"> | string
+  latitude?: Prisma.FloatNullableFilter<"Society"> | number | null
+  longitude?: Prisma.FloatNullableFilter<"Society"> | number | null
+  logoUrl?: Prisma.StringNullableFilter<"Society"> | string | null
+  logoKey?: Prisma.StringNullableFilter<"Society"> | string | null
   contactName?: Prisma.StringFilter<"Society"> | string
   contactPhone?: Prisma.StringFilter<"Society"> | string
   contactEmail?: Prisma.StringNullableFilter<"Society"> | string | null
+  bankAccountNumber?: Prisma.StringNullableFilter<"Society"> | string | null
+  bankIfsc?: Prisma.StringNullableFilter<"Society"> | string | null
+  bankBranchName?: Prisma.StringNullableFilter<"Society"> | string | null
+  panNumber?: Prisma.StringNullableFilter<"Society"> | string | null
+  gstin?: Prisma.StringNullableFilter<"Society"> | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFilter<"Society"> | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.JsonNullableFilter<"Society">
   totalFlats?: Prisma.IntFilter<"Society"> | number
   isActive?: Prisma.BoolFilter<"Society"> | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFilter<"Society"> | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFilter<"Society"> | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFilter<"Society"> | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.DateTimeNullableFilter<"Society"> | Date | string | null
@@ -468,20 +620,38 @@ export type SocietyWhereUniqueInput = Prisma.AtLeast<{
   invoices?: Prisma.InvoiceListRelationFilter
   parkingViolations?: Prisma.ParkingViolationListRelationFilter
   flatMemberships?: Prisma.UserFlatMembershipListRelationFilter
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentListRelationFilter
+  importBatches?: Prisma.SocietyImportBatchListRelationFilter
+  ruleConfig?: Prisma.XOR<Prisma.SocietyRuleConfigNullableScalarRelationFilter, Prisma.SocietyRuleConfigWhereInput> | null
+  gateDevices?: Prisma.GateDeviceListRelationFilter
 }, "id">
 
 export type SocietyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  registeredName?: Prisma.SortOrderInput | Prisma.SortOrder
+  registrationNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
   state?: Prisma.SortOrder
   pincode?: Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankAccountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankIfsc?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankBranchName?: Prisma.SortOrderInput | Prisma.SortOrder
+  panNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  gstin?: Prisma.SortOrderInput | Prisma.SortOrder
+  maintenanceBillingType?: Prisma.SortOrder
+  maintenanceBillingConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  onboardingStatus?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
   subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -502,15 +672,29 @@ export type SocietyScalarWhereWithAggregatesInput = {
   NOT?: Prisma.SocietyScalarWhereWithAggregatesInput | Prisma.SocietyScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Society"> | string
   name?: Prisma.StringWithAggregatesFilter<"Society"> | string
+  registeredName?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  registrationNumber?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
   address?: Prisma.StringWithAggregatesFilter<"Society"> | string
   city?: Prisma.StringWithAggregatesFilter<"Society"> | string
   state?: Prisma.StringWithAggregatesFilter<"Society"> | string
   pincode?: Prisma.StringWithAggregatesFilter<"Society"> | string
+  latitude?: Prisma.FloatNullableWithAggregatesFilter<"Society"> | number | null
+  longitude?: Prisma.FloatNullableWithAggregatesFilter<"Society"> | number | null
+  logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  logoKey?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
   contactName?: Prisma.StringWithAggregatesFilter<"Society"> | string
   contactPhone?: Prisma.StringWithAggregatesFilter<"Society"> | string
   contactEmail?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  bankAccountNumber?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  bankIfsc?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  bankBranchName?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  panNumber?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  gstin?: Prisma.StringNullableWithAggregatesFilter<"Society"> | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeWithAggregatesFilter<"Society"> | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.JsonNullableWithAggregatesFilter<"Society">
   totalFlats?: Prisma.IntWithAggregatesFilter<"Society"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Society"> | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusWithAggregatesFilter<"Society"> | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatWithAggregatesFilter<"Society"> | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleWithAggregatesFilter<"Society"> | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Society"> | Date | string | null
@@ -523,15 +707,29 @@ export type SocietyScalarWhereWithAggregatesInput = {
 export type SocietyCreateInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -572,20 +770,38 @@ export type SocietyCreateInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -626,20 +842,38 @@ export type SocietyUncheckedCreateInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -680,20 +914,38 @@ export type SocietyUpdateInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -734,20 +986,38 @@ export type SocietyUncheckedUpdateInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateManyInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -760,15 +1030,29 @@ export type SocietyCreateManyInput = {
 export type SocietyUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -781,15 +1065,29 @@ export type SocietyUpdateManyMutationInput = {
 export type SocietyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -802,15 +1100,29 @@ export type SocietyUncheckedUpdateManyInput = {
 export type SocietyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  registeredName?: Prisma.SortOrder
+  registrationNumber?: Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
   state?: Prisma.SortOrder
   pincode?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
+  bankAccountNumber?: Prisma.SortOrder
+  bankIfsc?: Prisma.SortOrder
+  bankBranchName?: Prisma.SortOrder
+  panNumber?: Prisma.SortOrder
+  gstin?: Prisma.SortOrder
+  maintenanceBillingType?: Prisma.SortOrder
+  maintenanceBillingConfig?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  onboardingStatus?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
   subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrder
@@ -821,6 +1133,8 @@ export type SocietyCountOrderByAggregateInput = {
 }
 
 export type SocietyAvgOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
 }
@@ -828,15 +1142,28 @@ export type SocietyAvgOrderByAggregateInput = {
 export type SocietyMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  registeredName?: Prisma.SortOrder
+  registrationNumber?: Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
   state?: Prisma.SortOrder
   pincode?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
+  bankAccountNumber?: Prisma.SortOrder
+  bankIfsc?: Prisma.SortOrder
+  bankBranchName?: Prisma.SortOrder
+  panNumber?: Prisma.SortOrder
+  gstin?: Prisma.SortOrder
+  maintenanceBillingType?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  onboardingStatus?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
   subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrder
@@ -849,15 +1176,28 @@ export type SocietyMaxOrderByAggregateInput = {
 export type SocietyMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  registeredName?: Prisma.SortOrder
+  registrationNumber?: Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
   state?: Prisma.SortOrder
   pincode?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
+  bankAccountNumber?: Prisma.SortOrder
+  bankIfsc?: Prisma.SortOrder
+  bankBranchName?: Prisma.SortOrder
+  panNumber?: Prisma.SortOrder
+  gstin?: Prisma.SortOrder
+  maintenanceBillingType?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  onboardingStatus?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
   subscriptionCycle?: Prisma.SortOrder
   lastPaidDate?: Prisma.SortOrder
@@ -868,6 +1208,8 @@ export type SocietyMinOrderByAggregateInput = {
 }
 
 export type SocietySumOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   totalFlats?: Prisma.SortOrder
   monthlyFee?: Prisma.SortOrder
 }
@@ -890,6 +1232,18 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type EnumMaintenanceBillingTypeFieldUpdateOperationsInput = {
+  set?: $Enums.MaintenanceBillingType
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -900,6 +1254,10 @@ export type IntFieldUpdateOperationsInput = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type EnumSocietyOnboardingStatusFieldUpdateOperationsInput = {
+  set?: $Enums.SocietyOnboardingStatus
 }
 
 export type FloatFieldUpdateOperationsInput = {
@@ -1322,6 +1680,62 @@ export type SocietyUpdateOneRequiredWithoutSocietyDocumentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutSocietyDocumentsInput, Prisma.SocietyUpdateWithoutSocietyDocumentsInput>, Prisma.SocietyUncheckedUpdateWithoutSocietyDocumentsInput>
 }
 
+export type SocietyCreateNestedOneWithoutOnboardingDocumentsInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutOnboardingDocumentsInput, Prisma.SocietyUncheckedCreateWithoutOnboardingDocumentsInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutOnboardingDocumentsInput
+  connect?: Prisma.SocietyWhereUniqueInput
+}
+
+export type SocietyUpdateOneRequiredWithoutOnboardingDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutOnboardingDocumentsInput, Prisma.SocietyUncheckedCreateWithoutOnboardingDocumentsInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutOnboardingDocumentsInput
+  upsert?: Prisma.SocietyUpsertWithoutOnboardingDocumentsInput
+  connect?: Prisma.SocietyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutOnboardingDocumentsInput, Prisma.SocietyUpdateWithoutOnboardingDocumentsInput>, Prisma.SocietyUncheckedUpdateWithoutOnboardingDocumentsInput>
+}
+
+export type SocietyCreateNestedOneWithoutImportBatchesInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutImportBatchesInput, Prisma.SocietyUncheckedCreateWithoutImportBatchesInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutImportBatchesInput
+  connect?: Prisma.SocietyWhereUniqueInput
+}
+
+export type SocietyUpdateOneRequiredWithoutImportBatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutImportBatchesInput, Prisma.SocietyUncheckedCreateWithoutImportBatchesInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutImportBatchesInput
+  upsert?: Prisma.SocietyUpsertWithoutImportBatchesInput
+  connect?: Prisma.SocietyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutImportBatchesInput, Prisma.SocietyUpdateWithoutImportBatchesInput>, Prisma.SocietyUncheckedUpdateWithoutImportBatchesInput>
+}
+
+export type SocietyCreateNestedOneWithoutRuleConfigInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutRuleConfigInput, Prisma.SocietyUncheckedCreateWithoutRuleConfigInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutRuleConfigInput
+  connect?: Prisma.SocietyWhereUniqueInput
+}
+
+export type SocietyUpdateOneRequiredWithoutRuleConfigNestedInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutRuleConfigInput, Prisma.SocietyUncheckedCreateWithoutRuleConfigInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutRuleConfigInput
+  upsert?: Prisma.SocietyUpsertWithoutRuleConfigInput
+  connect?: Prisma.SocietyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutRuleConfigInput, Prisma.SocietyUpdateWithoutRuleConfigInput>, Prisma.SocietyUncheckedUpdateWithoutRuleConfigInput>
+}
+
+export type SocietyCreateNestedOneWithoutGateDevicesInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutGateDevicesInput, Prisma.SocietyUncheckedCreateWithoutGateDevicesInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutGateDevicesInput
+  connect?: Prisma.SocietyWhereUniqueInput
+}
+
+export type SocietyUpdateOneRequiredWithoutGateDevicesNestedInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutGateDevicesInput, Prisma.SocietyUncheckedCreateWithoutGateDevicesInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutGateDevicesInput
+  upsert?: Prisma.SocietyUpsertWithoutGateDevicesInput
+  connect?: Prisma.SocietyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutGateDevicesInput, Prisma.SocietyUpdateWithoutGateDevicesInput>, Prisma.SocietyUncheckedUpdateWithoutGateDevicesInput>
+}
+
 export type SocietyCreateNestedOneWithoutPollsInput = {
   create?: Prisma.XOR<Prisma.SocietyCreateWithoutPollsInput, Prisma.SocietyUncheckedCreateWithoutPollsInput>
   connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutPollsInput
@@ -1397,15 +1811,29 @@ export type SocietyUpdateOneRequiredWithoutPreApprovedEntriesNestedInput = {
 export type SocietyCreateWithoutInvoicesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -1445,20 +1873,38 @@ export type SocietyCreateWithoutInvoicesInput = {
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutInvoicesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -1498,6 +1944,10 @@ export type SocietyUncheckedCreateWithoutInvoicesInput = {
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutInvoicesInput = {
@@ -1519,15 +1969,29 @@ export type SocietyUpdateToOneWithWhereWithoutInvoicesInput = {
 export type SocietyUpdateWithoutInvoicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1567,20 +2031,38 @@ export type SocietyUpdateWithoutInvoicesInput = {
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutInvoicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1620,20 +2102,38 @@ export type SocietyUncheckedUpdateWithoutInvoicesInput = {
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutRegistrationRequestInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -1673,20 +2173,38 @@ export type SocietyCreateWithoutRegistrationRequestInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutRegistrationRequestInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -1726,6 +2244,10 @@ export type SocietyUncheckedCreateWithoutRegistrationRequestInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutRegistrationRequestInput = {
@@ -1747,15 +2269,29 @@ export type SocietyUpdateToOneWithWhereWithoutRegistrationRequestInput = {
 export type SocietyUpdateWithoutRegistrationRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1795,20 +2331,38 @@ export type SocietyUpdateWithoutRegistrationRequestInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutRegistrationRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1848,20 +2402,38 @@ export type SocietyUncheckedUpdateWithoutRegistrationRequestInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGatePointsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -1901,20 +2473,38 @@ export type SocietyCreateWithoutGatePointsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGatePointsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -1954,6 +2544,10 @@ export type SocietyUncheckedCreateWithoutGatePointsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGatePointsInput = {
@@ -1975,15 +2569,29 @@ export type SocietyUpdateToOneWithWhereWithoutGatePointsInput = {
 export type SocietyUpdateWithoutGatePointsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2023,20 +2631,38 @@ export type SocietyUpdateWithoutGatePointsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGatePointsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2076,20 +2702,38 @@ export type SocietyUncheckedUpdateWithoutGatePointsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutBlocksInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2129,20 +2773,38 @@ export type SocietyCreateWithoutBlocksInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutBlocksInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2182,6 +2844,10 @@ export type SocietyUncheckedCreateWithoutBlocksInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutBlocksInput = {
@@ -2203,15 +2869,29 @@ export type SocietyUpdateToOneWithWhereWithoutBlocksInput = {
 export type SocietyUpdateWithoutBlocksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2251,20 +2931,38 @@ export type SocietyUpdateWithoutBlocksInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutBlocksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2304,20 +3002,38 @@ export type SocietyUncheckedUpdateWithoutBlocksInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutFlatsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2357,20 +3073,38 @@ export type SocietyCreateWithoutFlatsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutFlatsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2410,6 +3144,10 @@ export type SocietyUncheckedCreateWithoutFlatsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutFlatsInput = {
@@ -2431,15 +3169,29 @@ export type SocietyUpdateToOneWithWhereWithoutFlatsInput = {
 export type SocietyUpdateWithoutFlatsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2479,20 +3231,38 @@ export type SocietyUpdateWithoutFlatsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutFlatsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2532,20 +3302,38 @@ export type SocietyUncheckedUpdateWithoutFlatsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutUsersInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2585,20 +3373,38 @@ export type SocietyCreateWithoutUsersInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutUsersInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2638,6 +3444,10 @@ export type SocietyUncheckedCreateWithoutUsersInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutUsersInput = {
@@ -2659,15 +3469,29 @@ export type SocietyUpdateToOneWithWhereWithoutUsersInput = {
 export type SocietyUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2707,20 +3531,38 @@ export type SocietyUpdateWithoutUsersInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2760,20 +3602,38 @@ export type SocietyUncheckedUpdateWithoutUsersInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutFlatMembershipsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2813,20 +3673,38 @@ export type SocietyCreateWithoutFlatMembershipsInput = {
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutFlatMembershipsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -2866,6 +3744,10 @@ export type SocietyUncheckedCreateWithoutFlatMembershipsInput = {
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutFlatMembershipsInput = {
@@ -2887,15 +3769,29 @@ export type SocietyUpdateToOneWithWhereWithoutFlatMembershipsInput = {
 export type SocietyUpdateWithoutFlatMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2935,20 +3831,38 @@ export type SocietyUpdateWithoutFlatMembershipsInput = {
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutFlatMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2988,20 +3902,38 @@ export type SocietyUncheckedUpdateWithoutFlatMembershipsInput = {
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutEntriesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3041,20 +3973,38 @@ export type SocietyCreateWithoutEntriesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutEntriesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3094,6 +4044,10 @@ export type SocietyUncheckedCreateWithoutEntriesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutEntriesInput = {
@@ -3115,15 +4069,29 @@ export type SocietyUpdateToOneWithWhereWithoutEntriesInput = {
 export type SocietyUpdateWithoutEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3163,20 +4131,38 @@ export type SocietyUpdateWithoutEntriesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3216,20 +4202,38 @@ export type SocietyUncheckedUpdateWithoutEntriesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGuestInvitesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3269,20 +4273,38 @@ export type SocietyCreateWithoutGuestInvitesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGuestInvitesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3322,6 +4344,10 @@ export type SocietyUncheckedCreateWithoutGuestInvitesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGuestInvitesInput = {
@@ -3343,15 +4369,29 @@ export type SocietyUpdateToOneWithWhereWithoutGuestInvitesInput = {
 export type SocietyUpdateWithoutGuestInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3391,20 +4431,38 @@ export type SocietyUpdateWithoutGuestInvitesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGuestInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3444,20 +4502,38 @@ export type SocietyUncheckedUpdateWithoutGuestInvitesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPartyInvitesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3497,20 +4573,38 @@ export type SocietyCreateWithoutPartyInvitesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPartyInvitesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3550,6 +4644,10 @@ export type SocietyUncheckedCreateWithoutPartyInvitesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPartyInvitesInput = {
@@ -3571,15 +4669,29 @@ export type SocietyUpdateToOneWithWhereWithoutPartyInvitesInput = {
 export type SocietyUpdateWithoutPartyInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3619,20 +4731,38 @@ export type SocietyUpdateWithoutPartyInvitesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPartyInvitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3672,20 +4802,38 @@ export type SocietyUncheckedUpdateWithoutPartyInvitesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGuestEntryLogsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3725,20 +4873,38 @@ export type SocietyCreateWithoutGuestEntryLogsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGuestEntryLogsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3778,6 +4944,10 @@ export type SocietyUncheckedCreateWithoutGuestEntryLogsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGuestEntryLogsInput = {
@@ -3799,15 +4969,29 @@ export type SocietyUpdateToOneWithWhereWithoutGuestEntryLogsInput = {
 export type SocietyUpdateWithoutGuestEntryLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3847,20 +5031,38 @@ export type SocietyUpdateWithoutGuestEntryLogsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGuestEntryLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3900,20 +5102,38 @@ export type SocietyUncheckedUpdateWithoutGuestEntryLogsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutDomesticStaffInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -3953,20 +5173,38 @@ export type SocietyCreateWithoutDomesticStaffInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutDomesticStaffInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4006,6 +5244,10 @@ export type SocietyUncheckedCreateWithoutDomesticStaffInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutDomesticStaffInput = {
@@ -4027,15 +5269,29 @@ export type SocietyUpdateToOneWithWhereWithoutDomesticStaffInput = {
 export type SocietyUpdateWithoutDomesticStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4075,20 +5331,38 @@ export type SocietyUpdateWithoutDomesticStaffInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutDomesticStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4128,20 +5402,38 @@ export type SocietyUncheckedUpdateWithoutDomesticStaffInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutStaffAttendanceInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4181,20 +5473,38 @@ export type SocietyCreateWithoutStaffAttendanceInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutStaffAttendanceInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4234,6 +5544,10 @@ export type SocietyUncheckedCreateWithoutStaffAttendanceInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutStaffAttendanceInput = {
@@ -4255,15 +5569,29 @@ export type SocietyUpdateToOneWithWhereWithoutStaffAttendanceInput = {
 export type SocietyUpdateWithoutStaffAttendanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4303,20 +5631,38 @@ export type SocietyUpdateWithoutStaffAttendanceInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutStaffAttendanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4356,20 +5702,38 @@ export type SocietyUncheckedUpdateWithoutStaffAttendanceInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutStaffBookingsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4409,20 +5773,38 @@ export type SocietyCreateWithoutStaffBookingsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutStaffBookingsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4462,6 +5844,10 @@ export type SocietyUncheckedCreateWithoutStaffBookingsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutStaffBookingsInput = {
@@ -4483,15 +5869,29 @@ export type SocietyUpdateToOneWithWhereWithoutStaffBookingsInput = {
 export type SocietyUpdateWithoutStaffBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4531,20 +5931,38 @@ export type SocietyUpdateWithoutStaffBookingsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutStaffBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4584,20 +6002,38 @@ export type SocietyUncheckedUpdateWithoutStaffBookingsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutVehiclesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4637,20 +6073,38 @@ export type SocietyCreateWithoutVehiclesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutVehiclesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4690,6 +6144,10 @@ export type SocietyUncheckedCreateWithoutVehiclesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutVehiclesInput = {
@@ -4711,15 +6169,29 @@ export type SocietyUpdateToOneWithWhereWithoutVehiclesInput = {
 export type SocietyUpdateWithoutVehiclesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4759,20 +6231,38 @@ export type SocietyUpdateWithoutVehiclesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutVehiclesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4812,20 +6302,38 @@ export type SocietyUncheckedUpdateWithoutVehiclesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutParkingViolationsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4865,20 +6373,38 @@ export type SocietyCreateWithoutParkingViolationsInput = {
   polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutParkingViolationsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -4918,6 +6444,10 @@ export type SocietyUncheckedCreateWithoutParkingViolationsInput = {
   polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutParkingViolationsInput = {
@@ -4939,15 +6469,29 @@ export type SocietyUpdateToOneWithWhereWithoutParkingViolationsInput = {
 export type SocietyUpdateWithoutParkingViolationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4987,20 +6531,38 @@ export type SocietyUpdateWithoutParkingViolationsInput = {
   polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutParkingViolationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5040,20 +6602,38 @@ export type SocietyUncheckedUpdateWithoutParkingViolationsInput = {
   polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutVisitorFrequenciesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5093,20 +6673,38 @@ export type SocietyCreateWithoutVisitorFrequenciesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutVisitorFrequenciesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5146,6 +6744,10 @@ export type SocietyUncheckedCreateWithoutVisitorFrequenciesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutVisitorFrequenciesInput = {
@@ -5167,15 +6769,29 @@ export type SocietyUpdateToOneWithWhereWithoutVisitorFrequenciesInput = {
 export type SocietyUpdateWithoutVisitorFrequenciesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5215,20 +6831,38 @@ export type SocietyUpdateWithoutVisitorFrequenciesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutVisitorFrequenciesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5268,20 +6902,38 @@ export type SocietyUncheckedUpdateWithoutVisitorFrequenciesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPaymentRemindersInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5321,20 +6973,38 @@ export type SocietyCreateWithoutPaymentRemindersInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPaymentRemindersInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5374,6 +7044,10 @@ export type SocietyUncheckedCreateWithoutPaymentRemindersInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPaymentRemindersInput = {
@@ -5395,15 +7069,29 @@ export type SocietyUpdateToOneWithWhereWithoutPaymentRemindersInput = {
 export type SocietyUpdateWithoutPaymentRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5443,20 +7131,38 @@ export type SocietyUpdateWithoutPaymentRemindersInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPaymentRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5496,20 +7202,38 @@ export type SocietyUncheckedUpdateWithoutPaymentRemindersInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutGatePassesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5549,20 +7273,38 @@ export type SocietyCreateWithoutGatePassesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutGatePassesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5602,6 +7344,10 @@ export type SocietyUncheckedCreateWithoutGatePassesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutGatePassesInput = {
@@ -5623,15 +7369,29 @@ export type SocietyUpdateToOneWithWhereWithoutGatePassesInput = {
 export type SocietyUpdateWithoutGatePassesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5671,20 +7431,38 @@ export type SocietyUpdateWithoutGatePassesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutGatePassesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5724,20 +7502,38 @@ export type SocietyUncheckedUpdateWithoutGatePassesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutNoticesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5777,20 +7573,38 @@ export type SocietyCreateWithoutNoticesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutNoticesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -5830,6 +7644,10 @@ export type SocietyUncheckedCreateWithoutNoticesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutNoticesInput = {
@@ -5851,15 +7669,29 @@ export type SocietyUpdateToOneWithWhereWithoutNoticesInput = {
 export type SocietyUpdateWithoutNoticesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5899,20 +7731,38 @@ export type SocietyUpdateWithoutNoticesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutNoticesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5952,20 +7802,38 @@ export type SocietyUncheckedUpdateWithoutNoticesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutAmenitiesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6005,20 +7873,38 @@ export type SocietyCreateWithoutAmenitiesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutAmenitiesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6058,6 +7944,10 @@ export type SocietyUncheckedCreateWithoutAmenitiesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutAmenitiesInput = {
@@ -6079,15 +7969,29 @@ export type SocietyUpdateToOneWithWhereWithoutAmenitiesInput = {
 export type SocietyUpdateWithoutAmenitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6127,20 +8031,38 @@ export type SocietyUpdateWithoutAmenitiesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutAmenitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6180,20 +8102,38 @@ export type SocietyUncheckedUpdateWithoutAmenitiesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutAmenityBookingsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6233,20 +8173,38 @@ export type SocietyCreateWithoutAmenityBookingsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutAmenityBookingsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6286,6 +8244,10 @@ export type SocietyUncheckedCreateWithoutAmenityBookingsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutAmenityBookingsInput = {
@@ -6307,15 +8269,29 @@ export type SocietyUpdateToOneWithWhereWithoutAmenityBookingsInput = {
 export type SocietyUpdateWithoutAmenityBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6355,20 +8331,38 @@ export type SocietyUpdateWithoutAmenityBookingsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutAmenityBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6408,20 +8402,38 @@ export type SocietyUncheckedUpdateWithoutAmenityBookingsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutComplaintsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6461,20 +8473,38 @@ export type SocietyCreateWithoutComplaintsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutComplaintsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6514,6 +8544,10 @@ export type SocietyUncheckedCreateWithoutComplaintsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutComplaintsInput = {
@@ -6535,15 +8569,29 @@ export type SocietyUpdateToOneWithWhereWithoutComplaintsInput = {
 export type SocietyUpdateWithoutComplaintsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6583,20 +8631,38 @@ export type SocietyUpdateWithoutComplaintsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutComplaintsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6636,20 +8702,38 @@ export type SocietyUncheckedUpdateWithoutComplaintsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutEmergenciesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6689,20 +8773,38 @@ export type SocietyCreateWithoutEmergenciesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutEmergenciesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6742,6 +8844,10 @@ export type SocietyUncheckedCreateWithoutEmergenciesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutEmergenciesInput = {
@@ -6763,15 +8869,29 @@ export type SocietyUpdateToOneWithWhereWithoutEmergenciesInput = {
 export type SocietyUpdateWithoutEmergenciesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6811,20 +8931,38 @@ export type SocietyUpdateWithoutEmergenciesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutEmergenciesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6864,20 +9002,38 @@ export type SocietyUncheckedUpdateWithoutEmergenciesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutVendorsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6917,20 +9073,38 @@ export type SocietyCreateWithoutVendorsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutVendorsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -6970,6 +9144,10 @@ export type SocietyUncheckedCreateWithoutVendorsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutVendorsInput = {
@@ -6991,15 +9169,29 @@ export type SocietyUpdateToOneWithWhereWithoutVendorsInput = {
 export type SocietyUpdateWithoutVendorsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7039,20 +9231,38 @@ export type SocietyUpdateWithoutVendorsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutVendorsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7092,20 +9302,38 @@ export type SocietyUncheckedUpdateWithoutVendorsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutCommunityPostsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7145,20 +9373,38 @@ export type SocietyCreateWithoutCommunityPostsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutCommunityPostsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7198,6 +9444,10 @@ export type SocietyUncheckedCreateWithoutCommunityPostsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutCommunityPostsInput = {
@@ -7219,15 +9469,29 @@ export type SocietyUpdateToOneWithWhereWithoutCommunityPostsInput = {
 export type SocietyUpdateWithoutCommunityPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7267,20 +9531,38 @@ export type SocietyUpdateWithoutCommunityPostsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutCommunityPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7320,20 +9602,38 @@ export type SocietyUncheckedUpdateWithoutCommunityPostsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPostCommentsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7373,20 +9673,38 @@ export type SocietyCreateWithoutPostCommentsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPostCommentsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7426,6 +9744,10 @@ export type SocietyUncheckedCreateWithoutPostCommentsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPostCommentsInput = {
@@ -7447,15 +9769,29 @@ export type SocietyUpdateToOneWithWhereWithoutPostCommentsInput = {
 export type SocietyUpdateWithoutPostCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7495,20 +9831,38 @@ export type SocietyUpdateWithoutPostCommentsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPostCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7548,20 +9902,38 @@ export type SocietyUncheckedUpdateWithoutPostCommentsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutSocietyDocumentsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7601,20 +9973,38 @@ export type SocietyCreateWithoutSocietyDocumentsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutSocietyDocumentsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7654,6 +10044,10 @@ export type SocietyUncheckedCreateWithoutSocietyDocumentsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutSocietyDocumentsInput = {
@@ -7675,15 +10069,29 @@ export type SocietyUpdateToOneWithWhereWithoutSocietyDocumentsInput = {
 export type SocietyUpdateWithoutSocietyDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7723,20 +10131,38 @@ export type SocietyUpdateWithoutSocietyDocumentsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutSocietyDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7776,20 +10202,1238 @@ export type SocietyUncheckedUpdateWithoutSocietyDocumentsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyCreateWithoutOnboardingDocumentsInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyUncheckedCreateWithoutOnboardingDocumentsInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockUncheckedCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatUncheckedCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointUncheckedCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityUncheckedCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorUncheckedCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyCreateOrConnectWithoutOnboardingDocumentsInput = {
+  where: Prisma.SocietyWhereUniqueInput
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutOnboardingDocumentsInput, Prisma.SocietyUncheckedCreateWithoutOnboardingDocumentsInput>
+}
+
+export type SocietyUpsertWithoutOnboardingDocumentsInput = {
+  update: Prisma.XOR<Prisma.SocietyUpdateWithoutOnboardingDocumentsInput, Prisma.SocietyUncheckedUpdateWithoutOnboardingDocumentsInput>
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutOnboardingDocumentsInput, Prisma.SocietyUncheckedCreateWithoutOnboardingDocumentsInput>
+  where?: Prisma.SocietyWhereInput
+}
+
+export type SocietyUpdateToOneWithWhereWithoutOnboardingDocumentsInput = {
+  where?: Prisma.SocietyWhereInput
+  data: Prisma.XOR<Prisma.SocietyUpdateWithoutOnboardingDocumentsInput, Prisma.SocietyUncheckedUpdateWithoutOnboardingDocumentsInput>
+}
+
+export type SocietyUpdateWithoutOnboardingDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyUncheckedUpdateWithoutOnboardingDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUncheckedUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUncheckedUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUncheckedUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUncheckedUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUncheckedUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyCreateWithoutImportBatchesInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyUncheckedCreateWithoutImportBatchesInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockUncheckedCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatUncheckedCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointUncheckedCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityUncheckedCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorUncheckedCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyCreateOrConnectWithoutImportBatchesInput = {
+  where: Prisma.SocietyWhereUniqueInput
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutImportBatchesInput, Prisma.SocietyUncheckedCreateWithoutImportBatchesInput>
+}
+
+export type SocietyUpsertWithoutImportBatchesInput = {
+  update: Prisma.XOR<Prisma.SocietyUpdateWithoutImportBatchesInput, Prisma.SocietyUncheckedUpdateWithoutImportBatchesInput>
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutImportBatchesInput, Prisma.SocietyUncheckedCreateWithoutImportBatchesInput>
+  where?: Prisma.SocietyWhereInput
+}
+
+export type SocietyUpdateToOneWithWhereWithoutImportBatchesInput = {
+  where?: Prisma.SocietyWhereInput
+  data: Prisma.XOR<Prisma.SocietyUpdateWithoutImportBatchesInput, Prisma.SocietyUncheckedUpdateWithoutImportBatchesInput>
+}
+
+export type SocietyUpdateWithoutImportBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyUncheckedUpdateWithoutImportBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUncheckedUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUncheckedUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUncheckedUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUncheckedUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUncheckedUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyCreateWithoutRuleConfigInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyUncheckedCreateWithoutRuleConfigInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockUncheckedCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatUncheckedCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointUncheckedCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityUncheckedCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorUncheckedCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyCreateOrConnectWithoutRuleConfigInput = {
+  where: Prisma.SocietyWhereUniqueInput
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutRuleConfigInput, Prisma.SocietyUncheckedCreateWithoutRuleConfigInput>
+}
+
+export type SocietyUpsertWithoutRuleConfigInput = {
+  update: Prisma.XOR<Prisma.SocietyUpdateWithoutRuleConfigInput, Prisma.SocietyUncheckedUpdateWithoutRuleConfigInput>
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutRuleConfigInput, Prisma.SocietyUncheckedCreateWithoutRuleConfigInput>
+  where?: Prisma.SocietyWhereInput
+}
+
+export type SocietyUpdateToOneWithWhereWithoutRuleConfigInput = {
+  where?: Prisma.SocietyWhereInput
+  data: Prisma.XOR<Prisma.SocietyUpdateWithoutRuleConfigInput, Prisma.SocietyUncheckedUpdateWithoutRuleConfigInput>
+}
+
+export type SocietyUpdateWithoutRuleConfigInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyUncheckedUpdateWithoutRuleConfigInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUncheckedUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUncheckedUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUncheckedUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUncheckedUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUncheckedUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyCreateWithoutGateDevicesInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+}
+
+export type SocietyUncheckedCreateWithoutGateDevicesInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockUncheckedCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatUncheckedCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointUncheckedCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityUncheckedCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorUncheckedCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+}
+
+export type SocietyCreateOrConnectWithoutGateDevicesInput = {
+  where: Prisma.SocietyWhereUniqueInput
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutGateDevicesInput, Prisma.SocietyUncheckedCreateWithoutGateDevicesInput>
+}
+
+export type SocietyUpsertWithoutGateDevicesInput = {
+  update: Prisma.XOR<Prisma.SocietyUpdateWithoutGateDevicesInput, Prisma.SocietyUncheckedUpdateWithoutGateDevicesInput>
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutGateDevicesInput, Prisma.SocietyUncheckedCreateWithoutGateDevicesInput>
+  where?: Prisma.SocietyWhereInput
+}
+
+export type SocietyUpdateToOneWithWhereWithoutGateDevicesInput = {
+  where?: Prisma.SocietyWhereInput
+  data: Prisma.XOR<Prisma.SocietyUpdateWithoutGateDevicesInput, Prisma.SocietyUncheckedUpdateWithoutGateDevicesInput>
+}
+
+export type SocietyUpdateWithoutGateDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+}
+
+export type SocietyUncheckedUpdateWithoutGateDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUncheckedUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUncheckedUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUncheckedUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUncheckedUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUncheckedUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPollsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7829,20 +11473,38 @@ export type SocietyCreateWithoutPollsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPollsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -7882,6 +11544,10 @@ export type SocietyUncheckedCreateWithoutPollsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPollsInput = {
@@ -7903,15 +11569,29 @@ export type SocietyUpdateToOneWithWhereWithoutPollsInput = {
 export type SocietyUpdateWithoutPollsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7951,20 +11631,38 @@ export type SocietyUpdateWithoutPollsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPollsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8004,20 +11702,38 @@ export type SocietyUncheckedUpdateWithoutPollsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutOnboardingRequestsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8057,20 +11773,38 @@ export type SocietyCreateWithoutOnboardingRequestsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutOnboardingRequestsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8110,6 +11844,10 @@ export type SocietyUncheckedCreateWithoutOnboardingRequestsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutOnboardingRequestsInput = {
@@ -8131,15 +11869,29 @@ export type SocietyUpdateToOneWithWhereWithoutOnboardingRequestsInput = {
 export type SocietyUpdateWithoutOnboardingRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8179,20 +11931,38 @@ export type SocietyUpdateWithoutOnboardingRequestsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutOnboardingRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8232,20 +12002,38 @@ export type SocietyUncheckedUpdateWithoutOnboardingRequestsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutNotificationsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8285,20 +12073,38 @@ export type SocietyCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutNotificationsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8338,6 +12144,10 @@ export type SocietyUncheckedCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutNotificationsInput = {
@@ -8359,15 +12169,29 @@ export type SocietyUpdateToOneWithWhereWithoutNotificationsInput = {
 export type SocietyUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8407,20 +12231,38 @@ export type SocietyUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8460,20 +12302,38 @@ export type SocietyUncheckedUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutEntryRequestsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8513,20 +12373,38 @@ export type SocietyCreateWithoutEntryRequestsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutEntryRequestsInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8566,6 +12444,10 @@ export type SocietyUncheckedCreateWithoutEntryRequestsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutEntryRequestsInput = {
@@ -8587,15 +12469,29 @@ export type SocietyUpdateToOneWithWhereWithoutEntryRequestsInput = {
 export type SocietyUpdateWithoutEntryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8635,20 +12531,38 @@ export type SocietyUpdateWithoutEntryRequestsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutEntryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8688,20 +12602,38 @@ export type SocietyUncheckedUpdateWithoutEntryRequestsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyCreateWithoutPreApprovedEntriesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8741,20 +12673,38 @@ export type SocietyCreateWithoutPreApprovedEntriesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyUncheckedCreateWithoutPreApprovedEntriesInput = {
   id?: string
   name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
   address: string
   city: string
   state: string
   pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
   contactName: string
   contactPhone: string
   contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: number
   isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
   monthlyFee?: number
   subscriptionCycle?: $Enums.SubscriptionCycle
   lastPaidDate?: Date | string | null
@@ -8794,6 +12744,10 @@ export type SocietyUncheckedCreateWithoutPreApprovedEntriesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
   parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
 }
 
 export type SocietyCreateOrConnectWithoutPreApprovedEntriesInput = {
@@ -8815,15 +12769,29 @@ export type SocietyUpdateToOneWithWhereWithoutPreApprovedEntriesInput = {
 export type SocietyUpdateWithoutPreApprovedEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8863,20 +12831,38 @@ export type SocietyUpdateWithoutPreApprovedEntriesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
 }
 
 export type SocietyUncheckedUpdateWithoutPreApprovedEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.StringFieldUpdateOperationsInput | string
   pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
   monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
   subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
   lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8916,6 +12902,10 @@ export type SocietyUncheckedUpdateWithoutPreApprovedEntriesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
   parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
   flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
 }
 
 
@@ -8956,6 +12946,9 @@ export type SocietyCountOutputType = {
   invoices: number
   parkingViolations: number
   flatMemberships: number
+  onboardingDocuments: number
+  importBatches: number
+  gateDevices: number
 }
 
 export type SocietyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -8991,6 +12984,9 @@ export type SocietyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   invoices?: boolean | SocietyCountOutputTypeCountInvoicesArgs
   parkingViolations?: boolean | SocietyCountOutputTypeCountParkingViolationsArgs
   flatMemberships?: boolean | SocietyCountOutputTypeCountFlatMembershipsArgs
+  onboardingDocuments?: boolean | SocietyCountOutputTypeCountOnboardingDocumentsArgs
+  importBatches?: boolean | SocietyCountOutputTypeCountImportBatchesArgs
+  gateDevices?: boolean | SocietyCountOutputTypeCountGateDevicesArgs
 }
 
 /**
@@ -9227,19 +13223,54 @@ export type SocietyCountOutputTypeCountFlatMembershipsArgs<ExtArgs extends runti
   where?: Prisma.UserFlatMembershipWhereInput
 }
 
+/**
+ * SocietyCountOutputType without action
+ */
+export type SocietyCountOutputTypeCountOnboardingDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SocietyOnboardingDocumentWhereInput
+}
+
+/**
+ * SocietyCountOutputType without action
+ */
+export type SocietyCountOutputTypeCountImportBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SocietyImportBatchWhereInput
+}
+
+/**
+ * SocietyCountOutputType without action
+ */
+export type SocietyCountOutputTypeCountGateDevicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GateDeviceWhereInput
+}
+
 
 export type SocietySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  registeredName?: boolean
+  registrationNumber?: boolean
   address?: boolean
   city?: boolean
   state?: boolean
   pincode?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  logoUrl?: boolean
+  logoKey?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
+  bankAccountNumber?: boolean
+  bankIfsc?: boolean
+  bankBranchName?: boolean
+  panNumber?: boolean
+  gstin?: boolean
+  maintenanceBillingType?: boolean
+  maintenanceBillingConfig?: boolean
   totalFlats?: boolean
   isActive?: boolean
+  onboardingStatus?: boolean
   monthlyFee?: boolean
   subscriptionCycle?: boolean
   lastPaidDate?: boolean
@@ -9280,21 +13311,39 @@ export type SocietySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   invoices?: boolean | Prisma.Society$invoicesArgs<ExtArgs>
   parkingViolations?: boolean | Prisma.Society$parkingViolationsArgs<ExtArgs>
   flatMemberships?: boolean | Prisma.Society$flatMembershipsArgs<ExtArgs>
+  onboardingDocuments?: boolean | Prisma.Society$onboardingDocumentsArgs<ExtArgs>
+  importBatches?: boolean | Prisma.Society$importBatchesArgs<ExtArgs>
+  ruleConfig?: boolean | Prisma.Society$ruleConfigArgs<ExtArgs>
+  gateDevices?: boolean | Prisma.Society$gateDevicesArgs<ExtArgs>
   _count?: boolean | Prisma.SocietyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["society"]>
 
 export type SocietySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  registeredName?: boolean
+  registrationNumber?: boolean
   address?: boolean
   city?: boolean
   state?: boolean
   pincode?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  logoUrl?: boolean
+  logoKey?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
+  bankAccountNumber?: boolean
+  bankIfsc?: boolean
+  bankBranchName?: boolean
+  panNumber?: boolean
+  gstin?: boolean
+  maintenanceBillingType?: boolean
+  maintenanceBillingConfig?: boolean
   totalFlats?: boolean
   isActive?: boolean
+  onboardingStatus?: boolean
   monthlyFee?: boolean
   subscriptionCycle?: boolean
   lastPaidDate?: boolean
@@ -9307,15 +13356,29 @@ export type SocietySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type SocietySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  registeredName?: boolean
+  registrationNumber?: boolean
   address?: boolean
   city?: boolean
   state?: boolean
   pincode?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  logoUrl?: boolean
+  logoKey?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
+  bankAccountNumber?: boolean
+  bankIfsc?: boolean
+  bankBranchName?: boolean
+  panNumber?: boolean
+  gstin?: boolean
+  maintenanceBillingType?: boolean
+  maintenanceBillingConfig?: boolean
   totalFlats?: boolean
   isActive?: boolean
+  onboardingStatus?: boolean
   monthlyFee?: boolean
   subscriptionCycle?: boolean
   lastPaidDate?: boolean
@@ -9328,15 +13391,29 @@ export type SocietySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type SocietySelectScalar = {
   id?: boolean
   name?: boolean
+  registeredName?: boolean
+  registrationNumber?: boolean
   address?: boolean
   city?: boolean
   state?: boolean
   pincode?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  logoUrl?: boolean
+  logoKey?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
+  bankAccountNumber?: boolean
+  bankIfsc?: boolean
+  bankBranchName?: boolean
+  panNumber?: boolean
+  gstin?: boolean
+  maintenanceBillingType?: boolean
+  maintenanceBillingConfig?: boolean
   totalFlats?: boolean
   isActive?: boolean
+  onboardingStatus?: boolean
   monthlyFee?: boolean
   subscriptionCycle?: boolean
   lastPaidDate?: boolean
@@ -9346,7 +13423,7 @@ export type SocietySelectScalar = {
   updatedAt?: boolean
 }
 
-export type SocietyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "address" | "city" | "state" | "pincode" | "contactName" | "contactPhone" | "contactEmail" | "totalFlats" | "isActive" | "monthlyFee" | "subscriptionCycle" | "lastPaidDate" | "nextDueDate" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["society"]>
+export type SocietyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "registeredName" | "registrationNumber" | "address" | "city" | "state" | "pincode" | "latitude" | "longitude" | "logoUrl" | "logoKey" | "contactName" | "contactPhone" | "contactEmail" | "bankAccountNumber" | "bankIfsc" | "bankBranchName" | "panNumber" | "gstin" | "maintenanceBillingType" | "maintenanceBillingConfig" | "totalFlats" | "isActive" | "onboardingStatus" | "monthlyFee" | "subscriptionCycle" | "lastPaidDate" | "nextDueDate" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["society"]>
 export type SocietyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Society$usersArgs<ExtArgs>
   blocks?: boolean | Prisma.Society$blocksArgs<ExtArgs>
@@ -9381,6 +13458,10 @@ export type SocietyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   invoices?: boolean | Prisma.Society$invoicesArgs<ExtArgs>
   parkingViolations?: boolean | Prisma.Society$parkingViolationsArgs<ExtArgs>
   flatMemberships?: boolean | Prisma.Society$flatMembershipsArgs<ExtArgs>
+  onboardingDocuments?: boolean | Prisma.Society$onboardingDocumentsArgs<ExtArgs>
+  importBatches?: boolean | Prisma.Society$importBatchesArgs<ExtArgs>
+  ruleConfig?: boolean | Prisma.Society$ruleConfigArgs<ExtArgs>
+  gateDevices?: boolean | Prisma.Society$gateDevicesArgs<ExtArgs>
   _count?: boolean | Prisma.SocietyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SocietyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -9422,19 +13503,37 @@ export type $SocietyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
     parkingViolations: Prisma.$ParkingViolationPayload<ExtArgs>[]
     flatMemberships: Prisma.$UserFlatMembershipPayload<ExtArgs>[]
+    onboardingDocuments: Prisma.$SocietyOnboardingDocumentPayload<ExtArgs>[]
+    importBatches: Prisma.$SocietyImportBatchPayload<ExtArgs>[]
+    ruleConfig: Prisma.$SocietyRuleConfigPayload<ExtArgs> | null
+    gateDevices: Prisma.$GateDevicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    registeredName: string | null
+    registrationNumber: string | null
     address: string
     city: string
     state: string
     pincode: string
+    latitude: number | null
+    longitude: number | null
+    logoUrl: string | null
+    logoKey: string | null
     contactName: string
     contactPhone: string
     contactEmail: string | null
+    bankAccountNumber: string | null
+    bankIfsc: string | null
+    bankBranchName: string | null
+    panNumber: string | null
+    gstin: string | null
+    maintenanceBillingType: $Enums.MaintenanceBillingType
+    maintenanceBillingConfig: runtime.JsonValue | null
     totalFlats: number
     isActive: boolean
+    onboardingStatus: $Enums.SocietyOnboardingStatus
     monthlyFee: number
     subscriptionCycle: $Enums.SubscriptionCycle
     lastPaidDate: Date | null
@@ -9869,6 +13968,10 @@ export interface Prisma__SocietyClient<T, Null = never, ExtArgs extends runtime.
   invoices<T extends Prisma.Society$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   parkingViolations<T extends Prisma.Society$parkingViolationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$parkingViolationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParkingViolationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   flatMemberships<T extends Prisma.Society$flatMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$flatMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserFlatMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  onboardingDocuments<T extends Prisma.Society$onboardingDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$onboardingDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocietyOnboardingDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  importBatches<T extends Prisma.Society$importBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$importBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocietyImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ruleConfig<T extends Prisma.Society$ruleConfigArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$ruleConfigArgs<ExtArgs>>): Prisma.Prisma__SocietyRuleConfigClient<runtime.Types.Result.GetResult<Prisma.$SocietyRuleConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  gateDevices<T extends Prisma.Society$gateDevicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$gateDevicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GateDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9900,15 +14003,29 @@ export interface Prisma__SocietyClient<T, Null = never, ExtArgs extends runtime.
 export interface SocietyFieldRefs {
   readonly id: Prisma.FieldRef<"Society", 'String'>
   readonly name: Prisma.FieldRef<"Society", 'String'>
+  readonly registeredName: Prisma.FieldRef<"Society", 'String'>
+  readonly registrationNumber: Prisma.FieldRef<"Society", 'String'>
   readonly address: Prisma.FieldRef<"Society", 'String'>
   readonly city: Prisma.FieldRef<"Society", 'String'>
   readonly state: Prisma.FieldRef<"Society", 'String'>
   readonly pincode: Prisma.FieldRef<"Society", 'String'>
+  readonly latitude: Prisma.FieldRef<"Society", 'Float'>
+  readonly longitude: Prisma.FieldRef<"Society", 'Float'>
+  readonly logoUrl: Prisma.FieldRef<"Society", 'String'>
+  readonly logoKey: Prisma.FieldRef<"Society", 'String'>
   readonly contactName: Prisma.FieldRef<"Society", 'String'>
   readonly contactPhone: Prisma.FieldRef<"Society", 'String'>
   readonly contactEmail: Prisma.FieldRef<"Society", 'String'>
+  readonly bankAccountNumber: Prisma.FieldRef<"Society", 'String'>
+  readonly bankIfsc: Prisma.FieldRef<"Society", 'String'>
+  readonly bankBranchName: Prisma.FieldRef<"Society", 'String'>
+  readonly panNumber: Prisma.FieldRef<"Society", 'String'>
+  readonly gstin: Prisma.FieldRef<"Society", 'String'>
+  readonly maintenanceBillingType: Prisma.FieldRef<"Society", 'MaintenanceBillingType'>
+  readonly maintenanceBillingConfig: Prisma.FieldRef<"Society", 'Json'>
   readonly totalFlats: Prisma.FieldRef<"Society", 'Int'>
   readonly isActive: Prisma.FieldRef<"Society", 'Boolean'>
+  readonly onboardingStatus: Prisma.FieldRef<"Society", 'SocietyOnboardingStatus'>
   readonly monthlyFee: Prisma.FieldRef<"Society", 'Float'>
   readonly subscriptionCycle: Prisma.FieldRef<"Society", 'SubscriptionCycle'>
   readonly lastPaidDate: Prisma.FieldRef<"Society", 'DateTime'>
@@ -11088,6 +15205,97 @@ export type Society$flatMembershipsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.UserFlatMembershipScalarFieldEnum | Prisma.UserFlatMembershipScalarFieldEnum[]
+}
+
+/**
+ * Society.onboardingDocuments
+ */
+export type Society$onboardingDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SocietyOnboardingDocument
+   */
+  select?: Prisma.SocietyOnboardingDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SocietyOnboardingDocument
+   */
+  omit?: Prisma.SocietyOnboardingDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SocietyOnboardingDocumentInclude<ExtArgs> | null
+  where?: Prisma.SocietyOnboardingDocumentWhereInput
+  orderBy?: Prisma.SocietyOnboardingDocumentOrderByWithRelationInput | Prisma.SocietyOnboardingDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.SocietyOnboardingDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SocietyOnboardingDocumentScalarFieldEnum | Prisma.SocietyOnboardingDocumentScalarFieldEnum[]
+}
+
+/**
+ * Society.importBatches
+ */
+export type Society$importBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SocietyImportBatch
+   */
+  select?: Prisma.SocietyImportBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SocietyImportBatch
+   */
+  omit?: Prisma.SocietyImportBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SocietyImportBatchInclude<ExtArgs> | null
+  where?: Prisma.SocietyImportBatchWhereInput
+  orderBy?: Prisma.SocietyImportBatchOrderByWithRelationInput | Prisma.SocietyImportBatchOrderByWithRelationInput[]
+  cursor?: Prisma.SocietyImportBatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SocietyImportBatchScalarFieldEnum | Prisma.SocietyImportBatchScalarFieldEnum[]
+}
+
+/**
+ * Society.ruleConfig
+ */
+export type Society$ruleConfigArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SocietyRuleConfig
+   */
+  select?: Prisma.SocietyRuleConfigSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SocietyRuleConfig
+   */
+  omit?: Prisma.SocietyRuleConfigOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SocietyRuleConfigInclude<ExtArgs> | null
+  where?: Prisma.SocietyRuleConfigWhereInput
+}
+
+/**
+ * Society.gateDevices
+ */
+export type Society$gateDevicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GateDevice
+   */
+  select?: Prisma.GateDeviceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GateDevice
+   */
+  omit?: Prisma.GateDeviceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GateDeviceInclude<ExtArgs> | null
+  where?: Prisma.GateDeviceWhereInput
+  orderBy?: Prisma.GateDeviceOrderByWithRelationInput | Prisma.GateDeviceOrderByWithRelationInput[]
+  cursor?: Prisma.GateDeviceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GateDeviceScalarFieldEnum | Prisma.GateDeviceScalarFieldEnum[]
 }
 
 /**

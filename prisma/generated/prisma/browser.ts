@@ -198,6 +198,31 @@ export type PostComment = Prisma.PostCommentModel
  */
 export type SocietyDocument = Prisma.SocietyDocumentModel
 /**
+ * Model SocietyOnboardingDocument
+ * 
+ */
+export type SocietyOnboardingDocument = Prisma.SocietyOnboardingDocumentModel
+/**
+ * Model SocietyImportBatch
+ * 
+ */
+export type SocietyImportBatch = Prisma.SocietyImportBatchModel
+/**
+ * Model SocietyImportRowError
+ * 
+ */
+export type SocietyImportRowError = Prisma.SocietyImportRowErrorModel
+/**
+ * Model SocietyRuleConfig
+ * 
+ */
+export type SocietyRuleConfig = Prisma.SocietyRuleConfigModel
+/**
+ * Model GateDevice
+ * 
+ */
+export type GateDevice = Prisma.GateDeviceModel
+/**
  * Model Poll
  * 
  */

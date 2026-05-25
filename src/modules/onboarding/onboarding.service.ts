@@ -11,6 +11,7 @@ export class OnboardingService {
   async listSocieties(filters?: { city?: string; search?: string }) {
     const where: Prisma.SocietyWhereInput = {
       isActive: true,
+      onboardingStatus: 'ACTIVE',
     };
 
     if (filters?.city) {
@@ -694,8 +695,10 @@ export class OnboardingService {
 
       if (request.residentType === 'OWNER') {
         updateData.currentOwnerId = request.userId;
+        updateData.occupancyStatus = request.isLivingHere ? 'OWNER_OCCUPIED' : 'VACANT';
       } else {
         updateData.currentTenantId = request.userId;
+        updateData.occupancyStatus = 'RENTED';
       }
 
       await tx.flat.update({

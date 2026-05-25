@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import societyRoutes from '../../modules/society/society.routes';
+import societyOnboardingRoutes from '../../modules/society-onboarding/society-onboarding.routes';
 import reportsRoutes from '../../modules/reports/reports.routes';
 import vehicleRoutes from '../../modules/vehicle/vehicle.routes';
 import documentRoutes from '../../modules/document/document.routes';
@@ -55,6 +56,7 @@ const adminIntercomContactsQuerySchema = z.object({
 
 // ---- Existing modules ----
 router.use('/societies', societyRoutes);  // /api/v1/admin/societies
+router.use('/society-onboarding', societyOnboardingRoutes); // /api/v1/admin/society-onboarding
 router.use('/reports', reportsRoutes);    // /api/v1/admin/reports
 router.use('/vehicles', vehicleRoutes);   // /api/v1/admin/vehicles
 router.use('/documents', documentRoutes); // /api/v1/admin/documents

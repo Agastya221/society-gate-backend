@@ -87,6 +87,11 @@ export const ModelName = {
   PostLike: 'PostLike',
   PostComment: 'PostComment',
   SocietyDocument: 'SocietyDocument',
+  SocietyOnboardingDocument: 'SocietyOnboardingDocument',
+  SocietyImportBatch: 'SocietyImportBatch',
+  SocietyImportRowError: 'SocietyImportRowError',
+  SocietyRuleConfig: 'SocietyRuleConfig',
+  GateDevice: 'GateDevice',
   Poll: 'Poll',
   PollOption: 'PollOption',
   PollVote: 'PollVote',
@@ -121,15 +126,29 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const SocietyScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  registeredName: 'registeredName',
+  registrationNumber: 'registrationNumber',
   address: 'address',
   city: 'city',
   state: 'state',
   pincode: 'pincode',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  logoUrl: 'logoUrl',
+  logoKey: 'logoKey',
   contactName: 'contactName',
   contactPhone: 'contactPhone',
   contactEmail: 'contactEmail',
+  bankAccountNumber: 'bankAccountNumber',
+  bankIfsc: 'bankIfsc',
+  bankBranchName: 'bankBranchName',
+  panNumber: 'panNumber',
+  gstin: 'gstin',
+  maintenanceBillingType: 'maintenanceBillingType',
+  maintenanceBillingConfig: 'maintenanceBillingConfig',
   totalFlats: 'totalFlats',
   isActive: 'isActive',
+  onboardingStatus: 'onboardingStatus',
   monthlyFee: 'monthlyFee',
   subscriptionCycle: 'subscriptionCycle',
   lastPaidDate: 'lastPaidDate',
@@ -259,8 +278,10 @@ export const FlatScalarFieldEnum = {
   ownerPhone: 'ownerPhone',
   ownerEmail: 'ownerEmail',
   isOccupied: 'isOccupied',
+  occupancyStatus: 'occupancyStatus',
   currentOwnerId: 'currentOwnerId',
   currentTenantId: 'currentTenantId',
+  squareFeet: 'squareFeet',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -889,6 +910,89 @@ export const SocietyDocumentScalarFieldEnum = {
 export type SocietyDocumentScalarFieldEnum = (typeof SocietyDocumentScalarFieldEnum)[keyof typeof SocietyDocumentScalarFieldEnum]
 
 
+export const SocietyOnboardingDocumentScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  documentType: 'documentType',
+  status: 'status',
+  fileUrl: 'fileUrl',
+  fileKey: 'fileKey',
+  fileName: 'fileName',
+  fileSizeMB: 'fileSizeMB',
+  fileType: 'fileType',
+  uploadedById: 'uploadedById',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  reviewerNotes: 'reviewerNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyOnboardingDocumentScalarFieldEnum = (typeof SocietyOnboardingDocumentScalarFieldEnum)[keyof typeof SocietyOnboardingDocumentScalarFieldEnum]
+
+
+export const SocietyImportBatchScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  status: 'status',
+  fileName: 'fileName',
+  totalRows: 'totalRows',
+  validRows: 'validRows',
+  errorRows: 'errorRows',
+  rawRows: 'rawRows',
+  summary: 'summary',
+  uploadedById: 'uploadedById',
+  committedById: 'committedById',
+  committedAt: 'committedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyImportBatchScalarFieldEnum = (typeof SocietyImportBatchScalarFieldEnum)[keyof typeof SocietyImportBatchScalarFieldEnum]
+
+
+export const SocietyImportRowErrorScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  rowNumber: 'rowNumber',
+  field: 'field',
+  message: 'message',
+  rowData: 'rowData',
+  createdAt: 'createdAt'
+} as const
+
+export type SocietyImportRowErrorScalarFieldEnum = (typeof SocietyImportRowErrorScalarFieldEnum)[keyof typeof SocietyImportRowErrorScalarFieldEnum]
+
+
+export const SocietyRuleConfigScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  deliveryCheckInRequired: 'deliveryCheckInRequired',
+  guestParkingHours: 'guestParkingHours',
+  visitorOtpRequired: 'visitorOtpRequired',
+  customRules: 'customRules',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SocietyRuleConfigScalarFieldEnum = (typeof SocietyRuleConfigScalarFieldEnum)[keyof typeof SocietyRuleConfigScalarFieldEnum]
+
+
+export const GateDeviceScalarFieldEnum = {
+  id: 'id',
+  societyId: 'societyId',
+  gatePointId: 'gatePointId',
+  deviceName: 'deviceName',
+  deviceIdentifier: 'deviceIdentifier',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GateDeviceScalarFieldEnum = (typeof GateDeviceScalarFieldEnum)[keyof typeof GateDeviceScalarFieldEnum]
+
+
 export const PollScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -1129,14 +1233,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -1144,4 +1240,12 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

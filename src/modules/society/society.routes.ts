@@ -26,28 +26,28 @@ router.get(
 router.post(
   '/:id/blocks',
   authorize('SUPER_ADMIN', 'ADMIN'),
-  clearCacheAfter(['society:*', 'api:onboarding*']),
+  clearCacheAfter(['society:*', 'onboarding:*']),
   societyController.createBlock
 );
 
 router.post(
   '/:id/flats',
   authorize('SUPER_ADMIN', 'ADMIN'),
-  clearCacheAfter(['society:*', 'api:onboarding*']),
+  clearCacheAfter(['society:*', 'onboarding:*']),
   societyController.createFlat
 );
 
 router.patch(
   '/:id/flats/:flatId',
   authorize('SUPER_ADMIN', 'ADMIN'),
-  clearCacheAfter(['society:*', 'api:onboarding*']),
+  clearCacheAfter(['society:*', 'onboarding:*']),
   societyController.updateFlat
 );
 
 router.delete(
   '/:id/flats/:flatId',
   authorize('SUPER_ADMIN', 'ADMIN'),
-  clearCacheAfter(['society:*', 'api:onboarding*']),
+  clearCacheAfter(['society:*', 'onboarding:*']),
   societyController.deactivateFlat
 );
 
