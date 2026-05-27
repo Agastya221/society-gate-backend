@@ -17,17 +17,17 @@ const uploadService = new UploadService();
 export const createEntryRequest = async (req: Request, res: Response) => {
   try {
     const guardId = req.user!.id;
-    const { type, flatId, visitorName, visitorPhone, providerTag, photoKey } = req.body;
+    const { type, flatId, flatIds, visitorName, visitorPhone, providerTag, photoKey } = req.body;
 
-    if (!type || !flatId) {
+    if (!type || (!flatId && (!Array.isArray(flatIds) || flatIds.length === 0))) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields: type, flatId',
+        message: 'Missing required fields: type and flatId or flatIds',
       });
     }
 
     const result = await entryRequestService.createEntryRequest(
-      { type, flatId, visitorName, visitorPhone, providerTag, photoKey },
+      { type, flatId, flatIds, visitorName, visitorPhone, providerTag, photoKey },
       guardId
     );
 

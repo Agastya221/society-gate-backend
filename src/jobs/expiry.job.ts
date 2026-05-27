@@ -27,6 +27,11 @@ export async function expireEntryRequests() {
         societyId: true,
         visitorName: true,
         flat: { select: { flatNumber: true } },
+        targets: {
+          include: {
+            flat: { select: { flatNumber: true } },
+          },
+        },
       },
     });
 
@@ -46,12 +51,26 @@ export async function expireEntryRequests() {
         flatNumber: request.flat.flatNumber,
       });
 
-      notificationService.sendToFlat(request.flatId, {
+      const targetFlatIds = request.targets.length > 0
+        ? request.targets.map((target) => target.flatId)
+        : [request.flatId];
+      const flatLabels = request.targets.length > 0
+        ? request.targets.map((target) => target.flat.flatNumber)
+        : [request.flat.flatNumber];
+
+      notificationService.sendToFlats(targetFlatIds, {
         type: 'ENTRY_REQUEST',
         title: 'Missed visitor',
         message: request.visitorName
           ? `${request.visitorName} was waiting at the gate — request expired`
           : 'Someone was waiting at the gate — request expired',
+        data: {
+          entryRequestId: request.id,
+          societyId: request.societyId,
+          flatIds: targetFlatIds,
+          flatLabels,
+          status: 'EXPIRED',
+        },
         referenceId: request.id,
         referenceType: 'EntryRequest',
         societyId: request.societyId,

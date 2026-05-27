@@ -400,6 +400,7 @@ export type EntryWhereInput = {
   domesticStaff?: Prisma.XOR<Prisma.DomesticStaffNullableScalarRelationFilter, Prisma.DomesticStaffWhereInput> | null
   preApprovedEntry?: Prisma.XOR<Prisma.PreApprovedEntryNullableScalarRelationFilter, Prisma.PreApprovedEntryWhereInput> | null
   entryRequest?: Prisma.XOR<Prisma.EntryRequestNullableScalarRelationFilter, Prisma.EntryRequestWhereInput> | null
+  entryRequestTargets?: Prisma.EntryRequestTargetListRelationFilter
 }
 
 export type EntryOrderByWithRelationInput = {
@@ -438,6 +439,7 @@ export type EntryOrderByWithRelationInput = {
   domesticStaff?: Prisma.DomesticStaffOrderByWithRelationInput
   preApprovedEntry?: Prisma.PreApprovedEntryOrderByWithRelationInput
   entryRequest?: Prisma.EntryRequestOrderByWithRelationInput
+  entryRequestTargets?: Prisma.EntryRequestTargetOrderByRelationAggregateInput
 }
 
 export type EntryWhereUniqueInput = Prisma.AtLeast<{
@@ -479,6 +481,7 @@ export type EntryWhereUniqueInput = Prisma.AtLeast<{
   domesticStaff?: Prisma.XOR<Prisma.DomesticStaffNullableScalarRelationFilter, Prisma.DomesticStaffWhereInput> | null
   preApprovedEntry?: Prisma.XOR<Prisma.PreApprovedEntryNullableScalarRelationFilter, Prisma.PreApprovedEntryWhereInput> | null
   entryRequest?: Prisma.XOR<Prisma.EntryRequestNullableScalarRelationFilter, Prisma.EntryRequestWhereInput> | null
+  entryRequestTargets?: Prisma.EntryRequestTargetListRelationFilter
 }, "id">
 
 export type EntryOrderByWithAggregationInput = {
@@ -578,6 +581,7 @@ export type EntryCreateInput = {
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateInput = {
@@ -609,6 +613,7 @@ export type EntryUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUpdateInput = {
@@ -640,6 +645,7 @@ export type EntryUpdateInput = {
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateInput = {
@@ -671,6 +677,7 @@ export type EntryUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryCreateManyInput = {
@@ -1149,6 +1156,22 @@ export type EntryUpdateOneWithoutEntryRequestNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EntryUpdateToOneWithWhereWithoutEntryRequestInput, Prisma.EntryUpdateWithoutEntryRequestInput>, Prisma.EntryUncheckedUpdateWithoutEntryRequestInput>
 }
 
+export type EntryCreateNestedOneWithoutEntryRequestTargetsInput = {
+  create?: Prisma.XOR<Prisma.EntryCreateWithoutEntryRequestTargetsInput, Prisma.EntryUncheckedCreateWithoutEntryRequestTargetsInput>
+  connectOrCreate?: Prisma.EntryCreateOrConnectWithoutEntryRequestTargetsInput
+  connect?: Prisma.EntryWhereUniqueInput
+}
+
+export type EntryUpdateOneWithoutEntryRequestTargetsNestedInput = {
+  create?: Prisma.XOR<Prisma.EntryCreateWithoutEntryRequestTargetsInput, Prisma.EntryUncheckedCreateWithoutEntryRequestTargetsInput>
+  connectOrCreate?: Prisma.EntryCreateOrConnectWithoutEntryRequestTargetsInput
+  upsert?: Prisma.EntryUpsertWithoutEntryRequestTargetsInput
+  disconnect?: Prisma.EntryWhereInput | boolean
+  delete?: Prisma.EntryWhereInput | boolean
+  connect?: Prisma.EntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EntryUpdateToOneWithWhereWithoutEntryRequestTargetsInput, Prisma.EntryUpdateWithoutEntryRequestTargetsInput>, Prisma.EntryUncheckedUpdateWithoutEntryRequestTargetsInput>
+}
+
 export type EntryCreateNestedManyWithoutPreApprovedEntryInput = {
   create?: Prisma.XOR<Prisma.EntryCreateWithoutPreApprovedEntryInput, Prisma.EntryUncheckedCreateWithoutPreApprovedEntryInput> | Prisma.EntryCreateWithoutPreApprovedEntryInput[] | Prisma.EntryUncheckedCreateWithoutPreApprovedEntryInput[]
   connectOrCreate?: Prisma.EntryCreateOrConnectWithoutPreApprovedEntryInput | Prisma.EntryCreateOrConnectWithoutPreApprovedEntryInput[]
@@ -1219,6 +1242,7 @@ export type EntryCreateWithoutSocietyInput = {
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutSocietyInput = {
@@ -1249,6 +1273,7 @@ export type EntryUncheckedCreateWithoutSocietyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutSocietyInput = {
@@ -1338,6 +1363,7 @@ export type EntryCreateWithoutGatePointInput = {
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutGatePointInput = {
@@ -1368,6 +1394,7 @@ export type EntryUncheckedCreateWithoutGatePointInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutGatePointInput = {
@@ -1424,6 +1451,7 @@ export type EntryCreateWithoutFlatInput = {
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutFlatInput = {
@@ -1454,6 +1482,7 @@ export type EntryUncheckedCreateWithoutFlatInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutFlatInput = {
@@ -1510,6 +1539,7 @@ export type EntryCreateWithoutCreatedByInput = {
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutCreatedByInput = {
@@ -1540,6 +1570,7 @@ export type EntryUncheckedCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutCreatedByInput = {
@@ -1580,6 +1611,7 @@ export type EntryCreateWithoutApprovedByInput = {
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutApprovedByInput = {
@@ -1610,6 +1642,7 @@ export type EntryUncheckedCreateWithoutApprovedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutApprovedByInput = {
@@ -1682,6 +1715,7 @@ export type EntryCreateWithoutDomesticStaffInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutDomesticStaffInput = {
@@ -1712,6 +1746,7 @@ export type EntryUncheckedCreateWithoutDomesticStaffInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutDomesticStaffInput = {
@@ -1768,6 +1803,7 @@ export type EntryCreateWithoutEntryRequestInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEntriesInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutEntryRequestInput = {
@@ -1798,6 +1834,7 @@ export type EntryUncheckedCreateWithoutEntryRequestInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutEntryRequestInput = {
@@ -1844,6 +1881,7 @@ export type EntryUpdateWithoutEntryRequestInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedEntriesNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutEntryRequestInput = {
@@ -1874,6 +1912,147 @@ export type EntryUncheckedUpdateWithoutEntryRequestInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type EntryCreateWithoutEntryRequestTargetsInput = {
+  id?: string
+  type: $Enums.EntryType
+  status?: $Enums.EntryStatus
+  visitorName: string
+  visitorPhone?: string | null
+  visitorType?: $Enums.VisitorType
+  visitorPhoto?: string | null
+  purpose?: string | null
+  vehicleNumber?: string | null
+  companyName?: string | null
+  packageCount?: number | null
+  wasAutoApproved?: boolean
+  autoApprovalReason?: string | null
+  approvedAt?: Date | string | null
+  checkInTime?: Date | string
+  checkOutTime?: Date | string | null
+  remarks?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  flat?: Prisma.FlatCreateNestedOneWithoutEntriesInput
+  society: Prisma.SocietyCreateNestedOneWithoutEntriesInput
+  gatePoint?: Prisma.GatePointCreateNestedOneWithoutEntriesInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedEntriesInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEntriesInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
+  preApprovedEntry?: Prisma.PreApprovedEntryCreateNestedOneWithoutEntriesInput
+  entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+}
+
+export type EntryUncheckedCreateWithoutEntryRequestTargetsInput = {
+  id?: string
+  type: $Enums.EntryType
+  status?: $Enums.EntryStatus
+  visitorName: string
+  visitorPhone?: string | null
+  visitorType?: $Enums.VisitorType
+  visitorPhoto?: string | null
+  purpose?: string | null
+  vehicleNumber?: string | null
+  companyName?: string | null
+  packageCount?: number | null
+  wasAutoApproved?: boolean
+  autoApprovalReason?: string | null
+  flatId?: string | null
+  societyId: string
+  gatePointId?: string | null
+  createdById: string
+  approvedById?: string | null
+  approvedAt?: Date | string | null
+  checkInTime?: Date | string
+  checkOutTime?: Date | string | null
+  domesticStaffId?: string | null
+  preApprovedEntryId?: string | null
+  remarks?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+}
+
+export type EntryCreateOrConnectWithoutEntryRequestTargetsInput = {
+  where: Prisma.EntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.EntryCreateWithoutEntryRequestTargetsInput, Prisma.EntryUncheckedCreateWithoutEntryRequestTargetsInput>
+}
+
+export type EntryUpsertWithoutEntryRequestTargetsInput = {
+  update: Prisma.XOR<Prisma.EntryUpdateWithoutEntryRequestTargetsInput, Prisma.EntryUncheckedUpdateWithoutEntryRequestTargetsInput>
+  create: Prisma.XOR<Prisma.EntryCreateWithoutEntryRequestTargetsInput, Prisma.EntryUncheckedCreateWithoutEntryRequestTargetsInput>
+  where?: Prisma.EntryWhereInput
+}
+
+export type EntryUpdateToOneWithWhereWithoutEntryRequestTargetsInput = {
+  where?: Prisma.EntryWhereInput
+  data: Prisma.XOR<Prisma.EntryUpdateWithoutEntryRequestTargetsInput, Prisma.EntryUncheckedUpdateWithoutEntryRequestTargetsInput>
+}
+
+export type EntryUpdateWithoutEntryRequestTargetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEntryTypeFieldUpdateOperationsInput | $Enums.EntryType
+  status?: Prisma.EnumEntryStatusFieldUpdateOperationsInput | $Enums.EntryStatus
+  visitorName?: Prisma.StringFieldUpdateOperationsInput | string
+  visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visitorType?: Prisma.EnumVisitorTypeFieldUpdateOperationsInput | $Enums.VisitorType
+  visitorPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vehicleNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checkOutTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  flat?: Prisma.FlatUpdateOneWithoutEntriesNestedInput
+  society?: Prisma.SocietyUpdateOneRequiredWithoutEntriesNestedInput
+  gatePoint?: Prisma.GatePointUpdateOneWithoutEntriesNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedEntriesNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEntriesNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
+  preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
+  entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+}
+
+export type EntryUncheckedUpdateWithoutEntryRequestTargetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumEntryTypeFieldUpdateOperationsInput | $Enums.EntryType
+  status?: Prisma.EnumEntryStatusFieldUpdateOperationsInput | $Enums.EntryStatus
+  visitorName?: Prisma.StringFieldUpdateOperationsInput | string
+  visitorPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  visitorType?: Prisma.EnumVisitorTypeFieldUpdateOperationsInput | $Enums.VisitorType
+  visitorPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vehicleNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  packageCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wasAutoApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  autoApprovalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societyId?: Prisma.StringFieldUpdateOperationsInput | string
+  gatePointId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checkOutTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  domesticStaffId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preApprovedEntryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
 }
 
 export type EntryCreateWithoutPreApprovedEntryInput = {
@@ -1904,6 +2083,7 @@ export type EntryCreateWithoutPreApprovedEntryInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEntriesInput
   domesticStaff?: Prisma.DomesticStaffCreateNestedOneWithoutEntriesInput
   entryRequest?: Prisma.EntryRequestCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutEntryInput
 }
 
 export type EntryUncheckedCreateWithoutPreApprovedEntryInput = {
@@ -1934,6 +2114,7 @@ export type EntryUncheckedCreateWithoutPreApprovedEntryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   entryRequest?: Prisma.EntryRequestUncheckedCreateNestedOneWithoutEntryInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type EntryCreateOrConnectWithoutPreApprovedEntryInput = {
@@ -2019,6 +2200,7 @@ export type EntryUpdateWithoutSocietyInput = {
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutSocietyInput = {
@@ -2049,6 +2231,7 @@ export type EntryUncheckedUpdateWithoutSocietyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateManyWithoutSocietyInput = {
@@ -2137,6 +2320,7 @@ export type EntryUpdateWithoutGatePointInput = {
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutGatePointInput = {
@@ -2167,6 +2351,7 @@ export type EntryUncheckedUpdateWithoutGatePointInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateManyWithoutGatePointInput = {
@@ -2255,6 +2440,7 @@ export type EntryUpdateWithoutFlatInput = {
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutFlatInput = {
@@ -2285,6 +2471,7 @@ export type EntryUncheckedUpdateWithoutFlatInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateManyWithoutFlatInput = {
@@ -2402,6 +2589,7 @@ export type EntryUpdateWithoutCreatedByInput = {
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutCreatedByInput = {
@@ -2432,6 +2620,7 @@ export type EntryUncheckedUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateManyWithoutCreatedByInput = {
@@ -2491,6 +2680,7 @@ export type EntryUpdateWithoutApprovedByInput = {
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutApprovedByInput = {
@@ -2521,6 +2711,7 @@ export type EntryUncheckedUpdateWithoutApprovedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateManyWithoutApprovedByInput = {
@@ -2609,6 +2800,7 @@ export type EntryUpdateWithoutDomesticStaffInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedEntriesNestedInput
   preApprovedEntry?: Prisma.PreApprovedEntryUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutDomesticStaffInput = {
@@ -2639,6 +2831,7 @@ export type EntryUncheckedUpdateWithoutDomesticStaffInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateManyWithoutDomesticStaffInput = {
@@ -2727,6 +2920,7 @@ export type EntryUpdateWithoutPreApprovedEntryInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedEntriesNestedInput
   domesticStaff?: Prisma.DomesticStaffUpdateOneWithoutEntriesNestedInput
   entryRequest?: Prisma.EntryRequestUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateWithoutPreApprovedEntryInput = {
@@ -2757,6 +2951,7 @@ export type EntryUncheckedUpdateWithoutPreApprovedEntryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entryRequest?: Prisma.EntryRequestUncheckedUpdateOneWithoutEntryNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type EntryUncheckedUpdateManyWithoutPreApprovedEntryInput = {
@@ -2788,6 +2983,35 @@ export type EntryUncheckedUpdateManyWithoutPreApprovedEntryInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type EntryCountOutputType
+ */
+
+export type EntryCountOutputType = {
+  entryRequestTargets: number
+}
+
+export type EntryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  entryRequestTargets?: boolean | EntryCountOutputTypeCountEntryRequestTargetsArgs
+}
+
+/**
+ * EntryCountOutputType without action
+ */
+export type EntryCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EntryCountOutputType
+   */
+  select?: Prisma.EntryCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EntryCountOutputType without action
+ */
+export type EntryCountOutputTypeCountEntryRequestTargetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EntryRequestTargetWhereInput
+}
 
 
 export type EntrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2826,6 +3050,8 @@ export type EntrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   domesticStaff?: boolean | Prisma.Entry$domesticStaffArgs<ExtArgs>
   preApprovedEntry?: boolean | Prisma.Entry$preApprovedEntryArgs<ExtArgs>
   entryRequest?: boolean | Prisma.Entry$entryRequestArgs<ExtArgs>
+  entryRequestTargets?: boolean | Prisma.Entry$entryRequestTargetsArgs<ExtArgs>
+  _count?: boolean | Prisma.EntryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["entry"]>
 
 export type EntrySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2942,6 +3168,8 @@ export type EntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   domesticStaff?: boolean | Prisma.Entry$domesticStaffArgs<ExtArgs>
   preApprovedEntry?: boolean | Prisma.Entry$preApprovedEntryArgs<ExtArgs>
   entryRequest?: boolean | Prisma.Entry$entryRequestArgs<ExtArgs>
+  entryRequestTargets?: boolean | Prisma.Entry$entryRequestTargetsArgs<ExtArgs>
+  _count?: boolean | Prisma.EntryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   flat?: boolean | Prisma.Entry$flatArgs<ExtArgs>
@@ -2973,6 +3201,7 @@ export type $EntryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     domesticStaff: Prisma.$DomesticStaffPayload<ExtArgs> | null
     preApprovedEntry: Prisma.$PreApprovedEntryPayload<ExtArgs> | null
     entryRequest: Prisma.$EntryRequestPayload<ExtArgs> | null
+    entryRequestTargets: Prisma.$EntryRequestTargetPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3404,6 +3633,7 @@ export interface Prisma__EntryClient<T, Null = never, ExtArgs extends runtime.Ty
   domesticStaff<T extends Prisma.Entry$domesticStaffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Entry$domesticStaffArgs<ExtArgs>>): Prisma.Prisma__DomesticStaffClient<runtime.Types.Result.GetResult<Prisma.$DomesticStaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   preApprovedEntry<T extends Prisma.Entry$preApprovedEntryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Entry$preApprovedEntryArgs<ExtArgs>>): Prisma.Prisma__PreApprovedEntryClient<runtime.Types.Result.GetResult<Prisma.$PreApprovedEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   entryRequest<T extends Prisma.Entry$entryRequestArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Entry$entryRequestArgs<ExtArgs>>): Prisma.Prisma__EntryRequestClient<runtime.Types.Result.GetResult<Prisma.$EntryRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  entryRequestTargets<T extends Prisma.Entry$entryRequestTargetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Entry$entryRequestTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3967,6 +4197,30 @@ export type Entry$entryRequestArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.EntryRequestInclude<ExtArgs> | null
   where?: Prisma.EntryRequestWhereInput
+}
+
+/**
+ * Entry.entryRequestTargets
+ */
+export type Entry$entryRequestTargetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EntryRequestTarget
+   */
+  select?: Prisma.EntryRequestTargetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EntryRequestTarget
+   */
+  omit?: Prisma.EntryRequestTargetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EntryRequestTargetInclude<ExtArgs> | null
+  where?: Prisma.EntryRequestTargetWhereInput
+  orderBy?: Prisma.EntryRequestTargetOrderByWithRelationInput | Prisma.EntryRequestTargetOrderByWithRelationInput[]
+  cursor?: Prisma.EntryRequestTargetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EntryRequestTargetScalarFieldEnum | Prisma.EntryRequestTargetScalarFieldEnum[]
 }
 
 /**

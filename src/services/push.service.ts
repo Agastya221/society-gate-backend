@@ -8,6 +8,10 @@ interface PushPayload {
   data?: Record<string, string>;
 }
 
+interface FlatPushOptions {
+  excludeUserIds?: string[];
+}
+
 class PushService {
   async sendToUser(userId: string, payload: PushPayload): Promise<void> {
     if (!isFirebaseAvailable()) {
@@ -52,26 +56,60 @@ class PushService {
     }
   }
 
-  async sendToFlat(flatId: string, payload: PushPayload): Promise<void> {
+  async sendToFlat(
+    flatId: string,
+    payload: PushPayload,
+    options: FlatPushOptions = {}
+  ): Promise<void> {
+    return this.sendToFlats([flatId], payload, options);
+  }
+
+  async sendToFlats(
+    flatIds: string[],
+    payload: PushPayload,
+    options: FlatPushOptions = {}
+  ): Promise<void> {
     if (!isFirebaseAvailable()) {
       logger.debug('Push skipped: Firebase not available');
       return;
     }
 
     try {
-      const residents = await prisma.user.findMany({
-        where: { flatId, isActive: true, role: 'RESIDENT', fcmToken: { not: null } },
-        select: { id: true, fcmToken: true },
+      const uniqueFlatIds = [...new Set(flatIds.filter(Boolean))];
+      if (uniqueFlatIds.length === 0) return;
+
+      const excludedIds = new Set(options.excludeUserIds ?? []);
+      const memberships = await prisma.userFlatMembership.findMany({
+        where: {
+          flatId: { in: uniqueFlatIds },
+          isActive: true,
+          role: 'RESIDENT',
+          user: {
+            isActive: true,
+            role: 'RESIDENT',
+            fcmToken: { not: null },
+          },
+        },
+        select: {
+          user: { select: { id: true, fcmToken: true } },
+        },
       });
 
+      const residentMap = new Map<string, string>();
+      for (const membership of memberships) {
+        if (!membership.user.fcmToken || excludedIds.has(membership.user.id)) continue;
+        residentMap.set(membership.user.id, membership.user.fcmToken);
+      }
+
+      const residents = [...residentMap.entries()].map(([id, fcmToken]) => ({ id, fcmToken }));
       if (residents.length === 0) return;
 
       await this.sendMulticast(
-        residents.map((r) => ({ userId: r.id, fcmToken: r.fcmToken! })),
+        residents.map((r) => ({ userId: r.id, fcmToken: r.fcmToken })),
         payload
       );
     } catch (error) {
-      logger.error({ error, flatId }, 'Push sendToFlat failed');
+      logger.error({ error, flatIds }, 'Push sendToFlats failed');
     }
   }
 

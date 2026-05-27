@@ -1,21 +1,24 @@
 import { Router } from 'express';
 import {
   getNotifications,
+  getGroupedNotifications,
   getUnreadCount,
   markAsRead,
   markAllAsRead,
 } from './notification.controller';
-import { authenticate, ensureSameSociety } from '../../middlewares/auth.middleware';
+import { authenticate } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 
 const router = Router();
 
-// All routes require authentication and society isolation
+// Notifications are scoped by userId, not only the active society.
 router.use(authenticate);
-router.use(ensureSameSociety);
 
 // Get user's notifications (cached for 1 minute, varies by user)
 router.get('/', cache({ ttl: 60, keyPrefix: 'notifications', varyBy: ['userId'] }), getNotifications);
+
+// Get global inbox grouped by society for multi-society residents
+router.get('/grouped', cache({ ttl: 60, keyPrefix: 'notifications', varyBy: ['userId'] }), getGroupedNotifications);
 
 // Get unread count (cached for 30 seconds, varies by user)
 router.get('/unread-count', cache({ ttl: 30, keyPrefix: 'notifications', varyBy: ['userId'] }), getUnreadCount);

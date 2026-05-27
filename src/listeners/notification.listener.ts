@@ -11,50 +11,41 @@ import { getEmergencySeverity } from '../modules/emergency/emergency.service';
 
 eventBus.on('entry-request.approved', async (payload) => {
   try {
-    // Notify all flat members EXCEPT the one who approved
-    const otherResidents = await prisma.user.findMany({
-      where: {
-        flatId: payload.flatId,
-        isActive: true,
-        role: 'RESIDENT',
-        id: { not: payload.approvedById },
-      },
-      select: { id: true },
-    });
-
-    if (otherResidents.length === 0) return;
-
     const title = 'Entry approved';
+    const flatLabels = payload.flats.map((flat) => flat.flatNumber);
     const body = `${payload.approvedByName} allowed ${payload.visitorName} (${payload.visitorType.toLowerCase()}) to enter`;
 
-    await Promise.all(
-      otherResidents.map((r) =>
-        notificationService.sendToUser(r.id, {
-          type: 'ENTRY_REQUEST',
-          title,
-          message: body,
-          data: { entryRequestId: payload.entryRequestId, approvedBy: payload.approvedByName },
-          referenceId: payload.entryRequestId,
-          referenceType: 'EntryRequest',
-          societyId: payload.societyId,
-        })
-      )
-    );
+    await notificationService.sendToFlats(payload.flatIds, {
+      type: 'ENTRY_REQUEST',
+      title,
+      message: body,
+      data: {
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds,
+        flatLabels,
+        visitorName: payload.visitorName,
+        approvedBy: payload.approvedByName,
+        status: 'APPROVED',
+      },
+      referenceId: payload.entryRequestId,
+      referenceType: 'EntryRequest',
+      societyId: payload.societyId,
+    }, { excludeUserIds: [payload.approvedById] });
 
-    pushService.sendToUsers(
-      otherResidents.map((r) => r.id),
-      {
-        title,
-        body,
-        data: {
-          type: 'GATE_APPROVED',
-          screen: 'EntryRequest',
-          requestId: payload.entryRequestId,
-          entryRequestId: payload.entryRequestId,
-          approvedBy: payload.approvedByName,
-        },
-      }
-    ).catch((err) => logger.error({ err }, 'Push failed: entry-request.approved (residents)'));
+    pushService.sendToFlats(payload.flatIds, {
+      title,
+      body,
+      data: {
+        type: 'GATE_APPROVED',
+        screen: 'EntryRequest',
+        requestId: payload.entryRequestId,
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds.join(','),
+        approvedBy: payload.approvedByName,
+      },
+    }, { excludeUserIds: [payload.approvedById] }).catch((err) => logger.error({ err }, 'Push failed: entry-request.approved (residents)'));
 
     // Notify the guard that entry was approved
     pushService.sendToUser(payload.guardId, {
@@ -69,52 +60,44 @@ eventBus.on('entry-request.approved', async (payload) => {
 
 eventBus.on('entry-request.rejected', async (payload) => {
   try {
-    // Notify all flat members EXCEPT the one who rejected
-    const otherResidents = await prisma.user.findMany({
-      where: {
-        flatId: payload.flatId,
-        isActive: true,
-        role: 'RESIDENT',
-        id: { not: payload.rejectedById },
-      },
-      select: { id: true },
-    });
-
-    if (otherResidents.length === 0) return;
-
     const title = 'Entry rejected';
+    const flatLabels = payload.flats.map((flat) => flat.flatNumber);
     const body = payload.reason
       ? `${payload.rejectedByName} rejected ${payload.visitorName} — "${payload.reason}"`
       : `${payload.rejectedByName} rejected ${payload.visitorName} (${payload.visitorType.toLowerCase()})`;
 
-    await Promise.all(
-      otherResidents.map((r) =>
-        notificationService.sendToUser(r.id, {
-          type: 'ENTRY_REQUEST',
-          title,
-          message: body,
-          data: { entryRequestId: payload.entryRequestId, rejectedBy: payload.rejectedByName },
-          referenceId: payload.entryRequestId,
-          referenceType: 'EntryRequest',
-          societyId: payload.societyId,
-        })
-      )
-    );
+    await notificationService.sendToFlats(payload.flatIds, {
+      type: 'ENTRY_REQUEST',
+      title,
+      message: body,
+      data: {
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds,
+        flatLabels,
+        visitorName: payload.visitorName,
+        rejectedBy: payload.rejectedByName,
+        reason: payload.reason,
+        status: 'REJECTED',
+      },
+      referenceId: payload.entryRequestId,
+      referenceType: 'EntryRequest',
+      societyId: payload.societyId,
+    }, { excludeUserIds: [payload.rejectedById] });
 
-    pushService.sendToUsers(
-      otherResidents.map((r) => r.id),
-      {
-        title,
-        body,
-        data: {
-          type: 'GATE_DENIED',
-          screen: 'EntryRequest',
-          requestId: payload.entryRequestId,
-          entryRequestId: payload.entryRequestId,
-          rejectedBy: payload.rejectedByName,
-        },
-      }
-    ).catch((err) => logger.error({ err }, 'Push failed: entry-request.rejected (residents)'));
+    pushService.sendToFlats(payload.flatIds, {
+      title,
+      body,
+      data: {
+        type: 'GATE_DENIED',
+        screen: 'EntryRequest',
+        requestId: payload.entryRequestId,
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds.join(','),
+        rejectedBy: payload.rejectedByName,
+      },
+    }, { excludeUserIds: [payload.rejectedById] }).catch((err) => logger.error({ err }, 'Push failed: entry-request.rejected (residents)'));
 
     // Notify the guard that entry was denied
     pushService.sendToUser(payload.guardId, {
@@ -132,24 +115,47 @@ eventBus.on('entry-request.rejected', async (payload) => {
 eventBus.on('entry-request.created', async (payload) => {
   try {
     const providerName = payload.providerTag || payload.type;
-    await notificationService.sendToFlat(payload.flatId, {
+    const flatLabels = payload.flats.map((flat) => flat.flatNumber);
+    const flatLabel = flatLabels.length > 1
+      ? `${flatLabels.length} Flats`
+      : `Flat ${flatLabels[0] ?? ''}`.trim();
+    await notificationService.sendToFlats(payload.flatIds, {
       type: 'ENTRY_REQUEST',
-      title: `${providerName} at Gate`,
+      title: `${payload.societyName ?? 'Society'} · ${flatLabel}`,
       message: payload.visitorName
-        ? `${payload.visitorName} (${providerName}) is waiting at the gate`
-        : `${providerName} delivery is waiting at the gate`,
-      data: { entryRequestId: payload.entryRequestId },
+        ? `${payload.visitorName} requested entry. Purpose: ${providerName}`
+        : `${providerName} is waiting at the gate`,
+      data: {
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        societyName: payload.societyName,
+        flatIds: payload.flatIds,
+        flatLabels,
+        visitorName: payload.visitorName,
+        purpose: providerName,
+        requestType: payload.type,
+        status: 'PENDING',
+      },
       referenceId: payload.entryRequestId,
       referenceType: 'EntryRequest',
       societyId: payload.societyId,
     });
 
-    pushService.sendToFlat(payload.flatId, {
-      title: 'Visitor at gate',
+    pushService.sendToFlats(payload.flatIds, {
+      title: payload.societyName
+        ? `New request in ${payload.societyName}`
+        : 'Visitor at gate',
       body: payload.visitorName
-        ? `${payload.visitorName} is waiting`
+        ? `${payload.visitorName} requested entry for ${flatLabels.join(', ')}`
         : `${payload.type} is waiting at the gate`,
-      data: { type: 'GATE_REQUEST', screen: 'EntryRequest', requestId: payload.entryRequestId, entryRequestId: payload.entryRequestId },
+      data: {
+        type: 'GATE_REQUEST',
+        screen: 'EntryRequest',
+        requestId: payload.entryRequestId,
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds.join(','),
+      },
     }).catch((err) => logger.error({ err }, 'Push failed: entry-request.created'));
   } catch (error) {
     logger.error({ error, event: 'entry-request.created', payload }, 'Failed to send entry request notification');
@@ -506,25 +512,15 @@ eventBus.on('guest-invite.used', async (payload) => {
 
 eventBus.on('pre-approved.created', async (payload) => {
   try {
-    // Notify other flat members (not the creator)
-    const flatResidents = await prisma.user.findMany({
-      where: { flatId: payload.flatId, isActive: true, role: 'RESIDENT', id: { not: payload.createdByUserId } },
-      select: { id: true },
-    });
-
-    await Promise.all(
-      flatResidents.map((resident) =>
-        notificationService.sendToUser(resident.id, {
-          type: 'SYSTEM',
-          title: 'New pre-approved entry',
-          message: `${payload.createdByName} added a ${payload.displayLabel} entry`,
-          data: { preApprovedEntryId: payload.entryId },
-          referenceId: payload.entryId,
-          referenceType: 'PreApprovedEntry',
-          societyId: payload.societyId,
-        })
-      )
-    );
+    await notificationService.sendToFlat(payload.flatId, {
+      type: 'SYSTEM',
+      title: 'New pre-approved entry',
+      message: `${payload.createdByName} added a ${payload.displayLabel} entry`,
+      data: { preApprovedEntryId: payload.entryId },
+      referenceId: payload.entryId,
+      referenceType: 'PreApprovedEntry',
+      societyId: payload.societyId,
+    }, { excludeUserIds: [payload.createdByUserId] });
   } catch (error) {
     logger.error({ error, event: 'pre-approved.created', payload }, 'Failed to send pre-approved created notification');
   }

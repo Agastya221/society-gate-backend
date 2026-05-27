@@ -522,7 +522,8 @@ export interface EntryFilters extends PaginationParams {
 
 export interface CreateEntryRequestDTO {
   societyId: string;
-  flatId: string;
+  flatId?: string;
+  flatIds?: string[];
   type: EntryType;
   visitorName?: string;
   visitorPhone?: string;

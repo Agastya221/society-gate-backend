@@ -113,11 +113,15 @@ const entryRequestStatusEnum = z.enum(['PENDING', 'APPROVED', 'REJECTED', 'EXPIR
 
 export const createEntryRequestSchema = z.object({
   type: entryTypeEnum,
-  flatId: uuidSchema,
+  flatId: uuidSchema.optional(),
+  flatIds: z.array(uuidSchema).min(1).max(20).optional(),
   visitorName: z.string().max(100).optional(),
   visitorPhone: phoneSchema.optional(),
   providerTag: providerTagEnum.optional(),
   photoKey: z.string().optional(),
+}).refine((data) => data.flatId || (data.flatIds && data.flatIds.length > 0), {
+  message: 'Either flatId or flatIds is required',
+  path: ['flatId'],
 });
 
 export const entryRequestQuerySchema = paginationQuery.extend({

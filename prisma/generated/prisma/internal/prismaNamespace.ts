@@ -433,6 +433,7 @@ export const ModelName = {
   OnboardingAuditLog: 'OnboardingAuditLog',
   Notification: 'Notification',
   EntryRequest: 'EntryRequest',
+  EntryRequestTarget: 'EntryRequestTarget',
   PreApprovedEntry: 'PreApprovedEntry',
   PreApprovedSchedule: 'PreApprovedSchedule',
   PreApprovedMeta: 'PreApprovedMeta',
@@ -453,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "society" | "invoice" | "invoiceLineItem" | "paymentTransaction" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "userFlatMembership" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "parkingViolation" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "societyOnboardingDocument" | "societyImportBatch" | "societyImportRowError" | "societyRuleConfig" | "gateDevice" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
+    modelProps: "society" | "invoice" | "invoiceLineItem" | "paymentTransaction" | "societyRegistrationRequest" | "gatePoint" | "block" | "flat" | "user" | "userFlatMembership" | "entry" | "guestInvite" | "partyInvite" | "partySlot" | "guestEntryLog" | "domesticStaff" | "staffFlatAssignment" | "staffAttendance" | "staffBooking" | "staffReview" | "vehicle" | "parkingViolation" | "visitorFrequency" | "paymentReminder" | "gatePass" | "notice" | "amenity" | "amenityBooking" | "complaint" | "emergency" | "vendor" | "vendorLike" | "communityPost" | "postLike" | "postComment" | "societyDocument" | "societyOnboardingDocument" | "societyImportBatch" | "societyImportRowError" | "societyRuleConfig" | "gateDevice" | "poll" | "pollOption" | "pollVote" | "onboardingRequest" | "residentDocument" | "onboardingAuditLog" | "notification" | "entryRequest" | "entryRequestTarget" | "preApprovedEntry" | "preApprovedSchedule" | "preApprovedMeta" | "preApprovedVerification" | "preApprovedUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4083,6 +4084,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EntryRequestTarget: {
+      payload: Prisma.$EntryRequestTargetPayload<ExtArgs>
+      fields: Prisma.EntryRequestTargetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EntryRequestTargetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EntryRequestTargetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>
+        }
+        findFirst: {
+          args: Prisma.EntryRequestTargetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EntryRequestTargetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>
+        }
+        findMany: {
+          args: Prisma.EntryRequestTargetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>[]
+        }
+        create: {
+          args: Prisma.EntryRequestTargetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>
+        }
+        createMany: {
+          args: Prisma.EntryRequestTargetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EntryRequestTargetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>[]
+        }
+        delete: {
+          args: Prisma.EntryRequestTargetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>
+        }
+        update: {
+          args: Prisma.EntryRequestTargetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>
+        }
+        deleteMany: {
+          args: Prisma.EntryRequestTargetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EntryRequestTargetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EntryRequestTargetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>[]
+        }
+        upsert: {
+          args: Prisma.EntryRequestTargetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EntryRequestTargetPayload>
+        }
+        aggregate: {
+          args: Prisma.EntryRequestTargetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEntryRequestTarget>
+        }
+        groupBy: {
+          args: Prisma.EntryRequestTargetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EntryRequestTargetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EntryRequestTargetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EntryRequestTargetCountAggregateOutputType> | number
+        }
+      }
+    }
     PreApprovedEntry: {
       payload: Prisma.$PreApprovedEntryPayload<ExtArgs>
       fields: Prisma.PreApprovedEntryFieldRefs
@@ -5498,6 +5573,18 @@ export const EntryRequestScalarFieldEnum = {
 export type EntryRequestScalarFieldEnum = (typeof EntryRequestScalarFieldEnum)[keyof typeof EntryRequestScalarFieldEnum]
 
 
+export const EntryRequestTargetScalarFieldEnum = {
+  id: 'id',
+  entryRequestId: 'entryRequestId',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  entryId: 'entryId',
+  createdAt: 'createdAt'
+} as const
+
+export type EntryRequestTargetScalarFieldEnum = (typeof EntryRequestTargetScalarFieldEnum)[keyof typeof EntryRequestTargetScalarFieldEnum]
+
+
 export const PreApprovedEntryScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -6657,6 +6744,7 @@ export type GlobalOmitConfig = {
   onboardingAuditLog?: Prisma.OnboardingAuditLogOmit
   notification?: Prisma.NotificationOmit
   entryRequest?: Prisma.EntryRequestOmit
+  entryRequestTarget?: Prisma.EntryRequestTargetOmit
   preApprovedEntry?: Prisma.PreApprovedEntryOmit
   preApprovedSchedule?: Prisma.PreApprovedScheduleOmit
   preApprovedMeta?: Prisma.PreApprovedMetaOmit

@@ -100,6 +100,7 @@ export const ModelName = {
   OnboardingAuditLog: 'OnboardingAuditLog',
   Notification: 'Notification',
   EntryRequest: 'EntryRequest',
+  EntryRequestTarget: 'EntryRequestTarget',
   PreApprovedEntry: 'PreApprovedEntry',
   PreApprovedSchedule: 'PreApprovedSchedule',
   PreApprovedMeta: 'PreApprovedMeta',
@@ -1127,6 +1128,18 @@ export const EntryRequestScalarFieldEnum = {
 } as const
 
 export type EntryRequestScalarFieldEnum = (typeof EntryRequestScalarFieldEnum)[keyof typeof EntryRequestScalarFieldEnum]
+
+
+export const EntryRequestTargetScalarFieldEnum = {
+  id: 'id',
+  entryRequestId: 'entryRequestId',
+  flatId: 'flatId',
+  societyId: 'societyId',
+  entryId: 'entryId',
+  createdAt: 'createdAt'
+} as const
+
+export type EntryRequestTargetScalarFieldEnum = (typeof EntryRequestTargetScalarFieldEnum)[keyof typeof EntryRequestTargetScalarFieldEnum]
 
 
 export const PreApprovedEntryScalarFieldEnum = {

@@ -14,11 +14,19 @@ const EXPIRY_MINUTES = 15;
 
 interface CreateEntryRequestData {
   type: EntryType;
-  flatId: string;
+  flatId?: string;
+  flatIds?: string[];
   visitorName?: string;
   visitorPhone?: string;
   providerTag?: ProviderTag;
   photoKey?: string;
+}
+
+interface RequestTargetInfo {
+  targetId?: string;
+  flatId: string;
+  flatNumber: string;
+  blockName: string | null;
 }
 
 export interface CreateEntryRequestResult {
@@ -37,10 +45,13 @@ export class EntryRequestService {
     data: CreateEntryRequestData,
     guardId: string
   ): Promise<{ entryRequest: object }> {
-    // Guard validation
     const guard = await prisma.user.findUnique({
       where: { id: guardId },
-      select: { societyId: true, role: true },
+      select: {
+        societyId: true,
+        role: true,
+        society: { select: { name: true } },
+      },
     });
 
     if (!guard || guard.role !== 'GUARD') {
@@ -51,25 +62,40 @@ export class EntryRequestService {
       throw new AppError('Guard must be assigned to a society', 400);
     }
 
-    // Verify flat exists and belongs to the same society
-    const flat = await prisma.flat.findUnique({
-      where: { id: data.flatId },
-      select: { id: true, societyId: true, flatNumber: true },
+    const requestedFlatIds = [
+      ...new Set([
+        ...(data.flatId ? [data.flatId] : []),
+        ...(data.flatIds ?? []),
+      ]),
+    ];
+
+    if (requestedFlatIds.length === 0) {
+      throw new AppError('At least one flat is required', 400);
+    }
+
+    const flats = await prisma.flat.findMany({
+      where: { id: { in: requestedFlatIds }, isActive: true },
+      select: {
+        id: true,
+        societyId: true,
+        flatNumber: true,
+        block: { select: { name: true } },
+      },
     });
 
-    if (!flat) {
-      throw new AppError('Flat not found', 404);
+    const flatById = new Map(flats.map((flat) => [flat.id, flat]));
+    const missingFlatIds = requestedFlatIds.filter((flatId) => !flatById.has(flatId));
+    if (missingFlatIds.length > 0) {
+      throw new AppError(`Flat not found: ${missingFlatIds.join(', ')}`, 404);
     }
 
-    if (flat.societyId !== guard.societyId) {
-      throw new AppError('Flat does not belong to your society', 400);
+    const orderedFlats = requestedFlatIds.map((flatId) => flatById.get(flatId)!);
+    const crossSocietyFlat = orderedFlats.find((flat) => flat.societyId !== guard.societyId);
+    if (crossSocietyFlat) {
+      throw new AppError('All flats must belong to the guard society', 400);
     }
 
-    // ============================================
-    // Create PENDING request — notify resident for manual approval
-    // Resident has 15 minutes to respond via app before it expires
-    // (Auto-approval is handled by InvitePass at guard scan time)
-    // ============================================
+    const primaryFlat = orderedFlats[0];
     const expiresAt = new Date(Date.now() + EXPIRY_MINUTES * 60 * 1000);
 
     const entryRequest = await prisma.entryRequest.create({
@@ -79,31 +105,37 @@ export class EntryRequestService {
         visitorPhone: data.visitorPhone,
         providerTag: data.providerTag,
         photoKey: data.photoKey,
-        flatId: data.flatId,
+        flatId: primaryFlat.id,
         societyId: guard.societyId,
         guardId,
         expiresAt,
         status: 'PENDING',
+        targets: {
+          create: orderedFlats.map((flat) => ({
+            flatId: flat.id,
+            societyId: guard.societyId!,
+          })),
+        },
       },
-      include: {
-        flat: { select: { id: true, flatNumber: true } },
-        guard: { select: { id: true, name: true } },
-      },
+      include: this.getInclude(),
     });
 
-    // ARCH-3: Emit event — listener handles push notification + in-app notification
-    // Resident sees: photo of visitor + Approve / Reject buttons
+    const targetInfos = this.getTargetInfos(entryRequest);
+
     eventBus.emit('entry-request.created', {
       entryRequestId: entryRequest.id,
-      flatId: data.flatId,
+      flatId: primaryFlat.id,
+      flatIds: targetInfos.map((target) => target.flatId),
+      flats: targetInfos,
       societyId: guard.societyId,
+      societyName: guard.society?.name ?? 'Society',
       guardId,
       visitorName: data.visitorName,
       providerTag: data.providerTag,
       type: data.type,
     });
 
-    return { entryRequest };
+    return { entryRequest: this.formatEntryRequest(entryRequest) };
   }
 
   // ============================================
@@ -122,7 +154,15 @@ export class EntryRequestService {
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { role: true, societyId: true, flatId: true },
+      select: {
+        role: true,
+        societyId: true,
+        flatId: true,
+        flatMemberships: {
+          where: { isActive: true, flatId: { not: null } },
+          select: { flatId: true },
+        },
+      },
     });
 
     if (!user) {
@@ -132,30 +172,35 @@ export class EntryRequestService {
     const where: Prisma.EntryRequestWhereInput = {};
 
     if (user.role === 'GUARD') {
-      // Guards see all requests for their society (not just their own — any guard can process)
       if (user.societyId) where.societyId = user.societyId;
     } else if (user.role === 'RESIDENT') {
-      if (user.flatId) where.flatId = user.flatId;
+      const visibleFlatIds = this.getUserFlatIds(user);
+      if (visibleFlatIds.length === 0) {
+        where.id = '__no_access__';
+      } else if (flatId) {
+        if (!visibleFlatIds.includes(flatId)) {
+          throw new AppError('Access denied for this flat', 403);
+        }
+        where.OR = [{ flatId }, { targets: { some: { flatId } } }];
+      } else {
+        where.OR = [
+          { flatId: { in: visibleFlatIds } },
+          { targets: { some: { flatId: { in: visibleFlatIds } } } },
+        ];
+      }
     } else if (user.role === 'ADMIN') {
       if (user.societyId) where.societyId = user.societyId;
     }
 
     if (status) where.status = status;
-    if (flatId && user.role !== 'RESIDENT') where.flatId = flatId;
+    if (flatId && user.role !== 'RESIDENT') {
+      where.OR = [{ flatId }, { targets: { some: { flatId } } }];
+    }
 
     const [rawRequests, total] = await Promise.all([
       prisma.entryRequest.findMany({
         where,
-        include: {
-          flat: {
-            select: {
-              flatNumber: true,
-              block: { select: { name: true } },
-            },
-          },
-          guard: { select: { id: true, name: true } },
-          approvedBy: { select: { id: true, name: true } },
-        },
+        include: this.getInclude(),
         orderBy: { createdAt: 'desc' },
         skip: (page - 1) * limit,
         take: limit,
@@ -163,16 +208,8 @@ export class EntryRequestService {
       prisma.entryRequest.count({ where }),
     ]);
 
-    const entryRequests = rawRequests.map((r) => ({
-      ...r,
-      flat: {
-        number: r.flat?.flatNumber ?? '',
-        block: r.flat?.block ?? null,
-      },
-    }));
-
     return {
-      entryRequests,
+      entryRequests: rawRequests.map((request) => this.formatEntryRequest(request)),
       pagination: {
         total,
         page,
@@ -183,23 +220,12 @@ export class EntryRequestService {
   }
 
   // ============================================
-  // GET SINGLE ENTRY REQUEST (unchanged)
+  // GET SINGLE ENTRY REQUEST
   // ============================================
   async getEntryRequestById(entryRequestId: string, userId: string) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
-      include: {
-        flat: {
-          select: {
-            id: true,
-            flatNumber: true,
-            block: { select: { name: true } },
-            residents: { select: { id: true } },
-          },
-        },
-        guard: { select: { id: true, name: true, phone: true } },
-        approvedBy: { select: { id: true, name: true } },
-      },
+      include: this.getInclude(),
     });
 
     if (!entryRequest) {
@@ -208,15 +234,24 @@ export class EntryRequestService {
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { role: true, societyId: true, flatId: true },
+      select: {
+        role: true,
+        societyId: true,
+        flatId: true,
+        flatMemberships: {
+          where: { isActive: true, flatId: { not: null } },
+          select: { flatId: true },
+        },
+      },
     });
 
     if (!user) {
       throw new AppError('User not found', 404);
     }
 
+    const targetFlatIds = this.getTargetInfos(entryRequest).map((target) => target.flatId);
     const isGuard = entryRequest.guardId === userId;
-    const isFlatResident = entryRequest.flat.residents.some((r) => r.id === userId);
+    const isFlatResident = this.getUserFlatIds(user).some((flatId) => targetFlatIds.includes(flatId));
     const isSocietyAdmin =
       user.role === 'ADMIN' && user.societyId === entryRequest.societyId;
     const isSuperAdmin = user.role === 'SUPER_ADMIN';
@@ -225,33 +260,43 @@ export class EntryRequestService {
       throw new AppError('Access denied', 403);
     }
 
-    return entryRequest;
+    return this.formatEntryRequest(entryRequest);
   }
 
   // ============================================
-  // APPROVE ENTRY REQUEST (unchanged)
+  // APPROVE ENTRY REQUEST
   // ============================================
   async approveEntryRequest(entryRequestId: string, userId: string) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
-      include: {
-        flat: {
-          select: {
-            id: true,
-            flatNumber: true,
-            residents: { select: { id: true } },
-          },
-        },
-      },
+      include: this.getInclude(),
     });
 
     if (!entryRequest) {
       throw new AppError('Entry request not found', 404);
     }
 
-    const isFlatResident = entryRequest.flat.residents.some((r) => r.id === userId);
-    if (!isFlatResident) {
-      throw new AppError('Only flat residents can approve entry requests', 403);
+    const approver = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        name: true,
+        flatId: true,
+        flatMemberships: {
+          where: { isActive: true, flatId: { not: null } },
+          select: { flatId: true },
+        },
+      },
+    });
+
+    if (!approver) {
+      throw new AppError('User not found', 404);
+    }
+
+    const targetInfos = this.getTargetInfos(entryRequest);
+    const approverFlatIds = this.getUserFlatIds(approver);
+    const canApprove = targetInfos.some((target) => approverFlatIds.includes(target.flatId));
+    if (!canApprove) {
+      throw new AppError('Only linked flat residents can approve entry requests', 403);
     }
 
     if (entryRequest.status !== 'PENDING') {
@@ -266,60 +311,75 @@ export class EntryRequestService {
       throw new AppError('Entry request has expired', 400);
     }
 
-    const entry = await prisma.entry.create({
-      data: {
-        type: entryRequest.type,
-        visitorName: entryRequest.visitorName || 'Visitor',
-        visitorPhone: entryRequest.visitorPhone,
-        visitorPhoto: entryRequest.photoKey,
-        companyName: entryRequest.providerTag,
-        flatId: entryRequest.flatId,
-        societyId: entryRequest.societyId,
-        createdById: entryRequest.guardId,
-        approvedById: userId,
-        approvedAt: new Date(),
-        status: 'APPROVED',
-      },
+    const now = new Date();
+    const updatedRequest = await prisma.$transaction(async (tx) => {
+      const createdEntryIds: string[] = [];
+
+      for (const target of targetInfos) {
+        const entry = await tx.entry.create({
+          data: {
+            type: entryRequest.type,
+            visitorName: entryRequest.visitorName || 'Visitor',
+            visitorPhone: entryRequest.visitorPhone,
+            visitorPhoto: entryRequest.photoKey,
+            companyName: entryRequest.providerTag,
+            flatId: target.flatId,
+            societyId: entryRequest.societyId,
+            createdById: entryRequest.guardId,
+            approvedById: userId,
+            approvedAt: now,
+            status: 'APPROVED',
+          },
+        });
+
+        createdEntryIds.push(entry.id);
+        if (target.targetId) {
+          await tx.entryRequestTarget.update({
+            where: { id: target.targetId },
+            data: { entryId: entry.id },
+          });
+        }
+      }
+
+      return tx.entryRequest.update({
+        where: { id: entryRequestId },
+        data: {
+          status: 'APPROVED',
+          approvedById: userId,
+          approvedAt: now,
+          entryId: createdEntryIds[0],
+        },
+        include: this.getInclude(),
+      });
     });
 
-    const updatedRequest = await prisma.entryRequest.update({
-      where: { id: entryRequestId },
-      data: {
-        status: 'APPROVED',
-        approvedById: userId,
-        approvedAt: new Date(),
-        entryId: entry.id,
-      },
-      include: {
-        flat: { select: { id: true, flatNumber: true, block: { select: { name: true } } } },
-        guard: { select: { id: true, name: true } },
-        approvedBy: { select: { id: true, name: true } },
-      },
-    });
-
+    const flatLabel = this.getFlatLabelList(targetInfos);
     emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
       id: entryRequestId,
       status: 'APPROVED',
-      flatNumber: entryRequest.flat.flatNumber,
+      flatNumber: flatLabel,
+      flatIds: targetInfos.map((target) => target.flatId),
       approvedBy: updatedRequest.approvedBy?.name,
     });
 
     eventBus.emit('entry-request.approved', {
       entryRequestId,
       flatId: entryRequest.flatId,
+      flatIds: targetInfos.map((target) => target.flatId),
+      flats: targetInfos,
       societyId: entryRequest.societyId,
       guardId: entryRequest.guardId,
       visitorName: entryRequest.visitorName || 'Visitor',
       visitorType: entryRequest.type,
       approvedById: userId,
-      approvedByName: updatedRequest.approvedBy?.name ?? 'A resident',
+      approvedByName: updatedRequest.approvedBy?.name ?? approver.name ?? 'A resident',
     });
 
-    return updatedRequest;
+    return this.formatEntryRequest(updatedRequest);
   }
 
   // ============================================
-  // REJECT ENTRY REQUEST (unchanged)
+  // REJECT ENTRY REQUEST
   // ============================================
   async rejectEntryRequest(
     entryRequestId: string,
@@ -328,73 +388,78 @@ export class EntryRequestService {
   ) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
-      include: {
-        flat: {
-          select: {
-            id: true,
-            flatNumber: true,
-            residents: { select: { id: true } },
-          },
-        },
-      },
+      include: this.getInclude(),
     });
 
     if (!entryRequest) {
       throw new AppError('Entry request not found', 404);
     }
 
-    const isFlatResident = entryRequest.flat.residents.some((r) => r.id === userId);
-    if (!isFlatResident) {
-      throw new AppError('Only flat residents can reject entry requests', 403);
+    const rejecter = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        name: true,
+        flatId: true,
+        flatMemberships: {
+          where: { isActive: true, flatId: { not: null } },
+          select: { flatId: true },
+        },
+      },
+    });
+
+    if (!rejecter) {
+      throw new AppError('User not found', 404);
+    }
+
+    const targetInfos = this.getTargetInfos(entryRequest);
+    const rejecterFlatIds = this.getUserFlatIds(rejecter);
+    const canReject = targetInfos.some((target) => rejecterFlatIds.includes(target.flatId));
+    if (!canReject) {
+      throw new AppError('Only linked flat residents can reject entry requests', 403);
     }
 
     if (entryRequest.status !== 'PENDING') {
       throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
     }
 
-    const [updatedRequest, rejecter] = await Promise.all([
-      prisma.entryRequest.update({
-        where: { id: entryRequestId },
-        data: {
-          status: 'REJECTED',
-          rejectedAt: new Date(),
-          rejectionReason: reason,
-        },
-        include: {
-          flat: { select: { id: true, flatNumber: true, block: { select: { name: true } } } },
-          guard: { select: { id: true, name: true } },
-        },
-      }),
-      prisma.user.findUnique({
-        where: { id: userId },
-        select: { name: true },
-      }),
-    ]);
+    const updatedRequest = await prisma.entryRequest.update({
+      where: { id: entryRequestId },
+      data: {
+        status: 'REJECTED',
+        rejectedAt: new Date(),
+        rejectionReason: reason,
+      },
+      include: this.getInclude(),
+    });
 
+    const flatLabel = this.getFlatLabelList(targetInfos);
     emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
       id: entryRequestId,
       status: 'REJECTED',
-      flatNumber: entryRequest.flat.flatNumber,
+      flatNumber: flatLabel,
+      flatIds: targetInfos.map((target) => target.flatId),
       reason,
     });
 
     eventBus.emit('entry-request.rejected', {
       entryRequestId,
       flatId: entryRequest.flatId,
+      flatIds: targetInfos.map((target) => target.flatId),
+      flats: targetInfos,
       societyId: entryRequest.societyId,
       guardId: entryRequest.guardId,
       visitorName: entryRequest.visitorName || 'Visitor',
       visitorType: entryRequest.type,
       rejectedById: userId,
-      rejectedByName: rejecter?.name ?? 'A resident',
+      rejectedByName: rejecter.name ?? 'A resident',
       reason,
     });
 
-    return updatedRequest;
+    return this.formatEntryRequest(updatedRequest);
   }
 
   // ============================================
-  // EXPIRE PENDING REQUESTS (cron job, unchanged)
+  // EXPIRE PENDING REQUESTS (cron job)
   // ============================================
   async expirePendingRequests(): Promise<{ count: number }> {
     const result = await prisma.entryRequest.updateMany({
@@ -413,7 +478,7 @@ export class EntryRequestService {
   }
 
   // ============================================
-  // GET PENDING COUNT FOR GUARD (unchanged)
+  // GET PENDING COUNT FOR GUARD
   // ============================================
   async getPendingCountForGuard(guardId: string): Promise<number> {
     return prisma.entryRequest.count({
@@ -423,6 +488,97 @@ export class EntryRequestService {
         expiresAt: { gt: new Date() },
       },
     });
+  }
+
+  private getInclude() {
+    return {
+      flat: {
+        select: {
+          id: true,
+          flatNumber: true,
+          block: { select: { name: true } },
+        },
+      },
+      targets: {
+        include: {
+          flat: {
+            select: {
+              id: true,
+              flatNumber: true,
+              block: { select: { name: true } },
+            },
+          },
+        },
+        orderBy: { createdAt: 'asc' as const },
+      },
+      guard: { select: { id: true, name: true, phone: true } },
+      approvedBy: { select: { id: true, name: true } },
+    };
+  }
+
+  private getUserFlatIds(user: { flatId?: string | null; flatMemberships?: { flatId: string | null }[] }) {
+    const membershipFlatIds = user.flatMemberships
+      ?.map((membership) => membership.flatId)
+      .filter((flatId): flatId is string => Boolean(flatId)) ?? [];
+
+    return [...new Set([...(user.flatId ? [user.flatId] : []), ...membershipFlatIds])];
+  }
+
+  private getTargetInfos(entryRequest: {
+    flatId: string;
+    flat?: { id: string; flatNumber: string; block?: { name: string } | null } | null;
+    targets?: {
+      id: string;
+      flatId: string;
+      flat: { id: string; flatNumber: string; block?: { name: string } | null };
+    }[];
+  }): RequestTargetInfo[] {
+    if (entryRequest.targets && entryRequest.targets.length > 0) {
+      return entryRequest.targets.map((target) => ({
+        targetId: target.id,
+        flatId: target.flatId,
+        flatNumber: target.flat.flatNumber,
+        blockName: target.flat.block?.name ?? null,
+      }));
+    }
+
+    return [
+      {
+        flatId: entryRequest.flatId,
+        flatNumber: entryRequest.flat?.flatNumber ?? '',
+        blockName: entryRequest.flat?.block?.name ?? null,
+      },
+    ];
+  }
+
+  private getFlatLabelList(targetInfos: RequestTargetInfo[]) {
+    return targetInfos
+      .map((target) => target.blockName
+        ? `${target.blockName} ${target.flatNumber}`
+        : target.flatNumber
+      )
+      .join(', ');
+  }
+
+  private formatEntryRequest<T extends { flat?: unknown; targets?: unknown[]; flatId: string }>(
+    entryRequest: T
+  ) {
+    const targetInfos = this.getTargetInfos(entryRequest as Parameters<typeof this.getTargetInfos>[0]);
+
+    return {
+      ...entryRequest,
+      flat: {
+        number: (entryRequest as { flat?: { flatNumber?: string } }).flat?.flatNumber ?? '',
+        block: (entryRequest as { flat?: { block?: { name: string } | null } }).flat?.block ?? null,
+      },
+      flatIds: targetInfos.map((target) => target.flatId),
+      targetFlats: targetInfos.map((target) => ({
+        id: target.flatId,
+        flatNumber: target.flatNumber,
+        blockName: target.blockName,
+      })),
+      flatLabel: this.getFlatLabelList(targetInfos),
+    };
   }
 }
 

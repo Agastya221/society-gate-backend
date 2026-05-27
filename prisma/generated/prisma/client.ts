@@ -22,7 +22,7 @@ export * as $Enums from './enums'
 export * from "./enums"
 /**
  * ## Prisma Client
- * 
+ *
  * Type-safe database client for TypeScript
  * @example
  * ```
@@ -30,7 +30,7 @@ export * from "./enums"
  * // Fetch zero or more Societies
  * const societies = await prisma.society.findMany()
  * ```
- * 
+ *
  * Read more in our [docs](https://pris.ly/d/client).
  */
 export const PrismaClient = $Class.getPrismaClientClass()
@@ -282,6 +282,11 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type EntryRequest = Prisma.EntryRequestModel
+/**
+ * Model EntryRequestTarget
+ *
+ */
+export type EntryRequestTarget = Prisma.EntryRequestTargetModel
 /**
  * Model PreApprovedEntry
  * 

@@ -1,6 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import { emitToUser, emitToFlat, emitToUsers, SOCKET_EVENTS } from '../../utils/socket';
+import { emitToUser, emitToUsers, SOCKET_EVENTS } from '../../utils/socket';
 import { NotificationType } from '../../../prisma/generated/prisma/enums';
 import type { Prisma } from '../../types';
 
@@ -12,6 +12,10 @@ interface CreateNotificationData {
   referenceId?: string;
   referenceType?: string;
   societyId?: string;
+}
+
+interface FlatDeliveryOptions {
+  excludeUserIds?: string[];
 }
 
 export class NotificationService {
@@ -46,25 +50,52 @@ export class NotificationService {
    */
   async sendToFlat(
     flatId: string,
-    notificationData: CreateNotificationData
+    notificationData: CreateNotificationData,
+    options: FlatDeliveryOptions = {}
   ) {
-    // Get all active residents of the flat
-    const residents = await prisma.user.findMany({
-      where: {
-        flatId,
-        isActive: true,
-        role: 'RESIDENT',
-      },
-      select: { id: true },
-    });
+    return this.sendToFlats([flatId], notificationData, options);
+  }
 
-    if (residents.length === 0) {
+  /**
+   * Send notification to all active residents linked to any target flat.
+   * Uses UserFlatMembership so residents receive alerts for every society/flat
+   * they belong to, not only their current active flat context.
+   */
+  async sendToFlats(
+    flatIds: string[],
+    notificationData: CreateNotificationData,
+    options: FlatDeliveryOptions = {}
+  ) {
+    const uniqueFlatIds = [...new Set(flatIds.filter(Boolean))];
+    if (uniqueFlatIds.length === 0) {
       return [];
     }
 
-    // Create notifications for each resident
+    const excludedIds = new Set(options.excludeUserIds ?? []);
+
+    const memberships = await prisma.userFlatMembership.findMany({
+      where: {
+        flatId: { in: uniqueFlatIds },
+        isActive: true,
+        role: 'RESIDENT',
+        user: {
+          isActive: true,
+          role: 'RESIDENT',
+        },
+      },
+      select: { userId: true },
+    });
+
+    const residentIds = [
+      ...new Set(memberships.map((membership) => membership.userId)),
+    ].filter((userId) => !excludedIds.has(userId));
+
+    if (residentIds.length === 0) {
+      return [];
+    }
+
     const notifications = await Promise.all(
-      residents.map((resident) =>
+      residentIds.map((userId) =>
         prisma.notification.create({
           data: {
             type: notificationData.type,
@@ -73,15 +104,14 @@ export class NotificationService {
             data: notificationData.data || {},
             referenceId: notificationData.referenceId,
             referenceType: notificationData.referenceType,
-            userId: resident.id,
+            userId,
             societyId: notificationData.societyId,
           },
         })
       )
     );
 
-    // Emit to flat room via Socket.IO (send first notification as representative shape)
-    emitToFlat(flatId, SOCKET_EVENTS.NOTIFICATION, notifications[0]);
+    emitToUsers(residentIds, SOCKET_EVENTS.NOTIFICATION, notifications[0]);
 
     return notifications;
   }
@@ -141,13 +171,16 @@ export class NotificationService {
    */
   async getUserNotifications(
     userId: string,
-    filters: { page?: number; limit?: number; unreadOnly?: boolean }
+    filters: { page?: number; limit?: number; unreadOnly?: boolean; societyId?: string }
   ) {
-    const { page = 1, limit = 20, unreadOnly = false } = filters;
+    const { page = 1, limit = 20, unreadOnly = false, societyId } = filters;
 
     const where: Prisma.NotificationWhereInput = { userId };
     if (unreadOnly) {
       where.isRead = false;
+    }
+    if (societyId) {
+      where.societyId = societyId;
     }
 
     const [notifications, total] = await Promise.all([
@@ -168,6 +201,68 @@ export class NotificationService {
         limit,
         pages: Math.ceil(total / limit),
       },
+    };
+  }
+
+  /**
+   * Global resident inbox grouped by society for multi-society accounts.
+   */
+  async getGroupedUserNotifications(
+    userId: string,
+    filters: { page?: number; limit?: number; unreadOnly?: boolean; societyId?: string }
+  ) {
+    const result = await this.getUserNotifications(userId, filters);
+
+    const societyIds = [
+      ...new Set(
+        result.notifications
+          .map((notification) => notification.societyId)
+          .filter((id): id is string => Boolean(id))
+      ),
+    ];
+
+    const societies = societyIds.length
+      ? await prisma.society.findMany({
+          where: { id: { in: societyIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const societyNameById = new Map(societies.map((society) => [society.id, society.name]));
+
+    const groupsById = new Map<
+      string,
+      {
+        societyId: string | null;
+        societyName: string;
+        unreadCount: number;
+        notificationCount: number;
+        notifications: typeof result.notifications;
+      }
+    >();
+
+    for (const notification of result.notifications) {
+      const groupId = notification.societyId ?? 'GLOBAL';
+      const group = groupsById.get(groupId) ?? {
+        societyId: notification.societyId,
+        societyName: notification.societyId
+          ? societyNameById.get(notification.societyId) ?? 'Society'
+          : 'General',
+        unreadCount: 0,
+        notificationCount: 0,
+        notifications: [],
+      };
+
+      group.notificationCount += 1;
+      if (!notification.isRead) {
+        group.unreadCount += 1;
+      }
+      group.notifications.push(notification);
+      groupsById.set(groupId, group);
+    }
+
+    return {
+      groups: [...groupsById.values()],
+      pagination: result.pagination,
     };
   }
 

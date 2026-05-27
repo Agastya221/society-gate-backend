@@ -9,7 +9,10 @@ export interface AppEvents {
   'entry-request.created': {
     entryRequestId: string;
     flatId: string;
+    flatIds: string[];
+    flats: { flatId: string; flatNumber: string; blockName: string | null }[];
     societyId: string;
+    societyName?: string;
     guardId: string;
     visitorName?: string;
     providerTag?: string;
@@ -18,6 +21,8 @@ export interface AppEvents {
   'entry-request.approved': {
     entryRequestId: string;
     flatId: string;
+    flatIds: string[];
+    flats: { flatId: string; flatNumber: string; blockName: string | null }[];
     societyId: string;
     guardId: string;
     visitorName: string;
@@ -28,6 +33,8 @@ export interface AppEvents {
   'entry-request.rejected': {
     entryRequestId: string;
     flatId: string;
+    flatIds: string[];
+    flats: { flatId: string; flatNumber: string; blockName: string | null }[];
     societyId: string;
     guardId: string;
     visitorName: string;

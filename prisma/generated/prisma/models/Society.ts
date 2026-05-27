@@ -461,6 +461,7 @@ export type SocietyWhereInput = {
   onboardingRequests?: Prisma.OnboardingRequestListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   entryRequests?: Prisma.EntryRequestListRelationFilter
+  entryRequestTargets?: Prisma.EntryRequestTargetListRelationFilter
   guestInvites?: Prisma.GuestInviteListRelationFilter
   partyInvites?: Prisma.PartyInviteListRelationFilter
   guestEntryLogs?: Prisma.GuestEntryLogListRelationFilter
@@ -533,6 +534,7 @@ export type SocietyOrderByWithRelationInput = {
   onboardingRequests?: Prisma.OnboardingRequestOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   entryRequests?: Prisma.EntryRequestOrderByRelationAggregateInput
+  entryRequestTargets?: Prisma.EntryRequestTargetOrderByRelationAggregateInput
   guestInvites?: Prisma.GuestInviteOrderByRelationAggregateInput
   partyInvites?: Prisma.PartyInviteOrderByRelationAggregateInput
   guestEntryLogs?: Prisma.GuestEntryLogOrderByRelationAggregateInput
@@ -608,6 +610,7 @@ export type SocietyWhereUniqueInput = Prisma.AtLeast<{
   onboardingRequests?: Prisma.OnboardingRequestListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   entryRequests?: Prisma.EntryRequestListRelationFilter
+  entryRequestTargets?: Prisma.EntryRequestTargetListRelationFilter
   guestInvites?: Prisma.GuestInviteListRelationFilter
   partyInvites?: Prisma.PartyInviteListRelationFilter
   guestEntryLogs?: Prisma.GuestEntryLogListRelationFilter
@@ -758,6 +761,7 @@ export type SocietyCreateInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -830,6 +834,7 @@ export type SocietyUncheckedCreateInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -902,6 +907,7 @@ export type SocietyUpdateInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -974,6 +980,7 @@ export type SocietyUncheckedUpdateInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -1794,6 +1801,20 @@ export type SocietyUpdateOneRequiredWithoutEntryRequestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutEntryRequestsInput, Prisma.SocietyUpdateWithoutEntryRequestsInput>, Prisma.SocietyUncheckedUpdateWithoutEntryRequestsInput>
 }
 
+export type SocietyCreateNestedOneWithoutEntryRequestTargetsInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutEntryRequestTargetsInput, Prisma.SocietyUncheckedCreateWithoutEntryRequestTargetsInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutEntryRequestTargetsInput
+  connect?: Prisma.SocietyWhereUniqueInput
+}
+
+export type SocietyUpdateOneRequiredWithoutEntryRequestTargetsNestedInput = {
+  create?: Prisma.XOR<Prisma.SocietyCreateWithoutEntryRequestTargetsInput, Prisma.SocietyUncheckedCreateWithoutEntryRequestTargetsInput>
+  connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutEntryRequestTargetsInput
+  upsert?: Prisma.SocietyUpsertWithoutEntryRequestTargetsInput
+  connect?: Prisma.SocietyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SocietyUpdateToOneWithWhereWithoutEntryRequestTargetsInput, Prisma.SocietyUpdateWithoutEntryRequestTargetsInput>, Prisma.SocietyUncheckedUpdateWithoutEntryRequestTargetsInput>
+}
+
 export type SocietyCreateNestedOneWithoutPreApprovedEntriesInput = {
   create?: Prisma.XOR<Prisma.SocietyCreateWithoutPreApprovedEntriesInput, Prisma.SocietyUncheckedCreateWithoutPreApprovedEntriesInput>
   connectOrCreate?: Prisma.SocietyCreateOrConnectWithoutPreApprovedEntriesInput
@@ -1862,6 +1883,7 @@ export type SocietyCreateWithoutInvoicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -1933,6 +1955,7 @@ export type SocietyUncheckedCreateWithoutInvoicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -2020,6 +2043,7 @@ export type SocietyUpdateWithoutInvoicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -2091,6 +2115,7 @@ export type SocietyUncheckedUpdateWithoutInvoicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -2162,6 +2187,7 @@ export type SocietyCreateWithoutRegistrationRequestInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -2233,6 +2259,7 @@ export type SocietyUncheckedCreateWithoutRegistrationRequestInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -2320,6 +2347,7 @@ export type SocietyUpdateWithoutRegistrationRequestInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -2391,6 +2419,7 @@ export type SocietyUncheckedUpdateWithoutRegistrationRequestInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -2461,6 +2490,7 @@ export type SocietyCreateWithoutGatePointsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -2532,6 +2562,7 @@ export type SocietyUncheckedCreateWithoutGatePointsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -2619,6 +2650,7 @@ export type SocietyUpdateWithoutGatePointsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -2690,6 +2722,7 @@ export type SocietyUncheckedUpdateWithoutGatePointsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -2761,6 +2794,7 @@ export type SocietyCreateWithoutBlocksInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -2832,6 +2866,7 @@ export type SocietyUncheckedCreateWithoutBlocksInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -2919,6 +2954,7 @@ export type SocietyUpdateWithoutBlocksInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -2990,6 +3026,7 @@ export type SocietyUncheckedUpdateWithoutBlocksInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -3061,6 +3098,7 @@ export type SocietyCreateWithoutFlatsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -3132,6 +3170,7 @@ export type SocietyUncheckedCreateWithoutFlatsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -3219,6 +3258,7 @@ export type SocietyUpdateWithoutFlatsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -3290,6 +3330,7 @@ export type SocietyUncheckedUpdateWithoutFlatsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -3361,6 +3402,7 @@ export type SocietyCreateWithoutUsersInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -3432,6 +3474,7 @@ export type SocietyUncheckedCreateWithoutUsersInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -3519,6 +3562,7 @@ export type SocietyUpdateWithoutUsersInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -3590,6 +3634,7 @@ export type SocietyUncheckedUpdateWithoutUsersInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -3662,6 +3707,7 @@ export type SocietyCreateWithoutFlatMembershipsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -3733,6 +3779,7 @@ export type SocietyUncheckedCreateWithoutFlatMembershipsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -3820,6 +3867,7 @@ export type SocietyUpdateWithoutFlatMembershipsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -3891,6 +3939,7 @@ export type SocietyUncheckedUpdateWithoutFlatMembershipsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -3961,6 +4010,7 @@ export type SocietyCreateWithoutEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -4032,6 +4082,7 @@ export type SocietyUncheckedCreateWithoutEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -4119,6 +4170,7 @@ export type SocietyUpdateWithoutEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -4190,6 +4242,7 @@ export type SocietyUncheckedUpdateWithoutEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -4262,6 +4315,7 @@ export type SocietyCreateWithoutGuestInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
   registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
@@ -4333,6 +4387,7 @@ export type SocietyUncheckedCreateWithoutGuestInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
@@ -4420,6 +4475,7 @@ export type SocietyUpdateWithoutGuestInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
@@ -4491,6 +4547,7 @@ export type SocietyUncheckedUpdateWithoutGuestInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
@@ -4562,6 +4619,7 @@ export type SocietyCreateWithoutPartyInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
   registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
@@ -4633,6 +4691,7 @@ export type SocietyUncheckedCreateWithoutPartyInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
@@ -4720,6 +4779,7 @@ export type SocietyUpdateWithoutPartyInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
@@ -4791,6 +4851,7 @@ export type SocietyUncheckedUpdateWithoutPartyInvitesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
@@ -4862,6 +4923,7 @@ export type SocietyCreateWithoutGuestEntryLogsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
@@ -4933,6 +4995,7 @@ export type SocietyUncheckedCreateWithoutGuestEntryLogsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
@@ -5020,6 +5083,7 @@ export type SocietyUpdateWithoutGuestEntryLogsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
@@ -5091,6 +5155,7 @@ export type SocietyUncheckedUpdateWithoutGuestEntryLogsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
@@ -5161,6 +5226,7 @@ export type SocietyCreateWithoutDomesticStaffInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -5232,6 +5298,7 @@ export type SocietyUncheckedCreateWithoutDomesticStaffInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -5319,6 +5386,7 @@ export type SocietyUpdateWithoutDomesticStaffInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -5390,6 +5458,7 @@ export type SocietyUncheckedUpdateWithoutDomesticStaffInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -5461,6 +5530,7 @@ export type SocietyCreateWithoutStaffAttendanceInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -5532,6 +5602,7 @@ export type SocietyUncheckedCreateWithoutStaffAttendanceInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -5619,6 +5690,7 @@ export type SocietyUpdateWithoutStaffAttendanceInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -5690,6 +5762,7 @@ export type SocietyUncheckedUpdateWithoutStaffAttendanceInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -5761,6 +5834,7 @@ export type SocietyCreateWithoutStaffBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -5832,6 +5906,7 @@ export type SocietyUncheckedCreateWithoutStaffBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -5919,6 +5994,7 @@ export type SocietyUpdateWithoutStaffBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -5990,6 +6066,7 @@ export type SocietyUncheckedUpdateWithoutStaffBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -6061,6 +6138,7 @@ export type SocietyCreateWithoutVehiclesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -6132,6 +6210,7 @@ export type SocietyUncheckedCreateWithoutVehiclesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -6219,6 +6298,7 @@ export type SocietyUpdateWithoutVehiclesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -6290,6 +6370,7 @@ export type SocietyUncheckedUpdateWithoutVehiclesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -6362,6 +6443,7 @@ export type SocietyCreateWithoutParkingViolationsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -6433,6 +6515,7 @@ export type SocietyUncheckedCreateWithoutParkingViolationsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -6520,6 +6603,7 @@ export type SocietyUpdateWithoutParkingViolationsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -6591,6 +6675,7 @@ export type SocietyUncheckedUpdateWithoutParkingViolationsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -6661,6 +6746,7 @@ export type SocietyCreateWithoutVisitorFrequenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -6732,6 +6818,7 @@ export type SocietyUncheckedCreateWithoutVisitorFrequenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -6819,6 +6906,7 @@ export type SocietyUpdateWithoutVisitorFrequenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -6890,6 +6978,7 @@ export type SocietyUncheckedUpdateWithoutVisitorFrequenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -6961,6 +7050,7 @@ export type SocietyCreateWithoutPaymentRemindersInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -7032,6 +7122,7 @@ export type SocietyUncheckedCreateWithoutPaymentRemindersInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -7119,6 +7210,7 @@ export type SocietyUpdateWithoutPaymentRemindersInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -7190,6 +7282,7 @@ export type SocietyUncheckedUpdateWithoutPaymentRemindersInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -7261,6 +7354,7 @@ export type SocietyCreateWithoutGatePassesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -7332,6 +7426,7 @@ export type SocietyUncheckedCreateWithoutGatePassesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -7419,6 +7514,7 @@ export type SocietyUpdateWithoutGatePassesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -7490,6 +7586,7 @@ export type SocietyUncheckedUpdateWithoutGatePassesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -7561,6 +7658,7 @@ export type SocietyCreateWithoutNoticesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -7632,6 +7730,7 @@ export type SocietyUncheckedCreateWithoutNoticesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -7719,6 +7818,7 @@ export type SocietyUpdateWithoutNoticesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -7790,6 +7890,7 @@ export type SocietyUncheckedUpdateWithoutNoticesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -7861,6 +7962,7 @@ export type SocietyCreateWithoutAmenitiesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -7932,6 +8034,7 @@ export type SocietyUncheckedCreateWithoutAmenitiesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -8019,6 +8122,7 @@ export type SocietyUpdateWithoutAmenitiesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -8090,6 +8194,7 @@ export type SocietyUncheckedUpdateWithoutAmenitiesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -8161,6 +8266,7 @@ export type SocietyCreateWithoutAmenityBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -8232,6 +8338,7 @@ export type SocietyUncheckedCreateWithoutAmenityBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -8319,6 +8426,7 @@ export type SocietyUpdateWithoutAmenityBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -8390,6 +8498,7 @@ export type SocietyUncheckedUpdateWithoutAmenityBookingsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -8461,6 +8570,7 @@ export type SocietyCreateWithoutComplaintsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -8532,6 +8642,7 @@ export type SocietyUncheckedCreateWithoutComplaintsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -8619,6 +8730,7 @@ export type SocietyUpdateWithoutComplaintsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -8690,6 +8802,7 @@ export type SocietyUncheckedUpdateWithoutComplaintsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -8761,6 +8874,7 @@ export type SocietyCreateWithoutEmergenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -8832,6 +8946,7 @@ export type SocietyUncheckedCreateWithoutEmergenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -8919,6 +9034,7 @@ export type SocietyUpdateWithoutEmergenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -8990,6 +9106,7 @@ export type SocietyUncheckedUpdateWithoutEmergenciesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -9061,6 +9178,7 @@ export type SocietyCreateWithoutVendorsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -9132,6 +9250,7 @@ export type SocietyUncheckedCreateWithoutVendorsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -9219,6 +9338,7 @@ export type SocietyUpdateWithoutVendorsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -9290,6 +9410,7 @@ export type SocietyUncheckedUpdateWithoutVendorsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -9362,6 +9483,7 @@ export type SocietyCreateWithoutCommunityPostsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -9433,6 +9555,7 @@ export type SocietyUncheckedCreateWithoutCommunityPostsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -9520,6 +9643,7 @@ export type SocietyUpdateWithoutCommunityPostsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -9591,6 +9715,7 @@ export type SocietyUncheckedUpdateWithoutCommunityPostsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -9662,6 +9787,7 @@ export type SocietyCreateWithoutPostCommentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -9733,6 +9859,7 @@ export type SocietyUncheckedCreateWithoutPostCommentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -9820,6 +9947,7 @@ export type SocietyUpdateWithoutPostCommentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -9891,6 +10019,7 @@ export type SocietyUncheckedUpdateWithoutPostCommentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -9962,6 +10091,7 @@ export type SocietyCreateWithoutSocietyDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -10033,6 +10163,7 @@ export type SocietyUncheckedCreateWithoutSocietyDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -10120,6 +10251,7 @@ export type SocietyUpdateWithoutSocietyDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -10191,6 +10323,7 @@ export type SocietyUncheckedUpdateWithoutSocietyDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -10262,6 +10395,7 @@ export type SocietyCreateWithoutOnboardingDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -10333,6 +10467,7 @@ export type SocietyUncheckedCreateWithoutOnboardingDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -10420,6 +10555,7 @@ export type SocietyUpdateWithoutOnboardingDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -10491,6 +10627,7 @@ export type SocietyUncheckedUpdateWithoutOnboardingDocumentsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -10562,6 +10699,7 @@ export type SocietyCreateWithoutImportBatchesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -10633,6 +10771,7 @@ export type SocietyUncheckedCreateWithoutImportBatchesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -10720,6 +10859,7 @@ export type SocietyUpdateWithoutImportBatchesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -10791,6 +10931,7 @@ export type SocietyUncheckedUpdateWithoutImportBatchesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -10862,6 +11003,7 @@ export type SocietyCreateWithoutRuleConfigInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -10933,6 +11075,7 @@ export type SocietyUncheckedCreateWithoutRuleConfigInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -11020,6 +11163,7 @@ export type SocietyUpdateWithoutRuleConfigInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -11091,6 +11235,7 @@ export type SocietyUncheckedUpdateWithoutRuleConfigInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -11162,6 +11307,7 @@ export type SocietyCreateWithoutGateDevicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -11233,6 +11379,7 @@ export type SocietyUncheckedCreateWithoutGateDevicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -11320,6 +11467,7 @@ export type SocietyUpdateWithoutGateDevicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -11391,6 +11539,7 @@ export type SocietyUncheckedUpdateWithoutGateDevicesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -11462,6 +11611,7 @@ export type SocietyCreateWithoutPollsInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -11533,6 +11683,7 @@ export type SocietyUncheckedCreateWithoutPollsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -11620,6 +11771,7 @@ export type SocietyUpdateWithoutPollsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -11691,6 +11843,7 @@ export type SocietyUncheckedUpdateWithoutPollsInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -11761,6 +11914,7 @@ export type SocietyCreateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -11832,6 +11986,7 @@ export type SocietyUncheckedCreateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -11919,6 +12074,7 @@ export type SocietyUpdateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -11990,6 +12146,7 @@ export type SocietyUncheckedUpdateWithoutOnboardingRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -12061,6 +12218,7 @@ export type SocietyCreateWithoutNotificationsInput = {
   staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -12132,6 +12290,7 @@ export type SocietyUncheckedCreateWithoutNotificationsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -12219,6 +12378,7 @@ export type SocietyUpdateWithoutNotificationsInput = {
   staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -12290,6 +12450,7 @@ export type SocietyUncheckedUpdateWithoutNotificationsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -12361,6 +12522,7 @@ export type SocietyCreateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -12432,6 +12594,7 @@ export type SocietyUncheckedCreateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -12519,6 +12682,7 @@ export type SocietyUpdateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -12590,6 +12754,311 @@ export type SocietyUncheckedUpdateWithoutEntryRequestsInput = {
   staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUncheckedUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUncheckedUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyCreateWithoutEntryRequestTargetsInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyUncheckedCreateWithoutEntryRequestTargetsInput = {
+  id?: string
+  name: string
+  registeredName?: string | null
+  registrationNumber?: string | null
+  address: string
+  city: string
+  state: string
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string | null
+  logoKey?: string | null
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  bankAccountNumber?: string | null
+  bankIfsc?: string | null
+  bankBranchName?: string | null
+  panNumber?: string | null
+  gstin?: string | null
+  maintenanceBillingType?: $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: number
+  isActive?: boolean
+  onboardingStatus?: $Enums.SocietyOnboardingStatus
+  monthlyFee?: number
+  subscriptionCycle?: $Enums.SubscriptionCycle
+  lastPaidDate?: Date | string | null
+  nextDueDate: Date | string
+  paymentStatus?: $Enums.PaymentStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutSocietyInput
+  blocks?: Prisma.BlockUncheckedCreateNestedManyWithoutSocietyInput
+  flats?: Prisma.FlatUncheckedCreateNestedManyWithoutSocietyInput
+  entries?: Prisma.EntryUncheckedCreateNestedManyWithoutSocietyInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedCreateNestedManyWithoutSocietyInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutSocietyInput
+  gatePoints?: Prisma.GatePointUncheckedCreateNestedManyWithoutSocietyInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedCreateNestedManyWithoutSocietyInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedCreateNestedManyWithoutSocietyInput
+  gatePasses?: Prisma.GatePassUncheckedCreateNestedManyWithoutSocietyInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutSocietyInput
+  amenities?: Prisma.AmenityUncheckedCreateNestedManyWithoutSocietyInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedCreateNestedManyWithoutSocietyInput
+  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutSocietyInput
+  emergencies?: Prisma.EmergencyUncheckedCreateNestedManyWithoutSocietyInput
+  vendors?: Prisma.VendorUncheckedCreateNestedManyWithoutSocietyInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedCreateNestedManyWithoutSocietyInput
+  staffBookings?: Prisma.StaffBookingUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
+  partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
+  guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUncheckedCreateNestedOneWithoutSocietyInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUncheckedCreateNestedManyWithoutSocietyInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutSocietyInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutSocietyInput
+  societyDocuments?: Prisma.SocietyDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutSocietyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutSocietyInput
+  parkingViolations?: Prisma.ParkingViolationUncheckedCreateNestedManyWithoutSocietyInput
+  flatMemberships?: Prisma.UserFlatMembershipUncheckedCreateNestedManyWithoutSocietyInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUncheckedCreateNestedManyWithoutSocietyInput
+  importBatches?: Prisma.SocietyImportBatchUncheckedCreateNestedManyWithoutSocietyInput
+  ruleConfig?: Prisma.SocietyRuleConfigUncheckedCreateNestedOneWithoutSocietyInput
+  gateDevices?: Prisma.GateDeviceUncheckedCreateNestedManyWithoutSocietyInput
+}
+
+export type SocietyCreateOrConnectWithoutEntryRequestTargetsInput = {
+  where: Prisma.SocietyWhereUniqueInput
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutEntryRequestTargetsInput, Prisma.SocietyUncheckedCreateWithoutEntryRequestTargetsInput>
+}
+
+export type SocietyUpsertWithoutEntryRequestTargetsInput = {
+  update: Prisma.XOR<Prisma.SocietyUpdateWithoutEntryRequestTargetsInput, Prisma.SocietyUncheckedUpdateWithoutEntryRequestTargetsInput>
+  create: Prisma.XOR<Prisma.SocietyCreateWithoutEntryRequestTargetsInput, Prisma.SocietyUncheckedCreateWithoutEntryRequestTargetsInput>
+  where?: Prisma.SocietyWhereInput
+}
+
+export type SocietyUpdateToOneWithWhereWithoutEntryRequestTargetsInput = {
+  where?: Prisma.SocietyWhereInput
+  data: Prisma.XOR<Prisma.SocietyUpdateWithoutEntryRequestTargetsInput, Prisma.SocietyUncheckedUpdateWithoutEntryRequestTargetsInput>
+}
+
+export type SocietyUpdateWithoutEntryRequestTargetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
+  partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
+  guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
+  registrationRequest?: Prisma.SocietyRegistrationRequestUpdateOneWithoutSocietyNestedInput
+  preApprovedEntries?: Prisma.PreApprovedEntryUpdateManyWithoutSocietyNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutSocietyNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutSocietyNestedInput
+  societyDocuments?: Prisma.SocietyDocumentUpdateManyWithoutSocietyNestedInput
+  polls?: Prisma.PollUpdateManyWithoutSocietyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutSocietyNestedInput
+  parkingViolations?: Prisma.ParkingViolationUpdateManyWithoutSocietyNestedInput
+  flatMemberships?: Prisma.UserFlatMembershipUpdateManyWithoutSocietyNestedInput
+  onboardingDocuments?: Prisma.SocietyOnboardingDocumentUpdateManyWithoutSocietyNestedInput
+  importBatches?: Prisma.SocietyImportBatchUpdateManyWithoutSocietyNestedInput
+  ruleConfig?: Prisma.SocietyRuleConfigUpdateOneWithoutSocietyNestedInput
+  gateDevices?: Prisma.GateDeviceUpdateManyWithoutSocietyNestedInput
+}
+
+export type SocietyUncheckedUpdateWithoutEntryRequestTargetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  registeredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.StringFieldUpdateOperationsInput | string
+  pincode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankAccountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankIfsc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankBranchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceBillingType?: Prisma.EnumMaintenanceBillingTypeFieldUpdateOperationsInput | $Enums.MaintenanceBillingType
+  maintenanceBillingConfig?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  totalFlats?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingStatus?: Prisma.EnumSocietyOnboardingStatusFieldUpdateOperationsInput | $Enums.SocietyOnboardingStatus
+  monthlyFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  subscriptionCycle?: Prisma.EnumSubscriptionCycleFieldUpdateOperationsInput | $Enums.SubscriptionCycle
+  lastPaidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutSocietyNestedInput
+  blocks?: Prisma.BlockUncheckedUpdateManyWithoutSocietyNestedInput
+  flats?: Prisma.FlatUncheckedUpdateManyWithoutSocietyNestedInput
+  entries?: Prisma.EntryUncheckedUpdateManyWithoutSocietyNestedInput
+  domesticStaff?: Prisma.DomesticStaffUncheckedUpdateManyWithoutSocietyNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePoints?: Prisma.GatePointUncheckedUpdateManyWithoutSocietyNestedInput
+  visitorFrequencies?: Prisma.VisitorFrequencyUncheckedUpdateManyWithoutSocietyNestedInput
+  paymentReminders?: Prisma.PaymentReminderUncheckedUpdateManyWithoutSocietyNestedInput
+  gatePasses?: Prisma.GatePassUncheckedUpdateManyWithoutSocietyNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutSocietyNestedInput
+  amenities?: Prisma.AmenityUncheckedUpdateManyWithoutSocietyNestedInput
+  amenityBookings?: Prisma.AmenityBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutSocietyNestedInput
+  emergencies?: Prisma.EmergencyUncheckedUpdateManyWithoutSocietyNestedInput
+  vendors?: Prisma.VendorUncheckedUpdateManyWithoutSocietyNestedInput
+  staffAttendance?: Prisma.StaffAttendanceUncheckedUpdateManyWithoutSocietyNestedInput
+  staffBookings?: Prisma.StaffBookingUncheckedUpdateManyWithoutSocietyNestedInput
+  onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -12662,6 +13131,7 @@ export type SocietyCreateWithoutPreApprovedEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogCreateNestedManyWithoutSocietyInput
@@ -12733,6 +13203,7 @@ export type SocietyUncheckedCreateWithoutPreApprovedEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedCreateNestedManyWithoutSocietyInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutSocietyInput
   entryRequests?: Prisma.EntryRequestUncheckedCreateNestedManyWithoutSocietyInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedCreateNestedManyWithoutSocietyInput
   guestInvites?: Prisma.GuestInviteUncheckedCreateNestedManyWithoutSocietyInput
   partyInvites?: Prisma.PartyInviteUncheckedCreateNestedManyWithoutSocietyInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedCreateNestedManyWithoutSocietyInput
@@ -12820,6 +13291,7 @@ export type SocietyUpdateWithoutPreApprovedEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUpdateManyWithoutSocietyNestedInput
@@ -12891,6 +13363,7 @@ export type SocietyUncheckedUpdateWithoutPreApprovedEntriesInput = {
   onboardingRequests?: Prisma.OnboardingRequestUncheckedUpdateManyWithoutSocietyNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutSocietyNestedInput
   entryRequests?: Prisma.EntryRequestUncheckedUpdateManyWithoutSocietyNestedInput
+  entryRequestTargets?: Prisma.EntryRequestTargetUncheckedUpdateManyWithoutSocietyNestedInput
   guestInvites?: Prisma.GuestInviteUncheckedUpdateManyWithoutSocietyNestedInput
   partyInvites?: Prisma.PartyInviteUncheckedUpdateManyWithoutSocietyNestedInput
   guestEntryLogs?: Prisma.GuestEntryLogUncheckedUpdateManyWithoutSocietyNestedInput
@@ -12935,6 +13408,7 @@ export type SocietyCountOutputType = {
   onboardingRequests: number
   notifications: number
   entryRequests: number
+  entryRequestTargets: number
   guestInvites: number
   partyInvites: number
   guestEntryLogs: number
@@ -12973,6 +13447,7 @@ export type SocietyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   onboardingRequests?: boolean | SocietyCountOutputTypeCountOnboardingRequestsArgs
   notifications?: boolean | SocietyCountOutputTypeCountNotificationsArgs
   entryRequests?: boolean | SocietyCountOutputTypeCountEntryRequestsArgs
+  entryRequestTargets?: boolean | SocietyCountOutputTypeCountEntryRequestTargetsArgs
   guestInvites?: boolean | SocietyCountOutputTypeCountGuestInvitesArgs
   partyInvites?: boolean | SocietyCountOutputTypeCountPartyInvitesArgs
   guestEntryLogs?: boolean | SocietyCountOutputTypeCountGuestEntryLogsArgs
@@ -13149,6 +13624,13 @@ export type SocietyCountOutputTypeCountEntryRequestsArgs<ExtArgs extends runtime
 /**
  * SocietyCountOutputType without action
  */
+export type SocietyCountOutputTypeCountEntryRequestTargetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EntryRequestTargetWhereInput
+}
+
+/**
+ * SocietyCountOutputType without action
+ */
 export type SocietyCountOutputTypeCountGuestInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.GuestInviteWhereInput
 }
@@ -13299,6 +13781,7 @@ export type SocietySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   onboardingRequests?: boolean | Prisma.Society$onboardingRequestsArgs<ExtArgs>
   notifications?: boolean | Prisma.Society$notificationsArgs<ExtArgs>
   entryRequests?: boolean | Prisma.Society$entryRequestsArgs<ExtArgs>
+  entryRequestTargets?: boolean | Prisma.Society$entryRequestTargetsArgs<ExtArgs>
   guestInvites?: boolean | Prisma.Society$guestInvitesArgs<ExtArgs>
   partyInvites?: boolean | Prisma.Society$partyInvitesArgs<ExtArgs>
   guestEntryLogs?: boolean | Prisma.Society$guestEntryLogsArgs<ExtArgs>
@@ -13446,6 +13929,7 @@ export type SocietyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   onboardingRequests?: boolean | Prisma.Society$onboardingRequestsArgs<ExtArgs>
   notifications?: boolean | Prisma.Society$notificationsArgs<ExtArgs>
   entryRequests?: boolean | Prisma.Society$entryRequestsArgs<ExtArgs>
+  entryRequestTargets?: boolean | Prisma.Society$entryRequestTargetsArgs<ExtArgs>
   guestInvites?: boolean | Prisma.Society$guestInvitesArgs<ExtArgs>
   partyInvites?: boolean | Prisma.Society$partyInvitesArgs<ExtArgs>
   guestEntryLogs?: boolean | Prisma.Society$guestEntryLogsArgs<ExtArgs>
@@ -13491,6 +13975,7 @@ export type $SocietyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     onboardingRequests: Prisma.$OnboardingRequestPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     entryRequests: Prisma.$EntryRequestPayload<ExtArgs>[]
+    entryRequestTargets: Prisma.$EntryRequestTargetPayload<ExtArgs>[]
     guestInvites: Prisma.$GuestInvitePayload<ExtArgs>[]
     partyInvites: Prisma.$PartyInvitePayload<ExtArgs>[]
     guestEntryLogs: Prisma.$GuestEntryLogPayload<ExtArgs>[]
@@ -13956,6 +14441,7 @@ export interface Prisma__SocietyClient<T, Null = never, ExtArgs extends runtime.
   onboardingRequests<T extends Prisma.Society$onboardingRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$onboardingRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.Society$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   entryRequests<T extends Prisma.Society$entryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$entryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  entryRequestTargets<T extends Prisma.Society$entryRequestTargetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$entryRequestTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntryRequestTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   guestInvites<T extends Prisma.Society$guestInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$guestInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuestInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   partyInvites<T extends Prisma.Society$partyInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$partyInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartyInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   guestEntryLogs<T extends Prisma.Society$guestEntryLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Society$guestEntryLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuestEntryLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14922,6 +15408,30 @@ export type Society$entryRequestsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.EntryRequestScalarFieldEnum | Prisma.EntryRequestScalarFieldEnum[]
+}
+
+/**
+ * Society.entryRequestTargets
+ */
+export type Society$entryRequestTargetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EntryRequestTarget
+   */
+  select?: Prisma.EntryRequestTargetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EntryRequestTarget
+   */
+  omit?: Prisma.EntryRequestTargetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EntryRequestTargetInclude<ExtArgs> | null
+  where?: Prisma.EntryRequestTargetWhereInput
+  orderBy?: Prisma.EntryRequestTargetOrderByWithRelationInput | Prisma.EntryRequestTargetOrderByWithRelationInput[]
+  cursor?: Prisma.EntryRequestTargetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EntryRequestTargetScalarFieldEnum | Prisma.EntryRequestTargetScalarFieldEnum[]
 }
 
 /**

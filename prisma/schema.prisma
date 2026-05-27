@@ -531,6 +531,7 @@ model Society {
   onboardingRequests  OnboardingRequest[]
   notifications       Notification[]
   entryRequests       EntryRequest[]
+  entryRequestTargets EntryRequestTarget[]
   guestInvites        GuestInvite[]
   partyInvites        PartyInvite[]
   guestEntryLogs      GuestEntryLog[]
@@ -770,6 +771,7 @@ model Flat {
   staffReviews         StaffReview[]
   onboardingRequests   OnboardingRequest[]
   entryRequests        EntryRequest[]
+  entryRequestTargets  EntryRequestTarget[]
   guestInvites         GuestInvite[]
   partyInvites         PartyInvite[]
   preApprovedEntries   PreApprovedEntry[]
@@ -996,7 +998,8 @@ model Entry {
   rejectionReason String?
 
   // Entry Request reference (if created from EntryRequest approval)
-  entryRequest EntryRequest?
+  entryRequest        EntryRequest?
+  entryRequestTargets EntryRequestTarget[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2427,6 +2430,8 @@ model EntryRequest {
   entryId String? @unique
   entry   Entry?  @relation(fields: [entryId], references: [id])
 
+  targets EntryRequestTarget[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -2434,6 +2439,29 @@ model EntryRequest {
   @@index([guardId, status])
   @@index([societyId, status])
   @@index([status, expiresAt])
+}
+
+model EntryRequestTarget {
+  id String @id @default(uuid())
+
+  entryRequestId String
+  entryRequest   EntryRequest @relation(fields: [entryRequestId], references: [id], onDelete: Cascade)
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  entryId String? @unique
+  entry   Entry?  @relation(fields: [entryId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@unique([entryRequestId, flatId])
+  @@index([entryRequestId])
+  @@index([flatId])
+  @@index([societyId, flatId])
 }
 
 // --------------------

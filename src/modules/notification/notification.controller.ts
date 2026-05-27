@@ -10,12 +10,40 @@ const notificationService = new NotificationService();
 export const getNotifications = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const { page, limit, unreadOnly } = req.query;
+    const { page, limit, unreadOnly, societyId } = req.query;
 
     const result = await notificationService.getUserNotifications(userId, {
       page: page ? parseInt(page as string, 10) : undefined,
       limit: limit ? parseInt(limit as string, 10) : undefined,
       unreadOnly: unreadOnly === 'true',
+      societyId: societyId as string | undefined,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};
+
+/**
+ * Get user's global notifications grouped by society
+ */
+export const getGroupedNotifications = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const { page, limit, unreadOnly, societyId } = req.query;
+
+    const result = await notificationService.getGroupedUserNotifications(userId, {
+      page: page ? parseInt(page as string, 10) : undefined,
+      limit: limit ? parseInt(limit as string, 10) : undefined,
+      unreadOnly: unreadOnly === 'true',
+      societyId: societyId as string | undefined,
     });
 
     res.status(200).json({
