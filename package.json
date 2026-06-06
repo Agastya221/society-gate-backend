@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev  src/server.ts",
     "build": "npx prisma generate && tsc",
-    "prestart": "npx prisma migrate deploy",
     "start": "node dist/src/server.js",
+    "start:with-migrations": "npm run db:migrate:deploy && node dist/src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate:deploy": "npx prisma migrate deploy",
     "seed": "ts-node prisma/seed.ts",
