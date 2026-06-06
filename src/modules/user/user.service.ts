@@ -462,6 +462,37 @@ export class UserService {
           },
           orderBy: { createdAt: 'asc' },
         },
+        onboardingRequests: {
+          where: {
+            status: {
+              in: ['DRAFT', 'PENDING_DOCS', 'PENDING_APPROVAL', 'RESUBMIT_REQUESTED', 'REJECTED'],
+            },
+          },
+          include: {
+            society: {
+              select: {
+                id: true,
+                name: true,
+                city: true,
+                isActive: true,
+              },
+            },
+            block: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            flat: {
+              select: {
+                id: true,
+                flatNumber: true,
+                floor: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
 
@@ -506,6 +537,42 @@ export class UserService {
       };
     });
 
+    const approvedMembershipKeys = new Set(
+      contexts
+        .filter((context) => context.flatId)
+        .map((context) => `${context.societyId}:${context.flatId}`)
+    );
+
+    const requests = user.onboardingRequests
+      .filter((request) => !approvedMembershipKeys.has(`${request.societyId}:${request.flatId}`))
+      .map((request) => {
+        const label = [request.block?.name, request.flat?.flatNumber].filter(Boolean).join(' - ');
+
+        return {
+          requestId: request.id,
+          societyId: request.societyId,
+          societyName: request.society.name,
+          societyCity: request.society.city,
+          societyIsActive: request.society.isActive,
+          flatId: request.flatId,
+          flatNumber: request.flat.flatNumber,
+          blockId: request.blockId,
+          blockName: request.block.name,
+          floor: request.flat.floor,
+          label,
+          subtitle: request.society.name,
+          status: request.status,
+          residentType: request.residentType,
+          isLivingHere: request.isLivingHere,
+          submittedAt: request.submittedAt,
+          reviewedAt: request.reviewedAt,
+          rejectedAt: request.rejectedAt,
+          rejectionReason: request.rejectionReason,
+          resubmitReason: request.resubmitReason,
+          canSwitch: false,
+        };
+      });
+
     const societies = contexts.reduce<Array<{
       societyId: string;
       societyName: string;
@@ -529,6 +596,7 @@ export class UserService {
     return {
       activeContext: contexts.find((context) => context.isActiveContext) ?? null,
       contexts,
+      requests,
       societies,
     };
   }
