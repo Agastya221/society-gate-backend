@@ -608,7 +608,11 @@ eventBus.on('onboarding.submitted', async (payload) => {
       referenceId: payload.requestId,
       referenceType: 'OnboardingRequest',
       data: {
+        type: 'ONBOARDING_STATUS',
+        screen: 'AdminOnboardingRequests',
+        route: '/(admin)/onboarding-requests',
         requestId: payload.requestId,
+        status: 'PENDING_APPROVAL',
         residentType: payload.residentType,
         flatNumber: payload.flatNumber,
         blockName: payload.blockName,

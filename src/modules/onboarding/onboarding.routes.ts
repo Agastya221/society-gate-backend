@@ -44,7 +44,7 @@ router.get(
     '/admin/pending',
     authenticateResidentApp,
     authorize('ADMIN', 'SUPER_ADMIN'),
-    cache({ ttl: 60, keyPrefix: 'onboarding', varyBy: ['societyId'] }),
+    cache({ ttl: 60, keyPrefix: 'onboarding', varyBy: ['societyId', 'status', 'residentType', 'page', 'limit'] }),
     onboardingController.listPendingRequests
 );
 
