@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import { OnboardingController } from './onboarding.controller';
-import { authenticateForOnboarding, authenticateResidentApp, authorize } from '../../middlewares/auth.middleware';
+import {
+    authenticateForOnboarding,
+    authenticateResidentApp,
+    authenticateResidentForOnboarding,
+    authorize,
+} from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 
 const router = Router();
@@ -34,6 +39,22 @@ router.post('/request', authenticateForOnboarding, clearCacheAfter(['onboarding:
 
 // Get onboarding status
 router.get('/status', authenticateForOnboarding, cache({ ttl: 60, keyPrefix: 'onboarding', varyBy: ['userId'] }), onboardingController.getStatus);
+
+// Get one of my onboarding requests
+router.get(
+    '/requests/:requestId',
+    authenticateResidentForOnboarding,
+    cache({ ttl: 60, keyPrefix: 'onboarding:request', varyBy: ['userId', 'requestId'] }),
+    onboardingController.getMyRequestDetails
+);
+
+// Withdraw/delete one of my onboarding requests
+router.delete(
+    '/requests/:requestId',
+    authenticateResidentForOnboarding,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    onboardingController.deleteMyRequest
+);
 
 // ============================================
 // ADMIN ROUTES

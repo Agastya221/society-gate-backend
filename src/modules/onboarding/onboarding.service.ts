@@ -354,6 +354,132 @@ export class OnboardingService {
   }
 
   // ============================================
+  // RESIDENT: GET ONE OF MY REQUESTS
+  // ============================================
+  async getMyRequestDetails(userId: string, requestId: string) {
+    const request = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: requestId,
+        userId,
+      },
+      include: {
+        society: { select: { id: true, name: true, city: true, address: true } },
+        block: { select: { id: true, name: true } },
+        flat: { select: { id: true, flatNumber: true, floor: true } },
+        documents: {
+          select: {
+            id: true,
+            documentType: true,
+            documentUrl: true,
+            fileName: true,
+            fileSize: true,
+            mimeType: true,
+            uploadedAt: true,
+            isVerified: true,
+            verifiedAt: true,
+          },
+          orderBy: { uploadedAt: 'asc' },
+        },
+      },
+    });
+
+    if (!request) {
+      throw new AppError('Onboarding request not found', 404);
+    }
+
+    const statusMessages = {
+      DRAFT: 'Complete this application to send it for admin review.',
+      PENDING_DOCS: 'Upload the required documents to continue.',
+      PENDING_APPROVAL: 'Your request is under review by the society admin.',
+      RESUBMIT_REQUESTED: request.resubmitReason
+        ? `Admin requested resubmission: ${request.resubmitReason}`
+        : 'Admin requested more information before approval.',
+      APPROVED: 'This request has been approved.',
+      REJECTED: request.rejectionReason
+        ? `Rejected: ${request.rejectionReason}`
+        : 'This request was rejected by the society admin.',
+    };
+
+    return {
+      requestId: request.id,
+      societyId: request.societyId,
+      societyName: request.society.name,
+      societyCity: request.society.city,
+      societyAddress: request.society.address,
+      blockId: request.blockId,
+      blockName: request.block.name,
+      flatId: request.flatId,
+      flatNumber: request.flat.flatNumber,
+      floor: request.flat.floor,
+      label: [request.block.name, request.flat.flatNumber].filter(Boolean).join(' - '),
+      subtitle: request.society.name,
+      residentType: request.residentType,
+      isLivingHere: request.isLivingHere,
+      ownerOccupancy: request.residentType === 'OWNER'
+        ? request.isLivingHere ? 'RESIDING_OWNER' : 'NON_RESIDING_OWNER'
+        : null,
+      status: request.status,
+      message: statusMessages[request.status],
+      submittedAt: request.submittedAt,
+      reviewedAt: request.reviewedAt,
+      approvedAt: request.approvedAt,
+      rejectedAt: request.rejectedAt,
+      rejectionReason: request.rejectionReason,
+      resubmitReason: request.resubmitReason,
+      resubmissionCount: request.resubmissionCount,
+      canSwitch: false,
+      canDelete: request.status !== 'APPROVED',
+      canReapply: request.status === 'REJECTED',
+      canResubmit: request.status === 'RESUBMIT_REQUESTED',
+      documents: request.documents.map((doc) => ({
+        id: doc.id,
+        type: doc.documentType,
+        url: doc.documentUrl,
+        fileName: doc.fileName,
+        fileSize: doc.fileSize,
+        mimeType: doc.mimeType,
+        uploadedAt: doc.uploadedAt,
+        isVerified: doc.isVerified,
+        verifiedAt: doc.verifiedAt,
+      })),
+    };
+  }
+
+  // ============================================
+  // RESIDENT: DELETE / WITHDRAW ONE OF MY REQUESTS
+  // ============================================
+  async deleteMyRequest(userId: string, requestId: string) {
+    const request = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: requestId,
+        userId,
+      },
+      select: {
+        id: true,
+        status: true,
+      },
+    });
+
+    if (!request) {
+      throw new AppError('Onboarding request not found', 404);
+    }
+
+    if (request.status === 'APPROVED') {
+      throw new AppError('Approved flat memberships cannot be deleted from onboarding', 400);
+    }
+
+    await prisma.onboardingRequest.delete({
+      where: { id: request.id },
+    });
+
+    return {
+      requestId: request.id,
+      status: request.status,
+      deleted: true,
+    };
+  }
+
+  // ============================================
   // ADMIN: LIST PENDING REQUESTS
   // ============================================
   async listPendingRequests(

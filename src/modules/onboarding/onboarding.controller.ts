@@ -101,6 +101,37 @@ export class OnboardingController {
     });
 
     // ============================================
+    // RESIDENT: GET MY REQUEST DETAILS
+    // ============================================
+    getMyRequestDetails = asyncHandler(async (req: Request, res: Response) => {
+        const userId = req.user!.id;
+        const { requestId } = req.params;
+
+        const details = await onboardingService.getMyRequestDetails(userId, String(requestId));
+
+        res.json({
+            success: true,
+            data: details,
+        });
+    });
+
+    // ============================================
+    // RESIDENT: DELETE / WITHDRAW MY REQUEST
+    // ============================================
+    deleteMyRequest = asyncHandler(async (req: Request, res: Response) => {
+        const userId = req.user!.id;
+        const { requestId } = req.params;
+
+        const result = await onboardingService.deleteMyRequest(userId, String(requestId));
+
+        res.json({
+            success: true,
+            message: 'Onboarding request removed',
+            data: result,
+        });
+    });
+
+    // ============================================
     // ADMIN: LIST PENDING REQUESTS
     // ============================================
     listPendingRequests = asyncHandler(async (req: Request, res: Response) => {
