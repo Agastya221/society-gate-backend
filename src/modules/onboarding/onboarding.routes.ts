@@ -64,6 +64,14 @@ router.patch(
     onboardingController.resubmitMyRequest
 );
 
+// Reapply/update an existing rejected, resubmit, or incomplete request
+router.patch(
+    '/requests/:requestId/reapply',
+    authenticateResidentForOnboarding,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    onboardingController.reapplyMyRequest
+);
+
 // ============================================
 // ADMIN ROUTES
 // ============================================

@@ -165,6 +165,42 @@ export class OnboardingController {
     });
 
     // ============================================
+    // RESIDENT: REAPPLY / UPDATE MY REQUEST
+    // ============================================
+    reapplyMyRequest = asyncHandler(async (req: Request, res: Response) => {
+        const userId = req.user!.id;
+        const { requestId } = req.params;
+        const { societyId, blockId, flatId, residentType, isLivingHere, documents } = req.body;
+
+        if (!societyId || !blockId || !flatId || !residentType || !documents) {
+            throw new AppError('Missing required fields', 400);
+        }
+
+        if (!['OWNER', 'TENANT'].includes(residentType)) {
+            throw new AppError('Invalid resident type. Must be OWNER or TENANT', 400);
+        }
+
+        if (!Array.isArray(documents) || documents.length === 0) {
+            throw new AppError('At least one document is required', 400);
+        }
+
+        const result = await onboardingService.reapplyMyRequest(userId, String(requestId), {
+            societyId,
+            blockId,
+            flatId,
+            residentType,
+            isLivingHere,
+            documents,
+        });
+
+        res.json({
+            success: true,
+            message: 'Onboarding request updated and submitted successfully',
+            data: result,
+        });
+    });
+
+    // ============================================
     // ADMIN: LIST PENDING REQUESTS
     // ============================================
     listPendingRequests = asyncHandler(async (req: Request, res: Response) => {

@@ -600,6 +600,218 @@ export class OnboardingService {
   }
 
   // ============================================
+  // RESIDENT: REAPPLY / UPDATE AN EXISTING REQUEST
+  // ============================================
+  async reapplyMyRequest(
+    userId: string,
+    requestId: string,
+    data: {
+      societyId: string;
+      blockId: string;
+      flatId: string;
+      residentType: 'OWNER' | 'TENANT';
+      isLivingHere?: boolean;
+      documents: Array<{
+        type: DocumentType;
+        url?: string;
+        s3Key?: string;
+        fileName?: string;
+        fileSize?: number;
+        mimeType?: string;
+      }>;
+    }
+  ) {
+    const request = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: requestId,
+        userId,
+      },
+      include: {
+        society: true,
+        block: true,
+        flat: true,
+      },
+    });
+
+    if (!request) {
+      throw new AppError('Onboarding request not found', 404);
+    }
+
+    const allowedStatuses: OnboardingStatus[] = ['REJECTED', 'RESUBMIT_REQUESTED', 'DRAFT', 'PENDING_DOCS'];
+    if (!allowedStatuses.includes(request.status)) {
+      if (request.status === 'PENDING_APPROVAL') {
+        throw new AppError('This request is already pending approval. Withdraw it before changing details.', 400);
+      }
+      throw new AppError('This onboarding request cannot be reapplied', 400);
+    }
+
+    const targetFlat = await prisma.flat.findFirst({
+      where: {
+        id: data.flatId,
+        societyId: data.societyId,
+        blockId: data.blockId,
+        isActive: true,
+      },
+      include: {
+        society: true,
+        block: true,
+      },
+    });
+
+    if (!targetFlat) {
+      throw new AppError('Selected flat was not found in this society', 404);
+    }
+
+    const duplicateActiveRequest = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: { not: request.id },
+        userId,
+        societyId: data.societyId,
+        flatId: data.flatId,
+        status: {
+          in: ['DRAFT', 'PENDING_DOCS', 'PENDING_APPROVAL', 'RESUBMIT_REQUESTED'],
+        },
+      },
+    });
+
+    if (duplicateActiveRequest) {
+      throw new AppError('You already have an active onboarding request for this flat', 400);
+    }
+
+    const existingMembership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId,
+        societyId: data.societyId,
+        flatId: data.flatId,
+        isActive: true,
+      },
+    });
+
+    if (existingMembership) {
+      throw new AppError('You are already linked to this flat', 400);
+    }
+
+    if (data.residentType === 'OWNER') {
+      const existingOwner = await prisma.onboardingRequest.findFirst({
+        where: {
+          id: { not: request.id },
+          flatId: data.flatId,
+          residentType: 'OWNER',
+          status: { in: ['PENDING_APPROVAL', 'RESUBMIT_REQUESTED', 'APPROVED'] },
+        },
+      });
+
+      if (existingOwner) {
+        throw new AppError('This flat already has an owner claim pending/approved', 400);
+      }
+
+      if (targetFlat.currentOwnerId) {
+        throw new AppError('This flat already has an approved owner', 400);
+      }
+
+      const existingOwnerMembership = await prisma.userFlatMembership.findFirst({
+        where: {
+          flatId: data.flatId,
+          isOwner: true,
+          isActive: true,
+        },
+      });
+
+      if (existingOwnerMembership) {
+        throw new AppError('This flat already has an approved owner', 400);
+      }
+    }
+
+    this.validateDocuments(data.documents, data.residentType);
+
+    const isLivingHere = data.residentType === 'OWNER'
+      ? data.isLivingHere ?? true
+      : true;
+    const previousStatus = request.status;
+
+    const result = await prisma.$transaction(async (tx: TransactionClient) => {
+      await tx.residentDocument.deleteMany({
+        where: { onboardingRequestId: request.id },
+      });
+
+      const updatedRequest = await tx.onboardingRequest.update({
+        where: { id: request.id },
+        data: {
+          societyId: data.societyId,
+          blockId: data.blockId,
+          flatId: data.flatId,
+          residentType: data.residentType,
+          isLivingHere,
+          status: 'PENDING_APPROVAL',
+          submittedAt: new Date(),
+          approvedAt: null,
+          rejectedAt: null,
+          reviewedById: null,
+          reviewedAt: null,
+          rejectionReason: null,
+          resubmitReason: null,
+          documents: {
+            create: data.documents.map((doc) => ({
+              documentType: doc.type,
+              documentUrl: doc.url ?? doc.s3Key ?? '',
+              fileName: doc.fileName ?? doc.s3Key?.split('/').pop() ?? 'document',
+              fileSize: doc.fileSize ?? 0,
+              mimeType: doc.mimeType ?? 'application/octet-stream',
+            })),
+          },
+        },
+        include: {
+          documents: true,
+        },
+      });
+
+      await tx.onboardingAuditLog.create({
+        data: {
+          onboardingRequestId: request.id,
+          action: previousStatus === 'RESUBMIT_REQUESTED'
+            ? 'DOCUMENTS_RESUBMITTED'
+            : 'SUBMITTED_FOR_REVIEW',
+          performedBy: userId,
+          previousStatus,
+          newStatus: 'PENDING_APPROVAL',
+          metadata: {
+            documentsCount: data.documents.length,
+            previousSocietyId: request.societyId,
+            previousBlockId: request.blockId,
+            previousFlatId: request.flatId,
+            previousResidentType: request.residentType,
+            isLivingHere,
+          },
+        },
+      });
+
+      return updatedRequest;
+    });
+
+    setImmediate(() => {
+      eventBus.emit('onboarding.submitted', {
+        requestId: request.id,
+        societyId: data.societyId,
+        societyName: targetFlat.society.name,
+        residentName: 'New Resident',
+        residentPhone: '',
+        flatNumber: targetFlat.flatNumber || '',
+        blockName: targetFlat.block?.name || '',
+        residentType: data.residentType,
+        isLivingHere,
+        userId,
+      });
+    });
+
+    return {
+      requestId: result.id,
+      status: result.status,
+      submittedAt: result.submittedAt,
+      estimatedReviewTime: '24-48 hours',
+    };
+  }
+
+  // ============================================
   // ADMIN: LIST PENDING REQUESTS
   // ============================================
   async listPendingRequests(
