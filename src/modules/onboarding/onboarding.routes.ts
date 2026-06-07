@@ -56,6 +56,14 @@ router.delete(
     onboardingController.deleteMyRequest
 );
 
+// Resubmit corrected documents for one of my onboarding requests
+router.patch(
+    '/requests/:requestId/resubmit',
+    authenticateResidentForOnboarding,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    onboardingController.resubmitMyRequest
+);
+
 // ============================================
 // ADMIN ROUTES
 // ============================================

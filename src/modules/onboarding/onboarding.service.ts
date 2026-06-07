@@ -480,6 +480,126 @@ export class OnboardingService {
   }
 
   // ============================================
+  // RESIDENT: RESUBMIT CORRECTED DOCUMENTS
+  // ============================================
+  async resubmitMyRequest(
+    userId: string,
+    requestId: string,
+    data: {
+      residentType?: 'OWNER' | 'TENANT';
+      isLivingHere?: boolean;
+      documents: Array<{
+        type: DocumentType;
+        url?: string;
+        s3Key?: string;
+        fileName?: string;
+        fileSize?: number;
+        mimeType?: string;
+      }>;
+    }
+  ) {
+    const request = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: requestId,
+        userId,
+      },
+      include: {
+        society: true,
+        block: true,
+        flat: true,
+      },
+    });
+
+    if (!request) {
+      throw new AppError('Onboarding request not found', 404);
+    }
+
+    if (request.status !== 'RESUBMIT_REQUESTED') {
+      throw new AppError('Only requests marked for resubmission can be resubmitted', 400);
+    }
+
+    if (data.residentType && data.residentType !== request.residentType) {
+      throw new AppError('Resident type cannot be changed while resubmitting. Delete this request and apply again.', 400);
+    }
+
+    this.validateDocuments(data.documents, request.residentType);
+
+    const isLivingHere = request.residentType === 'OWNER'
+      ? data.isLivingHere ?? request.isLivingHere
+      : true;
+
+    const result = await prisma.$transaction(async (tx: TransactionClient) => {
+      await tx.residentDocument.deleteMany({
+        where: { onboardingRequestId: request.id },
+      });
+
+      const updatedRequest = await tx.onboardingRequest.update({
+        where: { id: request.id },
+        data: {
+          status: 'PENDING_APPROVAL',
+          isLivingHere,
+          submittedAt: new Date(),
+          reviewedById: null,
+          reviewedAt: null,
+          rejectedAt: null,
+          rejectionReason: null,
+          resubmitReason: null,
+          documents: {
+            create: data.documents.map((doc) => ({
+              documentType: doc.type,
+              documentUrl: doc.url ?? doc.s3Key ?? '',
+              fileName: doc.fileName ?? doc.s3Key?.split('/').pop() ?? 'document',
+              fileSize: doc.fileSize ?? 0,
+              mimeType: doc.mimeType ?? 'application/octet-stream',
+            })),
+          },
+        },
+        include: {
+          documents: true,
+        },
+      });
+
+      await tx.onboardingAuditLog.create({
+        data: {
+          onboardingRequestId: request.id,
+          action: 'DOCUMENTS_RESUBMITTED',
+          performedBy: userId,
+          previousStatus: 'RESUBMIT_REQUESTED',
+          newStatus: 'PENDING_APPROVAL',
+          metadata: {
+            documentsCount: data.documents.length,
+            isLivingHere,
+          },
+        },
+      });
+
+      return updatedRequest;
+    });
+
+    setImmediate(() => {
+      eventBus.emit('onboarding.submitted', {
+        requestId: request.id,
+        societyId: request.societyId,
+        societyName: request.society.name,
+        residentName: 'New Resident',
+        residentPhone: '',
+        flatNumber: request.flat?.flatNumber || '',
+        blockName: request.block?.name || '',
+        residentType: request.residentType,
+        isLivingHere,
+        userId,
+      });
+    });
+
+    return {
+      requestId: result.id,
+      status: result.status,
+      submittedAt: result.submittedAt,
+      estimatedReviewTime: '24-48 hours',
+    };
+  }
+
+  // ============================================
   // ADMIN: LIST PENDING REQUESTS
   // ============================================
   async listPendingRequests(

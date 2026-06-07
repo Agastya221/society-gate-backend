@@ -132,6 +132,39 @@ export class OnboardingController {
     });
 
     // ============================================
+    // RESIDENT: RESUBMIT MY REQUEST DOCUMENTS
+    // ============================================
+    resubmitMyRequest = asyncHandler(async (req: Request, res: Response) => {
+        const userId = req.user!.id;
+        const { requestId } = req.params;
+        const { residentType, isLivingHere, documents } = req.body;
+
+        if (!documents) {
+            throw new AppError('Documents are required for resubmission', 400);
+        }
+
+        if (!Array.isArray(documents) || documents.length === 0) {
+            throw new AppError('At least one document is required', 400);
+        }
+
+        if (residentType && !['OWNER', 'TENANT'].includes(residentType)) {
+            throw new AppError('Invalid resident type. Must be OWNER or TENANT', 400);
+        }
+
+        const result = await onboardingService.resubmitMyRequest(userId, String(requestId), {
+            residentType,
+            isLivingHere,
+            documents,
+        });
+
+        res.json({
+            success: true,
+            message: 'Onboarding request resubmitted successfully',
+            data: result,
+        });
+    });
+
+    // ============================================
     // ADMIN: LIST PENDING REQUESTS
     // ============================================
     listPendingRequests = asyncHandler(async (req: Request, res: Response) => {
