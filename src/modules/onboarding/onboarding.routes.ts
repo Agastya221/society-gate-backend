@@ -35,7 +35,12 @@ router.get(
 );
 
 // Submit onboarding request
-router.post('/request', authenticateForOnboarding, clearCacheAfter(['onboarding:*']), onboardingController.submitRequest);
+router.post(
+    '/request',
+    authenticateForOnboarding,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    onboardingController.submitRequest
+);
 
 // Get onboarding status
 router.get('/status', authenticateForOnboarding, cache({ ttl: 60, keyPrefix: 'onboarding', varyBy: ['userId'] }), onboardingController.getStatus);
@@ -99,7 +104,7 @@ router.patch(
     '/admin/:requestId/approve',
     authenticateResidentApp,
     authorize('ADMIN', 'SUPER_ADMIN'),
-    clearCacheAfter(['onboarding:*']),
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
     onboardingController.approveRequest
 );
 
@@ -108,7 +113,7 @@ router.patch(
     '/admin/:requestId/reject',
     authenticateResidentApp,
     authorize('ADMIN', 'SUPER_ADMIN'),
-    clearCacheAfter(['onboarding:*']),
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
     onboardingController.rejectRequest
 );
 
@@ -117,7 +122,7 @@ router.patch(
     '/admin/:requestId/request-resubmit',
     authenticateResidentApp,
     authorize('ADMIN', 'SUPER_ADMIN'),
-    clearCacheAfter(['onboarding:*']),
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
     onboardingController.requestResubmission
 );
 
