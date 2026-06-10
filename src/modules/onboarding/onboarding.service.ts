@@ -3,6 +3,7 @@ import { AppError } from '../../utils/ResponseHandler';
 import type { OnboardingStatus, OnboardingAction, ResidentType, DocumentType } from '../../../prisma/generated/prisma/client';
 import type { Prisma } from '../../types';
 import { eventBus } from '../../utils/eventBus';
+import { getPresignedViewUrl } from '../../utils/s3';
 
 export class OnboardingService {
   // ============================================
@@ -306,9 +307,13 @@ export class OnboardingService {
           select: {
             id: true,
             documentType: true,
+            documentUrl: true,
             fileName: true,
+            fileSize: true,
+            mimeType: true,
             uploadedAt: true,
             isVerified: true,
+            verifiedAt: true,
           },
         },
       },
@@ -321,6 +326,8 @@ export class OnboardingService {
         message: 'Please complete your onboarding to access resident features',
       };
     }
+
+    const documents = await this.mapDocumentsForResponse(request.documents);
 
     const statusMessages = {
       DRAFT: 'Please complete your profile and submit documents',
@@ -344,7 +351,7 @@ export class OnboardingService {
       submittedAt: request.submittedAt,
       approvedAt: request.approvedAt,
       rejectedAt: request.rejectedAt,
-      documents: request.documents,
+      documents,
       message: statusMessages[request.status],
       rejectionReason: request.rejectionReason,
       resubmitReason: request.resubmitReason,
@@ -400,6 +407,8 @@ export class OnboardingService {
         : 'This request was rejected by the society admin.',
     };
 
+    const documents = await this.mapDocumentsForResponse(request.documents);
+
     return {
       requestId: request.id,
       societyId: request.societyId,
@@ -431,17 +440,7 @@ export class OnboardingService {
       canDelete: request.status !== 'APPROVED',
       canReapply: request.status === 'REJECTED',
       canResubmit: request.status === 'RESUBMIT_REQUESTED',
-      documents: request.documents.map((doc) => ({
-        id: doc.id,
-        type: doc.documentType,
-        url: doc.documentUrl,
-        fileName: doc.fileName,
-        fileSize: doc.fileSize,
-        mimeType: doc.mimeType,
-        uploadedAt: doc.uploadedAt,
-        isVerified: doc.isVerified,
-        verifiedAt: doc.verifiedAt,
-      })),
+      documents,
     };
   }
 
@@ -944,6 +943,8 @@ export class OnboardingService {
       throw new AppError('Onboarding request not found', 404);
     }
 
+    const documents = await this.mapDocumentsForResponse(request.documents);
+
     return {
       id: request.id,
       resident: request.user,
@@ -962,7 +963,7 @@ export class OnboardingService {
       rejectionReason: request.rejectionReason,
       resubmitReason: request.resubmitReason,
       resubmissionCount: request.resubmissionCount,
-      documents: request.documents,
+      documents,
       auditLog: request.auditLogs.map((log) => ({
         action: log.action,
         timestamp: log.createdAt,
@@ -1380,5 +1381,43 @@ export class OnboardingService {
     if (!hasIdProof) {
       throw new AppError('At least one ID proof is required', 400);
     }
+  }
+
+  private async mapDocumentsForResponse(
+    documents: Array<{
+      id: string;
+      documentType: DocumentType;
+      documentUrl: string;
+      fileName: string;
+      fileSize: number;
+      mimeType: string;
+      uploadedAt: Date;
+      isVerified: boolean;
+      verifiedAt?: Date | null;
+    }>
+  ) {
+    return Promise.all(
+      documents.map(async (doc) => {
+        const storedUrl = doc.documentUrl;
+        const isHttpUrl = /^https?:\/\//i.test(storedUrl);
+        const viewUrl = isHttpUrl ? storedUrl : await getPresignedViewUrl(storedUrl);
+
+        return {
+          id: doc.id,
+          documentType: doc.documentType,
+          type: doc.documentType,
+          documentUrl: viewUrl,
+          url: viewUrl,
+          viewUrl,
+          fileKey: isHttpUrl ? null : storedUrl,
+          fileName: doc.fileName,
+          fileSize: doc.fileSize,
+          mimeType: doc.mimeType,
+          uploadedAt: doc.uploadedAt,
+          isVerified: doc.isVerified,
+          verifiedAt: doc.verifiedAt ?? null,
+        };
+      })
+    );
   }
 }

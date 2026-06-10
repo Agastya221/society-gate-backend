@@ -7,6 +7,11 @@ import {
     authorize,
 } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
+import {
+    confirmUpload as confirmOnboardingUpload,
+    getPresignedUrl as getOnboardingPresignedUrl,
+    getViewUrl as getOnboardingDocumentViewUrl,
+} from '../upload/upload.controller';
 
 const router = Router();
 const onboardingController = new OnboardingController();
@@ -32,6 +37,27 @@ router.get(
     authenticateForOnboarding,
     cache({ ttl: 1800, keyPrefix: 'onboarding' }),
     onboardingController.listFlats
+);
+
+// Onboarding document upload helpers. These intentionally do not require
+// ensureSameSociety because first-time residents may not have society access yet.
+router.post(
+    '/upload/presigned-url',
+    authenticateResidentForOnboarding,
+    getOnboardingPresignedUrl
+);
+
+router.post(
+    '/upload/confirm',
+    authenticateResidentForOnboarding,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    confirmOnboardingUpload
+);
+
+router.get(
+    '/upload/:id/view-url',
+    authenticateResidentForOnboarding,
+    getOnboardingDocumentViewUrl
 );
 
 // Submit onboarding request
