@@ -74,7 +74,7 @@ router.post(
   '/resident-app/switch-context',
   authenticateResidentApp,
   validate({ body: switchContextSchema }),
-  clearCacheAfter(['api:user*']),
+  clearCacheAfter(['user:contexts:*', 'user:profile:*']),
   userController.switchContext
 );
 
