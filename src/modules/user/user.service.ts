@@ -17,6 +17,7 @@ import {
   sanitizeString,
 } from '../../utils/validation';
 import logger from '../../utils/logger';
+import type { Role } from '../../../prisma/generated/prisma/client';
 
 
 // CRIT-6: Only name, email, photoUrl are allowed in profile updates
@@ -121,6 +122,8 @@ export class UserService {
           data: { isActive: true },
         });
       }
+
+      user = await this.repairActiveRoleFromMembership(user);
 
       const accessToken = generateAccessToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
       const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
@@ -465,7 +468,7 @@ export class UserService {
         onboardingRequests: {
           where: {
             status: {
-              in: ['DRAFT', 'PENDING_DOCS', 'PENDING_APPROVAL', 'RESUBMIT_REQUESTED', 'REJECTED'],
+              in: ['DRAFT', 'PENDING_DOCS', 'PENDING_APPROVAL', 'RESUBMIT_REQUESTED', 'REJECTED', 'APPROVED'],
             },
           },
           include: {
@@ -498,17 +501,29 @@ export class UserService {
 
     if (!user) throw new AppError('User not found', 404);
 
+    const approvedOnboardingKeys = new Set(
+      user.onboardingRequests
+        .filter((request) => request.status === 'APPROVED' && request.flatId)
+        .map((request) => this.membershipKey(request.societyId, request.flatId))
+    );
+
     const contexts = user.flatMemberships.map((membership) => {
       const blockName = membership.flat?.block?.name ?? null;
       const flatNumber = membership.flat?.flatNumber ?? null;
       const flatLabel = flatNumber
         ? [blockName, flatNumber].filter(Boolean).join(' - ')
         : 'Society Admin';
+      const role = this.getEffectiveMembershipRole(
+        membership.role,
+        membership.societyId,
+        membership.flatId,
+        approvedOnboardingKeys
+      );
 
       const isActiveContext =
         user.societyId === membership.societyId &&
         user.flatId === membership.flatId &&
-        (user.role === membership.role || user.role === 'SUPER_ADMIN');
+        (user.role === role || user.role === 'SUPER_ADMIN');
 
       return {
         membershipId: membership.id,
@@ -523,12 +538,12 @@ export class UserService {
         floor: membership.flat?.floor ?? null,
         label: flatLabel,
         subtitle: membership.society.name,
-        role: membership.role,
+        role,
         residentType: membership.residentType,
         isOwner: membership.isOwner,
         isLivingHere: membership.isLivingHere,
         canUseDailyGateFeatures:
-          membership.role !== 'RESIDENT' ||
+          role !== 'RESIDENT' ||
           membership.residentType !== 'OWNER' ||
           membership.isLivingHere,
         isPrimary: membership.isPrimary,
@@ -544,7 +559,7 @@ export class UserService {
     );
 
     const requests = user.onboardingRequests
-      .filter((request) => !approvedMembershipKeys.has(`${request.societyId}:${request.flatId}`))
+      .filter((request) => request.status !== 'APPROVED' && !approvedMembershipKeys.has(`${request.societyId}:${request.flatId}`))
       .map((request) => {
         const label = [request.block?.name, request.flat?.flatNumber].filter(Boolean).join(' - ');
 
@@ -625,7 +640,38 @@ export class UserService {
       throw new AppError('Society is inactive', 403);
     }
 
-    const nextRole = user.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : membership.role;
+    const approvedOnboardingKeys = new Set<string>();
+    if (membership.flatId) {
+      const approvedOnboarding = await prisma.onboardingRequest.findFirst({
+        where: {
+          userId,
+          societyId: membership.societyId,
+          flatId: membership.flatId,
+          status: 'APPROVED',
+        },
+        select: { id: true },
+      });
+
+      if (approvedOnboarding) {
+        approvedOnboardingKeys.add(this.membershipKey(membership.societyId, membership.flatId));
+      }
+    }
+
+    const membershipRole = this.getEffectiveMembershipRole(
+      membership.role,
+      membership.societyId,
+      membership.flatId,
+      approvedOnboardingKeys
+    );
+
+    if (membership.role !== membershipRole) {
+      await prisma.userFlatMembership.update({
+        where: { id: membership.id },
+        data: { role: membershipRole },
+      });
+    }
+
+    const nextRole = user.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : membershipRole;
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
@@ -868,6 +914,96 @@ export class UserService {
       logger.error({ error }, 'Error during logout');
       return { success: true };
     }
+  }
+
+  private membershipKey(societyId: string, flatId?: string | null) {
+    return `${societyId}:${flatId ?? 'society'}`;
+  }
+
+  private getEffectiveMembershipRole(
+    role: Role,
+    societyId: string,
+    flatId: string | null | undefined,
+    approvedOnboardingKeys: Set<string>
+  ): Role {
+    if (role === 'SUPER_ADMIN') {
+      return role;
+    }
+
+    if (role === 'ADMIN' && flatId && approvedOnboardingKeys.has(this.membershipKey(societyId, flatId))) {
+      return 'RESIDENT';
+    }
+
+    return role;
+  }
+
+  private async repairActiveRoleFromMembership<T extends {
+    id: string;
+    role: Role;
+    societyId: string | null;
+    flatId: string | null;
+  }>(user: T): Promise<T> {
+    if (user.role === 'SUPER_ADMIN' || !user.societyId || !user.flatId) {
+      return user;
+    }
+
+    const membership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId: user.id,
+        societyId: user.societyId,
+        flatId: user.flatId,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        role: true,
+        societyId: true,
+        flatId: true,
+      },
+    });
+
+    if (!membership || !membership.flatId) {
+      return user;
+    }
+
+    const approvedOnboarding = await prisma.onboardingRequest.findFirst({
+      where: {
+        userId: user.id,
+        societyId: membership.societyId,
+        flatId: membership.flatId,
+        status: 'APPROVED',
+      },
+      select: { id: true },
+    });
+
+    const approvedOnboardingKeys = new Set<string>();
+    if (approvedOnboarding && membership.flatId) {
+      approvedOnboardingKeys.add(this.membershipKey(membership.societyId, membership.flatId));
+    }
+
+    const role = this.getEffectiveMembershipRole(
+      membership.role,
+      membership.societyId,
+      membership.flatId,
+      approvedOnboardingKeys
+    );
+
+    if (membership.role !== role) {
+      await prisma.userFlatMembership.update({
+        where: { id: membership.id },
+        data: { role },
+      });
+    }
+
+    if (user.role !== role) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { role },
+      });
+      return { ...user, role };
+    }
+
+    return user;
   }
 
 }

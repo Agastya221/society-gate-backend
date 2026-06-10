@@ -1089,12 +1089,10 @@ export class OnboardingService {
         }
       }
 
-      const activeRole =
-        request.user.role === 'SUPER_ADMIN'
-          ? 'SUPER_ADMIN'
-          : request.user.role === 'ADMIN' && request.user.societyId === request.societyId
-            ? 'ADMIN'
-            : 'RESIDENT';
+      // A flat onboarding approval always creates resident access for that flat.
+      // Society/admin access is granted only by society registration/admin assignment flows.
+      const membershipRole = 'RESIDENT';
+      const activeRole = request.user.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : membershipRole;
 
       // 4. Update user
       await tx.user.update({
@@ -1121,7 +1119,7 @@ export class OnboardingService {
         await tx.userFlatMembership.update({
           where: { id: existingFlatMembership.id },
           data: {
-            role: activeRole,
+            role: membershipRole,
             residentType: request.residentType,
             isOwner: request.residentType === 'OWNER',
             isLivingHere: request.residentType === 'OWNER' ? request.isLivingHere : true,
@@ -1136,7 +1134,7 @@ export class OnboardingService {
             userId: request.userId,
             societyId: request.societyId,
             flatId: request.flatId,
-            role: activeRole,
+            role: membershipRole,
             residentType: request.residentType,
             isOwner: request.residentType === 'OWNER',
             isLivingHere: request.residentType === 'OWNER' ? request.isLivingHere : true,
