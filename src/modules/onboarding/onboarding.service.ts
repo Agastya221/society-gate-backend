@@ -219,6 +219,21 @@ export class OnboardingService {
     // 3. Validate documents
     this.validateDocuments(data.documents, data.residentType);
 
+    let activeOwnerMembership: any = null;
+    if (data.residentType === 'TENANT') {
+      activeOwnerMembership = await prisma.userFlatMembership.findFirst({
+        where: {
+          flatId: data.flatId,
+          isOwner: true,
+          isActive: true,
+        },
+      });
+
+      if (!activeOwnerMembership) {
+        throw new AppError('Cannot apply as a tenant because this flat does not have an approved owner yet.', 400);
+      }
+    }
+
     // 4. Create onboarding request with documents
     const request = await prisma.$transaction(async (tx: TransactionClient) => {
       const onboardingRequest = await tx.onboardingRequest.create({
@@ -246,6 +261,7 @@ export class OnboardingService {
           society: true,
           block: true,
           flat: true,
+          user: true,
         },
       });
 
@@ -274,20 +290,33 @@ export class OnboardingService {
       estimatedReviewTime: '24-48 hours',
     };
 
-    // Notify all admins of the society about the new onboarding request (non-blocking)
+    // Notify the flat owner or fall back to admins
     setImmediate(() => {
-      eventBus.emit('onboarding.submitted', {
-        requestId: request.id,
-        societyId: request.societyId,
-        societyName: request.society.name,
-        residentName: 'New Resident', // admin will see details in their dashboard
-        residentPhone: '',
-        flatNumber: request.flat?.flatNumber || '',
-        blockName: request.block?.name || '',
-        residentType: request.residentType,
-        isLivingHere: request.isLivingHere,
-        userId,
-      });
+      if (data.residentType === 'TENANT' && activeOwnerMembership) {
+        eventBus.emit('onboarding.submitted_to_owner', {
+          requestId: request.id,
+          ownerUserId: activeOwnerMembership.userId,
+          societyId: request.societyId,
+          flatId: request.flatId,
+          tenantName: request.user.name || 'New Tenant',
+          tenantPhone: request.user.phone,
+          flatNumber: request.flat?.flatNumber || '',
+          blockName: request.block?.name || '',
+        });
+      } else {
+        eventBus.emit('onboarding.submitted', {
+          requestId: request.id,
+          societyId: request.societyId,
+          societyName: request.society.name,
+          residentName: 'New Resident', // admin will see details in their dashboard
+          residentPhone: '',
+          flatNumber: request.flat?.flatNumber || '',
+          blockName: request.block?.name || '',
+          residentType: request.residentType,
+          isLivingHere: request.isLivingHere,
+          userId,
+        });
+      }
     });
 
     return result;
@@ -1327,6 +1356,420 @@ export class OnboardingService {
       });
 
       return updatedRequest;
+    });
+
+    setImmediate(() => {
+      eventBus.emit('onboarding.resubmit_requested', {
+        requestId: result.id,
+        societyId: request.societyId,
+        userId: request.userId,
+        reason,
+      });
+    });
+
+    return {
+      requestId: result.id,
+      status: result.status,
+      reason: result.resubmitReason,
+      documentsToResubmit,
+    };
+  }
+
+  // ============================================
+  // OWNER: LIST PENDING TENANT REQUESTS
+  // ============================================
+  async listOwnerPendingRequests(
+    ownerId: string,
+    pagination?: { page?: number; limit?: number }
+  ) {
+    const ownedMemberships = await prisma.userFlatMembership.findMany({
+      where: {
+        userId: ownerId,
+        isOwner: true,
+        isActive: true,
+      },
+      select: {
+        flatId: true,
+      },
+    });
+
+    const flatIds = ownedMemberships.map((m) => m.flatId).filter((id): id is string => !!id);
+    if (flatIds.length === 0) {
+      return {
+        requests: [],
+        pagination: {
+          total: 0,
+          page: pagination?.page || 1,
+          limit: pagination?.limit || 20,
+          pages: 0,
+        },
+      };
+    }
+
+    const page = pagination?.page || 1;
+    const limit = pagination?.limit || 20;
+
+    const where = {
+      flatId: { in: flatIds },
+      residentType: 'TENANT' as const,
+      status: 'PENDING_APPROVAL' as const,
+    };
+
+    const [requests, total] = await Promise.all([
+      prisma.onboardingRequest.findMany({
+        where,
+        include: {
+          user: { select: { id: true, name: true, phone: true, email: true, photoUrl: true } },
+          flat: { include: { block: { select: { name: true } } } },
+          documents: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.onboardingRequest.count({ where }),
+    ]);
+
+    const mappedRequests = await Promise.all(
+      requests.map(async (req) => {
+        const docs = await this.mapDocumentsForResponse(req.documents);
+        return {
+          requestId: req.id,
+          resident: req.user,
+          flatNumber: req.flat.flatNumber,
+          blockName: req.flat.block?.name || '',
+          residentType: req.residentType,
+          submittedAt: req.submittedAt,
+          documents: docs,
+        };
+      })
+    );
+
+    return {
+      requests: mappedRequests,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  // ============================================
+  // OWNER: APPROVE TENANT REQUEST
+  // ============================================
+  async ownerApproveRequest(requestId: string, ownerId: string, notes?: string) {
+    const request = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: requestId,
+      },
+      include: {
+        user: true,
+        flat: { include: { block: { select: { name: true } } } },
+      },
+    });
+
+    if (!request) {
+      throw new AppError('Onboarding request not found', 404);
+    }
+
+    if (request.status !== 'PENDING_APPROVAL') {
+      throw new AppError('Only pending requests can be approved', 400);
+    }
+
+    // Verify caller owns the flat
+    const ownerMembership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId: ownerId,
+        flatId: request.flatId,
+        isOwner: true,
+        isActive: true,
+      },
+    });
+
+    if (!ownerMembership) {
+      throw new AppError('Access denied. You are not the owner of this flat.', 403);
+    }
+
+    const result = await prisma.$transaction(async (tx: TransactionClient) => {
+      // 1. Update onboarding request
+      const updatedRequest = await tx.onboardingRequest.update({
+        where: { id: requestId },
+        data: {
+          status: 'APPROVED',
+          approvedAt: new Date(),
+          reviewedById: ownerId,
+          reviewedAt: new Date(),
+        },
+      });
+
+      const membershipRole = 'RESIDENT';
+
+      // 2. Update user
+      await tx.user.update({
+        where: { id: request.userId },
+        data: {
+          isActive: true,
+          role: membershipRole,
+          societyId: request.societyId,
+          flatId: request.flatId,
+          isOwner: false,
+          isPrimaryResident: false,
+        },
+      });
+
+      const existingFlatMembership = await tx.userFlatMembership.findFirst({
+        where: {
+          userId: request.userId,
+          societyId: request.societyId,
+          flatId: request.flatId,
+        },
+      });
+
+      if (existingFlatMembership) {
+        await tx.userFlatMembership.update({
+          where: { id: existingFlatMembership.id },
+          data: {
+            role: membershipRole,
+            residentType: 'TENANT',
+            isOwner: false,
+            isLivingHere: true,
+            isPrimary: false,
+            isActive: true,
+            isDefault: true,
+          },
+        });
+      } else {
+        await tx.userFlatMembership.create({
+          data: {
+            userId: request.userId,
+            societyId: request.societyId,
+            flatId: request.flatId,
+            role: membershipRole,
+            residentType: 'TENANT',
+            isOwner: false,
+            isLivingHere: true,
+            isPrimary: false,
+            isActive: true,
+            isDefault: true,
+          },
+        });
+      }
+
+      // 3. Update flat occupancy
+      await tx.flat.update({
+        where: { id: request.flatId },
+        data: {
+          isOccupied: true,
+          currentTenantId: request.userId,
+          occupancyStatus: 'RENTED',
+        },
+      });
+
+      // 4. Create audit log
+      await tx.onboardingAuditLog.create({
+        data: {
+          onboardingRequestId: requestId,
+          action: 'APPROVED',
+          performedBy: ownerId,
+          previousStatus: 'PENDING_APPROVAL',
+          newStatus: 'APPROVED',
+          notes,
+        },
+      });
+
+      return updatedRequest;
+    });
+
+    const owner = await prisma.user.findUnique({
+      where: { id: ownerId },
+      select: { name: true },
+    });
+
+    const result_data = {
+      requestId: result.id,
+      status: result.status,
+      approvedAt: result.approvedAt,
+      resident: {
+        id: request.user.id,
+        name: request.user.name,
+        isActive: true,
+        societyId: request.societyId,
+        flatId: request.flatId,
+      },
+    };
+
+    setImmediate(() => {
+      eventBus.emit('onboarding.approved', {
+        requestId: result.id,
+        societyId: request.societyId,
+        userId: request.user.id,
+        residentName: request.user.name,
+        flatId: request.flatId,
+      });
+
+      eventBus.emit('onboarding.tenant_approved_by_owner', {
+        requestId: result.id,
+        societyId: request.societyId,
+        tenantName: request.user.name || 'New Tenant',
+        blockName: request.flat.block?.name || '',
+        flatNumber: request.flat.flatNumber,
+        ownerName: owner?.name || 'Flat Owner',
+        tenantId: request.userId,
+        ownerId,
+      });
+    });
+
+    return result_data;
+  }
+
+  // ============================================
+  // OWNER: REJECT TENANT REQUEST
+  // ============================================
+  async ownerRejectRequest(requestId: string, ownerId: string, reason: string) {
+    const request = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: requestId,
+      },
+    });
+
+    if (!request) {
+      throw new AppError('Onboarding request not found', 404);
+    }
+
+    if (request.status !== 'PENDING_APPROVAL') {
+      throw new AppError('Only pending requests can be rejected', 400);
+    }
+
+    const ownerMembership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId: ownerId,
+        flatId: request.flatId,
+        isOwner: true,
+        isActive: true,
+      },
+    });
+
+    if (!ownerMembership) {
+      throw new AppError('Access denied. You are not the owner of this flat.', 403);
+    }
+
+    const result = await prisma.$transaction(async (tx: TransactionClient) => {
+      const updatedRequest = await tx.onboardingRequest.update({
+        where: { id: requestId },
+        data: {
+          status: 'REJECTED',
+          rejectedAt: new Date(),
+          rejectionReason: reason,
+          reviewedById: ownerId,
+          reviewedAt: new Date(),
+        },
+      });
+
+      await tx.onboardingAuditLog.create({
+        data: {
+          onboardingRequestId: requestId,
+          action: 'REJECTED',
+          performedBy: ownerId,
+          previousStatus: 'PENDING_APPROVAL',
+          newStatus: 'REJECTED',
+          notes: reason,
+        },
+      });
+
+      return updatedRequest;
+    });
+
+    setImmediate(() => {
+      eventBus.emit('onboarding.rejected', {
+        requestId: result.id,
+        societyId: request.societyId,
+        userId: request.userId,
+        reason,
+      });
+    });
+
+    return {
+      requestId: result.id,
+      status: result.status,
+      rejectedAt: result.rejectedAt,
+      reason: result.rejectionReason,
+    };
+  }
+
+  // ============================================
+  // OWNER: REQUEST DOCUMENT RESUBMISSION
+  // ============================================
+  async ownerRequestResubmission(
+    requestId: string,
+    ownerId: string,
+    reason: string,
+    documentsToResubmit?: DocumentType[]
+  ) {
+    const request = await prisma.onboardingRequest.findFirst({
+      where: {
+        id: requestId,
+      },
+    });
+
+    if (!request) {
+      throw new AppError('Onboarding request not found', 404);
+    }
+
+    if (request.status !== 'PENDING_APPROVAL') {
+      throw new AppError('Only pending requests can request resubmission', 400);
+    }
+
+    const ownerMembership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId: ownerId,
+        flatId: request.flatId,
+        isOwner: true,
+        isActive: true,
+      },
+    });
+
+    if (!ownerMembership) {
+      throw new AppError('Access denied. You are not the owner of this flat.', 403);
+    }
+
+    const result = await prisma.$transaction(async (tx: TransactionClient) => {
+      const updatedRequest = await tx.onboardingRequest.update({
+        where: { id: requestId },
+        data: {
+          status: 'RESUBMIT_REQUESTED',
+          resubmitReason: reason,
+          resubmissionCount: { increment: 1 },
+          reviewedById: ownerId,
+          reviewedAt: new Date(),
+        },
+      });
+
+      await tx.onboardingAuditLog.create({
+        data: {
+          onboardingRequestId: requestId,
+          action: 'RESUBMIT_REQUESTED',
+          performedBy: ownerId,
+          previousStatus: 'PENDING_APPROVAL',
+          newStatus: 'RESUBMIT_REQUESTED',
+          notes: reason,
+          metadata: {
+            documentsToResubmit,
+          },
+        },
+      });
+
+      return updatedRequest;
+    });
+
+    setImmediate(() => {
+      eventBus.emit('onboarding.resubmit_requested', {
+        requestId: result.id,
+        societyId: request.societyId,
+        userId: request.userId,
+        reason,
+      });
     });
 
     return {

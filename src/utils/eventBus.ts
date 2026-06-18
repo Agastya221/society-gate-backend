@@ -194,6 +194,41 @@ export interface AppEvents {
     blockName: string | null;
     isAnonymous: boolean;
   };
+  'onboarding.submitted_to_owner': {
+    requestId: string;
+    ownerUserId: string;
+    societyId: string;
+    flatId: string;
+    tenantName: string;
+    tenantPhone: string;
+    flatNumber: string;
+    blockName: string;
+  };
+  'onboarding.tenant_approved_by_owner': {
+    requestId: string;
+    societyId: string;
+    tenantName: string;
+    blockName: string;
+    flatNumber: string;
+    ownerName: string;
+    tenantId: string;
+    ownerId: string;
+  };
+  'onboarding.resubmit_requested': {
+    requestId: string;
+    societyId: string;
+    userId: string;
+    reason: string;
+  };
+  'family.member_added_by_tenant': {
+    ownerId: string;
+    tenantName: string;
+    memberName: string;
+    flatId: string;
+    societyId: string;
+    flatNumber: string;
+    blockName: string;
+  };
 }
 
 class AppEventBus extends EventEmitter {

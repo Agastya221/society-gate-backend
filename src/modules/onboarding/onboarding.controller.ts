@@ -333,4 +333,94 @@ export class OnboardingController {
             data: result,
         });
     });
+
+    // ============================================
+    // OWNER: LIST PENDING TENANT REQUESTS
+    // ============================================
+    listOwnerPendingRequests = asyncHandler(async (req: Request, res: Response) => {
+        const ownerId = req.user!.id;
+        const { page, limit } = req.query;
+
+        const result = await onboardingService.listOwnerPendingRequests(ownerId, {
+            page: page ? parseInt(page as string) : undefined,
+            limit: limit ? parseInt(limit as string) : undefined,
+        });
+
+        res.json({
+            success: true,
+            data: result,
+        });
+    });
+
+    // ============================================
+    // OWNER: APPROVE TENANT REQUEST
+    // ============================================
+    ownerApproveRequest = asyncHandler(async (req: Request, res: Response) => {
+        const { requestId } = req.params;
+        const ownerId = req.user!.id;
+        const { notes } = req.body;
+
+        const result = await onboardingService.ownerApproveRequest(
+            String(requestId),
+            ownerId,
+            notes
+        );
+
+        res.json({
+            success: true,
+            message: 'Onboarding request approved successfully',
+            data: result,
+        });
+    });
+
+    // ============================================
+    // OWNER: REJECT TENANT REQUEST
+    // ============================================
+    ownerRejectRequest = asyncHandler(async (req: Request, res: Response) => {
+        const { requestId } = req.params;
+        const ownerId = req.user!.id;
+        const { reason } = req.body;
+
+        if (!reason) {
+            throw new AppError('Rejection reason is required', 400);
+        }
+
+        const result = await onboardingService.ownerRejectRequest(
+            String(requestId),
+            ownerId,
+            reason
+        );
+
+        res.json({
+            success: true,
+            message: 'Onboarding request rejected',
+            data: result,
+        });
+    });
+
+    // ============================================
+    // OWNER: REQUEST DOCUMENT RESUBMISSION
+    // ============================================
+    ownerRequestResubmission = asyncHandler(async (req: Request, res: Response) => {
+        const { requestId } = req.params;
+        const ownerId = req.user!.id;
+        const { reason, documentsToResubmit } = req.body;
+
+        if (!reason) {
+            throw new AppError('Resubmission reason is required', 400);
+        }
+
+        const result = await onboardingService.ownerRequestResubmission(
+            String(requestId),
+            ownerId,
+            reason,
+            documentsToResubmit
+        );
+
+        res.json({
+            success: true,
+            message: 'Resubmission requested',
+            data: result,
+        });
+    });
 }

@@ -672,6 +672,112 @@ eventBus.on('onboarding.rejected', async (payload) => {
   }
 });
 
+// New onboarding request submitted to flat owner
+eventBus.on('onboarding.submitted_to_owner', async (payload) => {
+  try {
+    const location = [payload.blockName, payload.flatNumber].filter(Boolean).join('-');
+    const title = '🏠 Tenant Approval Request';
+    const message = `${payload.tenantName} is requesting access as a tenant to Flat ${location}. Please review.`;
+
+    await notificationService.sendToUser(payload.ownerUserId, {
+      type: 'ONBOARDING_STATUS',
+      title,
+      message,
+      referenceId: payload.requestId,
+      referenceType: 'OnboardingRequest',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToUser(payload.ownerUserId, {
+      title,
+      body: message,
+      data: { screen: 'OwnerPendingRequests', requestId: payload.requestId, type: 'TENANT_APPROVAL_REQUEST' },
+    }).catch((err) => logger.error({ err }, 'Push failed: onboarding.submitted_to_owner'));
+
+    logger.info({ ownerUserId: payload.ownerUserId, requestId: payload.requestId }, '🔔 [OWNER NOTIF] Tenant onboarding request alert sent');
+  } catch (error) {
+    logger.error({ error, event: 'onboarding.submitted_to_owner', payload }, 'Failed to send owner onboarding notification');
+  }
+});
+
+// Tenant onboarding request approved by flat owner
+eventBus.on('onboarding.tenant_approved_by_owner', async (payload) => {
+  try {
+    const location = [payload.blockName, payload.flatNumber].filter(Boolean).join('-');
+    const title = '🏠 Tenant Approved by Owner';
+    const message = `New tenant ${payload.tenantName} was approved by owner ${payload.ownerName} in Flat ${location}.`;
+
+    await adminNotificationService.notifyAdmins(payload.societyId, {
+      type: 'ONBOARDING_STATUS',
+      title,
+      message,
+      referenceId: payload.requestId,
+      referenceType: 'OnboardingRequest',
+      data: {
+        type: 'ONBOARDING_STATUS',
+        screen: 'AdminOnboardingRequests',
+        requestId: payload.requestId,
+        status: 'APPROVED',
+        flatNumber: payload.flatNumber,
+        blockName: payload.blockName,
+      },
+    });
+
+    logger.info({ societyId: payload.societyId, requestId: payload.requestId }, '🔔 [ADMIN NOTIF] Tenant approved by owner alert sent');
+  } catch (error) {
+    logger.error({ error, event: 'onboarding.tenant_approved_by_owner', payload }, 'Failed to send admin notification for owner approval');
+  }
+});
+
+// Onboarding request resubmission requested
+eventBus.on('onboarding.resubmit_requested', async (payload) => {
+  try {
+    const title = '📝 Document Resubmission Requested';
+    const message = `Your onboarding request requires action: ${payload.reason}`;
+
+    await notificationService.sendToUser(payload.userId, {
+      type: 'ONBOARDING_STATUS',
+      title,
+      message,
+      referenceId: payload.requestId,
+      referenceType: 'OnboardingRequest',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToUser(payload.userId, {
+      title,
+      body: message,
+      data: { screen: 'OnboardingStatus', type: 'ONBOARDING_RESUBMIT_REQUESTED' },
+    }).catch((err) => logger.error({ err }, 'Push failed: onboarding.resubmit_requested'));
+  } catch (error) {
+    logger.error({ error, event: 'onboarding.resubmit_requested', payload }, 'Failed to send onboarding resubmit notification');
+  }
+});
+
+// Family member added by tenant
+eventBus.on('family.member_added_by_tenant', async (payload) => {
+  try {
+    const location = [payload.blockName, payload.flatNumber].filter(Boolean).join('-');
+    const title = '👨‍👩‍👧‍👦 Family Member Added';
+    const message = `Tenant ${payload.tenantName} added family member ${payload.memberName} to Flat ${location}.`;
+
+    await notificationService.sendToUser(payload.ownerId, {
+      type: 'SYSTEM',
+      title,
+      message,
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToUser(payload.ownerId, {
+      title,
+      body: message,
+      data: { screen: 'Home' },
+    }).catch((err) => logger.error({ err }, 'Push failed: family.member_added_by_tenant'));
+  } catch (error) {
+    logger.error({ error, event: 'family.member_added_by_tenant', payload }, 'Failed to send owner notification for family addition');
+  }
+});
+
 // New complaint submitted — notify all admins
 eventBus.on('complaint.created', async (payload) => {
   try {

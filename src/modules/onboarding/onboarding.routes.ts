@@ -104,6 +104,42 @@ router.patch(
 );
 
 // ============================================
+// OWNER ROUTES
+// ============================================
+
+// List pending tenant onboarding requests
+router.get(
+    '/owner/pending',
+    authenticateResidentApp,
+    cache({ ttl: 60, keyPrefix: 'onboarding:owner', varyBy: ['userId', 'page', 'limit'] }),
+    onboardingController.listOwnerPendingRequests
+);
+
+// Approve tenant request
+router.patch(
+    '/owner/requests/:requestId/approve',
+    authenticateResidentApp,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    onboardingController.ownerApproveRequest
+);
+
+// Reject tenant request
+router.patch(
+    '/owner/requests/:requestId/reject',
+    authenticateResidentApp,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    onboardingController.ownerRejectRequest
+);
+
+// Request resubmission for tenant request
+router.patch(
+    '/owner/requests/:requestId/request-resubmit',
+    authenticateResidentApp,
+    clearCacheAfter(['onboarding:*', 'onboarding:request:*', 'user:contexts:*']),
+    onboardingController.ownerRequestResubmission
+);
+
+// ============================================
 // ADMIN ROUTES
 // ============================================
 

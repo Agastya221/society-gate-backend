@@ -117,10 +117,49 @@ export class UserService {
     if (user) {
       // Existing user — re-activate if they have a flat but are inactive
       if (!user.isActive && user.flatId && user.primaryResidentId) {
+        const societyId = user.societyId || (await prisma.flat.findUnique({
+          where: { id: user.flatId },
+          select: { societyId: true },
+        }))?.societyId;
+
+        if (!societyId) {
+          throw new AppError('Associated flat or society not found', 404);
+        }
+
         user = await prisma.user.update({
           where: { id: user.id },
-          data: { isActive: true },
+          data: {
+            isActive: true,
+            societyId,
+          },
         });
+
+        // Check/create UserFlatMembership
+        const existingMembership = await prisma.userFlatMembership.findFirst({
+          where: {
+            userId: user.id,
+            flatId: user.flatId,
+          },
+        });
+
+        if (existingMembership) {
+          await prisma.userFlatMembership.update({
+            where: { id: existingMembership.id },
+            data: { isActive: true },
+          });
+        } else {
+          await prisma.userFlatMembership.create({
+            data: {
+              userId: user.id,
+              flatId: user.flatId,
+              societyId,
+              role: 'RESIDENT',
+              isActive: true,
+              isDefault: true,
+              isOwner: false,
+            },
+          });
+        }
       }
 
       user = await this.repairActiveRoleFromMembership(user);

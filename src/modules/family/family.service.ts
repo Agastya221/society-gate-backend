@@ -2,12 +2,13 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { FamilyRole } from '../../../prisma/generated/prisma/enums';
 import { validatePhoneNumber, validateRequiredFields } from '../../utils/validation';
+import { eventBus } from '../../utils/eventBus';
 
 const MAX_FAMILY_MEMBERS = 6;
 
 export class FamilyService {
   // ============================================
-  // ADD FAMILY MEMBER (Primary Resident Only)
+  // ADD FAMILY MEMBER
   // Post-approval: just name + phone, no OTP flow.
   // The family member gets linked to the flat immediately.
   // They activate their account when they first log in via OTP.
@@ -26,6 +27,9 @@ export class FamilyService {
     // Verify primary resident is approved and active
     const primaryResident = await prisma.user.findUnique({
       where: { id: primaryResidentId },
+      include: {
+        flat: { include: { block: { select: { name: true } } } },
+      },
     });
 
     if (!primaryResident) {
@@ -36,12 +40,21 @@ export class FamilyService {
       throw new AppError('Your account is not active', 403);
     }
 
-    if (!primaryResident.isPrimaryResident) {
-      throw new AppError('Only the primary resident of a flat can add family members', 403);
-    }
-
     if (!primaryResident.flatId || !primaryResident.societyId) {
       throw new AppError('You must be assigned to a flat before adding family members', 400);
+    }
+
+    // Retrieve caller's membership
+    const callerMembership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId: primaryResidentId,
+        flatId: primaryResident.flatId,
+        isActive: true,
+      },
+    });
+
+    if (!callerMembership) {
+      throw new AppError('You must have an active membership in this flat to add family members', 403);
     }
 
     // Count active + pending family members (anyone linked to the flat)
@@ -53,12 +66,16 @@ export class FamilyService {
       },
     });
 
-    if (currentCount >= MAX_FAMILY_MEMBERS) {
-      throw new AppError(`Maximum ${MAX_FAMILY_MEMBERS} additional family members allowed per flat`, 400);
+    const maxAllowed = callerMembership.isOwner ? MAX_FAMILY_MEMBERS : 3;
+
+    if (currentCount >= maxAllowed) {
+      throw new AppError(`Maximum ${maxAllowed} additional family members allowed per flat for this resident type`, 400);
     }
 
     // Check if this phone is already in the system
     const existingUser = await prisma.user.findUnique({ where: { phone } });
+
+    let result: { member: any; isNew: boolean };
 
     if (existingUser) {
       // Only RESIDENT accounts can be added as family members
@@ -93,34 +110,59 @@ export class FamilyService {
         },
       });
 
-      return { member: linked, isNew: false };
+      result = { member: linked, isNew: false };
+    } else {
+      // Create a new pre-linked user record (inactive until they login via OTP)
+      const member = await prisma.user.create({
+        data: {
+          phone,
+          name,
+          role: 'RESIDENT',
+          flatId: primaryResident.flatId,
+          societyId: primaryResident.societyId,
+          isPrimaryResident: false,
+          familyRole: familyRole ?? null,
+          primaryResidentId,
+          isActive: false, // activated on first OTP login
+          isOwner: false,
+        },
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          familyRole: true,
+          isActive: true,
+          isPrimaryResident: true,
+        },
+      });
+
+      result = { member, isNew: true };
     }
 
-    // Create a new pre-linked user record (inactive until they login via OTP)
-    const member = await prisma.user.create({
-      data: {
-        phone,
-        name,
-        role: 'RESIDENT',
-        flatId: primaryResident.flatId,
-        societyId: primaryResident.societyId,
-        isPrimaryResident: false,
-        familyRole: familyRole ?? null,
-        primaryResidentId,
-        isActive: false, // activated on first OTP login
-        isOwner: false,
-      },
-      select: {
-        id: true,
-        name: true,
-        phone: true,
-        familyRole: true,
-        isActive: true,
-        isPrimaryResident: true,
-      },
-    });
+    // Notify the owner if added by a tenant
+    if (!callerMembership.isOwner) {
+      const ownerMembership = await prisma.userFlatMembership.findFirst({
+        where: {
+          flatId: primaryResident.flatId,
+          isOwner: true,
+          isActive: true,
+        },
+      });
 
-    return { member, isNew: true };
+      if (ownerMembership && ownerMembership.userId !== primaryResidentId) {
+        eventBus.emit('family.member_added_by_tenant', {
+          ownerId: ownerMembership.userId,
+          tenantName: primaryResident.name || 'Tenant',
+          memberName: name,
+          flatId: primaryResident.flatId!,
+          societyId: primaryResident.societyId!,
+          flatNumber: primaryResident.flat?.flatNumber || '',
+          blockName: primaryResident.flat?.block?.name || '',
+        });
+      }
+    }
+
+    return result;
   }
 
   // ============================================
