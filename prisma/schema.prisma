@@ -865,6 +865,7 @@ model User {
   societyRegistrationReviews  SocietyRegistrationRequest[] @relation("SocietyRegistrationReviews")
   flatMemberships             UserFlatMembership[]
   invitedGateDevices          GateDevice[]                 @relation("GateDeviceCreator")
+  platformAuditLogs           PlatformAuditLog[]            @relation("PlatformAuditActor")
 
   // Notification relations
   notifications Notification[]
@@ -905,6 +906,24 @@ model User {
   @@index([refreshToken])
 }
 
+model PlatformAuditLog {
+  id String @id @default(uuid())
+
+  actorUserId String
+  actor       User   @relation("PlatformAuditActor", fields: [actorUserId], references: [id])
+
+  action     String
+  targetType String
+  targetId   String?
+  reason     String?
+  metadata   Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorUserId, createdAt(sort: Desc)])
+  @@index([targetType, targetId])
+  @@index([action, createdAt(sort: Desc)])
+}
 model UserFlatMembership {
   id String @id @default(uuid())
 
@@ -2582,3 +2601,5 @@ model PreApprovedUsage {
   @@index([entryId, usedAt(sort: Desc)])
   @@index([guardId])
 }
+
+

@@ -9,6 +9,7 @@ import guardRoutes from './guard.routes';
 import uploadRoutes from '../../modules/upload/upload.routes';
 import societyRegistrationRoutes from '../../modules/society-registration/society-registration.routes';
 import paymentRoutes from '../../modules/payment/payment.routes';
+import superadminRoutes from '../../modules/superadmin/superadmin.routes';
 
 const router = Router();
 
@@ -24,5 +25,7 @@ router.use('/guard', guardRoutes);            // /api/v1/guard/*
 router.use('/upload', uploadRoutes);          // /api/v1/upload
 router.use('/payments', paymentRoutes);       // /api/v1/payments
 router.use('/society-registration', societyRegistrationRoutes); // /api/v1/society-registration
+router.use('/superadmin', superadminRoutes); // /api/v1/superadmin
 
 export default router;
+
