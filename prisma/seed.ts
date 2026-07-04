@@ -410,7 +410,8 @@ async function main() {
 
   console.log('🏘️ Creating flat memberships...');
   await prisma.userFlatMembership.createMany({ data: [
-    { userId: admin.id, societyId: society.id, flatId: flat('A101').id, role: 'ADMIN', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
+    { userId: admin.id, societyId: society.id, role: 'ADMIN', isActive: true, isDefault: true },
+    { userId: admin.id, societyId: society.id, flatId: flat('A101').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: false },
     { userId: res1.id, societyId: society.id, flatId: flat('A101').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
     { userId: res1spouse.id, societyId: society.id, flatId: flat('A101').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: false, isLivingHere: true, isPrimary: false, isActive: true, isDefault: true },
     { userId: res2.id, societyId: society.id, flatId: flat('A301').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: true, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
@@ -423,7 +424,7 @@ async function main() {
     { userId: res8son.id, societyId: society.id, flatId: flat('A201').id, role: 'RESIDENT', residentType: 'OWNER', isOwner: false, isLivingHere: true, isPrimary: false, isActive: true, isDefault: true },
     { userId: javed.id, societyId: society.id, flatId: flat('B301').id, role: 'RESIDENT', residentType: 'TENANT', isOwner: false, isLivingHere: true, isPrimary: true, isActive: true, isDefault: true },
   ]});
-  console.log('✅ 12 flat memberships\n');
+  console.log('✅ 13 flat memberships\n');
 
   // ════════════════════════════════════════════════════════
   // ONBOARDING

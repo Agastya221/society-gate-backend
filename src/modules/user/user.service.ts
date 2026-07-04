@@ -194,6 +194,7 @@ export class UserService {
         onboardingStatus: onboardingRequest?.status || 'NOT_STARTED',
         societyIsActive: societyState?.isActive ?? null,
         societyOnboardingStatus: societyState?.onboardingStatus ?? null,
+        activeContext: contexts.activeContext,
       });
 
       return {
@@ -240,8 +241,14 @@ export class UserService {
     onboardingStatus: string;
     societyIsActive: boolean | null;
     societyOnboardingStatus: string | null;
+    activeContext?: { role: string; flatId: string | null } | null;
   }) {
-    if (input.role === 'ADMIN' || input.role === 'SUPER_ADMIN') {
+    const isActiveAdminContext =
+      input.activeContext?.role &&
+      ['ADMIN', 'SUPER_ADMIN'].includes(input.activeContext.role) &&
+      !input.activeContext.flatId;
+
+    if (isActiveAdminContext || (!input.activeContext && (input.role === 'ADMIN' || input.role === 'SUPER_ADMIN'))) {
       return {
         requiresOnboarding: false,
         onboardingStatus: input.onboardingStatus,
@@ -329,7 +336,7 @@ export class UserService {
   async adminAppOtpVerify(widgetToken: string) {
     const phone = await verifyMSG91WidgetToken(widgetToken);
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { phone },
       include: { flat: true, society: true },
     });
@@ -347,6 +354,8 @@ export class UserService {
       throw new AppError('Your account is inactive. Please contact your society admin.', 403);
     }
 
+    user = await this.repairActiveRoleFromMembership(user);
+
     const accessToken = generateAccessToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
     const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
 
@@ -357,13 +366,9 @@ export class UserService {
 
     const { password: _, refreshToken: __, ...safe } = user;
     const contexts = await this.getContexts(user.id);
+    const panelState = this.resolvePanelStateFromContexts(contexts, user.role);
 
-    // Tell the frontend which panel to show based on role
-    const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(user.role)
-      ? 'ADMIN_PANEL'
-      : 'RESIDENT_PANEL';
-
-    return { accessToken, refreshToken, user: safe, contexts, appType: 'RESIDENT_APP', redirectTo };
+    return { accessToken, refreshToken, user: safe, contexts, appType: 'RESIDENT_APP', ...panelState };
   }
 
   // ============================================
@@ -476,6 +481,8 @@ export class UserService {
   // RESIDENT APP - MULTI SOCIETY / FLAT CONTEXTS
   // ============================================
   async getContexts(userId: string) {
+    await this.normalizeAdminFlatMemberships(userId);
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -656,6 +663,8 @@ export class UserService {
   }
 
   async switchContext(userId: string, membershipId: string) {
+    await this.normalizeAdminFlatMemberships(userId);
+
     const [user, membership] = await Promise.all([
       prisma.user.findUnique({ where: { id: userId } }),
       prisma.userFlatMembership.findFirst({
@@ -755,10 +764,7 @@ export class UserService {
 
     const { password: _, refreshToken: __, ...safe } = updatedUser;
     const contexts = await this.getContexts(updatedUser.id);
-
-    const redirectTo = ['ADMIN', 'SUPER_ADMIN'].includes(updatedUser.role)
-      ? 'ADMIN_PANEL'
-      : 'RESIDENT_PANEL';
+    const panelState = this.resolvePanelStateFromContexts(contexts, updatedUser.role);
 
     return {
       accessToken,
@@ -766,7 +772,7 @@ export class UserService {
       user: safe,
       contexts,
       appType: 'RESIDENT_APP',
-      redirectTo,
+      ...panelState,
     };
   }
 
@@ -969,11 +975,118 @@ export class UserService {
       return role;
     }
 
-    if (role === 'ADMIN' && flatId && approvedOnboardingKeys.has(this.membershipKey(societyId, flatId))) {
+    if (role === 'ADMIN' && flatId) {
       return 'RESIDENT';
     }
 
     return role;
+  }
+
+  private resolvePanelStateFromContexts(
+    contexts: Awaited<ReturnType<UserService['getContexts']>>,
+    fallbackRole: string
+  ) {
+    const activeContext = contexts.activeContext;
+    const canOpenAdminPanel = contexts.contexts.some(
+      (context) => ['ADMIN', 'SUPER_ADMIN'].includes(context.role) && !context.flatId
+    ) || fallbackRole === 'SUPER_ADMIN';
+
+    if (
+      (activeContext && ['ADMIN', 'SUPER_ADMIN'].includes(activeContext.role) && !activeContext.flatId) ||
+      (!activeContext && ['ADMIN', 'SUPER_ADMIN'].includes(fallbackRole))
+    ) {
+      return {
+        nextAction: 'OPEN_ADMIN_PANEL',
+        redirectTo: 'ADMIN_PANEL',
+        canOpenAdminPanel,
+      };
+    }
+
+    return {
+      nextAction: 'OPEN_RESIDENT_PANEL',
+      redirectTo: 'RESIDENT_PANEL',
+      canOpenAdminPanel,
+    };
+  }
+
+  private async normalizeAdminFlatMemberships(userId: string) {
+    const adminFlatMemberships = await prisma.userFlatMembership.findMany({
+      where: {
+        userId,
+        role: 'ADMIN',
+        flatId: { not: null },
+        isActive: true,
+      },
+      select: {
+        id: true,
+        societyId: true,
+      },
+    });
+
+    for (const membership of adminFlatMemberships) {
+      const existingAdminContext = await prisma.userFlatMembership.findFirst({
+        where: {
+          userId,
+          societyId: membership.societyId,
+          flatId: null,
+          role: 'ADMIN',
+          isActive: true,
+        },
+        select: { id: true },
+      });
+
+      if (!existingAdminContext) {
+        await prisma.userFlatMembership.create({
+          data: {
+            userId,
+            societyId: membership.societyId,
+            role: 'ADMIN',
+            isActive: true,
+            isDefault: false,
+          },
+        });
+      }
+
+      await prisma.userFlatMembership.update({
+        where: { id: membership.id },
+        data: { role: 'RESIDENT' },
+      });
+    }
+
+    if (adminFlatMemberships.length === 0) {
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        role: true,
+        societyId: true,
+        flatId: true,
+      },
+    });
+
+    if (!user || user.role !== 'ADMIN' || !user.societyId || !user.flatId) {
+      return;
+    }
+
+    const activeFlatMembership = await prisma.userFlatMembership.findFirst({
+      where: {
+        userId,
+        societyId: user.societyId,
+        flatId: user.flatId,
+        isActive: true,
+      },
+      select: { role: true },
+    });
+
+    if (activeFlatMembership?.role === 'RESIDENT') {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { role: 'RESIDENT' },
+      });
+    }
   }
 
   private async repairActiveRoleFromMembership<T extends {

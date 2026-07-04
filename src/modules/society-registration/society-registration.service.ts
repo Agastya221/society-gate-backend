@@ -150,10 +150,10 @@ export class SocietyRegistrationService {
         data: {
           role: activeRole,
           societyId: society.id,
-          flatId: adminFlatId,
+          flatId: null,
           isActive: true,
-          isOwner: shouldCreateAdminFlat ? request.adminResidentType === 'OWNER' : false,
-          isPrimaryResident: shouldCreateAdminFlat,
+          isOwner: false,
+          isPrimaryResident: false,
         },
         select: {
           id: true, name: true, phone: true,
@@ -165,16 +165,28 @@ export class SocietyRegistrationService {
         data: {
           userId: request.requestedById,
           societyId: society.id,
-          flatId: adminFlatId,
           role: 'ADMIN',
-          residentType: shouldCreateAdminFlat ? request.adminResidentType ?? 'OWNER' : undefined,
-          isOwner: shouldCreateAdminFlat ? request.adminResidentType === 'OWNER' : false,
-          isLivingHere: shouldCreateAdminFlat,
-          isPrimary: shouldCreateAdminFlat,
           isActive: true,
           isDefault: true,
         },
       });
+
+      if (adminFlatId) {
+        await tx.userFlatMembership.create({
+          data: {
+            userId: request.requestedById,
+            societyId: society.id,
+            flatId: adminFlatId,
+            role: 'RESIDENT',
+            residentType: request.adminResidentType ?? 'OWNER',
+            isOwner: request.adminResidentType === 'OWNER',
+            isLivingHere: true,
+            isPrimary: true,
+            isActive: true,
+            isDefault: false,
+          },
+        });
+      }
 
       const updatedRequest = await tx.societyRegistrationRequest.update({
         where: { id: requestId },
