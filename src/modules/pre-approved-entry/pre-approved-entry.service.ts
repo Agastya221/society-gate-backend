@@ -44,23 +44,27 @@ export class PreApprovedEntryService {
   async create(userId: string, dto: CreatePreApprovedEntryDTO) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { flatId: true, societyId: true, name: true },
+      select: { flatId: true, societyId: true, name: true, role: true },
     });
-    if (!user?.flatId || !user?.societyId) {
-      throw new AppError('User must be assigned to a flat and society', 400);
+    if (!user?.societyId) {
+      throw new AppError('User must be assigned to a society', 400);
     }
+    const isSocietyAdmin = user.role === 'ADMIN' || user.role === 'SUPER_ADMIN';
+    if (!isSocietyAdmin && !user.flatId) throw new AppError('Resident must be assigned to a flat', 400);
 
     // Entry count limit
     const activeCount = await prisma.preApprovedEntry.count({
-      where: { flatId: user.flatId, status: 'ACTIVE' },
+      where: isSocietyAdmin
+        ? { societyId: user.societyId, flatId: null, status: 'ACTIVE' }
+        : { flatId: user.flatId!, status: 'ACTIVE' },
     });
     if (activeCount >= MAX_ACTIVE_PER_FLAT) {
       throw new AppError(`Maximum active entries (${MAX_ACTIVE_PER_FLAT}) reached for this flat`, 400);
     }
 
     // Duplicate check
-    if (!dto.skipDuplicateCheck) {
-      const duplicate = await this.findDuplicate(user.flatId, dto);
+    if (!isSocietyAdmin && !dto.skipDuplicateCheck) {
+      const duplicate = await this.findDuplicate(user.flatId!, dto);
       if (duplicate) {
         return {
           warning: 'DUPLICATE_EXISTS',
@@ -85,7 +89,7 @@ export class PreApprovedEntryService {
           visitorName: dto.visitorName,
           visitorPhone: dto.visitorPhone,
           userId,
-          flatId: user.flatId!,
+          flatId: isSocietyAdmin ? null : user.flatId!,
           societyId: user.societyId!,
           schedule: {
             create: {
@@ -127,23 +131,23 @@ export class PreApprovedEntryService {
     });
 
     // Invalidate cache
-    await accessControlCache.invalidate(
-      user.societyId!,
-      user.flatId!,
-      dto.vehicleLast4Digits,
-    );
+    if (user.flatId) {
+      await accessControlCache.invalidate(user.societyId, user.flatId, dto.vehicleLast4Digits);
+    }
 
     // Notify other flat members
-    eventBus.emit('pre-approved.created', {
-      entryId: entry.id,
-      flatId: user.flatId!,
-      societyId: user.societyId!,
-      type: entry.type,
-      mode: entry.mode,
-      displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
-      createdByUserId: userId,
-      createdByName: user.name,
-    });
+    if (user.flatId) {
+      eventBus.emit('pre-approved.created', {
+        entryId: entry.id,
+        flatId: user.flatId,
+        societyId: user.societyId,
+        type: entry.type,
+        mode: entry.mode,
+        displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
+        createdByUserId: userId,
+        createdByName: user.name,
+      });
+    }
 
     return entry;
   }

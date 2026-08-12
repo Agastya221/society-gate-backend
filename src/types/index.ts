@@ -483,8 +483,8 @@ export interface VendorFilters extends PaginationParams {
 // ============================================
 
 export interface CreateGatePassDTO {
-  societyId: string;
-  flatId: string;
+  societyId?: string;
+  flatId?: string;
   type: GatePassType;
   title: string;
   description?: string;

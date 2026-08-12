@@ -19,27 +19,35 @@ export class GatePassService {
       throw new AppError('User not found', 404);
     }
 
-    if (!user.flatId || !user.societyId) {
-      throw new AppError('User must have a flat and society assigned', 400);
+    if (!user.societyId) {
+      throw new AppError('User must have a society assigned', 400);
     }
 
-    const flatId = data.flatId || user.flatId;
-    const societyId = data.societyId || user.societyId;
+    const isSocietyAdmin = user.role === 'ADMIN' || user.role === 'SUPER_ADMIN';
+    const flatId = isSocietyAdmin ? data.flatId : (data.flatId || user.flatId);
+    const societyId = user.societyId;
 
-    // Verify flat belongs to society
-    const flat = await prisma.flat.findUnique({
-      where: { id: flatId },
-      include: { society: true },
-    });
+    if (!isSocietyAdmin && !flatId) {
+      throw new AppError('Resident must have a flat assigned', 400);
+    }
 
-    if (!flat || flat.societyId !== societyId) {
-      throw new AppError('Invalid flat or society', 400);
+    // A resident pass is always flat-bound. Admins may optionally target a
+    // flat, otherwise the pass is issued by the society itself.
+    if (flatId) {
+      const flat = await prisma.flat.findUnique({
+        where: { id: flatId },
+        select: { societyId: true },
+      });
+
+      if (!flat || flat.societyId !== societyId) {
+        throw new AppError('Invalid flat or society', 400);
+      }
     }
 
     // Generate QR token
     const qrToken = generateQRToken({
       type: 'gatepass',
-      flatId,
+      flatId: flatId ?? null,
       societyId,
       passType: data.type,
     });
@@ -47,7 +55,7 @@ export class GatePassService {
     const gatePass = await prisma.gatePass.create({
       data: {
         ...data,
-        flatId,
+        flatId: flatId ?? null,
         societyId,
         requestedById,
         qrToken,
