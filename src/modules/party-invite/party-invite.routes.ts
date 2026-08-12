@@ -17,16 +17,24 @@ import { RedisStore } from 'rate-limit-redis';
 import { redis } from '../../config/redis';
 
 const router = Router();
+const useRedisRateLimit =
+  process.env.NODE_ENV === 'production' &&
+  Boolean(process.env.REDIS_URL);
 
 // Rate limiting for public claim endpoint (e.g., max 5 attempts per hour per IP)
 const claimLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5,
   message: { success: false, message: 'Too many attempts, please try again after an hour' },
-  store: new RedisStore({
-    sendCommand: (command: string, ...args: string[]) => redis.call(command, ...args) as Promise<any>,
-    prefix: 'rl:party-claim:',
-  }),
+  ...(useRedisRateLimit
+    ? {
+        store: new RedisStore({
+          sendCommand: (command: string, ...args: string[]) =>
+            redis.call(command, ...args) as Promise<any>,
+          prefix: 'rl:party-claim:',
+        }),
+      }
+    : {}),
 });
 
 // PUBLIC endpoint — guest self-service via share link (NO AUTH)

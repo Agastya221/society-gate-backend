@@ -39,7 +39,12 @@ app.use(express.json({
 })); // Reduced from 10mb to prevent memory exhaustion
 app.use(express.urlencoded({ extended: true }));
 
-// Redis store for rate limiting - handles connection failures gracefully
+const useRedisRateLimit =
+  process.env.NODE_ENV === 'production' &&
+  Boolean(process.env.REDIS_URL);
+
+// Production instances share limits through Redis. Development uses the
+// express-rate-limit memory store so the API remains usable without Redis.
 const createRedisStore = (prefix: string) =>
   new RedisStore({
     sendCommand: (command: string, ...args: string[]) => redis.call(command, ...args) as Promise<any>,
@@ -53,7 +58,7 @@ const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests, please try again later.' },
-  store: createRedisStore('api'),
+  ...(useRedisRateLimit ? { store: createRedisStore('api') } : {}),
 });
 
 // Stricter rate limiting for auth endpoints
@@ -63,7 +68,7 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many login attempts, please try again later.' },
-  store: createRedisStore('auth'),
+  ...(useRedisRateLimit ? { store: createRedisStore('auth') } : {}),
 });
 
 app.use('/api/', apiLimiter);

@@ -1,0 +1,46 @@
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+[09:07:12] [32mINFO[39m: [36m[MSG91] Auth key loaded: 486792...44P1 (length: 28)[39m
+[09:07:16] [33mWARN[39m: [36mFIREBASE_SERVICE_ACCOUNT_JSON not set — push notifications disabled[39m
+[09:07:20] [32mINFO[39m: [36mCron jobs scheduled[39m
+[09:07:20] [32mINFO[39m: [36mNotification event listeners registered[39m
+[09:07:20] [32mINFO[39m: [36mSocket.IO initialized[39m
+[09:07:20] [32mINFO[39m: [36m🚀 [SERVER] Server started[39m
+    [35mport[39m: "4000"
+    [35menv[39m: "development"
+[09:07:20] [32mINFO[39m: [36m🟢 [DATABASE] PostgreSQL connected successfully[39m
+[09:07:20] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:20] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:20] [33mWARN[39m: [36m🔴 [REDIS] Redis not available[39m
+    error: "Connection is closed."
+[09:07:20] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:20] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:21] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:21] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:21] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:21] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:21] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:21] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:22] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:22] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:22] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:22] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:23] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:23] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:24] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:24] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:25] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:25] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
+[09:07:26] [33mWARN[39m: [36mRedis connection error[39m
+    error: ""
+[09:07:26] [31mERROR[39m: [36mRedis connection failed after 10 attempts[39m
+[09:07:26] [33mWARN[39m: [36m🟡 [REDIS] Connection closed[39m
