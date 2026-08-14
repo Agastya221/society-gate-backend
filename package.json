@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate:deploy": "npx prisma migrate deploy",
     "seed": "ts-node prisma/seed.ts",
+    "seed:staff": "ts-node prisma/seed-staff-app.ts",
     "db:reset": "prisma migrate reset --force && npm run seed"
   },
   "prisma": {

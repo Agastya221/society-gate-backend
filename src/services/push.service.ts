@@ -13,6 +13,24 @@ interface FlatPushOptions {
 }
 
 class PushService {
+  async sendToStaff(domesticStaffId: string, payload: PushPayload): Promise<void> {
+    if (!isFirebaseAvailable()) {
+      logger.debug('Push skipped: Firebase not available');
+      return;
+    }
+
+    try {
+      const account = await prisma.staffAccount.findUnique({
+        where: { domesticStaffId },
+        select: { id: true, fcmToken: true },
+      });
+      if (!account?.fcmToken) return;
+      await this.sendMulticast([{ userId: account.id, fcmToken: account.fcmToken }], payload, 'staff');
+    } catch (error) {
+      logger.error({ error, domesticStaffId }, 'Push sendToStaff failed');
+    }
+  }
+
   async sendToUser(userId: string, payload: PushPayload): Promise<void> {
     if (!isFirebaseAvailable()) {
       logger.debug('Push skipped: Firebase not available');
@@ -142,7 +160,8 @@ class PushService {
 
   private async sendMulticast(
     targets: { userId: string; fcmToken: string }[],
-    payload: PushPayload
+    payload: PushPayload,
+    targetType: 'user' | 'staff' = 'user'
   ): Promise<void> {
     // Cast all data values to string — FCM rejects non-strings
     const stringData: Record<string, string> = {};
@@ -187,10 +206,11 @@ class PushService {
 
       // Clean up invalid tokens
       if (tokensToRemove.length > 0) {
-        await prisma.user.updateMany({
-          where: { id: { in: tokensToRemove } },
-          data: { fcmToken: null },
-        });
+        if (targetType === 'staff') {
+          await prisma.staffAccount.updateMany({ where: { id: { in: tokensToRemove } }, data: { fcmToken: null } });
+        } else {
+          await prisma.user.updateMany({ where: { id: { in: tokensToRemove } }, data: { fcmToken: null } });
+        }
         logger.debug({ count: tokensToRemove.length }, 'Cleaned up invalid FCM tokens');
       }
     } catch (error) {

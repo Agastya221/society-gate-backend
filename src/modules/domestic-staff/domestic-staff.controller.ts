@@ -12,7 +12,11 @@ const staffService = new DomesticStaffService();
 export const createStaff = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const staff = await staffService.createStaff(req.body, userId);
+    const societyId = req.user!.societyId;
+    if (!societyId) {
+      throw new Error('Admin is not assigned to a society');
+    }
+    const staff = await staffService.createStaff({ ...req.body, societyId }, userId);
 
     res.status(201).json({
       success: true,
@@ -73,7 +77,7 @@ export const getStaffById = async (req: Request, res: Response) => {
 export const updateStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.updateStaff(String(id), req.body);
+    const staff = await staffService.updateStaff(String(id), req.body, req.user!.societyId!);
 
     res.status(200).json({
       success: true,
@@ -91,7 +95,7 @@ export const updateStaff = async (req: Request, res: Response) => {
 export const deleteStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await staffService.deleteStaff(String(id));
+    const result = await staffService.deleteStaff(String(id), req.user!.societyId!);
 
     res.status(200).json({
       success: true,

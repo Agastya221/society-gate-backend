@@ -432,7 +432,12 @@ eventBus.on('staff.booking-created', async (payload) => {
       referenceId: payload.bookingId,
       referenceType: 'StaffBooking',
       societyId: payload.societyId,
-    });
+      });
+      pushService.sendToStaff(payload.staffId, {
+        title: 'New work request',
+        body: `${payload.staffType} work requested for ${new Date(payload.bookingDate).toLocaleDateString()}`,
+        data: { screen: 'Bookings', bookingId: payload.bookingId },
+      }).catch((err) => logger.error({ err }, 'Push failed: staff.booking-created'));
   } catch (error) {
     logger.error({ error, event: 'staff.booking-created', payload }, 'Failed to send booking notification');
   }
@@ -456,6 +461,26 @@ eventBus.on('staff.booking-accepted', async (payload) => {
     }).catch((err) => logger.error({ err }, 'Push failed: staff.booking-accepted'));
   } catch (error) {
     logger.error({ error, event: 'staff.booking-accepted', payload }, 'Failed to send booking accepted notification');
+  }
+});
+
+eventBus.on('staff.booking-rejected', async (payload) => {
+  try {
+    await notificationService.sendToUser(payload.bookedById, {
+      type: 'SYSTEM',
+      title: 'Booking declined',
+      message: `${payload.staffName} could not accept your booking${payload.reason ? `: ${payload.reason}` : ''}`,
+      referenceId: payload.bookingId,
+      referenceType: 'StaffBooking',
+      societyId: payload.societyId,
+    });
+    pushService.sendToUser(payload.bookedById, {
+      title: 'Booking declined',
+      body: `${payload.staffName} could not accept your booking`,
+      data: { screen: 'StaffBooking', bookingId: payload.bookingId },
+    }).catch((err) => logger.error({ err }, 'Push failed: staff.booking-rejected'));
+  } catch (error) {
+    logger.error({ error, event: 'staff.booking-rejected', payload }, 'Failed to send booking rejected notification');
   }
 });
 

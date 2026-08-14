@@ -10,6 +10,7 @@ import uploadRoutes from '../../modules/upload/upload.routes';
 import societyRegistrationRoutes from '../../modules/society-registration/society-registration.routes';
 import paymentRoutes from '../../modules/payment/payment.routes';
 import superadminRoutes from '../../modules/superadmin/superadmin.routes';
+import staffAppRoutes from '../../modules/staff-app/staff-app.routes';
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use('/auth', authRoutes);              // /api/v1/auth
 router.use('/users', authRoutes);             // /api/v1/users (alias — FCM token, profile, etc.)
 router.use('/gate', gateRoutes);              // /api/v1/gate/*
 router.use('/staff', staffRoutes);            // /api/v1/staff/*
+router.use('/staff-app', staffAppRoutes);      // /api/v1/staff-app/*
 router.use('/community', communityRoutes);    // /api/v1/community/*
 router.use('/resident', residentRoutes);      // /api/v1/resident/*
 router.use('/admin', adminRoutes);            // /api/v1/admin/*

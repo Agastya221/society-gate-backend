@@ -1,0 +1,20 @@
+import { Router } from 'express';
+import { authenticateStaffApp } from './staff-app.middleware';
+import * as controller from './staff-app.controller';
+
+const router = Router();
+router.post('/auth/otp/verify', controller.verifyOtp);
+router.post('/auth/refresh', controller.refresh);
+router.use(authenticateStaffApp);
+router.post('/auth/logout', controller.logout);
+router.get('/dashboard', controller.dashboard);
+router.get('/me', controller.profile);
+router.get('/pass', controller.pass);
+router.get('/assignments', controller.assignments);
+router.get('/attendance', controller.attendance);
+router.get('/bookings', controller.bookings);
+router.patch('/bookings/:id/accept', controller.acceptBooking);
+router.patch('/bookings/:id/reject', controller.rejectBooking);
+router.patch('/availability', controller.availability);
+router.patch('/fcm-token', controller.fcmToken);
+export default router;

@@ -11,7 +11,7 @@ import {
 } from '../../utils/s3';
 import { DocumentType } from '../../../prisma/generated/prisma/enums';
 
-type UploadContext = 'onboarding' | 'entry-photo';
+type UploadContext = 'onboarding' | 'entry-photo' | 'staff-photo';
 
 interface PresignedUrlRequest {
   context: UploadContext;
@@ -42,7 +42,9 @@ export class UploadService {
 
     // Validate file type based on context
     const allowedTypes =
-      context === 'entry-photo' ? ALLOWED_PHOTO_TYPES : ALLOWED_DOCUMENT_TYPES;
+      context === 'entry-photo' || context === 'staff-photo'
+        ? ALLOWED_PHOTO_TYPES
+        : ALLOWED_DOCUMENT_TYPES;
 
     if (!isValidFileType(mimeType, allowedTypes)) {
       throw new AppError(
@@ -52,7 +54,9 @@ export class UploadService {
     }
 
     // Validate file size (max 10MB for documents, 5MB for photos)
-    const maxSize = context === 'entry-photo' ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+    const maxSize = context === 'entry-photo' || context === 'staff-photo'
+      ? 5 * 1024 * 1024
+      : 10 * 1024 * 1024;
     if (fileSize > maxSize) {
       throw new AppError(
         `File too large. Maximum size: ${maxSize / (1024 * 1024)}MB`,
@@ -61,7 +65,11 @@ export class UploadService {
     }
 
     // Generate S3 key
-    const folder = context === 'entry-photo' ? 'entry-photos' : 'onboarding';
+    const folder = context === 'entry-photo'
+      ? 'entry-photos'
+      : context === 'staff-photo'
+        ? 'staff-photos'
+        : 'onboarding';
     const s3Key = generateS3Key(folder, userId, fileName);
 
     // Get pre-signed upload URL

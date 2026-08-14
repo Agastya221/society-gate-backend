@@ -1109,6 +1109,24 @@ async function main() {
   console.log('✅ 7 domestic staff\n');
 
   // ════════════════════════════════════════════════════════
+  // STAFF APP ACCOUNTS
+  // These identities are separate from User so staff can use the
+  // standalone app without inheriting resident/admin permissions.
+  // OTP login will populate refresh/FCM tokens when a device connects.
+  // ════════════════════════════════════════════════════════
+  console.log('📱 Creating staff app accounts...');
+  await prisma.staffAccount.createMany({ data: [
+    { domesticStaffId: maid1.id,     phone: maid1.phone,     isActive: true },
+    { domesticStaffId: cook1.id,     phone: cook1.phone,     isActive: true },
+    { domesticStaffId: driver1.id,   phone: driver1.phone,   isActive: true },
+    { domesticStaffId: laundry1.id,  phone: laundry1.phone,  isActive: true },
+    { domesticStaffId: nanny1.id,    phone: nanny1.phone,    isActive: true },
+    { domesticStaffId: gardener1.id, phone: gardener1.phone, isActive: true },
+    { domesticStaffId: cleaner1.id,  phone: cleaner1.phone,  isActive: true },
+  ]});
+  console.log('✅ 7 staff app accounts\n');
+
+  // ════════════════════════════════════════════════════════
   // STAFF ASSIGNMENTS
   // ════════════════════════════════════════════════════════
   console.log('🔗 Creating staff assignments...');
@@ -3168,6 +3186,7 @@ async function main() {
   console.log(`  Amenities:      6`);
   console.log(`  Bookings:       8`);
   console.log(`  Domestic Staff: 7`);
+  console.log(`  Staff Accounts:  7`);
   console.log(`  Staff Assign:   11`);
   console.log(`  Attendance:     21 records`);
   console.log(`  Staff Reviews:  6`);
@@ -3197,6 +3216,14 @@ async function main() {
   console.log('GUARD 1:         9800000001  (Rajendra Singh)');
   console.log('GUARD 2:         9800000002  (Suresh Mahto)');
   console.log('GUARD 3:         9800000003  (Manoj Kumar)');
+  console.log('STAFF APP:');
+  console.log('  9700000001  Savita Bai       (MAID)');
+  console.log('  9700000002  Ramesh Tiwari    (COOK)');
+  console.log('  9700000003  Ganesh Prasad    (DRIVER)');
+  console.log('  9700000004  Sunita Devi      (LAUNDRY)');
+  console.log('  9700000005  Kavita Devi      (NANNY)');
+  console.log('  9700000006  Balaji Das       (GARDENER)');
+  console.log('  9700000007  Pradeep Oraon    (CLEANER)');
   console.log('─'.repeat(55));
   console.log('RESIDENTS:');
   console.log('  9811000001  Amit Sinha           A101  (Owner, Primary)');

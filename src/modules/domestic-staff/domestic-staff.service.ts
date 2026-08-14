@@ -29,15 +29,24 @@ export class DomesticStaffService {
   // ============================================
 
   async createStaff(data: CreateStaffDTO, addedById: string) {
-    const { societyId, phone } = data;
+    const { societyId } = data;
+    const phone = data.phone.replace(/\D/g, '').slice(-10);
+
+    if (phone.length !== 10) {
+      throw new AppError('Enter a valid 10-digit phone number', 400);
+    }
+    if (!data.name?.trim()) {
+      throw new AppError('Staff name is required', 400);
+    }
+    if (!data.photoUrl) {
+      throw new AppError('A clear face photo is required', 400);
+    }
 
     // Check if staff with this phone already exists in society
-    const existing = await prisma.domesticStaff.findFirst({
-      where: { phone, societyId },
-    });
+    const existing = await prisma.domesticStaff.findUnique({ where: { phone } });
 
     if (existing) {
-      throw new AppError('Staff with this phone number already exists in your society', 400);
+      throw new AppError('Staff with this phone number is already registered', 400);
     }
 
     // Generate QR token
@@ -47,16 +56,37 @@ export class DomesticStaffService {
       societyId,
     });
 
-    const staff = await prisma.domesticStaff.create({
-      data: {
-        ...data,
-        qrToken,
-        addedById,
-      },
-      include: {
-        addedBy: { select: { id: true, name: true, role: true } },
-        society: { select: { id: true, name: true } },
-      },
+    const { flatId: _flatId, ...staffData } = data;
+    const staff = await prisma.$transaction(async (tx) => {
+      const createdStaff = await tx.domesticStaff.create({
+        data: {
+          ...staffData,
+          name: data.name.trim(),
+          phone,
+          languages: data.languages ?? [],
+          workingDays: data.workingDays ?? [],
+          qrToken,
+          addedById,
+          isActive: true,
+          isVerified: true,
+          verifiedAt: new Date(),
+          verifiedBy: addedById,
+        },
+        include: {
+          addedBy: { select: { id: true, name: true, role: true } },
+          society: { select: { id: true, name: true } },
+        },
+      });
+
+      await tx.staffAccount.create({
+        data: {
+          domesticStaffId: createdStaff.id,
+          phone,
+          isActive: true,
+        },
+      });
+
+      return createdStaff;
     });
 
     return staff;
@@ -243,39 +273,75 @@ export class DomesticStaffService {
     };
   }
 
-  async updateStaff(staffId: string, data: UpdateStaffDTO) {
+  async updateStaff(staffId: string, data: UpdateStaffDTO, societyId: string) {
     const staff = await prisma.domesticStaff.findUnique({
       where: { id: staffId },
     });
 
-    if (!staff) {
+    if (!staff || staff.societyId !== societyId) {
       throw new AppError('Staff not found', 404);
     }
 
-    const updatedStaff = await prisma.domesticStaff.update({
-      where: { id: staffId },
-      data,
+    const phone = data.phone ? data.phone.replace(/\D/g, '').slice(-10) : staff.phone;
+    if (phone.length !== 10) {
+      throw new AppError('Enter a valid 10-digit phone number', 400);
+    }
+    if (phone !== staff.phone) {
+      const phoneOwner = await prisma.domesticStaff.findUnique({ where: { phone } });
+      if (phoneOwner) {
+        throw new AppError('Staff with this phone number is already registered', 400);
+      }
+    }
+
+    const updatedStaff = await prisma.$transaction(async (tx) => {
+      const updated = await tx.domesticStaff.update({
+        where: { id: staffId },
+        data: {
+          ...data,
+          ...(data.name ? { name: data.name.trim() } : {}),
+          phone,
+          ...(data.isActive === true ? { availabilityStatus: 'AVAILABLE' } : {}),
+          ...(data.isActive === false ? { availabilityStatus: 'INACTIVE' } : {}),
+        },
+      });
+
+      await tx.staffAccount.upsert({
+        where: { domesticStaffId: staffId },
+        create: { domesticStaffId: staffId, phone, isActive: updated.isActive },
+        update: {
+          phone,
+          isActive: updated.isActive,
+          ...(!updated.isActive ? { refreshToken: null, fcmToken: null } : {}),
+        },
+      });
+      return updated;
     });
 
     return updatedStaff;
   }
 
   // NICE-4: Soft delete instead of hard delete for data consistency
-  async deleteStaff(staffId: string) {
+  async deleteStaff(staffId: string, societyId: string) {
     const staff = await prisma.domesticStaff.findUnique({
       where: { id: staffId },
     });
 
-    if (!staff) {
+    if (!staff || staff.societyId !== societyId) {
       throw new AppError('Staff not found', 404);
     }
 
-    await prisma.domesticStaff.update({
-      where: { id: staffId },
-      data: {
-        isActive: false,
-        availabilityStatus: 'INACTIVE',
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.domesticStaff.update({
+        where: { id: staffId },
+        data: {
+          isActive: false,
+          availabilityStatus: 'INACTIVE',
+        },
+      });
+      await tx.staffAccount.updateMany({
+        where: { domesticStaffId: staffId },
+        data: { isActive: false, refreshToken: null, fcmToken: null },
+      });
     });
 
     return { message: 'Staff deactivated successfully' };
@@ -637,6 +703,7 @@ export class DomesticStaffService {
     // ARCH-3: Emit event for notification listener
     eventBus.emit('staff.booking-created', {
       bookingId: booking.id,
+      staffId: booking.domesticStaffId,
       flatId: booking.flatId,
       societyId: booking.societyId,
       staffName: booking.domesticStaff.name,

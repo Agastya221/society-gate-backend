@@ -1,5 +1,15 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../utils/Client';
+import { getPresignedViewUrl } from '../../utils/s3';
+
+const resolvePhotoUrl = async (value: string | null) => {
+  if (!value || /^https?:\/\//i.test(value)) return value;
+  try {
+    return await getPresignedViewUrl(value);
+  } catch {
+    return null;
+  }
+};
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
@@ -17,7 +27,7 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
 
     // Fetch Guards from User table
     const guards = await prisma.user.findMany({
-      where: { societyId, role: 'GUARD', isActive: true },
+      where: { societyId, role: 'GUARD' },
       select: {
         id: true,
         name: true,
@@ -30,7 +40,7 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
 
     // Fetch Domestic staff (maids, cooks, etc.)
     const domesticStaff = await prisma.domesticStaff.findMany({
-      where: { societyId, isActive: true },
+      where: { societyId },
       select: {
         id: true,
         name: true,
@@ -54,7 +64,7 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
     });
 
     // Normalize Guard records into StaffMember shape
-    const normalizedGuards = guards.map((g) => ({
+    const normalizedGuards = await Promise.all(guards.map(async (g) => ({
       id: g.id,
       name: g.name,
       phone: g.phone,
@@ -64,14 +74,14 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
       shiftStart: null,
       shiftEnd: null,
       assignedFlats: ['SOCIETY'],
-      photoUrl: g.photoUrl,
+      photoUrl: await resolvePhotoUrl(g.photoUrl),
       agencyName: null,
       source: 'USER',
       createdAt: g.createdAt,
-    }));
+    })));
 
     // Normalize Domestic Staff records into StaffMember shape
-    const normalizedDomesticStaff = domesticStaff.map((s) => ({
+    const normalizedDomesticStaff = await Promise.all(domesticStaff.map(async (s) => ({
       id: s.id,
       name: s.name,
       phone: s.phone,
@@ -88,12 +98,12 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
         (a) =>
           `${a.flat.block?.name ? a.flat.block.name + '-' : ''}${a.flat.flatNumber}`,
       ),
-      photoUrl: s.photoUrl,
+      photoUrl: await resolvePhotoUrl(s.photoUrl),
       agencyName: null,
       isVerified: s.isVerified,
       source: 'DOMESTIC',
       createdAt: s.createdAt,
-    }));
+    })));
 
     const allStaff = [...normalizedGuards, ...normalizedDomesticStaff].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),

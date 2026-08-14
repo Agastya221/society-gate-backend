@@ -63,7 +63,7 @@ router.get('/available', cache({ ttl: 60, keyPrefix: 'staff', varyBy: ['societyI
 router.get('/types', cache({ ttl: 300, keyPrefix: 'staff', varyBy: ['societyId'] }), getTypeSummary);
 
 // Residents can add staff
-router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), createStaff);
+router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), createStaff);
 
 // ============================================
 // FLAT ASSIGNMENTS - Specific routes
@@ -111,8 +111,8 @@ router.post('/reviews', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCach
 // Staff-specific routes (with :id or :staffId)
 router.get('/:id', cache({ ttl: 120, keyPrefix: 'staff' }), getStaffById);
 router.get('/:id/qr', cache({ ttl: 300, keyPrefix: 'staff' }), getStaffQRCode);
-router.patch('/:id', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), updateStaff);
-router.delete('/:id', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), deleteStaff);
+router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), updateStaff);
+router.delete('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), deleteStaff);
 router.patch('/:id/verify', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), verifyStaff);
 router.patch('/:id/availability', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), updateAvailabilityStatus);
 

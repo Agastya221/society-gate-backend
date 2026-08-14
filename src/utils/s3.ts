@@ -20,7 +20,7 @@ const UPLOAD_EXPIRY = parseInt(process.env.S3_UPLOAD_EXPIRY || '300', 10); // 5 
 const VIEW_EXPIRY = parseInt(process.env.S3_VIEW_EXPIRY || '3600', 10); // 1 hour
 
 // Document folder structure
-type FolderType = 'onboarding' | 'entry-photos' | 'general';
+type FolderType = 'onboarding' | 'entry-photos' | 'staff-photos' | 'general';
 
 /**
  * Generate a unique S3 key for a file

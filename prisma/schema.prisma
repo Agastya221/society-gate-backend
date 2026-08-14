@@ -1251,6 +1251,7 @@ model DomesticStaff {
   attendanceRecords StaffAttendance[]
   bookings          StaffBooking[]
   reviews           StaffReview[]
+  account           StaffAccount?
 
   // Added by
   addedById String
@@ -1265,6 +1266,27 @@ model DomesticStaff {
   @@index([societyId, staffType])
   @@index([societyId, availabilityStatus])
   @@index([phone])
+}
+
+// Authentication identity for the standalone staff app. Keeping this separate
+// from User prevents domestic staff from inheriting resident/admin permissions.
+model StaffAccount {
+  id              String @id @default(uuid())
+  domesticStaffId String @unique
+  domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
+
+  phone            String @unique
+  refreshToken     String? @db.Text
+  fcmToken         String?
+  deviceType       String?
+  isActive         Boolean @default(true)
+  lastLogin        DateTime?
+  lastTokenRefresh DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([phone])
+  @@index([refreshToken])
 }
 
 // --------------------

@@ -94,6 +94,7 @@ export interface AppEvents {
   };
   'staff.booking-created': {
     bookingId: string;
+    staffId: string;
     flatId: string;
     societyId: string;
     staffName: string;
@@ -106,6 +107,14 @@ export interface AppEvents {
     staffName: string;
     staffType: string;
     societyId: string;
+  };
+  'staff.booking-rejected': {
+    bookingId: string;
+    bookedById: string;
+    staffName: string;
+    staffType: string;
+    societyId: string;
+    reason?: string;
   };
   'guest-invite.used': {
     inviteId: string;
