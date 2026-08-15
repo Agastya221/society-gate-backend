@@ -23,6 +23,27 @@ import type {
   DomesticStaffType,
 } from '../../types';
 
+const timeToMinutes = (value: string) => {
+  const [hours, minutes] = value.split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
+const minutesToTime = (value: number) =>
+  `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`;
+
+const weekdayFor = (date: string) =>
+  ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date(`${date}T12:00:00Z`).getUTCDay()];
+
+const dayMatches = (days: string[], weekday: string) =>
+  days.length === 0 || days.some((day) => day.trim().toUpperCase().startsWith(weekday));
+
+const bookingDay = (date: string) => new Date(`${date}T00:00:00.000Z`);
+
+const bookingDayRange = (date: string) => ({
+  gte: bookingDay(date),
+  lt: new Date(bookingDay(date).getTime() + 24 * 60 * 60 * 1000),
+});
+
 export class DomesticStaffService {
   // ============================================
   // STAFF MANAGEMENT
@@ -482,10 +503,17 @@ export class DomesticStaffService {
       return attendance;
     });
 
+    const assignedFlatIds = await prisma.staffFlatAssignment.findMany({
+      where: { domesticStaffId, isActive: true },
+      select: { flatId: true },
+    });
+    const flatIds = [...new Set([flatId, ...assignedFlatIds.map((assignment) => assignment.flatId)].filter((id): id is string => Boolean(id)))];
+
     // ARCH-3: Emit event for notification listener
     eventBus.emit('staff.checked-in', {
       attendanceId: result.id,
       flatId,
+      flatIds,
       societyId,
       staffId: domesticStaffId,
       staffName: result.domesticStaff.name,
@@ -552,10 +580,17 @@ export class DomesticStaffService {
       return updatedAttendance;
     });
 
+    const assignedFlatIds = await prisma.staffFlatAssignment.findMany({
+      where: { domesticStaffId, isActive: true },
+      select: { flatId: true },
+    });
+    const flatIds = [...new Set([result.flatId ?? undefined, ...assignedFlatIds.map((assignment) => assignment.flatId)].filter((id): id is string => Boolean(id)))];
+
     // ARCH-3: Emit event for notification listener
     eventBus.emit('staff.checked-out', {
       attendanceId: result.id,
       flatId: result.flatId ?? undefined,
+      flatIds,
       societyId: result.societyId,
       staffId: domesticStaffId,
       staffName: result.domesticStaff.name,
@@ -638,6 +673,71 @@ export class DomesticStaffService {
   // BOOKINGS (On-demand/Urgent hiring)
   // ============================================
 
+  async getOpenSlots(domesticStaffId: string, date: string, societyId: string) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new AppError('Date must be in YYYY-MM-DD format', 400);
+    }
+
+    const staff = await prisma.domesticStaff.findFirst({
+      where: { id: domesticStaffId, societyId, isActive: true },
+      include: { assignedFlats: { where: { isActive: true } } },
+    });
+    if (!staff) throw new AppError('Staff not found', 404);
+
+    const weekday = weekdayFor(date);
+    const assignments = staff.assignedFlats.filter(
+      (assignment) => assignment.workStartTime && assignment.workEndTime && dayMatches(assignment.workingDays, weekday),
+    );
+    const bookings = await prisma.staffBooking.findMany({
+      where: {
+        domesticStaffId,
+        bookingDate: bookingDayRange(date),
+        status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] },
+      },
+      select: { startTime: true, endTime: true },
+    });
+
+    const windowStart = timeToMinutes(staff.workStartTime || '07:00');
+    const windowEnd = timeToMinutes(staff.workEndTime || '20:00');
+    const occupied = [
+      ...assignments.map((item) => ({ start: timeToMinutes(item.workStartTime!), end: timeToMinutes(item.workEndTime!) })),
+      ...bookings.map((item) => ({ start: timeToMinutes(item.startTime), end: timeToMinutes(item.endTime) })),
+    ]
+      .filter((item) => item.end > windowStart && item.start < windowEnd)
+      .map((item) => ({ start: Math.max(item.start, windowStart), end: Math.min(item.end, windowEnd) }))
+      .sort((a, b) => a.start - b.start);
+
+    const merged = occupied.reduce<Array<{ start: number; end: number }>>((result, interval) => {
+      const previous = result[result.length - 1];
+      if (previous && interval.start <= previous.end) previous.end = Math.max(previous.end, interval.end);
+      else result.push({ ...interval });
+      return result;
+    }, []);
+    const freeIntervals: Array<{ start: number; end: number }> = [];
+    let cursor = windowStart;
+    for (const interval of merged) {
+      if (interval.start - cursor >= 30) freeIntervals.push({ start: cursor, end: interval.start });
+      cursor = Math.max(cursor, interval.end);
+    }
+    if (windowEnd - cursor >= 30) freeIntervals.push({ start: cursor, end: windowEnd });
+    let slots = freeIntervals.flatMap((interval) => {
+      const choices: Array<{ startTime: string; endTime: string; durationMinutes: number }> = [];
+      for (let start = interval.start; start + 30 <= interval.end; start += 30) {
+        const end = Math.min(start + 60, interval.end);
+        choices.push({ startTime: minutesToTime(start), endTime: minutesToTime(end), durationMinutes: end - start });
+      }
+      return choices;
+    });
+    const today = new Date();
+    const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    if (date === todayValue) {
+      const currentMinutes = today.getHours() * 60 + today.getMinutes();
+      slots = slots.filter((slot) => timeToMinutes(slot.startTime) > currentMinutes);
+    }
+
+    return { date, workingWindow: { startTime: minutesToTime(windowStart), endTime: minutesToTime(windowEnd) }, slots };
+  }
+
   async createBooking(data: CreateStaffBookingDTO & { requirements?: string; estimatedCost?: number }, bookedById: string) {
     const { domesticStaffId, flatId, societyId, bookingDate, startTime, endTime, durationHours, workType } = data;
 
@@ -658,27 +758,51 @@ export class DomesticStaffService {
     if (!staff || !staff.isActive) {
       throw new AppError('Staff not found or inactive', 404);
     }
+    if (staff.societyId !== societyId) throw new AppError('Staff does not belong to this society', 403);
+
+    const membership = await prisma.userFlatMembership.findFirst({
+      where: { userId: bookedById, flatId, isActive: true },
+      select: { id: true },
+    });
+    const bookingUser = await prisma.user.findUnique({ where: { id: bookedById }, select: { flatId: true } });
+    if (!membership && bookingUser?.flatId !== flatId) throw new AppError('You can only book staff for your own flat', 403);
+
+    const dateValue = bookingDate instanceof Date ? bookingDate.toISOString().slice(0, 10) : String(bookingDate).slice(0, 10);
+    if (bookingDay(dateValue).getTime() < bookingDay(new Date().toISOString().slice(0, 10)).getTime()) {
+      throw new AppError('Booking date cannot be in the past', 400);
+    }
+    const calculatedDuration = (timeToMinutes(endTime) - timeToMinutes(startTime)) / 60;
+    if (Math.abs(calculatedDuration - durationHours) > 0.01) {
+      throw new AppError('Booking duration does not match the selected time', 400);
+    }
+    const today = new Date();
+    const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    if (dateValue === todayValue && timeToMinutes(startTime) <= today.getHours() * 60 + today.getMinutes()) {
+      throw new AppError('This time slot has already passed', 400);
+    }
+
+    const weekday = weekdayFor(dateValue);
+    const overlappingAssignments = await prisma.staffFlatAssignment.findMany({
+      where: {
+        domesticStaffId,
+        isActive: true,
+        workStartTime: { lt: endTime },
+        workEndTime: { gt: startTime },
+      },
+      select: { workingDays: true },
+    });
+    if (overlappingAssignments.some((assignment) => dayMatches(assignment.workingDays, weekday))) {
+      throw new AppError('This time is already assigned to another flat', 409);
+    }
 
     // Check for conflicting bookings
     const conflictingBooking = await prisma.staffBooking.findFirst({
       where: {
         domesticStaffId,
-        bookingDate: new Date(bookingDate),
+        bookingDate: bookingDayRange(dateValue),
         status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] },
-        OR: [
-          {
-            AND: [
-              { startTime: { lte: startTime } },
-              { endTime: { gt: startTime } },
-            ],
-          },
-          {
-            AND: [
-              { startTime: { lt: endTime } },
-              { endTime: { gte: endTime } },
-            ],
-          },
-        ],
+        startTime: { lt: endTime },
+        endTime: { gt: startTime },
       },
     });
 
@@ -690,7 +814,7 @@ export class DomesticStaffService {
       data: {
         ...data,
         bookedById,
-        bookingDate: new Date(bookingDate),
+        bookingDate: bookingDay(dateValue),
         status: 'PENDING',
       },
       include: {

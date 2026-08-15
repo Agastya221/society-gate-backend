@@ -23,6 +23,7 @@ import {
 
   // Bookings
   createBooking,
+  getOpenSlots,
   getBookings,
   acceptBooking,
   rejectBooking,
@@ -91,6 +92,7 @@ router.get('/attendance/records', cache({ ttl: 60, keyPrefix: 'staff', varyBy: [
 // Residents can book staff
 router.post('/bookings', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), createBooking);
 router.get('/bookings/list', cache({ ttl: 60, keyPrefix: 'staff', varyBy: ['societyId', 'userId'] }), getBookings);
+router.get('/:id/open-slots', getOpenSlots);
 
 // Staff/Admin can accept/reject bookings (for now, admin manages)
 router.patch('/bookings/:id/accept', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), acceptBooking);

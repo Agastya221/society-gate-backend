@@ -323,7 +323,9 @@ export const getAttendanceRecords = async (req: Request, res: Response) => {
 export const createBooking = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const booking = await staffService.createBooking(req.body, userId);
+    const flatId = req.user!.flatId ?? req.body.flatId;
+    const societyId = req.user!.societyId ?? req.body.societyId;
+    const booking = await staffService.createBooking({ ...req.body, flatId, societyId }, userId);
 
     res.status(201).json({
       success: true,
@@ -335,6 +337,17 @@ export const createBooking = async (req: Request, res: Response) => {
       success: false,
       message: getErrorMessage(error),
     });
+  }
+};
+
+export const getOpenSlots = async (req: Request, res: Response) => {
+  try {
+    const societyId = req.user!.societyId;
+    if (!societyId) throw new Error('User is not assigned to a society');
+    const result = await staffService.getOpenSlots(String(req.params.id), String(req.query.date ?? ''), societyId);
+    res.status(200).json({ success: true, data: result });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
   }
 };
 

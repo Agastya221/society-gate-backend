@@ -364,11 +364,12 @@ eventBus.on('emergency.false-alarm', async (payload) => {
 
 eventBus.on('staff.checked-in', async (payload) => {
   try {
-    if (!payload.flatId) return;
-    await notificationService.sendToFlat(payload.flatId, {
+    const flatIds = [...new Set([...(payload.flatIds ?? []), payload.flatId].filter((id): id is string => Boolean(id)))];
+    if (flatIds.length === 0) return;
+    await notificationService.sendToFlats(flatIds, {
       type: 'STAFF_CHECKIN',
       title: 'Staff Check-in',
-      message: `${payload.staffName} (${payload.staffType}) has checked in`,
+      message: `${payload.staffName} (${payload.staffType}) has entered the society`,
       data: {
         staffId: payload.staffId,
         staffName: payload.staffName,
@@ -380,9 +381,9 @@ eventBus.on('staff.checked-in', async (payload) => {
       societyId: payload.societyId,
     });
 
-    pushService.sendToFlat(payload.flatId, {
+    pushService.sendToFlats(flatIds, {
       title: 'Staff arrived',
-      body: `${payload.staffName} (${payload.staffType}) has checked in`,
+      body: `${payload.staffName} (${payload.staffType}) has entered the society`,
       data: { screen: 'StaffAttendance', attendanceId: payload.attendanceId },
     }).catch((err) => logger.error({ err }, 'Push failed: staff.checked-in'));
   } catch (error) {
@@ -392,11 +393,12 @@ eventBus.on('staff.checked-in', async (payload) => {
 
 eventBus.on('staff.checked-out', async (payload) => {
   try {
-    if (!payload.flatId) return;
-    await notificationService.sendToFlat(payload.flatId, {
+    const flatIds = [...new Set([...(payload.flatIds ?? []), payload.flatId].filter((id): id is string => Boolean(id)))];
+    if (flatIds.length === 0) return;
+    await notificationService.sendToFlats(flatIds, {
       type: 'STAFF_CHECKOUT',
       title: 'Staff Check-out',
-      message: `${payload.staffName} (${payload.staffType}) has checked out${payload.duration ? ` after ${payload.duration} minutes` : ''}`,
+      message: `${payload.staffName} (${payload.staffType}) has left the society${payload.duration ? ` after ${payload.duration} minutes` : ''}`,
       data: {
         staffId: payload.staffId,
         staffName: payload.staffName,
@@ -409,9 +411,9 @@ eventBus.on('staff.checked-out', async (payload) => {
       societyId: payload.societyId,
     });
 
-    pushService.sendToFlat(payload.flatId, {
+    pushService.sendToFlats(flatIds, {
       title: 'Staff left',
-      body: `${payload.staffName} has checked out${payload.duration ? ` after ${payload.duration} mins` : ''}`,
+      body: `${payload.staffName} has left the society${payload.duration ? ` after ${payload.duration} mins` : ''}`,
       data: { screen: 'StaffAttendance', attendanceId: payload.attendanceId },
     }).catch((err) => logger.error({ err }, 'Push failed: staff.checked-out'));
   } catch (error) {

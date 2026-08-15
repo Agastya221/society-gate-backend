@@ -76,6 +76,7 @@ export interface AppEvents {
   'staff.checked-in': {
     attendanceId: string;
     flatId?: string;
+    flatIds: string[];
     societyId: string;
     staffId: string;
     staffName: string;
@@ -85,6 +86,7 @@ export interface AppEvents {
   'staff.checked-out': {
     attendanceId: string;
     flatId?: string;
+    flatIds: string[];
     societyId: string;
     staffId: string;
     staffName: string;
