@@ -7,8 +7,24 @@ import type { EntryStatus, EntryType } from '../../../prisma/generated/prisma/cl
 
 const gateScanService = new GateScanService();
 
+const INDIA_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+
+const getIndiaDayRange = (now = new Date()) => {
+  const indiaNow = new Date(now.getTime() + INDIA_OFFSET_MS);
+  const startUtcMs = Date.UTC(
+    indiaNow.getUTCFullYear(),
+    indiaNow.getUTCMonth(),
+    indiaNow.getUTCDate(),
+  ) - INDIA_OFFSET_MS;
+
+  return {
+    start: new Date(startUtcMs),
+    end: new Date(startUtcMs + 24 * 60 * 60 * 1000),
+  };
+};
+
 /**
- * POST /guard-app/scan
+ * POST /guard/scan
  * Universal QR scan endpoint for guards (GatePass + DomesticStaff).
  */
 export const scanQR = async (req: Request, res: Response) => {
@@ -82,40 +98,51 @@ export const getEntryLog = asyncHandler(async (req: Request, res: Response) => {
 });
 
 /**
- * GET /guard-app/today
+ * GET /guard/today
  * Today's entries for guard dashboard.
  */
 export const getTodayEntries = asyncHandler(async (req: Request, res: Response) => {
   const societyId = req.user!.societyId!;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  const { start, end } = getIndiaDayRange();
 
-  const entries = await prisma.entry.findMany({
-    where: { societyId, checkInTime: { gte: today, lt: tomorrow } },
-    include: {
-      flat: true,
-      createdBy: { select: { id: true, name: true, role: true } },
-    },
-    orderBy: { checkInTime: 'desc' },
-  });
+  const [entries, staffAttendances] = await Promise.all([
+    prisma.entry.findMany({
+      where: { societyId, checkInTime: { gte: start, lt: end } },
+      include: {
+        flat: true,
+        createdBy: { select: { id: true, name: true, role: true } },
+      },
+      orderBy: { checkInTime: 'desc' },
+    }),
+    prisma.staffAttendance.findMany({
+      where: { societyId, checkInTime: { gte: start, lt: end } },
+      include: {
+        domesticStaff: {
+          select: { id: true, name: true, staffType: true, photoUrl: true },
+        },
+        flat: {
+          select: { flatNumber: true, block: { select: { name: true } } },
+        },
+      },
+      orderBy: { checkInTime: 'desc' },
+    }),
+  ]);
 
   const stats = {
-    total: entries.length,
+    total: entries.length + staffAttendances.length,
     pending: entries.filter((e) => e.status === 'PENDING').length,
     approved: entries.filter((e) => e.status === 'APPROVED').length,
     checkedOut: entries.filter((e) => e.status === 'CHECKED_OUT').length,
     delivery: entries.filter((e) => e.type === 'DELIVERY').length,
     visitor: entries.filter((e) => e.type === 'VISITOR').length,
-    domesticStaff: entries.filter((e) => e.type === 'DOMESTIC_STAFF').length,
+    domesticStaff: staffAttendances.length,
   };
 
-  res.json({ success: true, data: { entries, stats } });
+  res.json({ success: true, data: { entries, staffAttendances, stats } });
 });
 
 /**
- * GET /guard-app/entries
+ * GET /guard/entries
  * Paginated entry list with filters.
  */
 export const getEntries = asyncHandler(async (req: Request, res: Response) => {
@@ -165,11 +192,9 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
     prisma.entry.count({ where }),
   ]);
 
-  const mapped = entries.map((e) => ({
-    ...e,
-    checkOutAt: e.checkOutTime,
-    checkOutTime: undefined,
-    flat: { number: e.flat?.flatNumber ?? '' },
+  const mapped = entries.map((entry) => ({
+    ...entry,
+    flatNumber: entry.flat?.flatNumber ?? null,
   }));
 
   res.json({
@@ -187,7 +212,7 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
 });
 
 /**
- * PATCH /guard-app/entries/:id/checkout
+ * PATCH /guard/entries/:id/checkout
  */
 export const checkoutEntry = asyncHandler(async (req: Request, res: Response) => {
   const id = String(req.params.id);
