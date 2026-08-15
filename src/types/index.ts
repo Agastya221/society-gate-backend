@@ -646,7 +646,7 @@ export interface UpdateStaffAssignmentDTO {
 
 export interface StaffCheckInDTO {
   domesticStaffId: string;
-  flatId: string;
+  flatId?: string;
   societyId: string;
   checkInMethod?: string;
 }

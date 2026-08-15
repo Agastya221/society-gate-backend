@@ -1332,8 +1332,9 @@ model StaffAttendance {
   domesticStaffId String
   domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
 
-  flatId String
-  flat   Flat   @relation(fields: [flatId], references: [id])
+  // Society-level staff may not belong to one resident flat.
+  flatId String?
+  flat   Flat?  @relation(fields: [flatId], references: [id])
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)

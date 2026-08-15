@@ -364,6 +364,7 @@ eventBus.on('emergency.false-alarm', async (payload) => {
 
 eventBus.on('staff.checked-in', async (payload) => {
   try {
+    if (!payload.flatId) return;
     await notificationService.sendToFlat(payload.flatId, {
       type: 'STAFF_CHECKIN',
       title: 'Staff Check-in',
@@ -391,6 +392,7 @@ eventBus.on('staff.checked-in', async (payload) => {
 
 eventBus.on('staff.checked-out', async (payload) => {
   try {
+    if (!payload.flatId) return;
     await notificationService.sendToFlat(payload.flatId, {
       type: 'STAFF_CHECKOUT',
       title: 'Staff Check-out',

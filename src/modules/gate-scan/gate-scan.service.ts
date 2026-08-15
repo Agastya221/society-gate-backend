@@ -3,6 +3,9 @@ import { verifyQRToken } from '../../utils/QrGenerate';
 import { AppError } from '../../utils/ResponseHandler';
 import { eventBus } from '../../utils/eventBus';
 import { preApprovedEntryService } from '../pre-approved-entry/pre-approved-entry.service';
+import { DomesticStaffService } from '../domestic-staff/domestic-staff.service';
+
+const domesticStaffService = new DomesticStaffService();
 
 interface ScanResult {
   type: 'GATE_PASS' | 'DOMESTIC_STAFF' | 'PRE_APPROVED';
@@ -32,6 +35,16 @@ export class GateScanService {
    * InvitePass scanning is now handled by verifyCode() with passcodes.
    */
   async scan(qrToken: string, guardId: string, gatePointId?: string): Promise<ScanResult> {
+    // The database token is authoritative for staff passes. Looking it up
+    // first also keeps already-issued passes valid if JWT signing keys rotate.
+    const storedStaff = await prisma.domesticStaff.findUnique({
+      where: { qrToken },
+      select: { id: true },
+    });
+    if (storedStaff) {
+      return this._scanDomesticStaff(qrToken, guardId);
+    }
+
     let payload: Record<string, unknown>;
     try {
       const decoded = verifyQRToken(qrToken);
@@ -40,7 +53,9 @@ export class GateScanService {
       throw new AppError('Invalid or expired QR code', 400);
     }
 
-    if (payload.staffId) {
+    // Current staff passes use type=domestic_staff. Keep staffId support for
+    // older passes already issued before the payload was simplified.
+    if (payload.staffId || payload.type === 'domestic_staff') {
       return this._scanDomesticStaff(qrToken, guardId);
     }
 
@@ -330,12 +345,71 @@ export class GateScanService {
   // PRIVATE: Domestic Staff (unchanged)
   // ============================================
   private async _scanDomesticStaff(qrToken: string, guardId: string): Promise<ScanResult> {
-    const staff = await prisma.domesticStaff.findUnique({ where: { qrToken } });
+    const [guard, staff] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: guardId },
+        select: { societyId: true },
+      }),
+      prisma.domesticStaff.findUnique({
+        where: { qrToken },
+        select: {
+          id: true,
+          name: true,
+          staffType: true,
+          photoUrl: true,
+          societyId: true,
+          isActive: true,
+          isVerified: true,
+          isCurrentlyWorking: true,
+          lastCheckIn: true,
+          lastCheckOut: true,
+          assignedFlats: {
+            where: { isActive: true },
+            orderBy: [{ isPrimary: 'desc' }, { createdAt: 'asc' }],
+            take: 1,
+            select: { flatId: true },
+          },
+        },
+      }),
+    ]);
     if (!staff) throw new AppError('Staff QR code not found', 404);
+    if (!guard?.societyId || staff.societyId !== guard.societyId) {
+      return { type: 'DOMESTIC_STAFF', allowed: false, reason: 'This staff member belongs to another society' };
+    }
     if (!staff.isActive) {
       return { type: 'DOMESTIC_STAFF', allowed: false, reason: 'Staff account is inactive', data: staff };
     }
-    return { type: 'DOMESTIC_STAFF', allowed: true, reason: 'Staff QR verified. Use check-in endpoint.', data: staff };
+    if (!staff.isVerified) {
+      return { type: 'DOMESTIC_STAFF', allowed: false, reason: 'Staff account is not verified', data: staff };
+    }
+
+    const attendanceAction = staff.isCurrentlyWorking ? 'CHECKED_OUT' : 'CHECKED_IN';
+    const attendance = staff.isCurrentlyWorking
+      ? await domesticStaffService.checkOut(staff.id)
+      : await domesticStaffService.checkIn({
+          domesticStaffId: staff.id,
+          flatId: staff.assignedFlats[0]?.flatId,
+          societyId: staff.societyId,
+          checkInMethod: 'QR',
+        }, guardId);
+
+    const { assignedFlats: _assignedFlats, ...publicStaff } = staff;
+    return {
+      type: 'DOMESTIC_STAFF',
+      allowed: true,
+      reason: attendanceAction === 'CHECKED_IN'
+        ? 'Staff checked in successfully'
+        : 'Staff checked out successfully',
+      data: {
+        ...publicStaff,
+        isCurrentlyWorking: attendanceAction === 'CHECKED_IN',
+        attendanceAction,
+        attendanceId: attendance.id,
+        checkInTime: attendance.checkInTime,
+        checkOutTime: attendance.checkOutTime,
+        duration: attendance.duration,
+      },
+    };
   }
 
   // ============================================

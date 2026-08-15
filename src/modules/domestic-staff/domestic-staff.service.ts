@@ -555,7 +555,7 @@ export class DomesticStaffService {
     // ARCH-3: Emit event for notification listener
     eventBus.emit('staff.checked-out', {
       attendanceId: result.id,
-      flatId: result.flatId,
+      flatId: result.flatId ?? undefined,
       societyId: result.societyId,
       staffId: domesticStaffId,
       staffName: result.domesticStaff.name,
