@@ -42,21 +42,21 @@ router.get(
 // PATCH /admin/notifications/:id/read
 router.patch(
   '/:id/read',
-  clearCacheAfter(['api:admin:notif*']),
+  clearCacheAfter(['admin:notif*']),
   markAdminNotificationRead,
 );
 
 // PATCH /admin/notifications/read-all
 router.patch(
   '/read-all',
-  clearCacheAfter(['api:admin:notif*']),
+  clearCacheAfter(['admin:notif*']),
   markAllAdminNotificationsRead,
 );
 
 // DELETE /admin/notifications/:id
 router.delete(
   '/:id',
-  clearCacheAfter(['api:admin:notif*']),
+  clearCacheAfter(['admin:notif*']),
   deleteAdminNotification,
 );
 

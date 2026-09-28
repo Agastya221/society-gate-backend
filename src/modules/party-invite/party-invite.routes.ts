@@ -44,11 +44,11 @@ router.post('/:inviteCode/claim', claimLimiter, validate({ body: claimPartySlotS
 router.use(authenticate);
 router.use(ensureSameSociety);
 
-router.post('/', validate({ body: createPartyInviteSchema }), clearCacheAfter(['api:party-invites*']), createPartyInvite);
+router.post('/', validate({ body: createPartyInviteSchema }), clearCacheAfter(['party-invites:*']), createPartyInvite);
 router.get('/', cache({ ttl: 120, keyPrefix: 'party-invites', varyBy: ['userId', 'societyId'] }), listPartyInvites);
 router.get('/:id', validate({ params: idParams }), cache({ ttl: 120, keyPrefix: 'party-invites' }), getPartyInvite);
-router.post('/:id/add-guest', validate({ params: idParams, body: addPartyGuestSchema }), clearCacheAfter(['api:party-invites*']), addPartyGuest);
-router.delete('/:id/guests/:code', clearCacheAfter(['api:party-invites*']), removePartyGuest);
-router.patch('/:id/cancel', validate({ params: idParams }), clearCacheAfter(['api:party-invites*']), cancelPartyInvite);
+router.post('/:id/add-guest', validate({ params: idParams, body: addPartyGuestSchema }), clearCacheAfter(['party-invites:*']), addPartyGuest);
+router.delete('/:id/guests/:code', clearCacheAfter(['party-invites:*']), removePartyGuest);
+router.patch('/:id/cancel', validate({ params: idParams }), clearCacheAfter(['party-invites:*']), cancelPartyInvite);
 
 export default router;

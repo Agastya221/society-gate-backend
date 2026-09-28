@@ -16,10 +16,10 @@ const router = Router();
 router.use(authenticate);
 router.use(ensureSameSociety);
 
-router.post('/', validate({ body: createGuestInviteSchema }), clearCacheAfter(['api:guest-invites*']), createGuestInvite);
+router.post('/', validate({ body: createGuestInviteSchema }), clearCacheAfter(['guest-invites:*']), createGuestInvite);
 router.get('/', cache({ ttl: 120, keyPrefix: 'guest-invites', varyBy: ['userId', 'societyId'] }), listGuestInvites);
 router.get('/:id', validate({ params: idParams }), cache({ ttl: 120, keyPrefix: 'guest-invites' }), getGuestInvite);
-router.patch('/:id/revoke', validate({ params: idParams }), clearCacheAfter(['api:guest-invites*']), revokeGuestInvite);
-router.delete('/:id', validate({ params: idParams }), clearCacheAfter(['api:guest-invites*']), deleteGuestInvite);
+router.patch('/:id/revoke', validate({ params: idParams }), clearCacheAfter(['guest-invites:*']), revokeGuestInvite);
+router.delete('/:id', validate({ params: idParams }), clearCacheAfter(['guest-invites:*']), deleteGuestInvite);
 
 export default router;

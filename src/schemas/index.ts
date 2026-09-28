@@ -485,6 +485,32 @@ export const rejectSocietyRegistrationSchema = z.object({
 
 const guestInviteTypeEnum = z.enum(['QUICK', 'FREQUENT', 'PRIVATE']);
 
+/** How far in the past an invite may start — covers clock skew and a form left open briefly. */
+const INVITE_START_GRACE_MS = 15 * 60 * 1000;
+
+/**
+ * An invite window must end after it starts, must not already be over, and
+ * must not start well in the past. Without this, a client with a stale start
+ * time created passes that were partly or wholly expired on arrival.
+ */
+const refineInviteWindow = (
+  data: { validFrom: string; validUntil: string },
+  ctx: z.RefinementCtx,
+) => {
+  const from = new Date(data.validFrom).getTime();
+  const until = new Date(data.validUntil).getTime();
+  const now = Date.now();
+  if (until <= from) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'End time must be after the start time', path: ['validUntil'] });
+  }
+  if (until <= now) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'This invite would already have expired', path: ['validUntil'] });
+  }
+  if (from < now - INVITE_START_GRACE_MS) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Start time is in the past', path: ['validFrom'] });
+  }
+};
+
 export const createGuestInviteSchema = z.object({
   type: guestInviteTypeEnum,
   visitorName: z.string().min(1, 'Visitor name is required').max(100),
@@ -497,6 +523,8 @@ export const createGuestInviteSchema = z.object({
   isPrivate: z.boolean().optional(),
   note: z.string().max(500).optional(),
 }).superRefine((data, ctx) => {
+  refineInviteWindow(data, ctx);
+
   // FREQUENT requires allowedDays, timeFrom, timeUntil
   if (data.type === 'FREQUENT') {
     if (!data.allowedDays?.length) {
@@ -523,7 +551,7 @@ export const createPartyInviteSchema = z.object({
   maxGuests: z.number().int().positive().max(200),
   theme: z.number().int().min(0).max(5).optional(),
   note: z.string().max(500).optional(),
-});
+}).superRefine(refineInviteWindow);
 
 export const addPartyGuestSchema = z.object({
   name: z.string().min(1, 'Guest name is required').max(100),

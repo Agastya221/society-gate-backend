@@ -21,7 +21,7 @@ const broadcastSchema = z.object({
 router.post(
   '/',
   validate({ body: broadcastSchema }),
-  clearCacheAfter(['api:notices*']),
+  clearCacheAfter(['notices:*']),
   sendBroadcast,
 );
 

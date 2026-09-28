@@ -79,7 +79,7 @@ router.post(
 );
 
 // Update Profile
-router.patch('/resident-app/profile', authenticateResidentApp, validate({ body: updateProfileSchema }), clearCacheAfter(['api:user*']), userController.updateProfile);
+router.patch('/resident-app/profile', authenticateResidentApp, validate({ body: updateProfileSchema }), clearCacheAfter(['user:*']), userController.updateProfile);
 
 // Admin: Create Guard
 router.post(
@@ -87,7 +87,7 @@ router.post(
   authenticateResidentApp,
   authorize('ADMIN', 'SUPER_ADMIN'),
   validate({ body: createGuardSchema }),
-  clearCacheAfter(['api:user*']),
+  clearCacheAfter(['user:*']),
   userController.createGuard
 );
 
@@ -112,7 +112,7 @@ router.patch(
   '/resident-app/fcm-token',
   authenticateResidentForOnboarding,
   validate({ body: updateFcmTokenSchema }),
-  clearCacheAfter(['api:user*']),
+  clearCacheAfter(['user:*']),
   userController.updateFcmToken
 );
 
@@ -122,7 +122,7 @@ router.patch(
   authenticateResidentApp,
   authorize('ADMIN', 'SUPER_ADMIN'),
   validate({ params: idParams, body: toggleUserStatusSchema }),
-  clearCacheAfter(['api:user*']),
+  clearCacheAfter(['user:*']),
   userController.toggleUserStatus
 );
 
@@ -139,7 +139,7 @@ router.patch(
   '/guard-app/fcm-token',
   authenticateGuardApp,
   validate({ body: updateFcmTokenSchema }),
-  clearCacheAfter(['api:user*']),
+  clearCacheAfter(['user:*']),
   userController.updateFcmToken
 );
 
