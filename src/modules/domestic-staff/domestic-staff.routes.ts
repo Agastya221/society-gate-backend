@@ -42,6 +42,8 @@ import {
 } from './domestic-staff.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
+import { validate } from '../../middlewares/validate.middleware';
+import { staffCheckInSchema, staffCheckOutSchema } from '../../schemas';
 
 const router = Router();
 
@@ -79,7 +81,7 @@ router.delete('/assignments/:id', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
 // ============================================
 
 // Guards and residents can manage check-in/out
-router.post('/check-in', authorize('GUARD', 'RESIDENT'), clearCacheAfter(['staff:*']), checkIn);
+router.post('/check-in', authorize('GUARD', 'RESIDENT'), validate({ body: staffCheckInSchema }), clearCacheAfter(['staff:*']), checkIn);
 router.post('/scan', authorize('GUARD', 'RESIDENT'), clearCacheAfter(['staff:*']), scanQRCode);
 
 // View attendance records (cached)
@@ -121,6 +123,6 @@ router.patch('/:id/availability', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'),
 // Get specific staff's assignments and reviews
 router.get('/:staffId/assignments', cache({ ttl: 120, keyPrefix: 'staff' }), getStaffAssignments);
 router.get('/:staffId/reviews', cache({ ttl: 180, keyPrefix: 'staff' }), getStaffReviews);
-router.post('/:staffId/check-out', authorize('GUARD', 'RESIDENT'), clearCacheAfter(['staff:*']), checkOut);
+router.post('/:staffId/check-out', authorize('GUARD', 'RESIDENT'), validate({ body: staffCheckOutSchema }), clearCacheAfter(['staff:*']), checkOut);
 
 export default router;

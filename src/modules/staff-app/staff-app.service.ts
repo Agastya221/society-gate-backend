@@ -4,6 +4,7 @@ import { verifyMSG91WidgetToken } from '../../utils/msg91';
 import { blacklistToken, extractJti } from '../../services/token.service';
 import { createStaffAccessToken, createStaffRefreshToken, verifyStaffToken } from './staff-app.token';
 import { eventBus } from '../../utils/eventBus';
+import { isBookingExpired, notPastPendingWhere, presentStaffBooking, BOOKING_EXPIRED_MESSAGE } from '../domestic-staff/domestic-staff.service';
 
 const publicStaff = (staff: any) => ({
   id: staff.id, name: staff.name, phone: staff.phone, staffType: staff.staffType,
@@ -60,7 +61,13 @@ export class StaffAppService {
 
   assignments(staffId: string) { return prisma.staffFlatAssignment.findMany({ where: { domesticStaffId: staffId, isActive: true }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { workStartTime: 'asc' } }); }
   attendance(staffId: string, page: number) { return prisma.staffAttendance.findMany({ where: { domesticStaffId: staffId }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { checkInTime: 'desc' }, skip: (page - 1) * 20, take: 20 }); }
-  bookings(staffId: string) { return prisma.staffBooking.findMany({ where: { domesticStaffId: staffId }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: [{ bookingDate: 'desc' }, { startTime: 'asc' }] }); }
+  // Unanswered requests whose start has passed can't be accepted — leave them out of the list
+  async bookings(staffId: string) {
+    const bookings = await prisma.staffBooking.findMany({ where: { domesticStaffId: staffId, ...notPastPendingWhere() }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: [{ bookingDate: 'desc' }, { startTime: 'asc' }] });
+    return bookings
+      .filter((booking) => booking.status !== 'PENDING' || !isBookingExpired(booking))
+      .map(presentStaffBooking);
+  }
 
   async updateBooking(staffId: string, bookingId: string, action: 'accept' | 'reject', reason?: string) {
     const booking = await prisma.staffBooking.findFirst({
@@ -69,6 +76,7 @@ export class StaffAppService {
     });
     if (!booking) throw new AppError('Booking not found', 404);
     if (booking.status !== 'PENDING') throw new AppError('Booking is no longer pending', 400);
+    if (isBookingExpired(booking)) throw new AppError(BOOKING_EXPIRED_MESSAGE, 400);
     const updated = await prisma.staffBooking.update({ where: { id: bookingId }, data: action === 'accept' ? { status: 'CONFIRMED', acceptedAt: new Date() } : { status: 'CANCELLED', rejectedAt: new Date(), rejectionReason: reason } });
     const event = {
       bookingId: booking.id,
@@ -79,6 +87,7 @@ export class StaffAppService {
     };
     if (action === 'accept') eventBus.emit('staff.booking-accepted', event);
     else eventBus.emit('staff.booking-rejected', { ...event, reason });
-    return updated;
+    // Staff decline is stored as CANCELLED + rejectedAt and reported as REJECTED
+    return presentStaffBooking(updated);
   }
 }

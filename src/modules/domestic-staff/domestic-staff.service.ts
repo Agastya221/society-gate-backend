@@ -20,6 +20,7 @@ import type {
   CreateStaffReviewDTO,
   Prisma,
   StaffAvailabilityStatus,
+  StaffBookingStatus,
   DomesticStaffType,
 } from '../../types';
 
@@ -43,6 +44,62 @@ const bookingDayRange = (date: string) => ({
   gte: bookingDay(date),
   lt: new Date(bookingDay(date).getTime() + 24 * 60 * 60 * 1000),
 });
+
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+
+export const BOOKING_EXPIRED_MESSAGE = 'This request has expired';
+
+/**
+ * A booking request is expired once its start (IST date + startTime) has passed.
+ * StaffBookingStatus has no EXPIRED value, so stale PENDING requests are rejected
+ * on action and left out of pending lists instead of being re-labelled.
+ */
+export function isBookingExpired(
+  booking: { bookingDate: Date | string; startTime: string },
+  now: Date = new Date(),
+): boolean {
+  const istDate = new Date(new Date(booking.bookingDate).getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
+  const startTime = /^\d{2}:\d{2}$/.test(booking.startTime) ? booking.startTime : '23:59';
+  const startsAt = Date.parse(`${istDate}T${startTime}:00.000+05:30`);
+  return Number.isFinite(startsAt) && startsAt < now.getTime();
+}
+
+/** Prisma filter for "pending and not yet past its date" (day-level; same-day time is checked per row). */
+export function notPastPendingWhere(now: Date = new Date()): Prisma.StaffBookingWhereInput {
+  const istToday = new Date(now.getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
+  // Covers both storage styles: UTC midnight of the date, or IST midnight (18:30Z the day before)
+  const todayStartUtc = new Date(Date.parse(`${istToday}T00:00:00.000Z`) - IST_OFFSET_MS);
+  return { NOT: { status: 'PENDING', bookingDate: { lt: todayStartUtc } } };
+}
+
+/**
+ * StaffBookingStatus has no REJECTED value (adding one needs an enum migration),
+ * so a staff/admin decline is stored as CANCELLED + rejectedAt. In API responses
+ * that combination is reported as REJECTED; CANCELLED without rejectedAt stays
+ * CANCELLED (reserved for resident-side cancellation).
+ */
+export type StaffBookingApiStatus = StaffBookingStatus | 'REJECTED';
+
+export function bookingApiStatus(booking: { status: StaffBookingStatus | string; rejectedAt?: Date | string | null }): StaffBookingApiStatus {
+  if (booking.status === 'CANCELLED' && booking.rejectedAt) return 'REJECTED';
+  return booking.status as StaffBookingStatus;
+}
+
+export function presentStaffBooking<T extends { status: StaffBookingStatus | string; rejectedAt?: Date | string | null }>(
+  booking: T,
+): Omit<T, 'status'> & { status: StaffBookingApiStatus } {
+  return { ...booking, status: bookingApiStatus(booking) };
+}
+
+/** Translate an API status filter (which may be REJECTED) into a Prisma where clause. */
+export function bookingStatusWhere(status: string): Prisma.StaffBookingWhereInput {
+  if (status === 'REJECTED') return { status: 'CANCELLED', rejectedAt: { not: null } };
+  if (status === 'CANCELLED') return { status: 'CANCELLED', rejectedAt: null };
+  return { status: status as StaffBookingStatus };
+}
+
+// Staff still "inside" this long after check-in are assumed to have left without scanning out
+export const STALE_CHECK_IN_HOURS = 16;
 
 export class DomesticStaffService {
   // ============================================
@@ -463,8 +520,15 @@ export class DomesticStaffService {
         where: { id: domesticStaffId },
       });
 
-      if (!staff || !staff.isActive) {
+      if (!staff || !staff.isActive || staff.societyId !== societyId) {
         throw new AppError('Staff not found or inactive', 404);
+      }
+
+      if (flatId) {
+        const flat = await tx.flat.findFirst({ where: { id: flatId, societyId }, select: { id: true } });
+        if (!flat) {
+          throw new AppError('Flat not found in this society', 404);
+        }
       }
 
       // Check if already checked in
@@ -524,7 +588,12 @@ export class DomesticStaffService {
     return result;
   }
 
-  async checkOut(domesticStaffId: string, workCompleted?: string) {
+  async checkOut(
+    domesticStaffId: string,
+    workCompleted?: string,
+    options: { checkOutMethod?: string; notify?: boolean } = {},
+  ) {
+    const { checkOutMethod = 'QR', notify = true } = options;
     // Use transaction to prevent race conditions
     const result = await prisma.$transaction(async (tx) => {
       const staff = await tx.domesticStaff.findUnique({
@@ -557,7 +626,7 @@ export class DomesticStaffService {
         data: {
           checkOutTime,
           duration,
-          checkOutMethod: 'QR',
+          checkOutMethod,
           workCompleted,
         },
         include: {
@@ -580,6 +649,8 @@ export class DomesticStaffService {
       return updatedAttendance;
     });
 
+    if (!notify) return result;
+
     const assignedFlatIds = await prisma.staffFlatAssignment.findMany({
       where: { domesticStaffId, isActive: true },
       select: { flatId: true },
@@ -600,6 +671,50 @@ export class DomesticStaffService {
     });
 
     return result;
+  }
+
+  /**
+   * Auto check-out staff whose check-in is older than `maxHours` (cron job).
+   * A forgotten exit scan otherwise leaves them "inside" forever, which blocks the
+   * next check-in and shows them as present to residents. Reuses checkOut() so the
+   * open attendance record is closed the same way (method AUTO, no resident push).
+   */
+  async autoCheckoutStaleStaff(maxHours = STALE_CHECK_IN_HOURS): Promise<{ count: number }> {
+    const cutoff = new Date(Date.now() - maxHours * 60 * 60 * 1000);
+    const staleStaff = await prisma.domesticStaff.findMany({
+      where: {
+        isCurrentlyWorking: true,
+        OR: [{ lastCheckIn: { lt: cutoff } }, { lastCheckIn: null }],
+      },
+      select: { id: true },
+    });
+
+    let count = 0;
+    for (const staff of staleStaff) {
+      try {
+        await this.checkOut(staff.id, undefined, { checkOutMethod: 'AUTO', notify: false });
+        count++;
+      } catch (error) {
+        // Flag set but no open attendance row (legacy data) — just clear the presence flag
+        if (error instanceof AppError && error.statusCode === 404) {
+          await prisma.domesticStaff.updateMany({
+            where: { id: staff.id, isCurrentlyWorking: true },
+            data: {
+              isCurrentlyWorking: false,
+              currentFlatId: null,
+              lastCheckOut: new Date(),
+              availabilityStatus: 'AVAILABLE',
+            },
+          });
+          count++;
+        } else if (!(error instanceof AppError)) {
+          throw error;
+        }
+        // other AppErrors (e.g. already checked out by a guard meanwhile) — skip
+      }
+    }
+
+    return { count };
   }
 
   async scanQRCode(qrToken: string, flatId: string, societyId: string, verifiedByGuardId?: string) {
@@ -845,7 +960,8 @@ export class DomesticStaffService {
     if (domesticStaffId) where.domesticStaffId = domesticStaffId;
     if (bookedById) where.bookedById = bookedById;
     if (flatId) where.flatId = flatId;
-    if (status) where.status = status;
+    // Unanswered requests whose day is over can't be accepted any more — keep them out of the list
+    where.AND = [notPastPendingWhere(), ...(status ? [bookingStatusWhere(status)] : [])];
 
     if (bookingDate) {
       const startOfDay = new Date(bookingDate);
@@ -858,7 +974,7 @@ export class DomesticStaffService {
       };
     }
 
-    const [bookings, total] = await Promise.all([
+    const [rawBookings, total] = await Promise.all([
       prisma.staffBooking.findMany({
         where,
         include: {
@@ -872,6 +988,10 @@ export class DomesticStaffService {
       }),
       prisma.staffBooking.count({ where }),
     ]);
+    // Same-day requests whose start time has passed
+    const bookings = rawBookings
+      .filter((booking) => booking.status !== 'PENDING' || !isBookingExpired(booking))
+      .map(presentStaffBooking);
 
     return {
       bookings,
@@ -898,6 +1018,10 @@ export class DomesticStaffService {
       throw new AppError('Booking is not pending', 400);
     }
 
+    if (isBookingExpired(booking)) {
+      throw new AppError(BOOKING_EXPIRED_MESSAGE, 400);
+    }
+
     const updatedBooking = await prisma.staffBooking.update({
       where: { id: bookingId },
       data: {
@@ -919,16 +1043,31 @@ export class DomesticStaffService {
   }
 
   async rejectBooking(bookingId: string, rejectionReason: string) {
+    const existing = await prisma.staffBooking.findUnique({
+      where: { id: bookingId },
+      select: { status: true, bookingDate: true, startTime: true },
+    });
+    if (!existing) {
+      throw new AppError('Booking not found', 404);
+    }
+    if (existing.status !== 'PENDING') {
+      throw new AppError('Booking is not pending', 400);
+    }
+    if (isBookingExpired(existing)) {
+      throw new AppError(BOOKING_EXPIRED_MESSAGE, 400);
+    }
+
     const booking = await prisma.staffBooking.update({
       where: { id: bookingId },
       data: {
+        // Stored as CANCELLED + rejectedAt (no REJECTED enum value); reported as REJECTED
         status: 'CANCELLED',
         rejectedAt: new Date(),
         rejectionReason,
       },
     });
 
-    return booking;
+    return presentStaffBooking(booking);
   }
 
   async completeBooking(bookingId: string, actualDuration?: number, finalCost?: number) {

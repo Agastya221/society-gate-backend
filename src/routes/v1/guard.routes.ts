@@ -25,6 +25,7 @@ import {
   searchForGuard,
 } from '../../modules/pre-approved-entry/pre-approved-entry.controller';
 import { validate } from '../../middlewares/validate.middleware';
+import { clearCacheAfter } from '../../middlewares/cache.middleware';
 import {
   idParams,
   validatePreApprovedEntrySchema,
@@ -61,7 +62,8 @@ router.post('/entry-requests', createEntryRequest);
 router.post('/scan', scanQR);                  // Unified QR scan (GatePass + Staff)
 router.post('/scan/gatepass', scanGatePass);   // Legacy
 router.post('/scan/staff', scanQRCode);        // Legacy
-router.post('/verify-code', verifyCode);       // Passcode verification (Guest/Party invites)
+// Invite usage (usedCount/status) changes on verify — drop residents' cached invite lists
+router.post('/verify-code', clearCacheAfter(['guest-invites:*', 'party-invites:*']), verifyCode);       // Passcode verification (Guest/Party invites)
 
 // ============================================
 // ENTRY LOG

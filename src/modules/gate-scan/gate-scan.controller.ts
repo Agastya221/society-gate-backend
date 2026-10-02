@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { GateScanService } from './gate-scan.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import { prisma } from '../../utils/Client';
-import { asyncHandler } from '../../utils/ResponseHandler';
+import { asyncHandler, AppError } from '../../utils/ResponseHandler';
 import type { EntryStatus, EntryType } from '../../../prisma/generated/prisma/client';
 
 const gateScanService = new GateScanService();
@@ -132,6 +132,7 @@ export const getTodayEntries = asyncHandler(async (req: Request, res: Response) 
     total: entries.length + staffAttendances.length,
     pending: entries.filter((e) => e.status === 'PENDING').length,
     approved: entries.filter((e) => e.status === 'APPROVED').length,
+    checkedIn: entries.filter((e) => e.status === 'CHECKED_IN').length,
     checkedOut: entries.filter((e) => e.status === 'CHECKED_OUT').length,
     delivery: entries.filter((e) => e.type === 'DELIVERY').length,
     visitor: entries.filter((e) => e.type === 'VISITOR').length,
@@ -216,6 +217,18 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
  */
 export const checkoutEntry = asyncHandler(async (req: Request, res: Response) => {
   const id = String(req.params.id);
+
+  // Only entries of the guard's own society that are still inside can be checked out
+  const existing = await prisma.entry.findFirst({
+    where: { id, societyId: req.user!.societyId! },
+    select: { status: true },
+  });
+  if (!existing) {
+    throw new AppError('Entry not found', 404);
+  }
+  if (existing.status === 'CHECKED_OUT') {
+    throw new AppError('Visitor is already checked out', 400);
+  }
 
   const entry = await prisma.entry.update({
     where: { id },

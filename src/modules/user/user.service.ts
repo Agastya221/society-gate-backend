@@ -893,6 +893,11 @@ export class UserService {
       throw new AppError('Invalid refresh token. Please login again.', 401);
     }
 
+    // Guard-app sessions stay GUARD-only (mirrors guardAppOtpVerify)
+    if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
+      throw new AppError('Access denied. This app is for guards only.', 403);
+    }
+
     const newAccessToken = generateAccessToken(
       user.id, user.role, user.societyId, user.flatId, decoded.appType
     );

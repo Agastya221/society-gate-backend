@@ -234,8 +234,19 @@ export const checkIn = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const role = req.user!.role;
     const verifiedByGuardId = role === 'GUARD' ? userId : undefined;
+    // Body is validated by staffCheckInSchema; society always comes from the caller
+    const { domesticStaffId, staffId, flatId, checkInMethod, notes } = req.body;
 
-    const attendance = await staffService.checkIn(req.body, verifiedByGuardId);
+    const attendance = await staffService.checkIn(
+      {
+        domesticStaffId: domesticStaffId ?? staffId,
+        flatId,
+        societyId: req.user!.societyId!,
+        checkInMethod,
+        notes,
+      },
+      verifiedByGuardId,
+    );
 
     res.status(200).json({
       success: true,
@@ -271,10 +282,12 @@ export const checkOut = async (req: Request, res: Response) => {
 
 export const scanQRCode = async (req: Request, res: Response) => {
   try {
-    const { qrToken, flatId, societyId } = req.body;
+    const { qrToken, flatId } = req.body;
     const userId = req.user!.id;
     const role = req.user!.role;
     const verifiedByGuardId = role === 'GUARD' ? userId : undefined;
+    // ensureSameSociety already rejects a mismatching body.societyId; always use the caller's
+    const societyId = req.user!.societyId!;
 
     const result = await staffService.scanQRCode(qrToken, flatId, societyId, verifiedByGuardId);
 

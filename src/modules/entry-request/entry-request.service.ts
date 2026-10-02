@@ -3,6 +3,7 @@ import { AppError } from '../../utils/ResponseHandler';
 import { eventBus } from '../../utils/eventBus';
 import { emitToUser, SOCKET_EVENTS } from '../../utils/socket';
 import logger from '../../utils/logger';
+import { notificationService } from '../notification/notification.service';
 import type { Prisma } from '../../types';
 import {
   EntryType,
@@ -11,6 +12,7 @@ import {
 } from '../../../prisma/generated/prisma/enums';
 
 const EXPIRY_MINUTES = 15;
+export const ENTRY_REQUEST_CANCELLED_REASON = 'Cancelled by guard';
 
 interface CreateEntryRequestData {
   type: EntryType;
@@ -250,7 +252,9 @@ export class EntryRequestService {
     }
 
     const targetFlatIds = this.getTargetInfos(entryRequest).map((target) => target.flatId);
-    const isGuard = entryRequest.guardId === userId;
+    const isGuard =
+      entryRequest.guardId === userId ||
+      (user.role === 'GUARD' && user.societyId === entryRequest.societyId);
     const isFlatResident = this.getUserFlatIds(user).some((flatId) => targetFlatIds.includes(flatId));
     const isSocietyAdmin =
       user.role === 'ADMIN' && user.societyId === entryRequest.societyId;
@@ -280,6 +284,8 @@ export class EntryRequestService {
       where: { id: userId },
       select: {
         name: true,
+        role: true,
+        societyId: true,
         flatId: true,
         flatMemberships: {
           where: { isActive: true, flatId: { not: null } },
@@ -293,10 +299,12 @@ export class EntryRequestService {
     }
 
     const targetInfos = this.getTargetInfos(entryRequest);
+    // Guards may override ("Allow Anyway") — but only for requests in their own society
+    const isSocietyGuard = approver.role === 'GUARD' && approver.societyId === entryRequest.societyId;
     const approverFlatIds = this.getUserFlatIds(approver);
-    const canApprove = targetInfos.some((target) => approverFlatIds.includes(target.flatId));
+    const canApprove = isSocietyGuard || targetInfos.some((target) => approverFlatIds.includes(target.flatId));
     if (!canApprove) {
-      throw new AppError('Only linked flat residents can approve entry requests', 403);
+      throw new AppError('Only linked flat residents or society guards can approve entry requests', 403);
     }
 
     if (entryRequest.status !== 'PENDING') {
@@ -328,7 +336,10 @@ export class EntryRequestService {
             createdById: entryRequest.guardId,
             approvedById: userId,
             approvedAt: now,
-            status: 'APPROVED',
+            // Approval at the gate means the visitor walks in now — the guard's
+            // Today's Entries / check-out flow expects CHECKED_IN (same as pre-approved use).
+            status: 'CHECKED_IN',
+            checkInTime: now,
           },
         });
 
@@ -399,6 +410,8 @@ export class EntryRequestService {
       where: { id: userId },
       select: {
         name: true,
+        role: true,
+        societyId: true,
         flatId: true,
         flatMemberships: {
           where: { isActive: true, flatId: { not: null } },
@@ -412,10 +425,11 @@ export class EntryRequestService {
     }
 
     const targetInfos = this.getTargetInfos(entryRequest);
+    const isSocietyGuard = rejecter.role === 'GUARD' && rejecter.societyId === entryRequest.societyId;
     const rejecterFlatIds = this.getUserFlatIds(rejecter);
-    const canReject = targetInfos.some((target) => rejecterFlatIds.includes(target.flatId));
+    const canReject = isSocietyGuard || targetInfos.some((target) => rejecterFlatIds.includes(target.flatId));
     if (!canReject) {
-      throw new AppError('Only linked flat residents can reject entry requests', 403);
+      throw new AppError('Only linked flat residents or society guards can reject entry requests', 403);
     }
 
     if (entryRequest.status !== 'PENDING') {
@@ -454,6 +468,87 @@ export class EntryRequestService {
       rejectedByName: rejecter.name ?? 'A resident',
       reason,
     });
+
+    return this.formatEntryRequest(updatedRequest);
+  }
+
+  // ============================================
+  // CANCEL ENTRY REQUEST (Guard withdraws a pending request)
+  // EntryRequestStatus has no CANCELLED value, so this is stored as REJECTED
+  // with a fixed reason. Residents are told the request was withdrawn (no
+  // "rejected by" push, since nobody at the flat rejected it).
+  // ============================================
+  async cancelEntryRequest(entryRequestId: string, guardId: string) {
+    const entryRequest = await prisma.entryRequest.findUnique({
+      where: { id: entryRequestId },
+      include: this.getInclude(),
+    });
+
+    if (!entryRequest) {
+      throw new AppError('Entry request not found', 404);
+    }
+
+    const guard = await prisma.user.findUnique({
+      where: { id: guardId },
+      select: { role: true, societyId: true },
+    });
+
+    if (!guard || guard.role !== 'GUARD' || guard.societyId !== entryRequest.societyId) {
+      throw new AppError('Only guards of this society can cancel entry requests', 403);
+    }
+
+    if (entryRequest.status !== 'PENDING') {
+      throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
+    }
+
+    // Conditional update so a resident approving at the same instant can't be overwritten
+    const result = await prisma.entryRequest.updateMany({
+      where: { id: entryRequestId, status: 'PENDING' },
+      data: {
+        status: 'REJECTED',
+        rejectedAt: new Date(),
+        rejectionReason: ENTRY_REQUEST_CANCELLED_REASON,
+      },
+    });
+
+    if (result.count === 0) {
+      throw new AppError('Entry request is no longer pending', 400);
+    }
+
+    const updatedRequest = await prisma.entryRequest.findUniqueOrThrow({
+      where: { id: entryRequestId },
+      include: this.getInclude(),
+    });
+
+    const targetInfos = this.getTargetInfos(entryRequest);
+    const flatIds = targetInfos.map((target) => target.flatId);
+
+    emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
+      id: entryRequestId,
+      status: 'REJECTED',
+      flatNumber: this.getFlatLabelList(targetInfos),
+      flatIds,
+      reason: ENTRY_REQUEST_CANCELLED_REASON,
+    });
+
+    notificationService.sendToFlats(flatIds, {
+      type: 'ENTRY_REQUEST',
+      title: 'Request withdrawn',
+      message: entryRequest.visitorName
+        ? `The gate withdrew the entry request for ${entryRequest.visitorName}`
+        : 'The gate withdrew an entry request',
+      data: {
+        entryRequestId,
+        societyId: entryRequest.societyId,
+        flatIds,
+        flatLabels: targetInfos.map((target) => target.flatNumber),
+        status: 'REJECTED',
+        reason: ENTRY_REQUEST_CANCELLED_REASON,
+      },
+      referenceId: entryRequestId,
+      referenceType: 'EntryRequest',
+      societyId: entryRequest.societyId,
+    }).catch((err: unknown) => logger.error({ err }, 'Failed to send entry request cancelled notification'));
 
     return this.formatEntryRequest(updatedRequest);
   }

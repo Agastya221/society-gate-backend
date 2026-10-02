@@ -297,6 +297,8 @@ export interface NoticeFilters extends PaginationParams {
   priority?: NoticePriority;
   isActive?: boolean;
   isPinned?: boolean;
+  /** Admin-only: also return notices past their expiresAt */
+  includeExpired?: boolean;
 }
 
 // ============================================

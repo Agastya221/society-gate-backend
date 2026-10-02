@@ -7,6 +7,60 @@ import type {
 } from '../../types';
 
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+const MINUTES_PER_DAY = 24 * 60;
+
+const toMinutes = (time: string): number => {
+  const [h, m] = time.split(':').map(Number);
+  return h * 60 + m;
+};
+
+/**
+ * Resolve a ONCE schedule into an absolute window, expressed in minutes since IST
+ * midnight of the schedule date. When endTime < startTime the pass crosses midnight
+ * and ends on the following day. `istNow` is the IST-shifted "now" (see buildContext).
+ * Returns null when the schedule is incomplete.
+ */
+export function getOnceWindow(
+  schedule: {
+    date: Date | string | null;
+    startTime: string | null;
+    endTime: string | null;
+    graceBeforeMinutes?: number | null;
+    graceAfterMinutes?: number | null;
+  },
+  istNow: Date,
+): { nowMin: number; windowStart: number; windowEnd: number; dateStr: string } | null {
+  if (!schedule.date || !schedule.startTime || !schedule.endTime) return null;
+
+  // Calendar date of the pass in IST. Works whether the date was stored as UTC
+  // midnight ("2026-10-02T00:00Z") or IST midnight ("2026-10-01T18:30Z").
+  const dateStr = new Date(new Date(schedule.date).getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
+  const dayStartIstShifted = Date.parse(`${dateStr}T00:00:00.000Z`);
+  const nowMin = Math.floor((istNow.getTime() - dayStartIstShifted) / 60000);
+
+  const start = toMinutes(schedule.startTime);
+  let end = toMinutes(schedule.endTime);
+  if (end < start) end += MINUTES_PER_DAY; // overnight window
+
+  return {
+    nowMin,
+    windowStart: start - (schedule.graceBeforeMinutes ?? 15),
+    windowEnd: end + (schedule.graceAfterMinutes ?? 30),
+    dateStr,
+  };
+}
+
+/**
+ * True once a ONCE pass's window (incl. grace, incl. next-day overnight end) is over.
+ */
+export function isOnceScheduleOver(
+  schedule: Parameters<typeof getOnceWindow>[0],
+  now: Date = new Date(),
+): boolean {
+  const window = getOnceWindow(schedule, new Date(now.getTime() + IST_OFFSET_MS));
+  if (!window) return false;
+  return window.nowMin > window.windowEnd;
+}
 
 export class AccessControlEngine {
   /**
@@ -113,30 +167,30 @@ export class AccessControlEngine {
       return { valid: false, reason: 'INVALID_SCHEDULE', message: 'Incomplete schedule data' };
     }
 
-    // Check date matches today (IST)
-    const entryDate = new Date(schedule.date);
-    const istDate = new Date(context.istNow.getTime());
-    const entryDateStr = entryDate.toISOString().slice(0, 10);
-    const todayStr = istDate.toISOString().slice(0, 10);
-
-    if (entryDateStr !== todayStr) {
-      return { valid: false, reason: 'WRONG_DATE', message: `This entry is for ${entryDateStr}, not today` };
+    const window = getOnceWindow(schedule, context.istNow);
+    if (!window) {
+      return { valid: false, reason: 'INVALID_SCHEDULE', message: 'Incomplete schedule data' };
     }
 
-    // Check time window with grace periods
-    const graceBefore = schedule.graceBeforeMinutes ?? 15;
-    const graceAfter = schedule.graceAfterMinutes ?? 30;
-    const windowStart = this.subtractMinutes(schedule.startTime, graceBefore);
-    const windowEnd = this.addMinutes(schedule.endTime, graceAfter);
+    // All values are minutes since IST midnight of the schedule date. An overnight
+    // pass (e.g. 17:45 → 01:45) ends on the next calendar day, grace included.
+    const { nowMin, windowStart, windowEnd, dateStr } = window;
+    if (nowMin >= windowStart && nowMin <= windowEnd) {
+      return { valid: true };
+    }
 
-    if (context.currentTime < windowStart) {
+    const todayStartMin = Math.floor(nowMin / MINUTES_PER_DAY) * MINUTES_PER_DAY;
+    if (nowMin < windowStart) {
+      if (nowMin < 0) {
+        return { valid: false, reason: 'WRONG_DATE', message: `This entry is for ${dateStr}, not today` };
+      }
       return { valid: false, reason: 'TOO_EARLY', message: `Entry is valid from ${schedule.startTime}` };
     }
-    if (context.currentTime > windowEnd) {
-      return { valid: false, reason: 'TOO_LATE', message: `Entry expired at ${schedule.endTime}` };
+    // Past the window: if it already ended before today began, it's simply another day's pass
+    if (windowEnd < todayStartMin) {
+      return { valid: false, reason: 'WRONG_DATE', message: `This entry is for ${dateStr}, not today` };
     }
-
-    return { valid: true };
+    return { valid: false, reason: 'TOO_LATE', message: `Entry expired at ${schedule.endTime}` };
   }
 
   private checkRecurringSchedule(

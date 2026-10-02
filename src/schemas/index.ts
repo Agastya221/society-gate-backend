@@ -298,14 +298,21 @@ export const createStaffSchema = z.object({
 });
 
 export const staffCheckInSchema = z.object({
-  domesticStaffId: uuidSchema,
-  flatId: uuidSchema,
-  societyId: uuidSchema,
+  domesticStaffId: uuidSchema.optional(),
+  staffId: uuidSchema.optional(), // alias sent by the resident app
+  flatId: uuidSchema.optional(), // society-level staff may not belong to one flat
+  societyId: uuidSchema.optional(), // ignored — the caller's society is used
   checkInMethod: z.string().max(50).optional(),
+  notes: z.string().max(500).optional(),
+}).refine((data) => Boolean(data.domesticStaffId || data.staffId), {
+  message: 'domesticStaffId (or staffId) is required',
+  path: ['domesticStaffId'],
 });
 
 export const staffCheckOutSchema = z.object({
-  workCompleted: z.string().max(500).optional(),
+  // The resident app sends a boolean flag; the column is free text ("tasks completed")
+  workCompleted: z.union([z.string().max(500), z.boolean()]).optional()
+    .transform((value) => (typeof value === 'string' ? value : undefined)),
   notes: z.string().max(500).optional(),
 });
 
@@ -709,5 +716,22 @@ export const adminCancelEntrySchema = z.object({
 // ============================================
 // SHARED EXPORTS
 // ============================================
+
+// ============================================
+// ADMIN SOCIETY SETTINGS (PATCH /admin/society/settings)
+// ============================================
+
+export const updateSocietySettingsSchema = z.object({
+  maintenance: z.object({
+    monthlyFee: z.number().positive('monthlyFee must be greater than 0').optional(),
+    dueDayOfMonth: z.number().int().min(1).max(28).optional(),
+    gracePeriodDays: z.number().int().min(0).max(30).optional(),
+  }).strict().optional(),
+  autoApproval: z.object({
+    domesticStaff: z.boolean().optional(),
+    delivery: z.boolean().optional(),
+    cab: z.boolean().optional(),
+  }).strict().optional(),
+}).strict();
 
 export { idParams, paginationQuery, uuidSchema, phoneSchema };

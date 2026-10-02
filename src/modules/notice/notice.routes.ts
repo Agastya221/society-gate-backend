@@ -17,7 +17,8 @@ router.use(authenticate);
 router.use(ensureSameSociety);
 
 // Cached GET routes (all authenticated users)
-router.get('/', cache({ ttl: 120, keyPrefix: 'notices', varyBy: ['societyId'] }), getNotices);
+// varyBy role: ?includeExpired=true is honoured for admins only, so the same URL differs per role
+router.get('/', cache({ ttl: 120, keyPrefix: 'notices', varyBy: ['societyId', 'role'] }), getNotices);
 router.get('/:id', cache({ ttl: 300, keyPrefix: 'notices' }), getNoticeById);
 
 // Admin only routes that invalidate cache

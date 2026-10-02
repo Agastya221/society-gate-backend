@@ -44,7 +44,7 @@ export class NoticeService {
   }
 
   async getNotices(filters: NoticeFilters) {
-    const { societyId, type, priority, isPinned, isActive = true, page = 1, limit = 20 } = filters;
+    const { societyId, type, priority, isPinned, isActive = true, includeExpired = false, page = 1, limit = 20 } = filters;
 
     const where: Prisma.NoticeWhereInput = { societyId };
     if (type) where.type = type;
@@ -53,7 +53,13 @@ export class NoticeService {
     if (isActive !== undefined) where.isActive = isActive;
 
     // Only show published notices
-    where.publishAt = { lte: new Date() };
+    const now = new Date();
+    where.publishAt = { lte: now };
+
+    // Hide notices past their expiry (no expiresAt = never expires) unless an admin asked for them
+    if (!includeExpired) {
+      where.OR = [{ expiresAt: null }, { expiresAt: { gt: now } }];
+    }
 
     const [notices, total] = await Promise.all([
       prisma.notice.findMany({

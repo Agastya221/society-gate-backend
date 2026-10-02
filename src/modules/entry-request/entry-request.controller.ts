@@ -192,3 +192,26 @@ export const getPendingCount = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * Cancel a pending entry request (Guard — own society only)
+ */
+export const cancelEntryRequest = async (req: Request, res: Response) => {
+  try {
+    const guardId = req.user!.id;
+    const { id } = req.params;
+
+    const entryRequest = await entryRequestService.cancelEntryRequest(String(id), guardId);
+
+    res.status(200).json({
+      success: true,
+      message: 'Entry request cancelled.',
+      data: entryRequest,
+    });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};

@@ -13,7 +13,7 @@ eventBus.on('entry-request.approved', async (payload) => {
   try {
     const title = 'Entry approved';
     const flatLabels = payload.flats.map((flat) => flat.flatNumber);
-    const body = `${payload.approvedByName} allowed ${payload.visitorName} (${payload.visitorType.toLowerCase()}) to enter`;
+    const body = `${payload.approvedByName} allowed ${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()}) to enter`;
 
     await notificationService.sendToFlats(payload.flatIds, {
       type: 'ENTRY_REQUEST',
@@ -64,7 +64,7 @@ eventBus.on('entry-request.rejected', async (payload) => {
     const flatLabels = payload.flats.map((flat) => flat.flatNumber);
     const body = payload.reason
       ? `${payload.rejectedByName} rejected ${payload.visitorName} — "${payload.reason}"`
-      : `${payload.rejectedByName} rejected ${payload.visitorName} (${payload.visitorType.toLowerCase()})`;
+      : `${payload.rejectedByName} rejected ${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()})`;
 
     await notificationService.sendToFlats(payload.flatIds, {
       type: 'ENTRY_REQUEST',
@@ -112,9 +112,38 @@ eventBus.on('entry-request.rejected', async (payload) => {
   }
 });
 
+// Raw enums ("VISITOR", "SWIGGY") read badly in notifications — map them to words.
+const ENTRY_TYPE_SUBJECT: Record<string, string> = {
+  VISITOR: 'A visitor',
+  DELIVERY: 'A delivery',
+  DOMESTIC_STAFF: 'Your staff',
+  CAB: 'A cab',
+  VENDOR: 'A vendor',
+};
+
+const humanizeEnum = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1).toLowerCase().replace(/_/g, ' ');
+
+/** "Swiggy delivery", "Delivery", "Visitor", "Cab" … used as the request's purpose */
+const describePurpose = (type: string, providerTag?: string | null) => {
+  if (providerTag && providerTag !== 'OTHER') {
+    return type === 'DELIVERY' ? `${humanizeEnum(providerTag)} delivery` : humanizeEnum(providerTag);
+  }
+  return humanizeEnum(type);
+};
+
+/** "Rahul is waiting at the gate" / "A Swiggy delivery is waiting at the gate" / "A visitor is waiting…" */
+const describeWaiting = (type: string, visitorName?: string | null, providerTag?: string | null) => {
+  if (visitorName) return `${visitorName} is waiting at the gate`;
+  if (providerTag && providerTag !== 'OTHER') {
+    return `${type === 'DELIVERY' ? 'A ' : ''}${describePurpose(type, providerTag)} is waiting at the gate`;
+  }
+  return `${ENTRY_TYPE_SUBJECT[type] ?? 'Someone'} is waiting at the gate`;
+};
+
 eventBus.on('entry-request.created', async (payload) => {
   try {
-    const providerName = payload.providerTag || payload.type;
+    const providerName = describePurpose(payload.type, payload.providerTag);
     const flatLabels = payload.flats.map((flat) => flat.flatNumber);
     const flatLabel = flatLabels.length > 1
       ? `${flatLabels.length} Flats`
@@ -124,7 +153,7 @@ eventBus.on('entry-request.created', async (payload) => {
       title: `${payload.societyName ?? 'Society'} · ${flatLabel}`,
       message: payload.visitorName
         ? `${payload.visitorName} requested entry. Purpose: ${providerName}`
-        : `${providerName} is waiting at the gate`,
+        : describeWaiting(payload.type, null, payload.providerTag),
       data: {
         entryRequestId: payload.entryRequestId,
         societyId: payload.societyId,
@@ -132,7 +161,7 @@ eventBus.on('entry-request.created', async (payload) => {
         flatIds: payload.flatIds,
         flatLabels,
         visitorName: payload.visitorName,
-        purpose: providerName,
+        purpose: payload.providerTag || payload.type, // raw value kept for clients
         requestType: payload.type,
         status: 'PENDING',
       },
@@ -147,7 +176,7 @@ eventBus.on('entry-request.created', async (payload) => {
         : 'Visitor at gate',
       body: payload.visitorName
         ? `${payload.visitorName} requested entry for ${flatLabels.join(', ')}`
-        : `${payload.type} is waiting at the gate`,
+        : describeWaiting(payload.type, null, payload.providerTag),
       data: {
         type: 'GATE_REQUEST',
         screen: 'EntryRequest',

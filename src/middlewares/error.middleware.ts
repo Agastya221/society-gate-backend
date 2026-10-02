@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/ResponseHandler';
 import logger from '../utils/logger';
+import { isPrismaError } from '../utils/errorHandler';
 
 export const errorHandler = (
   err: Error | AppError,
@@ -37,10 +38,10 @@ export const errorHandler = (
       });
     }
 
+    // Details were logged above — never send Prisma messages to the client
     return res.status(400).json({
       success: false,
       message: 'Database error occurred',
-      error: err.message,
       code,
     });
   }
@@ -50,15 +51,14 @@ export const errorHandler = (
     return res.status(400).json({
       success: false,
       message: 'Invalid data provided',
-      error: err.message,
     });
   }
 
-  // Default error — temporarily expose details for debugging
+  // Default error — details only outside production, and never for Prisma/driver errors
+  const exposeDetails = process.env.NODE_ENV !== 'production' && !isPrismaError(err);
   res.status(500).json({
     success: false,
     message: 'Internal server error',
-    error: err.message,
-    name: err.name,
+    ...(exposeDetails ? { error: err.message, name: err.name } : {}),
   });
 };

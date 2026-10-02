@@ -41,6 +41,77 @@ router.use('/amenities', amenityRoutes);           // /api/v1/resident/amenities
 router.post('/parking/complaints', authenticate, fileComplaint);
 router.get('/parking/complaints', authenticate, listViolations);  // scoped to own complaints in controller
 
+// Resident directory — approved, active residents of the caller's society.
+// There is no per-user privacy/contact-sharing setting, so phone numbers are never returned.
+router.get('/society/residents', authenticate, async (req: Request, res: Response) => {
+  try {
+    const societyId = req.user!.societyId;
+    if (!societyId) {
+      return res.status(403).json({ success: false, message: 'User must be assigned to a society' });
+    }
+
+    const page = Math.max(1, parseInt(String(req.query.page ?? '1'), 10) || 1);
+    const limit = Math.min(200, Math.max(1, parseInt(String(req.query.limit ?? '100'), 10) || 100));
+    const search = typeof req.query.search === 'string' ? req.query.search.trim() : '';
+
+    const where = {
+      societyId,
+      isActive: true,
+      flatId: { not: null },
+      user: {
+        isActive: true,
+        ...(search ? { name: { contains: search, mode: 'insensitive' as const } } : {}),
+      },
+    };
+
+    const [memberships, total] = await Promise.all([
+      prisma.userFlatMembership.findMany({
+        where,
+        select: {
+          id: true,
+          userId: true,
+          residentType: true,
+          isOwner: true,
+          user: { select: { name: true, photoUrl: true, familyRole: true } },
+          flat: { select: { id: true, flatNumber: true, block: { select: { name: true } } } },
+        },
+        orderBy: [{ flat: { block: { name: 'asc' } } }, { flat: { flatNumber: 'asc' } }, { user: { name: 'asc' } }],
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.userFlatMembership.count({ where }),
+    ]);
+
+    const residents = memberships.map((membership) => {
+      const blockName = membership.flat?.block?.name ?? null;
+      const role = membership.user.familyRole
+        ? 'Family'
+        : membership.residentType === 'TENANT'
+          ? 'Tenant'
+          : 'Owner';
+      return {
+        id: membership.id,
+        userId: membership.userId,
+        name: membership.user.name,
+        photoUrl: membership.user.photoUrl,
+        flatId: membership.flat?.id ?? null,
+        flatNumber: membership.flat?.flatNumber ?? '',
+        blockName,
+        block: blockName,
+        residentType: role,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: residents,
+      pagination: { total, page, limit, pages: Math.ceil(total / limit) },
+    });
+  } catch {
+    return res.status(500).json({ success: false, message: 'Failed to fetch residents' });
+  }
+});
+
 // Dues — flat-level invoices for the logged-in user.
 // Admins can also be residents, so this route intentionally scopes by flatId
 // instead of role.

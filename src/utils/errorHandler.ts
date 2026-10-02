@@ -3,11 +3,29 @@
  */
 
 import { AppError } from './ResponseHandler';
+import logger from './logger';
+
+export const GENERIC_DB_ERROR_MESSAGE = 'Something went wrong while processing your request. Please try again.';
+
+/**
+ * Prisma / driver-adapter errors carry query internals (model names, invocation
+ * snippets, constraint names) that must never reach API clients.
+ */
+export function isPrismaError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.name.startsWith('PrismaClient') || error.name === 'DriverAdapterError')
+  );
+}
 
 /**
  * Safely extract error message from unknown error
  */
 export function getErrorMessage(error: unknown): string {
+  if (isPrismaError(error)) {
+    logger.error({ err: error }, 'Database error (details hidden from client)');
+    return GENERIC_DB_ERROR_MESSAGE;
+  }
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
   return 'An unexpected error occurred';

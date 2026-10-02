@@ -4,6 +4,11 @@ import { AppError } from '../../utils/ResponseHandler';
 import { eventBus } from '../../utils/eventBus';
 import { preApprovedEntryService } from '../pre-approved-entry/pre-approved-entry.service';
 import { DomesticStaffService } from '../domestic-staff/domestic-staff.service';
+import {
+  resolveGuestInviteDenyReason,
+  resolvePartyDenyReason,
+  getVerifyDenyMessage,
+} from './verify-code.rules';
 
 const domesticStaffService = new DomesticStaffService();
 
@@ -27,6 +32,8 @@ interface VerifyCodeResult {
   validUntil?: Date;
   reason?: string;
   message?: string;
+  /** Entry created for an allowed passcode (additive field) */
+  entryId?: string;
 }
 
 export class GateScanService {
@@ -87,12 +94,9 @@ export class GateScanService {
    *
    * Validation checks (in order):
    *  1. Code exists
-   *  2. Invite status = ACTIVE
-   *  3. now() >= validFrom
-   *  4. now() <= validUntil
-   *  5. FREQUENT: today's day in allowedDays
-   *  6. FREQUENT: current time between timeFrom and timeUntil
-   *  7. QUICK/PRIVATE: usedCount < maxUses
+   *  2. Deny reason resolved by verify-code.rules.ts (REVOKED / CANCELLED /
+   *     MAX_USES_REACHED / EXPIRED / NOT_STARTED / WRONG_DAY / OUTSIDE_HOURS / UNCLAIMED_SLOT)
+   *  3. Allowed -> GuestEntryLog + CHECKED_IN Entry (+ one use consumed for limited passes)
    */
   async verifyCode(code: string, guardId: string): Promise<VerifyCodeResult> {
     const guard = await prisma.user.findUnique({
@@ -174,37 +178,72 @@ export class GateScanService {
     now: Date,
   ): Promise<VerifyCodeResult> {
     const party = slot.partyInvite;
-    let denyReason: string | null = null;
-
-    if (party.status !== 'ACTIVE') denyReason = 'CANCELLED';
-    else if (now < party.validFrom) denyReason = 'NOT_YET_VALID';
-    else if (now > party.validUntil) denyReason = 'EXPIRED';
-    else if (!slot.phone) denyReason = 'UNCLAIMED_SLOT';
-
-    const status = denyReason ? 'DENIED' : 'ALLOWED';
-
-    await prisma.guestEntryLog.create({
-      data: {
-        partyInviteId: party.id,
-        inviteType: 'PARTY_INVITE',
-        flatId: party.flatId,
-        guardId,
-        visitorName: slot.name ?? 'Party Guest',
-        visitorPhone: slot.phone,
-        passcode: code,
-        status: status as any,
-        denyReason,
-        societyId,
-      },
-    });
+    const denyReason = resolvePartyDenyReason(party, slot.phone ?? null, now);
 
     if (denyReason) {
+      await prisma.guestEntryLog.create({
+        data: {
+          partyInviteId: party.id,
+          inviteType: 'PARTY_INVITE',
+          flatId: party.flatId,
+          guardId,
+          visitorName: slot.name ?? 'Party Guest',
+          visitorPhone: slot.phone,
+          passcode: code,
+          status: 'DENIED',
+          denyReason,
+          societyId,
+        },
+      });
       return {
         allowed: false,
         reason: denyReason,
-        message: this._getDenyMessage(denyReason),
+        message: getVerifyDenyMessage(denyReason, {
+          kind: 'PARTY',
+          validFrom: party.validFrom,
+          validUntil: party.validUntil,
+        }),
       };
     }
+
+    // Allowed: audit log + a CHECKED_IN Entry so the guest shows up in the guard's
+    // Today's Entries and can be checked out (mirrors approved EntryRequests).
+    const entry = await prisma.$transaction(async (tx) => {
+      await tx.guestEntryLog.create({
+        data: {
+          partyInviteId: party.id,
+          inviteType: 'PARTY_INVITE',
+          flatId: party.flatId,
+          guardId,
+          visitorName: slot.name ?? 'Party Guest',
+          visitorPhone: slot.phone,
+          passcode: code,
+          status: 'ALLOWED',
+          denyReason: null,
+          societyId,
+        },
+      });
+      return tx.entry.create({
+        data: {
+          type: 'VISITOR',
+          visitorType: 'GUEST',
+          status: 'CHECKED_IN',
+          checkInTime: now,
+          visitorName: slot.name || 'Party Guest',
+          visitorPhone: slot.phone,
+          purpose: 'Party invite',
+          wasAutoApproved: true,
+          autoApprovalReason: 'Party invite passcode',
+          flatId: party.flatId,
+          societyId,
+          createdById: guardId,
+          approvedById: party.residentId,
+          approvedAt: now,
+          remarks: `Party passcode ${code}`,
+        },
+        select: { id: true },
+      });
+    });
 
     return {
       allowed: true,
@@ -212,10 +251,11 @@ export class GateScanService {
       visitorName: slot.name,
       visitorPhone: slot.phone,
       flatId: party.flatId,
-      flatNumber: party.flat.flatNumber,
+      flatNumber: party.flat?.flatNumber,
       residentName: party.resident.name,
       isPrivate: false,
       validUntil: party.validUntil,
+      entryId: entry.id,
     };
   }
 
@@ -232,59 +272,77 @@ export class GateScanService {
     currentDay: string,
     currentTime: string,
   ): Promise<VerifyCodeResult> {
-    let denyReason: string | null = null;
+    let denyReason = resolveGuestInviteDenyReason(invite, now, currentDay, currentTime);
 
-    if (invite.status !== 'ACTIVE') denyReason = 'REVOKED';
-    else if (now < invite.validFrom) denyReason = 'NOT_YET_VALID';
-    else if (now > invite.validUntil) denyReason = 'EXPIRED';
-    else if (invite.type === 'FREQUENT') {
-      if (invite.allowedDays.length > 0 && !invite.allowedDays.includes(currentDay)) {
-        denyReason = 'WRONG_DAY';
-      } else if (invite.timeFrom && invite.timeUntil) {
-        if (currentTime < invite.timeFrom || currentTime > invite.timeUntil) {
-          denyReason = 'OUTSIDE_HOURS';
-        }
-      }
-    } else if (invite.maxUses !== null && invite.usedCount >= invite.maxUses) {
-      denyReason = 'MAX_USES_REACHED';
+    // Consume one use for limited passes with a conditional update so two guards
+    // scanning the same one-time code at once can't both let the guest in.
+    if (!denyReason && invite.maxUses !== null) {
+      const newCount = invite.usedCount + 1;
+      const consumed = await prisma.guestInvite.updateMany({
+        where: { id: invite.id, status: 'ACTIVE', usedCount: invite.usedCount },
+        data: {
+          usedCount: newCount,
+          ...(newCount >= invite.maxUses ? { status: 'EXPIRED' as const } : {}),
+        },
+      });
+      if (consumed.count === 0) denyReason = 'MAX_USES_REACHED';
     }
 
-    const status = denyReason ? 'DENIED' : 'ALLOWED';
-
-    await prisma.guestEntryLog.create({
-      data: {
-        guestInviteId: invite.id,
-        inviteType: 'GUEST_INVITE',
-        flatId: invite.flatId,
-        guardId,
-        visitorName: invite.visitorName,
-        visitorPhone: invite.visitorPhone,
-        passcode: code,
-        status: status as any,
-        denyReason,
-        societyId,
-      },
-    });
+    const logData = {
+      guestInviteId: invite.id,
+      inviteType: 'GUEST_INVITE' as const,
+      flatId: invite.flatId,
+      guardId,
+      visitorName: invite.visitorName,
+      visitorPhone: invite.visitorPhone,
+      passcode: code,
+      societyId,
+    };
 
     if (denyReason) {
+      await prisma.guestEntryLog.create({
+        data: { ...logData, status: 'DENIED', denyReason },
+      });
       return {
         allowed: false,
         reason: denyReason,
-        message: this._getDenyMessage(denyReason, invite),
+        message: getVerifyDenyMessage(denyReason, {
+          kind: 'GUEST',
+          validFrom: invite.validFrom,
+          validUntil: invite.validUntil,
+          timeFrom: invite.timeFrom,
+          timeUntil: invite.timeUntil,
+        }),
       };
     }
 
-    // Increment usedCount for QUICK/PRIVATE
-    if (invite.type !== 'FREQUENT') {
-      const newCount = invite.usedCount + 1;
-      await prisma.guestInvite.update({
-        where: { id: invite.id },
-        data: {
-          usedCount: newCount,
-          ...(invite.maxUses !== null && newCount >= invite.maxUses ? { status: 'EXPIRED' } : {}),
-        },
+    // Allowed: audit log + a CHECKED_IN Entry so the guest shows up in the guard's
+    // Today's Entries and can be checked out (mirrors approved EntryRequests).
+    const entry = await prisma.$transaction(async (tx) => {
+      await tx.guestEntryLog.create({
+        data: { ...logData, status: 'ALLOWED', denyReason: null },
       });
-    }
+      return tx.entry.create({
+        data: {
+          type: 'VISITOR',
+          visitorType: 'GUEST',
+          status: 'CHECKED_IN',
+          checkInTime: now,
+          visitorName: invite.visitorName || 'Guest',
+          visitorPhone: invite.visitorPhone,
+          purpose: invite.note ?? null,
+          wasAutoApproved: true,
+          autoApprovalReason: invite.isPrivate ? 'Private guest invite passcode' : 'Guest invite passcode',
+          flatId: invite.flatId,
+          societyId,
+          createdById: guardId,
+          approvedById: invite.residentId,
+          approvedAt: now,
+          remarks: `Guest passcode ${code}`,
+        },
+        select: { id: true },
+      });
+    });
 
     // Emit notification event — listener handles FCM + in-app
     // PRIVATE invites are deliberately excluded (silent entry)
@@ -307,10 +365,11 @@ export class GateScanService {
       visitorName: invite.visitorName,
       visitorPhone: invite.visitorPhone,
       flatId: invite.flatId,
-      flatNumber: invite.flat.flatNumber,
+      flatNumber: invite.flat?.flatNumber,
       residentName: invite.resident.name,
       isPrivate: invite.isPrivate,
       validUntil: invite.validUntil,
+      entryId: entry.id,
     };
   }
 
@@ -410,25 +469,5 @@ export class GateScanService {
         duration: attendance.duration,
       },
     };
-  }
-
-  // ============================================
-  // PRIVATE: Deny message helper
-  // ============================================
-  private _getDenyMessage(reason: string, invite?: any): string {
-    switch (reason) {
-      case 'CANCELLED': return 'This invite has been cancelled';
-      case 'REVOKED': return 'This invite has been revoked by the resident';
-      case 'NOT_YET_VALID': return 'This invite is not valid yet';
-      case 'EXPIRED': return 'This invite has expired';
-      case 'WRONG_DAY': return `This guest is not allowed today`;
-      case 'OUTSIDE_HOURS':
-        return invite?.timeFrom && invite?.timeUntil
-          ? `This guest is only allowed between ${invite.timeFrom} - ${invite.timeUntil}`
-          : 'Outside allowed hours';
-      case 'MAX_USES_REACHED': return 'This invite has already been used';
-      case 'UNCLAIMED_SLOT': return 'This slot has not been claimed by a guest';
-      default: return 'Access denied';
-    }
   }
 }

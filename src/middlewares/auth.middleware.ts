@@ -68,6 +68,12 @@ export const authenticate = async (
       return next(new AppError('User not found or inactive', 401));
     }
 
+    // Guard-app sessions are only ever issued to GUARD users; if the role changed
+    // since (or a token was minted elsewhere), the session must not carry over.
+    if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
+      return next(new AppError('Access denied. This app is for guards only.', 403));
+    }
+
     // SUPER_ADMIN doesn't need society assignment
     if (user.role !== 'SUPER_ADMIN') {
       if (user.societyId && !user.society?.isActive) {

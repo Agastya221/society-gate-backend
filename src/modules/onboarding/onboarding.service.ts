@@ -5,6 +5,56 @@ import type { Prisma } from '../../types';
 import { eventBus } from '../../utils/eventBus';
 import { getPresignedViewUrl } from '../../utils/s3';
 
+/**
+ * Human-readable labels for onboarding DocumentType values. The enum value
+ * AADHAR_CARD is misspelt but stored in the DB, so it is kept as-is and only the
+ * label is corrected ("Aadhaar").
+ */
+export const DOCUMENT_TYPE_LABELS: Record<string, string> = {
+  OWNERSHIP_PROOF: 'Ownership Proof',
+  TENANT_AGREEMENT: 'Tenant Agreement',
+  AADHAR_CARD: 'Aadhaar Card',
+  PAN_CARD: 'PAN Card',
+  PASSPORT: 'Passport',
+  DRIVING_LICENSE: 'Driving License',
+  VOTER_ID: 'Voter ID',
+  OTHER: 'Other Document',
+};
+
+export function documentTypeLabel(type: string): string {
+  return (
+    DOCUMENT_TYPE_LABELS[type] ??
+    type.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
+  );
+}
+
+/**
+ * Derive occupancy from real state (owner/tenant pointers + active flat memberships)
+ * instead of the stale Flat.isOccupied column.
+ */
+export function deriveFlatOccupancy(flat: {
+  currentOwnerId: string | null;
+  currentTenantId: string | null;
+  userMemberships?: Array<{ residentType: string | null; isOwner: boolean }>;
+}): { isOccupied: boolean; hasOwner: boolean; hasTenant: boolean } {
+  const memberships = flat.userMemberships ?? [];
+  const hasOwner = !!flat.currentOwnerId || memberships.some((m) => m.isOwner || m.residentType === 'OWNER');
+  const hasTenant = !!flat.currentTenantId || memberships.some((m) => m.residentType === 'TENANT');
+  return { isOccupied: hasOwner || hasTenant || memberships.length > 0, hasOwner, hasTenant };
+}
+
+export const SELF_REVIEW_MESSAGE =
+  "You can't review your own request — another admin or the super admin must review it";
+
+/**
+ * True when the reviewer is acting on their own request and is not a super admin.
+ * With role unknown (null) it answers "maybe" (true) so callers can look the role up lazily.
+ */
+export function isSelfReviewBlocked(requestUserId: string, reviewerId: string, reviewerRole: string | null): boolean {
+  if (requestUserId !== reviewerId) return false;
+  return reviewerRole !== 'SUPER_ADMIN';
+}
+
 export class OnboardingService {
   // ============================================
   // LIST SOCIETIES
@@ -99,23 +149,32 @@ export class OnboardingService {
             name: true,
           },
         },
+        userMemberships: {
+          where: { isActive: true },
+          select: { residentType: true, isOwner: true },
+        },
       },
       orderBy: { flatNumber: 'asc' },
     });
 
-    return flats.map((flat) => ({
-      id: flat.id,
-      flatNumber: flat.flatNumber,
-      floor: flat.floor,
-      blockName: flat.block?.name || '',
-      isOccupied: flat.isOccupied,
-      hasOwner: !!flat.currentOwnerId,
-      hasTenant: !!flat.currentTenantId,
-      ownerName: flat.ownerName,
-      // Can apply as tenant even if owner exists
-      // Can apply as owner only if no owner exists
-      canApply: true,
-    }));
+    return flats.map((flat) => {
+      // The stored isOccupied column is unreliable (seeded flats are marked occupied
+      // with no owner/tenant/membership), so derive it from who actually lives there.
+      const occupancy = deriveFlatOccupancy(flat);
+      return {
+        id: flat.id,
+        flatNumber: flat.flatNumber,
+        floor: flat.floor,
+        blockName: flat.block?.name || '',
+        isOccupied: occupancy.isOccupied,
+        hasOwner: occupancy.hasOwner,
+        hasTenant: occupancy.hasTenant,
+        ownerName: flat.ownerName,
+        // Can apply as tenant even if owner exists
+        // Can apply as owner only if no owner exists
+        canApply: true,
+      };
+    });
   }
 
   // ============================================
@@ -1006,6 +1065,23 @@ export class OnboardingService {
   }
 
   // ============================================
+  // ADMIN: block reviewing your own request
+  // A society admin who also applies as a resident (e.g. adding a flat) must not be
+  // able to approve/reject/resubmit their own onboarding request. Super admins keep
+  // the ability to review any request.
+  // ============================================
+  private async assertNotSelfReview(requestUserId: string, reviewerId: string) {
+    if (!isSelfReviewBlocked(requestUserId, reviewerId, null)) return;
+    const reviewer = await prisma.user.findUnique({
+      where: { id: reviewerId },
+      select: { role: true },
+    });
+    if (isSelfReviewBlocked(requestUserId, reviewerId, reviewer?.role ?? null)) {
+      throw new AppError(SELF_REVIEW_MESSAGE, 403);
+    }
+  }
+
+  // ============================================
   // ADMIN: APPROVE REQUEST
   // ============================================
   async approveRequest(requestId: string, adminId: string, adminSocietyId: string, notes?: string) {
@@ -1026,6 +1102,8 @@ export class OnboardingService {
     if (request.status !== 'PENDING_APPROVAL') {
       throw new AppError('Only pending requests can be approved', 400);
     }
+
+    await this.assertNotSelfReview(request.userId, adminId);
 
     const result = await prisma.$transaction(async (tx: TransactionClient) => {
       // 1. Update onboarding request
@@ -1258,6 +1336,8 @@ export class OnboardingService {
       throw new AppError('Only pending requests can be rejected', 400);
     }
 
+    await this.assertNotSelfReview(request.userId, adminId);
+
     const result = await prisma.$transaction(async (tx: TransactionClient) => {
       const updatedRequest = await tx.onboardingRequest.update({
         where: { id: requestId },
@@ -1328,6 +1408,8 @@ export class OnboardingService {
     if (request.status !== 'PENDING_APPROVAL') {
       throw new AppError('Only pending requests can request resubmission', 400);
     }
+
+    await this.assertNotSelfReview(request.userId, adminId);
 
     const result = await prisma.$transaction(async (tx: TransactionClient) => {
       const updatedRequest = await tx.onboardingRequest.update({
@@ -1477,6 +1559,8 @@ export class OnboardingService {
     if (request.status !== 'PENDING_APPROVAL') {
       throw new AppError('Only pending requests can be approved', 400);
     }
+
+    await this.assertNotSelfReview(request.userId, ownerId);
 
     // Verify caller owns the flat
     const ownerMembership = await prisma.userFlatMembership.findFirst({
@@ -1642,6 +1726,8 @@ export class OnboardingService {
       throw new AppError('Only pending requests can be rejected', 400);
     }
 
+    await this.assertNotSelfReview(request.userId, ownerId);
+
     const ownerMembership = await prisma.userFlatMembership.findFirst({
       where: {
         userId: ownerId,
@@ -1720,6 +1806,8 @@ export class OnboardingService {
     if (request.status !== 'PENDING_APPROVAL') {
       throw new AppError('Only pending requests can request resubmission', 400);
     }
+
+    await this.assertNotSelfReview(request.userId, ownerId);
 
     const ownerMembership = await prisma.userFlatMembership.findFirst({
       where: {
@@ -1847,6 +1935,7 @@ export class OnboardingService {
           id: doc.id,
           documentType: doc.documentType,
           type: doc.documentType,
+          documentTypeLabel: documentTypeLabel(doc.documentType),
           documentUrl: viewUrl,
           url: viewUrl,
           viewUrl,

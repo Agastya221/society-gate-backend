@@ -43,6 +43,10 @@ export const getNotices = async (req: Request, res: Response) => {
       priority: req.query.priority as NoticePriority | undefined,
       isPinned: req.query.isPinned === 'true' ? true : req.query.isPinned === 'false' ? false : undefined,
       isActive: req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined,
+      // Expired notices are only ever listed for admins who explicitly ask (?includeExpired=true)
+      includeExpired:
+        req.query.includeExpired === 'true' &&
+        (req.user!.role === 'ADMIN' || req.user!.role === 'SUPER_ADMIN'),
       page: req.query.page ? parseInt(req.query.page as string, 10) : undefined,
       limit: req.query.limit ? parseInt(req.query.limit as string, 10) : undefined,
     };

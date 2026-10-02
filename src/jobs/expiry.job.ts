@@ -3,13 +3,16 @@ import { prisma } from '../utils/Client';
 import { emitToUser, SOCKET_EVENTS } from '../utils/socket';
 import { notificationService } from '../modules/notification/notification.service';
 import { eventBus } from '../utils/eventBus';
-import { accessControlEngine } from '../modules/access-control/access-control.engine';
+import { accessControlEngine, isOnceScheduleOver } from '../modules/access-control/access-control.engine';
 import { accessControlCache } from '../modules/access-control/access-control.cache';
 import { EmergencyService } from '../modules/emergency/emergency.service';
+import { DomesticStaffService } from '../modules/domestic-staff/domestic-staff.service';
 import type { PreApprovedEntryWithRelations } from '../types';
 import logger from '../utils/logger';
+import { clearCacheByPattern } from '../middlewares/cache.middleware';
 
 const emergencyService = new EmergencyService();
+const domesticStaffService = new DomesticStaffService();
 
 // ARCH-4: Each job is an exported function for future worker extraction
 
@@ -43,6 +46,9 @@ export async function expireEntryRequests() {
       },
       data: { status: 'EXPIRED' },
     });
+
+    // Lists are cached (20s); drop them so guards/residents see EXPIRED right away
+    void clearCacheByPattern('entry-requests:*');
 
     for (const request of expiredRequests) {
       emitToUser(request.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
@@ -170,8 +176,10 @@ export async function expirePreApprovedEntries() {
     const todayStr = istNow.toISOString().slice(0, 10);
     const currentTime = istNow.toISOString().slice(11, 16);
 
-    // 1. Expire ONCE entries where date has passed
-    const expiredOnce = await prisma.preApprovedEntry.findMany({
+    // 1. Expire ONCE entries whose window is over. Candidates are dated before today,
+    // but an overnight pass (e.g. 17:45 → 01:45) stays valid into the next morning,
+    // so the actual end (incl. grace) is checked per entry.
+    const onceCandidates = await prisma.preApprovedEntry.findMany({
       where: {
         status: 'ACTIVE',
         scheduleType: 'ONCE',
@@ -179,8 +187,19 @@ export async function expirePreApprovedEntries() {
           date: { lt: new Date(todayStr) },
         },
       },
-      select: { id: true, societyId: true, flatId: true, meta: { select: { vehicleLast4Digits: true } } },
+      select: {
+        id: true,
+        societyId: true,
+        flatId: true,
+        meta: { select: { vehicleLast4Digits: true } },
+        schedule: {
+          select: { date: true, startTime: true, endTime: true, graceBeforeMinutes: true, graceAfterMinutes: true },
+        },
+      },
     });
+    const expiredOnce = onceCandidates.filter(
+      (entry) => !entry.schedule?.startTime || !entry.schedule?.endTime || isOnceScheduleOver(entry.schedule, now),
+    );
 
     // 2. Expire RECURRING entries where validUntil has passed
     const expiredRecurring = await prisma.preApprovedEntry.findMany({
@@ -276,6 +295,22 @@ export async function notifyExpiringEntries() {
   }
 }
 
+// ============================================
+// DOMESTIC STAFF
+// ============================================
+
+export async function autoCheckoutStaleStaff() {
+  try {
+    const result = await domesticStaffService.autoCheckoutStaleStaff();
+    if (result.count > 0) {
+      void clearCacheByPattern('staff:*');
+      logger.info({ count: result.count }, 'Auto checked-out stale domestic staff');
+    }
+  } catch (error) {
+    logger.error({ error }, 'Error auto checking-out stale domestic staff');
+  }
+}
+
 // Schedule jobs
 cron.schedule('* * * * *', expireEntryRequests);
 cron.schedule('*/5 * * * *', expireGatePasses);
@@ -285,6 +320,7 @@ cron.schedule('0 3 * * *', cleanupOldNotifications);
 cron.schedule('*/5 * * * *', expirePreApprovedEntries);
 cron.schedule('* * * * *', releaseStaleEntryLocks);
 cron.schedule('*/10 * * * *', notifyExpiringEntries);
+cron.schedule('*/30 * * * *', autoCheckoutStaleStaff);
 cron.schedule('*/15 * * * *', async () => {
   try {
     const result = await emergencyService.expireStaleEmergencies();

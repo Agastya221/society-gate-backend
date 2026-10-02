@@ -25,13 +25,15 @@ import {
   listViolations,
   resolveViolation,
 } from '../../modules/vehicle/parking-violation.controller';
-import { authenticate, authorize } from '../../middlewares/auth.middleware';
+import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
+import { getSocietySettings, updateSocietySettings } from '../../modules/settings/society-settings.controller';
 import { validate } from '../../middlewares/validate.middleware';
-import { cache } from '../../middlewares/cache.middleware';
+import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 import {
   idParams,
   adminPreApprovedQuerySchema,
   adminCancelEntrySchema,
+  updateSocietySettingsSchema,
 } from '../../schemas';
 
 const router = Router();
@@ -113,6 +115,26 @@ router.get('/parking/violations', authenticate, authorize('ADMIN', 'SUPER_ADMIN'
 router.post('/parking/violations', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), issueViolation);
 router.post('/parking/vehicles/:vehicleId/violations', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), issueViolation);
 router.patch('/parking/violations/:id/resolve', authenticate, authorize('ADMIN', 'SUPER_ADMIN'), resolveViolation);
+
+// ---- Society settings (maintenance + gate auto-approval preferences) ----
+// GET/PATCH /api/v1/admin/society/settings — ADMIN (own society) or SUPER_ADMIN (?societyId=)
+router.get(
+  '/society/settings',
+  authenticate,
+  authorize('ADMIN', 'SUPER_ADMIN'),
+  ensureSameSociety,
+  cache({ ttl: 60, keyPrefix: 'society-settings', varyBy: ['societyId'] }),
+  getSocietySettings,
+);
+router.patch(
+  '/society/settings',
+  authenticate,
+  authorize('ADMIN', 'SUPER_ADMIN'),
+  ensureSameSociety,
+  validate({ body: updateSocietySettingsSchema }),
+  clearCacheAfter(['society-settings:*']),
+  updateSocietySettings,
+);
 
 // ---- Pre-approved entry oversight ----
 router.get('/pre-approved', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), validate({ query: adminPreApprovedQuerySchema }), listForAdmin);
