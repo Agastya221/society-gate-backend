@@ -56,7 +56,9 @@ export class StaffAppService {
       prisma.staffBooking.findMany({ where: { domesticStaffId: staffId, bookingDate: { gte: start, lte: end }, status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] } }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { startTime: 'asc' } }),
       prisma.staffAttendance.findFirst({ where: { domesticStaffId: staffId, checkOutTime: null }, orderBy: { checkInTime: 'desc' } }),
     ]);
-    return { staff: publicStaff(staff), assignments, bookings, activeAttendance: attendance };
+    // Same-day requests whose start has passed can't be accepted — keep them off the dashboard too
+    const activeBookings = bookings.filter((booking) => booking.status !== 'PENDING' || !isBookingExpired(booking));
+    return { staff: publicStaff(staff), assignments, bookings: activeBookings, activeAttendance: attendance };
   }
 
   assignments(staffId: string) { return prisma.staffFlatAssignment.findMany({ where: { domesticStaffId: staffId, isActive: true }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { workStartTime: 'asc' } }); }

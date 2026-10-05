@@ -31,7 +31,7 @@ import {
   validatePreApprovedEntrySchema,
   markEntryUsedSchema,
   guardPreApprovedSearchSchema,
-  preApprovedEntryQuerySchema,
+  guardPreApprovedListQuerySchema,
 } from '../../schemas';
 
 const router = Router();
@@ -75,7 +75,7 @@ router.get('/entry-log', getEntryLog);
 // ============================================
 router.post('/pre-approved/validate', validate({ body: validatePreApprovedEntrySchema }), validateEntry);
 router.post('/pre-approved/:id/use', validate({ params: idParams, body: markEntryUsedSchema }), markEntryUsed);
-router.get('/pre-approved', validate({ query: preApprovedEntryQuerySchema }), listForGuard);
+router.get('/pre-approved', validate({ query: guardPreApprovedListQuerySchema }), listForGuard);
 router.get('/pre-approved/search', validate({ query: guardPreApprovedSearchSchema }), searchForGuard);
 
 // ============================================

@@ -274,7 +274,8 @@ export class AmenityService {
   }
 
   // Get fixed slot blocks for a given date — rich availability data for UI
-  async getSlots(amenityId: string, date: string) {
+  // `viewer` (optional) marks slots booked by the caller's flat (or by the caller) with bookedByMe
+  async getSlots(amenityId: string, date: string, viewer?: { userId?: string; flatId?: string | null }) {
     const amenity = await prisma.amenity.findUnique({ where: { id: amenityId } });
     if (!amenity || !amenity.isActive) {
       throw new AppError('Amenity not found or inactive', 404);
@@ -329,13 +330,18 @@ export class AmenityService {
         },
         status: { in: ['CONFIRMED', 'PENDING'] },
       },
-      select: { startTime: true, endTime: true, guestCount: true },
+      select: { startTime: true, endTime: true, guestCount: true, userId: true, flatId: true },
     });
 
+    const isMine = (b: { userId: string; flatId: string }) =>
+      (!!viewer?.flatId && b.flatId === viewer.flatId) || (!!viewer?.userId && b.userId === viewer.userId);
+
     return slots.map((slot) => {
-      const isBooked = existingBookings.some(
+      const slotBookings = existingBookings.filter(
         (b) => b.startTime === slot.startTime && b.endTime === slot.endTime
       );
+      const isBooked = slotBookings.length > 0;
+      const bookedByMe = slotBookings.some(isMine);
       const isPast = isToday && slot.startMin < nowMin;
 
       const status: 'AVAILABLE' | 'BOOKED' | 'PAST' =
@@ -348,6 +354,7 @@ export class AmenityService {
         label: `${to12h(slot.startTime)} – ${to12h(slot.endTime)}`,
         status,           // AVAILABLE | BOOKED | PAST
         isBookable: status === 'AVAILABLE',
+        bookedByMe,       // true when the CONFIRMED/PENDING booking belongs to the caller's flat
       };
     });
   }

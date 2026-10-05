@@ -696,8 +696,17 @@ export const adminPreApprovedQuerySchema = paginationQuery.extend({
   type: preApprovedEntryTypeEnum.optional(),
   status: z.enum(['ACTIVE', 'EXPIRED', 'USED', 'CANCELLED']).optional(),
   flatId: uuidSchema.optional(),
+  blockId: uuidSchema.optional(),
   dateFrom: z.string().datetime().optional(),
   dateTo: z.string().datetime().optional(),
+});
+
+// Guard active list: optional flat / block filters (SAFE cabs are excluded when filtering)
+export const guardPreApprovedListQuerySchema = paginationQuery.extend({
+  type: preApprovedEntryTypeEnum.optional(),
+  status: z.enum(['ACTIVE', 'EXPIRED', 'USED', 'CANCELLED']).optional(),
+  flatId: uuidSchema.optional(),
+  blockId: uuidSchema.optional(),
 });
 
 export const guardPreApprovedSearchSchema = z.object({

@@ -1,6 +1,7 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import { accessControlEngine, AccessControlEngine } from '../access-control/access-control.engine';
+import { accessControlEngine, AccessControlEngine, formatIst } from '../access-control/access-control.engine';
+import type { Prisma, PreApprovedEntryType } from '../../../prisma/generated/prisma/client';
 import { accessControlCache } from '../access-control/access-control.cache';
 import { redis, safeRedisOperation } from '../../config/redis';
 import { verifyQRToken } from '../../utils/QrGenerate';
@@ -15,6 +16,8 @@ import type {
   PreApprovedEntryWithRelations,
   GuardPreApprovedFilters,
   AdminPreApprovedFilters,
+  AccessControlContext,
+  PreApprovedDenialReason,
 } from '../../types';
 
 const MAX_ACTIVE_PER_FLAT = 20;
@@ -23,9 +26,38 @@ const ENTRY_INCLUDE = {
   schedule: true,
   meta: true,
   verification: true,
-  flat: { select: { id: true, flatNumber: true } },
+  flat: { select: { id: true, flatNumber: true, block: { select: { id: true, name: true } } } },
   user: { select: { id: true, name: true } },
 } as const;
+
+// Lists for guard/admin: flat with its block so the UI can show "A-101" and filter by flat
+const LIST_INCLUDE = {
+  schedule: true,
+  meta: true,
+  flat: { select: { id: true, flatNumber: true, block: { select: { id: true, name: true } } } },
+  user: { select: { id: true, name: true } },
+} as const;
+
+// Normalised denial reasons, most actionable first (used to pick the top-level message)
+const REASON_PRIORITY = [
+  'NOT_STARTED',
+  'OUTSIDE_HOURS',
+  'DAILY_LIMIT_REACHED',
+  'WRONG_DAY',
+  'USED',
+  'EXPIRED',
+  'CANCELLED',
+  'INVALID_SCHEDULE',
+];
+
+// Recently finished passes (USED/EXPIRED/CANCELLED) are reported when nothing is ACTIVE
+const RECENT_INACTIVE_MS = 24 * 60 * 60 * 1000;
+
+/** Pagination block (existing fields + additive hasMore / nextPage). */
+const paginationOf = (total: number, page: number, limit: number) => {
+  const pages = Math.ceil(total / limit);
+  return { total, page, limit, pages, hasMore: page < pages, nextPage: page < pages ? page + 1 : null };
+};
 
 const ENTRY_WITH_USAGES = {
   ...ENTRY_INCLUDE,
@@ -389,7 +421,7 @@ export class PreApprovedEntryService {
 
   private async validateByVehicleDigits(
     last4: string,
-    context: import('../../types').AccessControlContext,
+    context: AccessControlContext,
   ): Promise<PreApprovedValidationResult> {
     // Query matching entries
     const entries = await prisma.preApprovedEntry.findMany({
@@ -404,40 +436,31 @@ export class PreApprovedEntryService {
     });
 
     if (entries.length === 0) {
-      return {
-        allowed: false,
-        isPrivate: false,
-        reason: 'NO_MATCH',
-        message: 'No matching pre-approved cab entry found',
-        suggestion: 'CREATE_ENTRY_REQUEST',
-      };
+      const recent = await this.findRecentInactive({
+        societyId: context.societyId,
+        type: 'CAB',
+        mode: 'SAFE',
+        meta: { vehicleLast4Digits: last4 },
+      }, context);
+      return this.buildDenial(
+        recent,
+        'NO_MATCH',
+        'No matching pre-approved cab entry found',
+      );
     }
 
     // Evaluate each match
-    const validMatches: PreApprovedValidationResult[] = [];
-    for (const entry of entries) {
-      const result = await accessControlEngine.evaluatePreApproved(
-        entry as PreApprovedEntryWithRelations,
-        context,
-      );
-      if (result.allowed) {
-        validMatches.push(result);
-      }
-    }
+    const { valid: validMatches, denied } = await this.evaluateAll(entries, context);
 
     if (validMatches.length === 0) {
-      return {
-        allowed: false,
-        isPrivate: false,
-        reason: 'NO_VALID_MATCH',
-        message: 'Matching entries found but none are valid at this time',
-        suggestion: 'CREATE_ENTRY_REQUEST',
-      };
+      return this.buildDenial(
+        denied,
+        'NO_VALID_MATCH',
+        'Matching entries found but none are valid at this time',
+      );
     }
 
     if (validMatches.length === 1) {
-      // Lock the single match
-      await this.lockEntry(entries.find(e => e.id === validMatches[0].entryId)!.id, context.guardId);
       return validMatches[0];
     }
 
@@ -453,51 +476,43 @@ export class PreApprovedEntryService {
   private async validateByFlat(
     flatId: string,
     type: string,
-    context: import('../../types').AccessControlContext,
+    context: AccessControlContext,
   ): Promise<PreApprovedValidationResult> {
     const entries = await prisma.preApprovedEntry.findMany({
       where: {
         societyId: context.societyId,
         flatId,
         status: 'ACTIVE',
-        type: type as any,
+        type: type as PreApprovedEntryType,
       },
       include: ENTRY_INCLUDE,
     });
 
     if (entries.length === 0) {
-      return {
-        allowed: false,
-        isPrivate: false,
-        reason: 'NO_MATCH',
-        message: `No active ${type} entries for this flat`,
-        suggestion: 'CREATE_ENTRY_REQUEST',
-      };
+      // Nothing active — say why if the flat had a pass that was just used/expired/cancelled
+      const recent = await this.findRecentInactive({
+        societyId: context.societyId,
+        flatId,
+        type: type as PreApprovedEntryType,
+      }, context);
+      return this.buildDenial(
+        recent,
+        'NO_MATCH',
+        `No active ${type} entries for this flat`,
+      );
     }
 
-    const validMatches: PreApprovedValidationResult[] = [];
-    for (const entry of entries) {
-      const result = await accessControlEngine.evaluatePreApproved(
-        entry as PreApprovedEntryWithRelations,
-        context,
-      );
-      if (result.allowed) {
-        validMatches.push(result);
-      }
-    }
+    const { valid: validMatches, denied } = await this.evaluateAll(entries, context);
 
     if (validMatches.length === 0) {
-      return {
-        allowed: false,
-        isPrivate: false,
-        reason: 'NO_VALID_MATCH',
-        message: 'Entries found but none are valid at this time',
-        suggestion: 'CREATE_ENTRY_REQUEST',
-      };
+      return this.buildDenial(
+        denied,
+        'NO_VALID_MATCH',
+        'Entries found but none are valid at this time',
+      );
     }
 
     if (validMatches.length === 1) {
-      await this.lockEntry(entries.find(e => e.id === validMatches[0].entryId)!.id, context.guardId);
       return validMatches[0];
     }
 
@@ -511,7 +526,7 @@ export class PreApprovedEntryService {
 
   private async validateByQR(
     qrToken: string,
-    context: import('../../types').AccessControlContext,
+    context: AccessControlContext,
   ): Promise<PreApprovedValidationResult> {
     let payload: Record<string, unknown>;
     try {
@@ -534,16 +549,109 @@ export class PreApprovedEntryService {
       return { allowed: false, isPrivate: false, reason: 'NOT_FOUND', message: 'Pre-approved entry not found' };
     }
 
-    const result = await accessControlEngine.evaluatePreApproved(
+    // Read-only: no lock is taken (double use is prevented in markUsed)
+    return accessControlEngine.evaluatePreApproved(
       entry as PreApprovedEntryWithRelations,
       context,
     );
+  }
 
-    if (result.allowed) {
-      await this.lockEntry(entry.id, context.guardId);
+  /** Evaluate candidates, splitting usable matches from denials (kept with their entry). */
+  private async evaluateAll(
+    entries: Array<PreApprovedEntryWithRelations | (Record<string, unknown> & { id: string })>,
+    context: AccessControlContext,
+  ) {
+    const valid: PreApprovedValidationResult[] = [];
+    const denied: Array<{ entry: PreApprovedEntryWithRelations; result: PreApprovedValidationResult }> = [];
+    for (const raw of entries) {
+      const entry = raw as PreApprovedEntryWithRelations;
+      const result = await accessControlEngine.evaluatePreApproved(entry, context);
+      if (result.allowed) valid.push(result);
+      else denied.push({ entry, result });
+    }
+    return { valid, denied };
+  }
+
+  /** USED / EXPIRED / CANCELLED passes touched in the last 24h matching `where`. */
+  private async findRecentInactive(
+    where: Prisma.PreApprovedEntryWhereInput,
+    context: AccessControlContext,
+  ) {
+    const entries = await prisma.preApprovedEntry.findMany({
+      where: {
+        ...where,
+        status: { in: ['USED', 'EXPIRED', 'CANCELLED'] },
+        updatedAt: { gte: new Date(context.now.getTime() - RECENT_INACTIVE_MS) },
+      },
+      include: {
+        ...ENTRY_INCLUDE,
+        usages: { orderBy: { usedAt: 'desc' as const }, take: 1, select: { usedAt: true } },
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: 5,
+    });
+    return Promise.all(entries.map(async (entry) => {
+      const result = await accessControlEngine.evaluatePreApproved(
+        entry as unknown as PreApprovedEntryWithRelations,
+        context,
+      );
+      const usedAt = entry.usages[0]?.usedAt ?? null;
+      if (entry.status === 'USED' && usedAt) {
+        result.message = `Already used at ${formatIst(usedAt)}`;
+      }
+      return { entry: entry as unknown as PreApprovedEntryWithRelations, result, usedAt };
+    }));
+  }
+
+  /**
+   * Denial for a flat / vehicle lookup. Keeps the legacy `reason`/`message`/`suggestion`
+   * and adds `reasons` (one per candidate) + `primaryReason`; when candidates exist the
+   * top-level `message` explains the most relevant one instead of a generic sentence.
+   */
+  private buildDenial(
+    denied: Array<{ entry: PreApprovedEntryWithRelations; result: PreApprovedValidationResult; usedAt?: Date | null }>,
+    reason: 'NO_MATCH' | 'NO_VALID_MATCH',
+    fallbackMessage: string,
+  ): PreApprovedValidationResult {
+    const reasons: PreApprovedDenialReason[] = denied.map(({ entry, result, usedAt }) => ({
+      entryId: entry.id,
+      reason: result.reasonCode ?? result.reason ?? 'UNKNOWN',
+      legacyReason: result.reason,
+      message: result.message ?? 'Not valid at this time',
+      displayLabel: accessControlEngine.getDisplayLabel(entry),
+      status: entry.status,
+      usedAt: usedAt ?? null,
+      window: result.window ?? null,
+    }));
+
+    const rank = (r: PreApprovedDenialReason) => {
+      const i = REASON_PRIORITY.indexOf(r.reason);
+      return i === -1 ? REASON_PRIORITY.length : i;
+    };
+    const nextStartOf = (r: PreApprovedDenialReason) => {
+      const v = r.window?.nextStart ?? r.window?.startsAt;
+      return typeof v === 'string' ? Date.parse(v) : Number.POSITIVE_INFINITY;
+    };
+    const primary = [...reasons].sort((a, b) => rank(a) - rank(b) || nextStartOf(a) - nextStartOf(b))[0];
+
+    let message = fallbackMessage;
+    if (primary) {
+      const detail = `${primary.displayLabel ? `${primary.displayLabel}: ` : ''}${primary.message}`;
+      message = reason === 'NO_MATCH'
+        ? `${fallbackMessage}. ${detail}`
+        : reasons.length === 1
+          ? detail
+          : `${reasons.length} passes found, none valid now. ${detail}`;
     }
 
-    return result;
+    return {
+      allowed: false,
+      isPrivate: false,
+      reason,
+      message,
+      suggestion: 'CREATE_ENTRY_REQUEST',
+      ...(primary ? { primaryReason: primary.reason, reasons } : { reasons: [] }),
+    };
   }
 
   async markUsed(entryId: string, guardId: string, gatePointId?: string, notes?: string) {
@@ -562,14 +670,12 @@ export class PreApprovedEntryService {
       });
 
       if (!entry) throw new AppError('Entry not found', 404);
+      if (entry.societyId !== guard.societyId) throw new AppError('Entry not found', 404);
+      if (entry.status === 'USED') throw new AppError('This pass has already been used', 409);
       if (entry.status !== 'ACTIVE') throw new AppError(`Entry is ${entry.status.toLowerCase()}`, 400);
 
-      // Verify lock ownership (skip if not locked — allows direct use without validate)
-      if (entry.isLocked && entry.lockedByGuardId !== guardId) {
-        throw new AppError('Entry is locked by another guard', 409);
-      }
-
       // Re-validate schedule
+      let occurrences: { start: Date; end: Date }[] | undefined;
       if (entry.schedule) {
         const scheduleCheck = accessControlEngine.checkSchedule(
           entry.schedule,
@@ -579,37 +685,47 @@ export class PreApprovedEntryService {
         if (!scheduleCheck.valid) {
           throw new AppError(scheduleCheck.message || 'Entry not valid at this time', 400);
         }
+        occurrences = scheduleCheck.occurrences;
+      }
 
-        // Check daily limit for recurring
-        if (entry.scheduleType === 'RECURRING' && entry.schedule.entriesPerDay) {
-          const usageCheck = await accessControlEngine.checkUsageLimit(
-            entry.id,
-            entry.schedule.entriesPerDay,
-            context.istNow,
-          );
-          if (!usageCheck.valid) {
-            throw new AppError(usageCheck.message || 'Daily limit reached', 400);
-          }
+      // Atomic claim instead of a guard lock. The conditional UPDATE takes a row lock that
+      // is held until commit, so a concurrent /use on the same pass waits here and then
+      // sees the committed result:
+      //  - ONCE: status ACTIVE → USED; the loser matches 0 rows → 409.
+      //  - RECURRING: status stays ACTIVE, but the row lock serialises the usage count
+      //    below, so two guards can't both slip under entriesPerDay.
+      const isOnce = entry.scheduleType === 'ONCE';
+      const claimed = await tx.preApprovedEntry.updateMany({
+        where: { id: entryId, status: 'ACTIVE' },
+        data: {
+          ...(isOnce ? { status: 'USED' as const } : {}),
+          // Clear any legacy lock left by older builds
+          isLocked: false,
+          lockedAt: null,
+          lockedByGuardId: null,
+        },
+      });
+      if (claimed.count === 0) {
+        throw new AppError('This pass was just used or changed by another guard', 409);
+      }
+
+      // Check limit for recurring (counted inside the current window occurrence)
+      if (entry.scheduleType === 'RECURRING' && entry.schedule?.entriesPerDay) {
+        const usageCheck = await accessControlEngine.checkUsageLimit(
+          entry.id,
+          entry.schedule.entriesPerDay,
+          context.istNow,
+          occurrences,
+          tx,
+        );
+        if (!usageCheck.valid) {
+          throw new AppError(usageCheck.message || 'Daily limit reached', 400);
         }
       }
 
       // Create usage record
       const usage = await tx.preApprovedUsage.create({
         data: { entryId, guardId, gatePointId: gatePointId ?? null, notes: notes ?? null },
-      });
-
-      // For ONCE: mark as USED
-      const statusUpdate = entry.scheduleType === 'ONCE' ? { status: 'USED' as const } : {};
-
-      // Unlock entry
-      await tx.preApprovedEntry.update({
-        where: { id: entryId },
-        data: {
-          ...statusUpdate,
-          isLocked: false,
-          lockedAt: null,
-          lockedByGuardId: null,
-        },
       });
 
       // Create Entry record for unified history
@@ -665,22 +781,22 @@ export class PreApprovedEntryService {
   async listForGuard(societyId: string, filters: GuardPreApprovedFilters) {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 30;
+    const byFlat = !!(filters.flatId || filters.blockId);
 
-    const where = {
+    const where: Prisma.PreApprovedEntryWhereInput = {
       societyId,
-      status: 'ACTIVE' as const,
+      status: 'ACTIVE',
       ...(filters.type ? { type: filters.type } : {}),
+      ...(filters.flatId ? { flatId: filters.flatId } : {}),
+      ...(filters.blockId ? { flat: { blockId: filters.blockId } } : {}),
+      // A flat/block filter must not reveal which flat a SAFE (private) cab belongs to
+      ...(byFlat ? { mode: { not: 'SAFE' } } : {}),
     };
 
     const [entries, total] = await Promise.all([
       prisma.preApprovedEntry.findMany({
         where,
-        include: {
-          schedule: true,
-          meta: true,
-          flat: { select: { id: true, flatNumber: true } },
-          user: { select: { id: true, name: true } },
-        },
+        include: LIST_INCLUDE,
         orderBy: { createdAt: 'desc' },
         skip: (page - 1) * limit,
         take: limit,
@@ -710,9 +826,11 @@ export class PreApprovedEntryService {
         mode: entry.mode,
         scheduleType: entry.scheduleType,
         status: entry.status,
-        displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
+        displayLabel: accessControlEngine.getDisplayLabel(entry as unknown as PreApprovedEntryWithRelations),
         isPrivate: false,
+        flatId: entry.flatId,
         flatNumber: entry.flat?.flatNumber ?? '',
+        flat: entry.flat, // { id, flatNumber, block: { id, name } | null }
         residentName: entry.user.name,
         visitorName: entry.visitorName,
         schedule: entry.schedule,
@@ -723,7 +841,7 @@ export class PreApprovedEntryService {
 
     return {
       entries: safeEntries,
-      pagination: { total, page, limit, pages: Math.ceil(total / limit) },
+      pagination: paginationOf(total, page, limit),
     };
   }
 
@@ -738,12 +856,7 @@ export class PreApprovedEntryService {
           { meta: { vehicleLast4Digits: { contains: query } } },
         ],
       },
-      include: {
-        schedule: true,
-        meta: true,
-        flat: { select: { id: true, flatNumber: true } },
-        user: { select: { id: true, name: true } },
-      },
+      include: LIST_INCLUDE,
       take: 20,
       orderBy: { createdAt: 'desc' },
     });
@@ -764,9 +877,11 @@ export class PreApprovedEntryService {
         id: entry.id,
         type: entry.type,
         mode: entry.mode,
-        displayLabel: accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
+        displayLabel: accessControlEngine.getDisplayLabel(entry as unknown as PreApprovedEntryWithRelations),
         isPrivate: false,
+        flatId: entry.flatId,
         flatNumber: entry.flat?.flatNumber ?? '',
+        flat: entry.flat,
         residentName: entry.user.name,
         visitorName: entry.visitorName,
         schedule: entry.schedule,
@@ -784,10 +899,11 @@ export class PreApprovedEntryService {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 30;
 
-    const where: Record<string, unknown> = { societyId };
+    const where: Prisma.PreApprovedEntryWhereInput = { societyId };
     if (filters.type) where.type = filters.type;
     if (filters.status) where.status = filters.status;
     if (filters.flatId) where.flatId = filters.flatId;
+    if (filters.blockId) where.flat = { blockId: filters.blockId };
     if (filters.dateFrom || filters.dateTo) {
       where.createdAt = {
         ...(filters.dateFrom ? { gte: new Date(filters.dateFrom) } : {}),
@@ -799,7 +915,7 @@ export class PreApprovedEntryService {
       prisma.preApprovedEntry.findMany({
         where,
         include: {
-          ...ENTRY_INCLUDE,
+          ...ENTRY_INCLUDE, // flat now carries block { id, name }
           _count: { select: { usages: true } },
         },
         orderBy: { createdAt: 'desc' },
@@ -811,7 +927,7 @@ export class PreApprovedEntryService {
 
     return {
       entries,
-      pagination: { total, page, limit, pages: Math.ceil(total / limit) },
+      pagination: paginationOf(total, page, limit),
     };
   }
 
@@ -869,18 +985,6 @@ export class PreApprovedEntryService {
       },
       select: { id: true },
     });
-  }
-
-  private async lockEntry(entryId: string, guardId: string) {
-    try {
-      await prisma.preApprovedEntry.update({
-        where: { id: entryId, isLocked: false },
-        data: { isLocked: true, lockedAt: new Date(), lockedByGuardId: guardId },
-      });
-    } catch {
-      // Entry already locked — non-fatal for validation response
-      logger.debug({ entryId, guardId }, 'Could not acquire lock (already locked)');
-    }
   }
 
   private async checkRateLimit(guardId: string) {

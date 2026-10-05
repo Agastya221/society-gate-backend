@@ -1026,8 +1026,27 @@ export interface PreApprovedValidationResult {
   reason?: string;
   message?: string;
   suggestion?: string;
+  /** Normalised denial code: NOT_STARTED | WRONG_DAY | OUTSIDE_HOURS | DAILY_LIMIT_REACHED | EXPIRED | USED | CANCELLED | INVALID_SCHEDULE */
+  reasonCode?: string;
+  /** Schedule window of the denied pass (see describeScheduleWindow) */
+  window?: Record<string, unknown> | null;
+  /** Flat/vehicle lookups with no usable pass: why each candidate was refused */
+  reasons?: PreApprovedDenialReason[];
+  /** Most relevant reasonCode among `reasons` */
+  primaryReason?: string;
   // Multiple matches
   matches?: PreApprovedValidationResult[];
+}
+
+export interface PreApprovedDenialReason {
+  entryId: string;
+  reason: string; // normalised (see reasonCode)
+  legacyReason?: string;
+  message: string;
+  displayLabel?: string;
+  status?: string;
+  usedAt?: Date | null;
+  window: Record<string, unknown> | null;
 }
 
 export interface AccessControlContext {
@@ -1042,7 +1061,13 @@ export interface AccessControlContext {
 export interface ScheduleCheckResult {
   valid: boolean;
   reason?: string;
+  /** Normalised reason (NOT_STARTED, WRONG_DAY, OUTSIDE_HOURS, ...) */
+  reasonCode?: string;
   message?: string;
+  /** Next time the pass can be used (nominal start), when known */
+  nextStart?: Date;
+  /** RECURRING: occurrence(s) of the window containing now — usage limits count inside these */
+  occurrences?: { start: Date; end: Date }[];
 }
 
 export interface PreApprovedEntryWithRelations extends PreApprovedEntry {
@@ -1055,6 +1080,8 @@ export interface PreApprovedEntryWithRelations extends PreApprovedEntry {
 
 export interface GuardPreApprovedFilters {
   type?: PreApprovedEntryType;
+  flatId?: string;
+  blockId?: string;
   page?: number;
   limit?: number;
 }
@@ -1063,6 +1090,7 @@ export interface AdminPreApprovedFilters {
   type?: PreApprovedEntryType;
   status?: PreApprovedEntryStatus;
   flatId?: string;
+  blockId?: string;
   dateFrom?: string;
   dateTo?: string;
   page?: number;

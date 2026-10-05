@@ -127,6 +127,8 @@ export const listForGuard = async (req: Request, res: Response) => {
     const guard = req.user!;
     const result = await service.listForGuard(guard.societyId!, {
       type: req.query.type as PreApprovedEntryType | undefined,
+      flatId: req.query.flatId as string | undefined,
+      blockId: req.query.blockId as string | undefined,
       page: req.query.page ? Number(req.query.page) : undefined,
       limit: req.query.limit ? Number(req.query.limit) : undefined,
     });
@@ -160,6 +162,7 @@ export const listForAdmin = async (req: Request, res: Response) => {
       type: req.query.type as PreApprovedEntryType | undefined,
       status: req.query.status as PreApprovedEntryStatus | undefined,
       flatId: req.query.flatId as string | undefined,
+      blockId: req.query.blockId as string | undefined,
       dateFrom: req.query.dateFrom as string | undefined,
       dateTo: req.query.dateTo as string | undefined,
       page: req.query.page ? Number(req.query.page) : undefined,

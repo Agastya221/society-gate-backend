@@ -3,7 +3,7 @@ import { prisma } from '../utils/Client';
 import { emitToUser, SOCKET_EVENTS } from '../utils/socket';
 import { notificationService } from '../modules/notification/notification.service';
 import { eventBus } from '../utils/eventBus';
-import { accessControlEngine, isOnceScheduleOver } from '../modules/access-control/access-control.engine';
+import { accessControlEngine, isOnceScheduleOver, isRecurringScheduleOver } from '../modules/access-control/access-control.engine';
 import { accessControlCache } from '../modules/access-control/access-control.cache';
 import { EmergencyService } from '../modules/emergency/emergency.service';
 import { DomesticStaffService } from '../modules/domestic-staff/domestic-staff.service';
@@ -201,8 +201,9 @@ export async function expirePreApprovedEntries() {
       (entry) => !entry.schedule?.startTime || !entry.schedule?.endTime || isOnceScheduleOver(entry.schedule, now),
     );
 
-    // 2. Expire RECURRING entries where validUntil has passed
-    const expiredRecurring = await prisma.preApprovedEntry.findMany({
+    // 2. Expire RECURRING entries where validUntil has passed — except an overnight
+    // window (22:00 → 06:00) whose last night started before validUntil and is still running.
+    const recurringCandidates = await prisma.preApprovedEntry.findMany({
       where: {
         status: 'ACTIVE',
         scheduleType: 'RECURRING',
@@ -210,8 +211,22 @@ export async function expirePreApprovedEntries() {
           validUntil: { lt: now },
         },
       },
-      select: { id: true, societyId: true, flatId: true, meta: { select: { vehicleLast4Digits: true } } },
+      select: {
+        id: true,
+        societyId: true,
+        flatId: true,
+        meta: { select: { vehicleLast4Digits: true } },
+        schedule: {
+          select: {
+            validFrom: true, validUntil: true, daysOfWeek: true, timeFrom: true, timeTo: true,
+            graceBeforeMinutes: true, graceAfterMinutes: true,
+          },
+        },
+      },
     });
+    const expiredRecurring = recurringCandidates.filter(
+      (entry) => !entry.schedule || isRecurringScheduleOver(entry.schedule, now),
+    );
 
     const allExpired = [...expiredOnce, ...expiredRecurring];
     if (allExpired.length === 0) return;
@@ -237,14 +252,16 @@ export async function expirePreApprovedEntries() {
   }
 }
 
+// Validation no longer locks passes (double use is prevented atomically in markUsed);
+// this only clears locks left behind by older builds.
 export async function releaseStaleEntryLocks() {
   try {
-    const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
 
     const result = await prisma.preApprovedEntry.updateMany({
       where: {
         isLocked: true,
-        lockedAt: { lt: twoMinutesAgo },
+        OR: [{ lockedAt: null }, { lockedAt: { lt: thirtySecondsAgo } }],
       },
       data: {
         isLocked: false,
@@ -299,6 +316,57 @@ export async function notifyExpiringEntries() {
 // DOMESTIC STAFF
 // ============================================
 
+/**
+ * CONFIRMED staff bookings whose end (IST date + endTime, +grace) has passed are marked
+ * COMPLETED so they leave "upcoming/active" lists. completedAt is left null so an
+ * automatic completion can be told apart from one confirmed by a resident/admin
+ * (PATCH /bookings/:id/complete sets completedAt). PENDING requests that are past
+ * their start can't be accepted any more; they are already hidden from lists and
+ * rejected on action (isBookingExpired / notPastPendingWhere) — StaffBookingStatus has
+ * no EXPIRED value, so they are not re-labelled here.
+ */
+const BOOKING_COMPLETE_GRACE_MS = 60 * 60 * 1000;
+
+export function staffBookingEndsAt(booking: { bookingDate: Date | string; startTime: string; endTime: string }): number {
+  const istDate = new Date(new Date(booking.bookingDate).getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
+  const valid = (t: string) => /^\d{2}:\d{2}$/.test(t);
+  const end = valid(booking.endTime) ? booking.endTime : '23:59';
+  let endsAt = Date.parse(`${istDate}T${end}:00.000+05:30`);
+  // Overnight booking (e.g. 22:00 → 02:00) ends the next day
+  if (valid(booking.startTime) && end <= booking.startTime) endsAt += 24 * 60 * 60 * 1000;
+  return endsAt;
+}
+
+export async function completePastStaffBookings() {
+  try {
+    const now = Date.now();
+    // Day-level prefilter (bookingDate is stored as UTC or IST midnight); exact end checked per row
+    const candidates = await prisma.staffBooking.findMany({
+      where: { status: 'CONFIRMED', bookingDate: { lt: new Date(now) } },
+      select: { id: true, bookingDate: true, startTime: true, endTime: true },
+    });
+    const ids = candidates
+      .filter((b) => {
+        const endsAt = staffBookingEndsAt(b);
+        return Number.isFinite(endsAt) && endsAt + BOOKING_COMPLETE_GRACE_MS < now;
+      })
+      .map((b) => b.id);
+    if (ids.length === 0) return;
+
+    // status guard: never overwrite a booking that changed since it was read
+    const result = await prisma.staffBooking.updateMany({
+      where: { id: { in: ids }, status: 'CONFIRMED' },
+      data: { status: 'COMPLETED' },
+    });
+    if (result.count > 0) {
+      void clearCacheByPattern('staff:*');
+      logger.info({ count: result.count }, 'Auto-completed past confirmed staff bookings');
+    }
+  } catch (error) {
+    logger.error({ error }, 'Error auto-completing past staff bookings');
+  }
+}
+
 export async function autoCheckoutStaleStaff() {
   try {
     const result = await domesticStaffService.autoCheckoutStaleStaff();
@@ -321,6 +389,7 @@ cron.schedule('*/5 * * * *', expirePreApprovedEntries);
 cron.schedule('* * * * *', releaseStaleEntryLocks);
 cron.schedule('*/10 * * * *', notifyExpiringEntries);
 cron.schedule('*/30 * * * *', autoCheckoutStaleStaff);
+cron.schedule('*/15 * * * *', completePastStaffBookings);
 cron.schedule('*/15 * * * *', async () => {
   try {
     const result = await emergencyService.expireStaleEmergencies();

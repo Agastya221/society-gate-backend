@@ -207,7 +207,10 @@ export const getSlots = async (req: Request, res: Response) => {
     if (!date) {
       return res.status(400).json({ success: false, message: 'date query param is required (YYYY-MM-DD)' });
     }
-    const slots = await amenityService.getSlots(String(id), date);
+    const slots = await amenityService.getSlots(String(id), date, {
+      userId: req.user?.id,
+      flatId: req.user?.flatId ?? null,
+    });
     return res.status(200).json({ success: true, data: slots });
   } catch (error: unknown) {
     return res.status(getErrorStatusCode(error)).json({
