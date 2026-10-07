@@ -45,6 +45,7 @@ export class ParkingViolationService {
       stickerNumber: v.stickerNumber ?? null,
       parkingSlot: v.parkingSlot ?? null,
       status: v.status,
+      isApproved: v.status === 'ACTIVE',
       flat: v.flat
         ? {
             id: v.flat.id,

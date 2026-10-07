@@ -12,6 +12,7 @@ import {
   listViolations,
 } from '../../modules/vehicle/parking-violation.controller';
 import { prisma } from '../../utils/Client';
+import { OCCUPIED_FLAT_WHERE } from '../../modules/onboarding/onboarding.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { Request, Response } from 'express';
 
@@ -43,10 +44,16 @@ router.get('/flats/search', authenticate, ensureSameSociety, async (req: Request
     const flats = await prisma.flat.findMany({
       where: {
         societyId,
-        isOccupied: true,
-        OR: [
-          { flatNumber: { contains: query, mode: 'insensitive' } },
-          { block: { name: { contains: query, mode: 'insensitive' } } },
+        isActive: true,
+        // Real occupancy (owner/tenant/active membership), not the stale isOccupied column
+        AND: [
+          OCCUPIED_FLAT_WHERE,
+          {
+            OR: [
+              { flatNumber: { contains: query, mode: 'insensitive' } },
+              { block: { name: { contains: query, mode: 'insensitive' } } },
+            ],
+          },
         ],
       },
       select: {

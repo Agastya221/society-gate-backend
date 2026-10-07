@@ -16,6 +16,11 @@ import {
 } from '../../modules/admin/admin-staff.controller';
 import { getAdminIntercomContacts } from '../../modules/admin/admin-intercom.controller';
 import {
+  listAdminResidents,
+  createAdminResident,
+  removeAdminResident,
+} from '../../modules/admin/admin-residents.controller';
+import {
   listForAdmin,
   adminCancelEntry,
 } from '../../modules/pre-approved-entry/pre-approved-entry.controller';
@@ -34,6 +39,9 @@ import {
   adminPreApprovedQuerySchema,
   adminCancelEntrySchema,
   updateSocietySettingsSchema,
+  adminResidentsQuerySchema,
+  adminCreateResidentSchema,
+  adminResidentMembershipParams,
 } from '../../schemas';
 
 const router = Router();
@@ -134,6 +142,48 @@ router.patch(
   validate({ body: updateSocietySettingsSchema }),
   clearCacheAfter(['society-settings:*']),
   updateSocietySettings,
+);
+
+// ---- Residents (active flat memberships of the society) ----
+// GET /api/v1/admin/residents?search=&page=&limit=  — ADMIN (own society) or SUPER_ADMIN (?societyId=)
+// POST /api/v1/admin/residents { name, phone, flatId, residentType: OWNER|TENANT|FAMILY }
+// DELETE /api/v1/admin/residents/:membershipId — deactivates the membership (not the user)
+const RESIDENT_CACHE_PATTERNS = [
+  'admin:residents:*',
+  'onboarding:*',
+  'user:contexts:*',
+  'user:profile:*',
+  'society:*',
+  'family:*',
+  'admin:intercom:*',
+  'billing:*',
+];
+router.get(
+  '/residents',
+  authenticate,
+  authorize('ADMIN', 'SUPER_ADMIN'),
+  ensureSameSociety,
+  validate({ query: adminResidentsQuerySchema }),
+  cache({ ttl: 60, keyPrefix: 'admin:residents', varyBy: ['societyId'] }),
+  listAdminResidents,
+);
+router.post(
+  '/residents',
+  authenticate,
+  authorize('ADMIN', 'SUPER_ADMIN'),
+  ensureSameSociety,
+  validate({ body: adminCreateResidentSchema }),
+  clearCacheAfter(RESIDENT_CACHE_PATTERNS),
+  createAdminResident,
+);
+router.delete(
+  '/residents/:membershipId',
+  authenticate,
+  authorize('ADMIN', 'SUPER_ADMIN'),
+  ensureSameSociety,
+  validate({ params: adminResidentMembershipParams }),
+  clearCacheAfter(RESIDENT_CACHE_PATTERNS),
+  removeAdminResident,
 );
 
 // ---- Pre-approved entry oversight ----

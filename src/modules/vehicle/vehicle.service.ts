@@ -12,7 +12,7 @@ export class VehicleService {
     vehicleType: string;
     model?: string;
     color?: string;
-  }, userId: string, flatId: string, societyId: string) {
+  }, userId: string, flatId: string, societyId: string, creatorRole?: string) {
     const vehicleNumber = data.vehicleNumber.toUpperCase().replace(/\s/g, '');
 
     const existing = await prisma.vehicle.findUnique({
@@ -30,10 +30,11 @@ export class VehicleService {
         userId,
         flatId,
         societyId,
-        status: 'ACTIVE',
+        // Resident registrations wait for admin verification; admins' own are trusted
+        status: creatorRole === 'ADMIN' || creatorRole === 'SUPER_ADMIN' ? 'ACTIVE' : 'PENDING',
       },
       include: {
-        flat: { select: { flatNumber: true } },
+        flat: { select: { flatNumber: true, block: { select: { name: true } } } },
       },
     });
 
@@ -44,7 +45,7 @@ export class VehicleService {
     const vehicles = await prisma.vehicle.findMany({
       where: { userId, isActive: true },
       include: {
-        flat: { select: { flatNumber: true } },
+        flat: { select: { flatNumber: true, block: { select: { name: true } } } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -106,7 +107,7 @@ export class VehicleService {
         where,
         include: {
           user: { select: { id: true, name: true, phone: true } },
-          flat: { select: { flatNumber: true } },
+          flat: { select: { flatNumber: true, block: { select: { name: true } } } },
         },
         orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
         skip: (page - 1) * limit,
@@ -126,9 +127,16 @@ export class VehicleService {
     parkingSlot?: string;
     stickerNumber?: string;
     rejectionNote?: string;
-  }) {
+    reason?: string;
+  }, societyId?: string | null) {
+    if (data.status !== 'ACTIVE' && data.status !== 'REJECTED') {
+      throw new AppError("status must be 'ACTIVE' or 'REJECTED'", 400);
+    }
     const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
-    if (!vehicle) throw new AppError('Vehicle not found', 404);
+    // societyId is null for SUPER_ADMIN (any society)
+    if (!vehicle || (societyId && vehicle.societyId !== societyId)) {
+      throw new AppError('Vehicle not found', 404);
+    }
 
     return prisma.vehicle.update({
       where: { id: vehicleId },
@@ -136,11 +144,12 @@ export class VehicleService {
         status: data.status,
         parkingSlot: data.parkingSlot,
         stickerNumber: data.stickerNumber,
-        rejectionNote: data.rejectionNote,
+        // `reason` accepted as an alias of rejectionNote; cleared on approval
+        rejectionNote: data.status === 'REJECTED' ? (data.rejectionNote ?? data.reason ?? null) : null,
       },
       include: {
         user: { select: { id: true, name: true, phone: true } },
-        flat: { select: { flatNumber: true } },
+        flat: { select: { flatNumber: true, block: { select: { name: true } } } },
       },
     });
   }
@@ -163,7 +172,7 @@ export class VehicleService {
       },
       include: {
         user: { select: { id: true, name: true, phone: true } },
-        flat: { select: { flatNumber: true } },
+        flat: { select: { flatNumber: true, block: { select: { name: true } } } },
       },
     });
 

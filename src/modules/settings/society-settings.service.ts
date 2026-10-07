@@ -50,6 +50,35 @@ const booleanOr = (value: unknown, fallback: boolean): boolean =>
   typeof value === 'boolean' ? value : fallback;
 
 export class SocietySettingsService {
+  /**
+   * Raw values the admin actually saved (null = not set), for consumers that
+   * must fall back to their own behaviour when a setting was never configured.
+   */
+  async getConfiguredRules(societyId: string): Promise<{
+    maintenance: { monthlyFee: number | null; dueDayOfMonth: number | null; gracePeriodDays: number | null };
+    autoApproval: AutoApprovalSettings;
+  }> {
+    const config = await prisma.societyRuleConfig.findUnique({
+      where: { societyId },
+      select: { customRules: true },
+    });
+    const rules = asObject(config?.customRules);
+    const maintenance = asObject(rules.maintenance);
+    const autoApproval = asObject(rules.autoApproval);
+    return {
+      maintenance: {
+        monthlyFee: numberOr(maintenance.monthlyFee, null),
+        dueDayOfMonth: numberOr(maintenance.dueDayOfMonth, null),
+        gracePeriodDays: numberOr(maintenance.gracePeriodDays, null),
+      },
+      autoApproval: {
+        domesticStaff: booleanOr(autoApproval.domesticStaff, DEFAULT_AUTO_APPROVAL.domesticStaff),
+        delivery: booleanOr(autoApproval.delivery, DEFAULT_AUTO_APPROVAL.delivery),
+        cab: booleanOr(autoApproval.cab, DEFAULT_AUTO_APPROVAL.cab),
+      },
+    };
+  }
+
   async getSettings(societyId: string) {
     const [society, config] = await Promise.all([
       prisma.society.findUnique({

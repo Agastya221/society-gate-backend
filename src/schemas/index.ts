@@ -743,4 +743,27 @@ export const updateSocietySettingsSchema = z.object({
   }).strict().optional(),
 }).strict();
 
+// ============================================
+// ADMIN RESIDENTS (GET/POST /admin/residents, DELETE /admin/residents/:membershipId)
+// ============================================
+
+export const adminResidentsQuerySchema = z.object({
+  search: z.string().trim().max(100).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  societyId: uuidSchema.optional(),
+});
+
+export const adminCreateResidentSchema = z.object({
+  name: z.string().trim().min(2, 'Name must be at least 2 characters').max(80, 'Name must be at most 80 characters'),
+  // 10-digit Indian mobile; a +91 / 0 prefix is tolerated and stripped
+  phone: z.string().trim()
+    .regex(/^(\+91|91|0)?[6-9]\d{9}$/, 'Enter a valid 10-digit Indian mobile number')
+    .transform((value) => value.slice(-10)),
+  flatId: uuidSchema,
+  residentType: z.enum(['OWNER', 'TENANT', 'FAMILY']),
+});
+
+export const adminResidentMembershipParams = z.object({ membershipId: uuidSchema });
+
 export { idParams, paginationQuery, uuidSchema, phoneSchema };

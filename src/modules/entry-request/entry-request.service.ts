@@ -4,6 +4,7 @@ import { eventBus } from '../../utils/eventBus';
 import { emitToUser, SOCKET_EVENTS } from '../../utils/socket';
 import logger from '../../utils/logger';
 import { notificationService } from '../notification/notification.service';
+import { societySettingsService, type AutoApprovalSettings } from '../settings/society-settings.service';
 import type { Prisma } from '../../types';
 import {
   EntryType,
@@ -12,6 +13,20 @@ import {
 } from '../../../prisma/generated/prisma/enums';
 
 const EXPIRY_MINUTES = 15;
+
+/** Entry types an admin can auto-approve in Society Settings → autoApproval flag. */
+const AUTO_APPROVAL_FLAG: Partial<Record<EntryType, keyof AutoApprovalSettings>> = {
+  DELIVERY: 'delivery',
+  CAB: 'cab',
+  DOMESTIC_STAFF: 'domesticStaff',
+};
+
+export function isAutoApprovedType(type: EntryType, settings: AutoApprovalSettings): boolean {
+  const flag = AUTO_APPROVAL_FLAG[type];
+  return flag ? settings[flag] === true : false;
+}
+
+export const AUTO_APPROVED_BY_NAME = 'Auto-approved';
 export const ENTRY_REQUEST_CANCELLED_REASON = 'Cancelled by guard';
 
 interface CreateEntryRequestData {
@@ -46,7 +61,7 @@ export class EntryRequestService {
   async createEntryRequest(
     data: CreateEntryRequestData,
     guardId: string
-  ): Promise<{ entryRequest: object }> {
+  ): Promise<{ entryRequest: object; autoApproved: boolean }> {
     const guard = await prisma.user.findUnique({
       where: { id: guardId },
       select: {
@@ -122,6 +137,23 @@ export class EntryRequestService {
       include: this.getInclude(),
     });
 
+    // Society Settings auto-approval (DELIVERY / CAB / DOMESTIC_STAFF, default off):
+    // approve immediately through the normal approval path — the Entry is created
+    // CHECKED_IN and residents get an informational "let in" notification instead
+    // of an approval prompt (entry-request.created is NOT emitted).
+    let autoApprove = false;
+    try {
+      const { autoApproval } = await societySettingsService.getConfiguredRules(guard.societyId);
+      autoApprove = isAutoApprovedType(data.type, autoApproval);
+    } catch (err) {
+      logger.error({ err, societyId: guard.societyId }, 'Auto-approval settings lookup failed; falling back to manual approval');
+    }
+
+    if (autoApprove) {
+      const approved = await this.approveEntryRequest(entryRequest.id, guardId, { autoApproved: true });
+      return { entryRequest: approved, autoApproved: true };
+    }
+
     const targetInfos = this.getTargetInfos(entryRequest);
 
     eventBus.emit('entry-request.created', {
@@ -137,7 +169,7 @@ export class EntryRequestService {
       type: data.type,
     });
 
-    return { entryRequest: this.formatEntryRequest(entryRequest) };
+    return { entryRequest: this.formatEntryRequest(entryRequest), autoApproved: false };
   }
 
   // ============================================
@@ -270,7 +302,8 @@ export class EntryRequestService {
   // ============================================
   // APPROVE ENTRY REQUEST
   // ============================================
-  async approveEntryRequest(entryRequestId: string, userId: string) {
+  async approveEntryRequest(entryRequestId: string, userId: string, opts: { autoApproved?: boolean } = {}) {
+    const autoApproved = opts.autoApproved === true;
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
       include: this.getInclude(),
@@ -383,7 +416,10 @@ export class EntryRequestService {
       visitorName: entryRequest.visitorName || 'Visitor',
       visitorType: entryRequest.type,
       approvedById: userId,
-      approvedByName: updatedRequest.approvedBy?.name ?? approver.name ?? 'A resident',
+      approvedByName: autoApproved
+        ? AUTO_APPROVED_BY_NAME
+        : updatedRequest.approvedBy?.name ?? approver.name ?? 'A resident',
+      autoApproved,
     });
 
     return this.formatEntryRequest(updatedRequest);

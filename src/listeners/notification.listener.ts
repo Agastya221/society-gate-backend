@@ -11,9 +11,13 @@ import { getEmergencySeverity } from '../modules/emergency/emergency.service';
 
 eventBus.on('entry-request.approved', async (payload) => {
   try {
-    const title = 'Entry approved';
+    const autoApproved = payload.autoApproved === true;
+    const title = autoApproved ? 'Entry auto-approved' : 'Entry approved';
     const flatLabels = payload.flats.map((flat) => flat.flatNumber);
-    const body = `${payload.approvedByName} allowed ${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()}) to enter`;
+    const visitorLabel = `${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()})`;
+    const body = autoApproved
+      ? `${visitorLabel} was let in at the gate — auto-approved by your society settings`
+      : `${payload.approvedByName} allowed ${visitorLabel} to enter`;
 
     await notificationService.sendToFlats(payload.flatIds, {
       type: 'ENTRY_REQUEST',
@@ -27,6 +31,7 @@ eventBus.on('entry-request.approved', async (payload) => {
         visitorName: payload.visitorName,
         approvedBy: payload.approvedByName,
         status: 'APPROVED',
+        autoApproved,
       },
       referenceId: payload.entryRequestId,
       referenceType: 'EntryRequest',
@@ -44,8 +49,12 @@ eventBus.on('entry-request.approved', async (payload) => {
         societyId: payload.societyId,
         flatIds: payload.flatIds.join(','),
         approvedBy: payload.approvedByName,
+        autoApproved: autoApproved ? 'true' : 'false',
       },
     }, { excludeUserIds: [payload.approvedById] }).catch((err) => logger.error({ err }, 'Push failed: entry-request.approved (residents)'));
+
+    // Auto-approved: the guard already got APPROVED in the create response
+    if (autoApproved) return;
 
     // Notify the guard that entry was approved
     pushService.sendToUser(payload.guardId, {

@@ -11,9 +11,16 @@ export const registerVehicle = async (req: Request, res: Response) => {
       req.body,
       req.user!.id,
       req.user!.flatId!,
-      req.user!.societyId!
+      req.user!.societyId!,
+      req.user!.role,
     );
-    res.status(201).json({ success: true, message: 'Vehicle registered successfully.', data: vehicle });
+    res.status(201).json({
+      success: true,
+      message: vehicle.status === 'PENDING'
+        ? 'Vehicle registered. It will be active once the society admin verifies it.'
+        : 'Vehicle registered successfully.',
+      data: vehicle,
+    });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
   }
@@ -64,7 +71,11 @@ export const getAllVehicles = async (req: Request, res: Response) => {
 
 export const approveVehicle = async (req: Request, res: Response) => {
   try {
-    const vehicle = await vehicleService.approveVehicle(String(req.params.id), req.body);
+    const vehicle = await vehicleService.approveVehicle(
+      String(req.params.id),
+      req.body ?? {},
+      req.user!.role === 'SUPER_ADMIN' ? null : req.user!.societyId,
+    );
     res.status(200).json({ success: true, message: `Vehicle ${vehicle.status.toLowerCase()}`, data: vehicle });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });

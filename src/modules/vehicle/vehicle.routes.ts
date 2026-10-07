@@ -18,7 +18,8 @@ router.patch('/:id', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAf
 router.delete('/:id', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['vehicles:*']), deleteVehicle);
 
 // Admin routes
-router.get('/', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 120, keyPrefix: 'vehicles', varyBy: ['societyId'] }), getAllVehicles);
+// Key already includes the full URL (query string); varyBy makes status/page/limit explicit
+router.get('/', authorize('ADMIN', 'SUPER_ADMIN'), cache({ ttl: 120, keyPrefix: 'vehicles', varyBy: ['societyId', 'status', 'page', 'limit', 'vehicleType', 'flatId'] }), getAllVehicles);
 router.patch('/:id/approve', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['vehicles:*']), approveVehicle);
 
 // Search (guard + admin + resident) — cache varies per society + query

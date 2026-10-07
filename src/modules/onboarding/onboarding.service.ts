@@ -43,6 +43,200 @@ export function deriveFlatOccupancy(flat: {
   return { isOccupied: hasOwner || hasTenant || memberships.length > 0, hasOwner, hasTenant };
 }
 
+export interface GrantResidentFlatAccessParams {
+  userId: string;
+  societyId: string;
+  flatId: string;
+  /** OWNER / TENANT, or null for a family member (no ownership/tenancy claim). */
+  residentType: ResidentType | null;
+  isLivingHere: boolean;
+  /** The user's current User.role (SUPER_ADMIN is preserved). */
+  currentUserRole: string;
+  /**
+   * When true the user's active context (User.societyId/flatId/role/isOwner) is
+   * pointed at this flat — what onboarding approval has always done. Pass false
+   * for a user who is already active elsewhere so their current session is not
+   * switched under them (they get the new flat as an extra context).
+   */
+  updateActiveContext: boolean;
+  /** Family members only: User.primaryResidentId to link to. */
+  primaryResidentId?: string | null;
+}
+
+/**
+ * Grants approved resident access to a flat: backfills legacy memberships,
+ * enforces one owner per flat, creates/reactivates the UserFlatMembership,
+ * updates the user and the flat's occupancy pointers. Used by admin onboarding
+ * approval and by admin "add resident" so both leave identical state behind.
+ */
+export async function grantResidentFlatAccess(tx: TransactionClient, params: GrantResidentFlatAccessParams) {
+  const { userId, societyId, flatId, residentType, isLivingHere } = params;
+  const isOwner = residentType === 'OWNER';
+
+  // Check if this is the first resident for this flat
+  const existingResidents = await tx.userFlatMembership.count({
+    where: {
+      flatId,
+      isActive: true,
+      role: { in: ['RESIDENT', 'ADMIN', 'SUPER_ADMIN'] },
+    },
+  });
+
+  if (existingResidents === 0) {
+    const legacyResidents = await tx.user.count({
+      where: {
+        flatId,
+        isActive: true,
+      },
+    });
+
+    if (legacyResidents > 0) {
+      await tx.userFlatMembership.createMany({
+        data: await tx.user.findMany({
+          where: {
+            flatId,
+            societyId,
+            isActive: true,
+          },
+          select: {
+            id: true,
+            societyId: true,
+            flatId: true,
+            role: true,
+            isOwner: true,
+            isPrimaryResident: true,
+          },
+        }).then((users) =>
+          users
+            .filter((user) => user.societyId && user.flatId)
+            .map((user) => ({
+              userId: user.id,
+              societyId: user.societyId!,
+              flatId: user.flatId!,
+              role: user.role,
+              residentType: (user.isOwner ? 'OWNER' : 'TENANT') as ResidentType,
+              isOwner: user.isOwner,
+              isLivingHere: true,
+              isPrimary: user.isPrimaryResident,
+              isActive: true,
+              isDefault: true,
+            }))
+        ),
+        skipDuplicates: true,
+      });
+    }
+  }
+
+  const activeFlatMembers = await tx.userFlatMembership.count({
+    where: {
+      flatId,
+      isActive: true,
+    },
+  });
+
+  const isPrimaryResident = activeFlatMembers === 0;
+
+  // Validate owner constraint before approval
+  if (isOwner) {
+    const existingOwner = await tx.userFlatMembership.findFirst({
+      where: {
+        flatId,
+        isOwner: true,
+        isActive: true,
+        userId: { not: userId },
+      },
+    });
+
+    if (existingOwner) {
+      throw new AppError('This flat already has an owner. Only one owner per flat is allowed.', 409);
+    }
+  }
+
+  // A flat approval always creates resident access for that flat.
+  // Society/admin access is granted only by society registration/admin assignment flows.
+  const membershipRole = 'RESIDENT';
+  const activeRole = params.currentUserRole === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : membershipRole;
+
+  if (params.updateActiveContext) {
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        isActive: true,
+        role: activeRole,
+        societyId,
+        flatId,
+        isOwner,
+        isPrimaryResident, // Set as primary if first resident
+        ...(params.primaryResidentId !== undefined ? { primaryResidentId: params.primaryResidentId } : {}),
+      },
+    });
+  }
+
+  const existingFlatMembership = await tx.userFlatMembership.findFirst({
+    where: {
+      userId,
+      societyId,
+      flatId,
+    },
+  });
+
+  const membershipData = {
+    role: membershipRole,
+    residentType,
+    isOwner,
+    isLivingHere: isOwner ? isLivingHere : true,
+    isPrimary: isPrimaryResident,
+    isActive: true,
+    isDefault: params.updateActiveContext,
+  } as const;
+
+  const membership = existingFlatMembership
+    ? await tx.userFlatMembership.update({
+        where: { id: existingFlatMembership.id },
+        data: membershipData,
+      })
+    : await tx.userFlatMembership.create({
+        data: { userId, societyId, flatId, ...membershipData },
+      });
+
+  // Update flat occupancy
+  const updateData: Prisma.FlatUncheckedUpdateInput = {
+    isOccupied: true,
+  };
+
+  if (residentType === 'OWNER') {
+    updateData.currentOwnerId = userId;
+    updateData.occupancyStatus = isLivingHere ? 'OWNER_OCCUPIED' : 'VACANT';
+  } else if (residentType === 'TENANT') {
+    updateData.currentTenantId = userId;
+    updateData.occupancyStatus = 'RENTED';
+  } else {
+    // Family member: someone now lives here; don't downgrade RENTED
+    const flat = await tx.flat.findUnique({ where: { id: flatId }, select: { occupancyStatus: true } });
+    if (flat?.occupancyStatus === 'VACANT') updateData.occupancyStatus = 'OWNER_OCCUPIED';
+  }
+
+  await tx.flat.update({
+    where: { id: flatId },
+    data: updateData,
+  });
+
+  return { membership, isPrimaryResident };
+}
+
+/**
+ * Prisma filter for "really occupied" flats — the query-side twin of
+ * deriveFlatOccupancy (owner/tenant pointer or any active membership). Use this
+ * instead of the Flat.isOccupied column wherever occupancy drives behaviour.
+ */
+export const OCCUPIED_FLAT_WHERE = {
+  OR: [
+    { currentOwnerId: { not: null } },
+    { currentTenantId: { not: null } },
+    { userMemberships: { some: { isActive: true } } },
+  ],
+} satisfies Prisma.FlatWhereInput;
+
 export const SELF_REVIEW_MESSAGE =
   "You can't review your own request — another admin or the super admin must review it";
 
@@ -1117,157 +1311,15 @@ export class OnboardingService {
         },
       });
 
-      // 2. Check if this is the first resident for this flat
-      const existingResidents = await tx.userFlatMembership.count({
-        where: {
-          flatId: request.flatId,
-          isActive: true,
-          role: { in: ['RESIDENT', 'ADMIN', 'SUPER_ADMIN'] },
-        },
-      });
-
-      if (existingResidents === 0) {
-        const legacyResidents = await tx.user.count({
-          where: {
-            flatId: request.flatId,
-            isActive: true,
-          },
-        });
-
-        if (legacyResidents > 0) {
-          await tx.userFlatMembership.createMany({
-            data: await tx.user.findMany({
-              where: {
-                flatId: request.flatId,
-                societyId: request.societyId,
-                isActive: true,
-              },
-              select: {
-                id: true,
-                societyId: true,
-                flatId: true,
-                role: true,
-                isOwner: true,
-                isPrimaryResident: true,
-              },
-            }).then((users) =>
-              users
-                .filter((user) => user.societyId && user.flatId)
-                .map((user) => ({
-                  userId: user.id,
-                  societyId: user.societyId!,
-                  flatId: user.flatId!,
-                  role: user.role,
-                  residentType: user.isOwner ? 'OWNER' : 'TENANT',
-                  isOwner: user.isOwner,
-                  isLivingHere: true,
-                  isPrimary: user.isPrimaryResident,
-                  isActive: true,
-                  isDefault: true,
-                }))
-            ),
-            skipDuplicates: true,
-          });
-        }
-      }
-
-      const activeFlatMembers = await tx.userFlatMembership.count({
-        where: {
-          flatId: request.flatId,
-          isActive: true,
-        },
-      });
-
-      const isPrimaryResident = activeFlatMembers === 0;
-
-      // 3. CRITICAL FIX: Validate owner constraint before approval
-      if (request.residentType === 'OWNER') {
-        const existingOwner = await tx.userFlatMembership.findFirst({
-          where: {
-            flatId: request.flatId,
-            isOwner: true,
-            isActive: true,
-            userId: { not: request.userId },
-          },
-        });
-
-        if (existingOwner) {
-          throw new AppError('This flat already has an owner. Only one owner per flat is allowed.', 409);
-        }
-      }
-
-      // A flat onboarding approval always creates resident access for that flat.
-      // Society/admin access is granted only by society registration/admin assignment flows.
-      const membershipRole = 'RESIDENT';
-      const activeRole = request.user.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : membershipRole;
-
-      // 4. Update user
-      await tx.user.update({
-        where: { id: request.userId },
-        data: {
-          isActive: true,
-          role: activeRole,
-          societyId: request.societyId,
-          flatId: request.flatId,
-          isOwner: request.residentType === 'OWNER',
-          isPrimaryResident, // Set as primary if first resident
-        },
-      });
-
-      const existingFlatMembership = await tx.userFlatMembership.findFirst({
-        where: {
-          userId: request.userId,
-          societyId: request.societyId,
-          flatId: request.flatId,
-        },
-      });
-
-      if (existingFlatMembership) {
-        await tx.userFlatMembership.update({
-          where: { id: existingFlatMembership.id },
-          data: {
-            role: membershipRole,
-            residentType: request.residentType,
-            isOwner: request.residentType === 'OWNER',
-            isLivingHere: request.residentType === 'OWNER' ? request.isLivingHere : true,
-            isPrimary: isPrimaryResident,
-            isActive: true,
-            isDefault: true,
-          },
-        });
-      } else {
-        await tx.userFlatMembership.create({
-          data: {
-            userId: request.userId,
-            societyId: request.societyId,
-            flatId: request.flatId,
-            role: membershipRole,
-            residentType: request.residentType,
-            isOwner: request.residentType === 'OWNER',
-            isLivingHere: request.residentType === 'OWNER' ? request.isLivingHere : true,
-            isPrimary: isPrimaryResident,
-            isActive: true,
-            isDefault: true,
-          },
-        });
-      }
-
-      // 5. Update flat occupancy
-      const updateData: Prisma.FlatUncheckedUpdateInput = {
-        isOccupied: true,
-      };
-
-      if (request.residentType === 'OWNER') {
-        updateData.currentOwnerId = request.userId;
-        updateData.occupancyStatus = request.isLivingHere ? 'OWNER_OCCUPIED' : 'VACANT';
-      } else {
-        updateData.currentTenantId = request.userId;
-        updateData.occupancyStatus = 'RENTED';
-      }
-
-      await tx.flat.update({
-        where: { id: request.flatId },
-        data: updateData,
+      // 2-5. Membership, user, and flat occupancy (shared with admin "add resident")
+      await grantResidentFlatAccess(tx, {
+        userId: request.userId,
+        societyId: request.societyId,
+        flatId: request.flatId,
+        residentType: request.residentType,
+        isLivingHere: request.isLivingHere,
+        currentUserRole: request.user.role,
+        updateActiveContext: true,
       });
 
       // 6. Create audit log

@@ -1,3 +1,4 @@
+import { AppError } from '../../utils/ResponseHandler';
 import type { Request, Response } from 'express';
 import { billingService } from './billing.service';
 
@@ -17,12 +18,13 @@ export const generateInvoices = async (req: Request, res: Response) => {
       month,
       amountPerFlat,
       description || 'Monthly Maintenance',
-      new Date(dueDate),
+      dueDate ? new Date(dueDate) : undefined,
     );
 
     return res.status(201).json({ success: true, ...result });
   } catch (error) {
-    return res.status(500).json({ success: false, message: getErrorMessage(error) });
+    const status = error instanceof AppError ? error.statusCode : 500;
+    return res.status(status).json({ success: false, message: getErrorMessage(error) });
   }
 };
 

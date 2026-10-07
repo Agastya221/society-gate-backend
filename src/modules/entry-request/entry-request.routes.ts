@@ -20,7 +20,8 @@ router.use(authenticate);
 router.use(ensureSameSociety);
 
 // Specific routes BEFORE parameterized routes
-router.post('/', authorize('GUARD'), validate({ body: createEntryRequestSchema }), clearCacheAfter(['entry-requests:*']), createEntryRequest);
+// May auto-approve (Society Settings → autoApproval), which creates an Entry — clear entries too
+router.post('/', authorize('GUARD'), validate({ body: createEntryRequestSchema }), clearCacheAfter(['entry-requests:*', 'entries:*']), createEntryRequest);
 router.get('/pending-count', authorize('GUARD'), cache({ ttl: 10, keyPrefix: 'entry-requests', varyBy: ['userId'] }), getPendingCount);
 router.get('/', validate({ query: entryRequestQuerySchema }), cache({ ttl: 20, keyPrefix: 'entry-requests', varyBy: ['societyId', 'userId'] }), getEntryRequests);
 

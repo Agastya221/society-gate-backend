@@ -18,11 +18,14 @@ const router = Router();
 router.use(authenticate);
 router.use(authorize('ADMIN', 'SUPER_ADMIN'));
 
+// month: "April 2026" | "2026-04" | "next month" (default when omitted)
+// amountPerFlat: defaults to Society Settings maintenance.monthlyFee
+// dueDate: defaults to Society Settings maintenance.dueDayOfMonth (else the 10th) of that month
 const generateInvoicesSchema = z.object({
-  month: z.string().min(1, 'Month is required'),           // e.g. "April 2024"
-  amountPerFlat: z.number().positive('Amount must be positive'),
+  month: z.string().trim().min(1).max(40).optional(),
+  amountPerFlat: z.number().positive('Amount must be positive').optional(),
   description: z.string().max(500).optional(),
-  dueDate: z.string().datetime({ message: 'Invalid due date' }),
+  dueDate: z.string().datetime({ message: 'Invalid due date' }).optional(),
 });
 
 const penaltySchema = z.object({

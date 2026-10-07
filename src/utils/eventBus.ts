@@ -29,6 +29,7 @@ export interface AppEvents {
     visitorType: string;
     approvedById: string;   // excluded from flat notification
     approvedByName: string;
+    autoApproved?: boolean; // society auto-approval rule (approvedById is the guard)
   };
   'entry-request.rejected': {
     entryRequestId: string;

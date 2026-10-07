@@ -33,8 +33,10 @@ export const createEntryRequest = async (req: Request, res: Response) => {
 
     res.status(201).json({
       success: true,
-      message: 'Entry request created. Notification sent to residents.',
-      data: { entryRequest: result.entryRequest },
+      message: result.autoApproved
+        ? 'Entry auto-approved by society settings. Residents have been informed.'
+        : 'Entry request created. Notification sent to residents.',
+      data: { entryRequest: result.entryRequest, autoApproved: result.autoApproved },
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({
