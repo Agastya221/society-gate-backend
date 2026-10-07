@@ -741,6 +741,9 @@ export const updateSocietySettingsSchema = z.object({
     delivery: z.boolean().optional(),
     cab: z.boolean().optional(),
   }).strict().optional(),
+  // Injected into admin request bodies by the society middleware; the strict
+  // check below would otherwise reject every save with "Unrecognized key".
+  societyId: uuidSchema.optional(),
 }).strict();
 
 // ============================================
