@@ -59,6 +59,7 @@ const adminIntercomContactsQuerySchema = z.object({
   societyId: z.string().uuid().optional(),
   search: z.string().trim().max(100).optional(),
   page: z.coerce.number().int().min(1).default(1),
+  // Values above 100 are accepted but clamped to 100 by the controller.
   limit: z.coerce.number().int().min(1).max(500).default(100),
   includeGuards: queryBoolean.default(true),
   includeInactive: queryBoolean.default(false),

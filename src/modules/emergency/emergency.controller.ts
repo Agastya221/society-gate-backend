@@ -1,5 +1,6 @@
 import type { Response, Request } from 'express';
 import { EmergencyService } from './emergency.service';
+import { getSocietyId } from '../../utils/scope';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { EmergencyFilters, EmergencyStatus, EmergencyType } from '../../types';
 
@@ -8,7 +9,7 @@ const emergencyService = new EmergencyService();
 export const createEmergency = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const emergency = await emergencyService.createEmergency(req.body, userId);
+    const emergency = await emergencyService.createEmergency(req.body, userId, getSocietyId(req));
 
     res.status(201).json({
       success: true,
@@ -26,7 +27,7 @@ export const createEmergency = async (req: Request, res: Response) => {
 export const getEmergencies = async (req: Request, res: Response) => {
   try {
     const filters: EmergencyFilters = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       status: req.query.status as EmergencyStatus | undefined,
       type: req.query.type as EmergencyType | undefined,
       page: req.query.page ? Number(req.query.page) : undefined,
@@ -66,7 +67,7 @@ export const getMyEmergencies = async (req: Request, res: Response) => {
 export const getEmergencyById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const emergency = await emergencyService.getEmergencyById(String(id), req.user!.societyId!);
+    const emergency = await emergencyService.getEmergencyById(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -84,7 +85,7 @@ export const respondToEmergency = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user!.id;
-    const emergency = await emergencyService.respondToEmergency(String(id), userId);
+    const emergency = await emergencyService.respondToEmergency(String(id), userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -104,7 +105,7 @@ export const resolveEmergency = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { notes } = req.body;
     const userId = req.user!.id;
-    const emergency = await emergencyService.resolveEmergency(String(id), notes, userId);
+    const emergency = await emergencyService.resolveEmergency(String(id), notes, userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -124,7 +125,7 @@ export const markAsFalseAlarm = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { notes } = req.body;
     const userId = req.user!.id;
-    const emergency = await emergencyService.markAsFalseAlarm(String(id), notes, userId);
+    const emergency = await emergencyService.markAsFalseAlarm(String(id), notes, userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -141,7 +142,7 @@ export const markAsFalseAlarm = async (req: Request, res: Response) => {
 
 export const getActiveEmergencies = async (req: Request, res: Response) => {
   try {
-    const societyId = req.user!.societyId!;
+    const societyId = getSocietyId(req);
     const emergencies = await emergencyService.getActiveEmergencies(societyId);
 
     res.status(200).json({

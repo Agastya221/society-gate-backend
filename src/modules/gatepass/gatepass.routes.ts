@@ -19,12 +19,13 @@ router.use(ensureSameSociety);
 
 // Specific routes BEFORE parameterized routes
 router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['gatepasses:*']), createGatePass);
-router.get('/', cache({ ttl: 60, keyPrefix: 'gatepasses', varyBy: ['societyId'] }), getGatePasses);
+router.get('/', cache({ ttl: 60, keyPrefix: 'gatepasses', varyBy: ['userId'] }), getGatePasses);
 router.post('/scan', authorize('GUARD'), clearCacheAfter(['gatepasses:*']), scanGatePass);
 
 // Parameterized routes LAST
-router.get('/:id', cache({ ttl: 120, keyPrefix: 'gatepasses' }), getGatePassById);
-router.get('/:id/qr', cache({ ttl: 300, keyPrefix: 'gatepasses' }), getGatePassQR);
+// Vary by user: what a caller may see depends on their society and role/flat.
+router.get('/:id', cache({ ttl: 120, keyPrefix: 'gatepasses', varyBy: ['userId'] }), getGatePassById);
+router.get('/:id/qr', cache({ ttl: 300, keyPrefix: 'gatepasses', varyBy: ['userId'] }), getGatePassQR);
 router.patch('/:id/approve', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['gatepasses:*']), approveGatePass);
 router.patch('/:id/reject', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['gatepasses:*']), rejectGatePass);
 router.delete('/:id', clearCacheAfter(['gatepasses:*']), cancelGatePass);

@@ -2,13 +2,14 @@ import type { Response, Request } from 'express';
 import { VendorService } from './vendor.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { VendorFilters, VendorCategory } from '../../types';
+import { getSocietyId } from '../../utils/scope';
 
 const vendorService = new VendorService();
 
 export const createVendor = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const vendor = await vendorService.createVendor(req.body, userId);
+    const vendor = await vendorService.createVendor(req.body, userId, getSocietyId(req));
 
     res.status(201).json({
       success: true,
@@ -26,7 +27,7 @@ export const createVendor = async (req: Request, res: Response) => {
 export const getVendors = async (req: Request, res: Response) => {
   try {
     const filters: VendorFilters & { requestingUserId?: string } = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       category: req.query.category as VendorCategory | undefined,
       isVerified: req.query.isVerified === 'true' ? true : req.query.isVerified === 'false' ? false : undefined,
       isActive: req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined,
@@ -51,7 +52,7 @@ export const getVendors = async (req: Request, res: Response) => {
 export const getVendorById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const vendor = await vendorService.getVendorById(String(id), req.user!.id);
+    const vendor = await vendorService.getVendorById(String(id), getSocietyId(req), req.user!.id);
 
     res.status(200).json({
       success: true,
@@ -69,7 +70,7 @@ export const likeVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user!.id;
-    const result = await vendorService.toggleLike(String(id), userId);
+    const result = await vendorService.toggleLike(String(id), userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -86,7 +87,7 @@ export const likeVendor = async (req: Request, res: Response) => {
 
 export const getCategorySummary = async (req: Request, res: Response) => {
   try {
-    const societyId = req.user!.societyId!;
+    const societyId = getSocietyId(req);
     const categories = await vendorService.getCategorySummary(societyId);
 
     res.status(200).json({
@@ -104,7 +105,10 @@ export const getCategorySummary = async (req: Request, res: Response) => {
 export const updateVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const vendor = await vendorService.updateVendor(String(id), req.body);
+    const vendor = await vendorService.updateVendor(String(id), req.body, getSocietyId(req), {
+      id: req.user!.id,
+      role: req.user!.role,
+    });
 
     res.status(200).json({
       success: true,
@@ -122,7 +126,7 @@ export const updateVendor = async (req: Request, res: Response) => {
 export const verifyVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const vendor = await vendorService.verifyVendor(String(id));
+    const vendor = await vendorService.verifyVendor(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -140,7 +144,7 @@ export const verifyVendor = async (req: Request, res: Response) => {
 export const deleteVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await vendorService.deleteVendor(String(id));
+    const result = await vendorService.deleteVendor(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -157,16 +161,16 @@ export const deleteVendor = async (req: Request, res: Response) => {
 export const rateVendor = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { rating } = req.body;
+    const rating = Number(req.body?.rating);
 
-    if (rating < 1 || rating > 5) {
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
       return res.status(400).json({
         success: false,
         message: 'Rating must be between 1 and 5',
       });
     }
 
-    const vendor = await vendorService.updateVendorRating(String(id), rating);
+    const vendor = await vendorService.updateVendorRating(String(id), rating, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -183,7 +187,7 @@ export const rateVendor = async (req: Request, res: Response) => {
 
 export const getVendorsByCategory = async (req: Request, res: Response) => {
   try {
-    const societyId = req.user!.societyId!;
+    const societyId = getSocietyId(req);
     const vendors = await vendorService.getVendorsByCategory(societyId);
 
     res.status(200).json({

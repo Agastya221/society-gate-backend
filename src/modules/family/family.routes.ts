@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { z } from 'zod';
 import { FamilyController } from './family.controller';
 import { authenticateResidentApp } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
@@ -7,6 +8,7 @@ import { addFamilyMemberSchema, updateFamilyRoleSchema } from '../../schemas';
 
 const router = Router();
 const familyController = new FamilyController();
+const memberParams = z.object({ memberId: z.string().uuid('Invalid member id') });
 
 router.use(authenticateResidentApp);
 
@@ -19,9 +21,9 @@ router.post('/invite', validate({ body: addFamilyMemberSchema }), clearCacheAfte
 router.get('/', cache({ ttl: 300, keyPrefix: 'family', varyBy: ['userId', 'societyId'] }), familyController.getFamilyMembers);
 
 // Remove family member
-router.delete('/:memberId', clearCacheAfter(['family:*']), familyController.removeFamilyMember);
+router.delete('/:memberId', validate({ params: memberParams }), clearCacheAfter(['family:*']), familyController.removeFamilyMember);
 
 // Update family role
-router.patch('/:memberId/role', validate({ body: updateFamilyRoleSchema }), clearCacheAfter(['family:*']), familyController.updateFamilyRole);
+router.patch('/:memberId/role', validate({ params: memberParams, body: updateFamilyRoleSchema }), clearCacheAfter(['family:*']), familyController.updateFamilyRole);
 
 export default router;

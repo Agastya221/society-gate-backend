@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { z } from 'zod';
 import { authenticate, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { idParams, createPartyInviteSchema, addPartyGuestSchema, claimPartySlotSchema } from '../../schemas';
@@ -17,6 +18,11 @@ import { RedisStore } from 'rate-limit-redis';
 import { redis } from '../../config/redis';
 
 const router = Router();
+
+const partyGuestParams = z.object({
+  id: z.string().uuid('Invalid party invite id'),
+  code: z.string().min(1).max(32),
+});
 const useRedisRateLimit =
   process.env.NODE_ENV === 'production' &&
   Boolean(process.env.REDIS_URL);
@@ -48,7 +54,7 @@ router.post('/', validate({ body: createPartyInviteSchema }), clearCacheAfter(['
 router.get('/', cache({ ttl: 120, keyPrefix: 'party-invites', varyBy: ['userId', 'societyId'] }), listPartyInvites);
 router.get('/:id', validate({ params: idParams }), cache({ ttl: 120, keyPrefix: 'party-invites' }), getPartyInvite);
 router.post('/:id/add-guest', validate({ params: idParams, body: addPartyGuestSchema }), clearCacheAfter(['party-invites:*']), addPartyGuest);
-router.delete('/:id/guests/:code', clearCacheAfter(['party-invites:*']), removePartyGuest);
+router.delete('/:id/guests/:code', validate({ params: partyGuestParams }), clearCacheAfter(['party-invites:*']), removePartyGuest);
 router.patch('/:id/cancel', validate({ params: idParams }), clearCacheAfter(['party-invites:*']), cancelPartyInvite);
 
 export default router;

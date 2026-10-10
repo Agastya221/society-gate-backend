@@ -3,9 +3,13 @@ import { GateScanService } from './gate-scan.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import { prisma } from '../../utils/Client';
 import { asyncHandler, AppError } from '../../utils/ResponseHandler';
+import { getSocietyId, clampPagination } from '../../utils/scope';
 import type { EntryStatus, EntryType } from '../../../prisma/generated/prisma/client';
 
 const gateScanService = new GateScanService();
+
+const ENTRY_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'CHECKED_IN', 'CHECKED_OUT'] as const;
+const ENTRY_TYPES = ['VISITOR', 'DELIVERY', 'DOMESTIC_STAFF', 'CAB', 'VENDOR'] as const;
 
 const INDIA_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 
@@ -36,7 +40,11 @@ export const scanQR = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'qrToken is required' });
     }
 
-    const result = await gateScanService.scan(qrToken, guardId, gatePointId);
+    if (typeof qrToken !== 'string') {
+      return res.status(400).json({ success: false, message: 'qrToken must be a string' });
+    }
+
+    const result = await gateScanService.scan(qrToken, guardId, getSocietyId(req), gatePointId);
 
     const statusCode = result.allowed ? 200 : 403;
     res.status(statusCode).json({
@@ -67,7 +75,11 @@ export const verifyCode = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'code is required' });
     }
 
-    const result = await gateScanService.verifyCode(code, guardId);
+    if (typeof code !== 'string') {
+      return res.status(400).json({ success: false, message: 'code must be a string' });
+    }
+
+    const result = await gateScanService.verifyCode(code.trim(), guardId, getSocietyId(req));
 
     const statusCode = result.allowed ? 200 : 403;
     res.status(statusCode).json({
@@ -85,14 +97,10 @@ export const verifyCode = async (req: Request, res: Response) => {
  * View entry history for guard/admin.
  */
 export const getEntryLog = asyncHandler(async (req: Request, res: Response) => {
-  const societyId = req.user!.societyId!;
-  const { page = '1', limit = '30' } = req.query;
+  const societyId = getSocietyId(req);
+  const { page, limit } = clampPagination(req.query.page, req.query.limit, 30);
 
-  const result = await gateScanService.getEntryLog(
-    societyId,
-    parseInt(page as string, 10),
-    parseInt(limit as string, 10),
-  );
+  const result = await gateScanService.getEntryLog(societyId, page, limit);
 
   res.json({ success: true, data: result });
 });
@@ -102,7 +110,7 @@ export const getEntryLog = asyncHandler(async (req: Request, res: Response) => {
  * Today's entries for guard dashboard.
  */
 export const getTodayEntries = asyncHandler(async (req: Request, res: Response) => {
-  const societyId = req.user!.societyId!;
+  const societyId = getSocietyId(req);
   const { start, end } = getIndiaDayRange();
 
   const [entries, staffAttendances] = await Promise.all([
@@ -148,8 +156,9 @@ export const getTodayEntries = asyncHandler(async (req: Request, res: Response) 
  */
 export const getEntries = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user!;
-  const societyId = user.societyId!;
-  const { status, type, flatId, page = '1', limit = '20' } = req.query;
+  const societyId = getSocietyId(req);
+  const { status, type, flatId } = req.query;
+  const { page: pageNum, limit: limitNum, skip } = clampPagination(req.query.page, req.query.limit, 20);
 
   const where: {
     societyId: string;
@@ -158,18 +167,26 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
     flatId?: string;
   } = { societyId };
 
-  if (status) where.status = status as EntryStatus;
-  if (type) where.type = type as EntryType;
+  if (typeof status === 'string' && (ENTRY_STATUSES as readonly string[]).includes(status)) {
+    where.status = status as EntryStatus;
+  }
+  if (typeof type === 'string' && (ENTRY_TYPES as readonly string[]).includes(type)) {
+    where.type = type as EntryType;
+  }
 
   // Residents are always scoped to their own flat regardless of query param
   if (user.role === 'RESIDENT') {
-    where.flatId = user.flatId!;
-  } else if (flatId) {
-    where.flatId = flatId as string;
+    if (!user.flatId) {
+      return res.json({
+        success: true,
+        data: { entries: [], pagination: { total: 0, page: pageNum, limit: limitNum, pages: 0 } },
+      });
+    }
+    where.flatId = user.flatId;
+  } else if (typeof flatId === 'string' && flatId) {
+    // flatId only narrows within the caller's society (societyId is always in the where)
+    where.flatId = flatId;
   }
-
-  const pageNum = parseInt(page as string, 10);
-  const limitNum = parseInt(limit as string, 10);
 
   const [entries, total] = await Promise.all([
     prisma.entry.findMany({
@@ -187,7 +204,7 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
         flat: { select: { flatNumber: true } },
       },
       orderBy: { checkInTime: 'desc' },
-      skip: (pageNum - 1) * limitNum,
+      skip,
       take: limitNum,
     }),
     prisma.entry.count({ where }),
@@ -220,7 +237,7 @@ export const checkoutEntry = asyncHandler(async (req: Request, res: Response) =>
 
   // Only entries of the guard's own society that are still inside can be checked out
   const existing = await prisma.entry.findFirst({
-    where: { id, societyId: req.user!.societyId! },
+    where: { id, societyId: getSocietyId(req) },
     select: { status: true },
   });
   if (!existing) {

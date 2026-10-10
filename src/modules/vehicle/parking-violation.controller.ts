@@ -1,19 +1,33 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../../utils/ResponseHandler';
+import { asyncHandler, AppError } from '../../utils/ResponseHandler';
+import { getSocietyId, clampPagination } from '../../utils/scope';
+import { prisma } from '../../utils/Client';
 import { ParkingViolationService } from './parking-violation.service';
 import { pushService } from '../../services/push.service';
+import {
+  issueViolationSchema,
+  fileComplaintSchema,
+  resolveViolationSchema,
+  listViolationsQuerySchema,
+  zodErrorBody,
+} from './vehicle.schemas';
 
 const service = new ParkingViolationService();
+
+// Roles allowed to issue OFFICIAL violations (routes enforce this too via authorize()).
+const VIOLATION_ISSUER_ROLES = ['GUARD', 'ADMIN', 'SUPER_ADMIN'];
+// Only society management may push a penalty onto a flat's invoice.
+const INVOICE_ROLES = ['ADMIN', 'SUPER_ADMIN'];
 
 // ============================================
 // VEHICLE LOOKUP — Admin & Guard
 // ============================================
 export const lookupVehicle = asyncHandler(async (req: Request, res: Response) => {
-  const { q } = req.query as { q: string };
-  if (!q || q.trim().length < 2) {
+  const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+  if (q.length < 2) {
     return res.status(400).json({ success: false, message: 'Query must be at least 2 characters' });
   }
-  const data = await service.lookupVehicle(q.trim(), req.user!.societyId!);
+  const data = await service.lookupVehicle(q.slice(0, 30), getSocietyId(req));
   res.json({ success: true, data });
 });
 
@@ -21,30 +35,41 @@ export const lookupVehicle = asyncHandler(async (req: Request, res: Response) =>
 // ISSUE VIOLATION — Admin & Guard (OFFICIAL)
 // ============================================
 export const issueViolation = asyncHandler(async (req: Request, res: Response) => {
-  const vehicleId = req.params.vehicleId as string | undefined;
-  const { vehicleNumber, plateNumber, type, description, penaltyAmount, addToInvoice } = req.body;
-
-  if (!type) {
-    return res.status(400).json({ success: false, message: 'type is required' });
+  const user = req.user!;
+  if (!VIOLATION_ISSUER_ROLES.includes(user.role)) {
+    throw new AppError('Only guards and admins can issue parking violations', 403);
   }
 
+  const parsed = issueViolationSchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    return res.status(400).json(zodErrorBody(parsed.error));
+  }
+  const { vehicleNumber, plateNumber, type, description, penaltyAmount, addToInvoice } = parsed.data;
+
+  if (addToInvoice && !INVOICE_ROLES.includes(user.role)) {
+    throw new AppError('Only admins can add a penalty to an invoice', 403);
+  }
+
+  const rawVehicleId = req.params.vehicleId as string | undefined;
+  const vehicleId = rawVehicleId && rawVehicleId !== 'unknown' ? rawVehicleId : undefined;
+
   // vehicleNumber required if no vehicleId
-  const resolvedNumber = (vehicleNumber ?? plateNumber) as string | undefined;
+  const resolvedNumber = vehicleNumber ?? plateNumber;
   if (!vehicleId && !resolvedNumber) {
     return res.status(400).json({ success: false, message: 'vehicleNumber is required' });
   }
 
   const { violation, notifyUserId } = await service.issueViolation(
     {
-      vehicleId: vehicleId && vehicleId !== 'unknown' ? vehicleId : undefined,
-      vehicleNumber: resolvedNumber!,
+      vehicleId,
+      vehicleNumber: resolvedNumber,
       type,
-      description,
+      description: description ?? undefined,
       penaltyAmount,
-      addToInvoice,
+      addToInvoice: !!addToInvoice,
     },
-    req.user!.id,
-    req.user!.societyId!
+    user.id,
+    getSocietyId(req)
   );
 
   // Push notification to the vehicle owner
@@ -64,31 +89,30 @@ export const issueViolation = asyncHandler(async (req: Request, res: Response) =
 // FILE COMPLAINT — Resident
 // ============================================
 export const fileComplaint = asyncHandler(async (req: Request, res: Response) => {
-  const { vehicleNumber, type, description } = req.body;
-
-  if (!vehicleNumber || !type) {
-    return res.status(400).json({ success: false, message: 'vehicleNumber and type are required' });
+  const parsed = fileComplaintSchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    return res.status(400).json({ success: false, message: 'vehicleNumber and a valid type are required' });
   }
+  const { vehicleNumber, type, description } = parsed.data;
+  const societyId = getSocietyId(req);
 
   const violation = await service.fileComplaint(
-    { vehicleNumber, type, description },
+    { vehicleNumber, type, description: description ?? undefined },
     req.user!.id,
-    req.user!.societyId!
+    societyId
   );
 
   // Notify all admins in the society
-  const admins = await import('../../utils/Client').then(({ prisma }) =>
-    prisma.user.findMany({
-      where: { societyId: req.user!.societyId!, role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
-      select: { id: true },
-    })
-  );
+  const admins = await prisma.user.findMany({
+    where: { societyId, role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
+    select: { id: true },
+  });
 
   await Promise.all(
     admins.map((admin) =>
       pushService.sendToUser(admin.id, {
         title: 'Parking Complaint Filed',
-        body: `${req.user!.name} reported vehicle ${vehicleNumber} for ${type.replace(/_/g, ' ')}.`,
+        body: `${req.user!.name} reported vehicle ${violation.vehicleNumber} for ${type.replace(/_/g, ' ')}.`,
         data: { type: 'PARKING_COMPLAINT', violationId: violation.id },
       })
     )
@@ -98,23 +122,28 @@ export const fileComplaint = asyncHandler(async (req: Request, res: Response) =>
 });
 
 // ============================================
-// LIST VIOLATIONS — Admin sees all, Resident sees own complaints
+// LIST VIOLATIONS — Admin/Guard see the society's, Resident sees own complaints
 // ============================================
 export const listViolations = asyncHandler(async (req: Request, res: Response) => {
-  const { source, status, vehicleId, page, limit } = req.query as Record<string, string>;
+  const parsed = listViolationsQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return res.status(400).json(zodErrorBody(parsed.error));
+  }
+  const { source, status, vehicleId } = parsed.data;
+  const { page, limit } = clampPagination(parsed.data.page, parsed.data.limit, 20);
   const user = req.user!;
 
-  // Residents can only see their own complaints
-  const reportedById = user.role === 'RESIDENT' ? user.id : undefined;
+  // Anyone who is not society staff (guard/admin) only sees their own complaints
+  const isStaff = VIOLATION_ISSUER_ROLES.includes(user.role);
 
   const data = await service.listViolations({
-    societyId: user.societyId!,
-    source: user.role === 'RESIDENT' ? 'COMPLAINT' : source,
+    societyId: getSocietyId(req),
+    source: isStaff ? source : 'COMPLAINT',
     status,
     vehicleId,
-    reportedById,
-    page: page ? parseInt(page) : 1,
-    limit: limit ? parseInt(limit) : 20,
+    reportedById: isStaff ? undefined : user.id,
+    page,
+    limit,
   });
 
   res.json({ success: true, data });
@@ -125,17 +154,17 @@ export const listViolations = asyncHandler(async (req: Request, res: Response) =
 // ============================================
 export const resolveViolation = asyncHandler(async (req: Request, res: Response) => {
   const id = req.params.id as string;
-  const { status, resolutionNote } = req.body as { status: 'RESOLVED' | 'DISMISSED'; resolutionNote?: string };
-
-  if (!status || !['RESOLVED', 'DISMISSED'].includes(status)) {
+  const parsed = resolveViolationSchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
     return res.status(400).json({ success: false, message: 'status must be RESOLVED or DISMISSED' });
   }
+  const { status, resolutionNote } = parsed.data;
 
   const violation = await service.resolveViolation(
     id,
-    { status, resolutionNote },
+    { status, resolutionNote: resolutionNote ?? undefined },
     req.user!.id,
-    req.user!.societyId!
+    getSocietyId(req)
   );
 
   res.json({ success: true, data: violation });

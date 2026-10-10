@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { clampPagination } from '../../utils/scope';
 import { emitToUser, emitToUsers, SOCKET_EVENTS } from '../../utils/socket';
 import { NotificationType } from '../../../prisma/generated/prisma/enums';
 import type { Prisma } from '../../types';
@@ -173,7 +174,8 @@ export class NotificationService {
     userId: string,
     filters: { page?: number; limit?: number; unreadOnly?: boolean; societyId?: string }
   ) {
-    const { page = 1, limit = 20, unreadOnly = false, societyId } = filters;
+    const { unreadOnly = false, societyId } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
     const where: Prisma.NotificationWhereInput = { userId };
     if (unreadOnly) {
@@ -187,7 +189,7 @@ export class NotificationService {
       prisma.notification.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.notification.count({ where }),
@@ -282,16 +284,14 @@ export class NotificationService {
    * Mark a notification as read
    */
   async markAsRead(notificationId: string, userId: string) {
-    const notification = await prisma.notification.findUnique({
-      where: { id: notificationId },
+    // Scoped to the caller: someone else's notification id is indistinguishable from a missing one
+    const notification = await prisma.notification.findFirst({
+      where: { id: notificationId, userId },
+      select: { id: true },
     });
 
     if (!notification) {
       throw new AppError('Notification not found', 404);
-    }
-
-    if (notification.userId !== userId) {
-      throw new AppError('Access denied', 403);
     }
 
     return prisma.notification.update({

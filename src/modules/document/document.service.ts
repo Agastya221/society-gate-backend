@@ -7,6 +7,7 @@ import {
   deleteFromS3,
   ALLOWED_DOCUMENT_TYPES,
 } from '../../utils/s3';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type { Prisma, DocumentCategory } from '../../types';
 
 export class DocumentService {
@@ -58,6 +59,13 @@ export class DocumentService {
     description?: string;
     isAdminDoc?: boolean;
   }, uploadedById: string, societyId: string) {
+    // The key must be one we issued to this user in getUploadUrl — otherwise a
+    // caller could register (and later view/delete) someone else's S3 object.
+    const ownPrefix = `general/${uploadedById}/`;
+    if (typeof data.s3Key !== 'string' || !data.s3Key.startsWith(ownPrefix) || data.s3Key.includes('..')) {
+      throw new AppError('Invalid file key', 400);
+    }
+
     const fileSizeMB = data.fileSizeBytes / (1024 * 1024);
 
     const document = await prisma.societyDocument.create({
@@ -94,7 +102,8 @@ export class DocumentService {
     page?: number;
     limit?: number;
   }) {
-    const { societyId, requestingUserId, category, isAdminDoc, page = 1, limit = 20 } = filters;
+    const { societyId, requestingUserId, category, isAdminDoc } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit);
 
     // Residents see: all admin docs + their own personal docs
     // Admins see everything
@@ -121,7 +130,7 @@ export class DocumentService {
           uploadedBy: { select: { id: true, name: true, role: true } },
         },
         orderBy: [{ isAdminDoc: 'desc' }, { createdAt: 'desc' }],
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.societyDocument.count({ where }),
@@ -137,10 +146,8 @@ export class DocumentService {
   // VIEW URL (presigned, time-limited)
   // ============================================
 
-  async getViewUrl(documentId: string, requestingUserId: string, userRole: string) {
-    const doc = await prisma.societyDocument.findUnique({ where: { id: documentId } });
-
-    if (!doc) throw new AppError('Document not found', 404);
+  async getViewUrl(documentId: string, requestingUserId: string, userRole: string, societyId: string) {
+    const doc = await findInSociety(prisma.societyDocument, documentId, societyId, { entity: 'Document' });
 
     const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userRole);
     const isOwner = doc.uploadedById === requestingUserId;
@@ -158,10 +165,8 @@ export class DocumentService {
   // DELETE
   // ============================================
 
-  async deleteDocument(documentId: string, requestingUserId: string, userRole: string) {
-    const doc = await prisma.societyDocument.findUnique({ where: { id: documentId } });
-
-    if (!doc) throw new AppError('Document not found', 404);
+  async deleteDocument(documentId: string, requestingUserId: string, userRole: string, societyId: string) {
+    const doc = await findInSociety(prisma.societyDocument, documentId, societyId, { entity: 'Document' });
 
     const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userRole);
     const isOwner = doc.uploadedById === requestingUserId;

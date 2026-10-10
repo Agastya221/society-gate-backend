@@ -1,14 +1,21 @@
 import type { Response, Request } from 'express';
-import { AmenityService } from './amenity.service';
+import { AmenityService, type BookingCaller } from './amenity.service';
+import { getSocietyId } from '../../utils/scope';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { AmenityFilters, BookingFilters, AmenityType, BookingStatus } from '../../types';
 
 const amenityService = new AmenityService();
 
+const bookingCallerOf = (req: Request): BookingCaller => ({
+  role: req.user!.role,
+  flatId: req.user!.flatId ?? null,
+  societyId: getSocietyId(req),
+});
+
 // Amenity management
 export const createAmenity = async (req: Request, res: Response) => {
   try {
-    const amenity = await amenityService.createAmenity(req.body);
+    const amenity = await amenityService.createAmenity(req.body, getSocietyId(req));
 
     res.status(201).json({
       success: true,
@@ -26,7 +33,7 @@ export const createAmenity = async (req: Request, res: Response) => {
 export const getAmenities = async (req: Request, res: Response) => {
   try {
     const filters: AmenityFilters = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       type: req.query.type as AmenityType | undefined,
       isActive: req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined,
       page: req.query.page ? Number(req.query.page) : undefined,
@@ -49,7 +56,7 @@ export const getAmenities = async (req: Request, res: Response) => {
 export const getAmenityById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const amenity = await amenityService.getAmenityById(String(id));
+    const amenity = await amenityService.getAmenityById(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -66,7 +73,7 @@ export const getAmenityById = async (req: Request, res: Response) => {
 export const updateAmenity = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const amenity = await amenityService.updateAmenity(String(id), req.body);
+    const amenity = await amenityService.updateAmenity(String(id), req.body, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -84,7 +91,7 @@ export const updateAmenity = async (req: Request, res: Response) => {
 export const deleteAmenity = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await amenityService.deleteAmenity(String(id));
+    const result = await amenityService.deleteAmenity(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -102,7 +109,7 @@ export const deleteAmenity = async (req: Request, res: Response) => {
 export const createBooking = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const booking = await amenityService.createBooking(req.body, userId);
+    const booking = await amenityService.createBooking(req.body, userId, bookingCallerOf(req));
 
     res.status(201).json({
       success: true,
@@ -120,7 +127,7 @@ export const createBooking = async (req: Request, res: Response) => {
 export const getMyBookings = async (req: Request, res: Response) => {
   try {
     const filters: BookingFilters = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       userId: req.user!.id, // always scoped to the logged-in user
       status: req.query.status as BookingStatus | undefined,
       page: req.query.page ? Number(req.query.page) : undefined,
@@ -140,9 +147,12 @@ export const getMyBookings = async (req: Request, res: Response) => {
 export const getBookings = async (req: Request, res: Response) => {
   try {
     const filters: BookingFilters = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       amenityId: req.query.amenityId as string | undefined,
-      userId: req.query.userId as string | undefined,
+      // Admins may look at anyone's bookings; everyone else only sees their own.
+      userId: ['ADMIN', 'SUPER_ADMIN'].includes(req.user!.role)
+        ? (req.query.userId as string | undefined)
+        : req.user!.id,
       status: req.query.status as BookingStatus | undefined,
       bookingDate: req.query.bookingDate as string | undefined,
       page: req.query.page ? Number(req.query.page) : undefined,
@@ -165,7 +175,7 @@ export const getBookings = async (req: Request, res: Response) => {
 export const approveBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const booking = await amenityService.approveBooking(String(id));
+    const booking = await amenityService.approveBooking(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -185,7 +195,7 @@ export const cancelBooking = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { reason } = req.body;
     const userId = req.user!.id;
-    const booking = await amenityService.cancelBooking(String(id), reason, userId);
+    const booking = await amenityService.cancelBooking(String(id), reason, userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -207,7 +217,7 @@ export const getSlots = async (req: Request, res: Response) => {
     if (!date) {
       return res.status(400).json({ success: false, message: 'date query param is required (YYYY-MM-DD)' });
     }
-    const slots = await amenityService.getSlots(String(id), date, {
+    const slots = await amenityService.getSlots(String(id), date, getSocietyId(req), {
       userId: req.user?.id,
       flatId: req.user?.flatId ?? null,
     });
@@ -224,7 +234,7 @@ export const bookSlot = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user!.id;
-    const booking = await amenityService.bookSlot(String(id), req.body, userId);
+    const booking = await amenityService.bookSlot(String(id), req.body, userId, bookingCallerOf(req));
     return res.status(201).json({
       success: true,
       message: 'Booking created successfully',

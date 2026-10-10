@@ -1,6 +1,7 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { eventBus } from '../../utils/eventBus';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type {
   CreateEmergencyDTO,
   EmergencyFilters,
@@ -18,7 +19,10 @@ export function getEmergencySeverity(type: string): EmergencySeverity {
 }
 
 export class EmergencyService {
-  async createEmergency(data: CreateEmergencyDTO, reportedById: string) {
+  async createEmergency(data: CreateEmergencyDTO, reportedById: string, societyId: string) {
+    // Society always comes from the caller's context, never the body.
+    data.societyId = societyId;
+
     // ── Point 1: Rate limiting ──────────────────────────────────────────────
     // Residents may not create a second emergency if they already have one
     // ACTIVE in the last 5 minutes (admins/guards are exempt).
@@ -48,6 +52,11 @@ export class EmergencyService {
     // Auto-attach reporter's flat if frontend didn't send one
     if (!data.flatId && reporter?.flatId) {
       data.flatId = reporter.flatId;
+    }
+
+    // A client-supplied flat must belong to this society.
+    if (data.flatId) {
+      await findInSociety(prisma.flat, data.flatId, societyId, { entity: 'Flat', select: { id: true } });
     }
 
     const emergency = await prisma.emergency.create({
@@ -81,7 +90,8 @@ export class EmergencyService {
   }
 
   async getEmergencies(filters: EmergencyFilters) {
-    const { societyId, status, type, page = 1, limit = 20 } = filters;
+    const { societyId, status, type } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit);
 
     const where: Prisma.EmergencyWhereInput = { societyId };
     if (status) where.status = status;
@@ -96,7 +106,7 @@ export class EmergencyService {
           respondedBy: { select: { id: true, name: true, phone: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.emergency.count({ where }),
@@ -130,8 +140,8 @@ export class EmergencyService {
   }
 
   async getEmergencyById(emergencyId: string, societyId: string) {
-    const emergency = await prisma.emergency.findFirst({
-      where: { id: emergencyId, societyId },
+    const emergency = await findInSociety(prisma.emergency, emergencyId, societyId, {
+      entity: 'Emergency',
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
         flat: true,
@@ -139,21 +149,11 @@ export class EmergencyService {
       },
     });
 
-    if (!emergency) {
-      throw new AppError('Emergency not found', 404);
-    }
-
     return emergency;
   }
 
-  async respondToEmergency(emergencyId: string, respondedById: string) {
-    const emergency = await prisma.emergency.findUnique({
-      where: { id: emergencyId },
-    });
-
-    if (!emergency) {
-      throw new AppError('Emergency not found', 404);
-    }
+  async respondToEmergency(emergencyId: string, respondedById: string, societyId: string) {
+    const emergency = await findInSociety(prisma.emergency, emergencyId, societyId, { entity: 'Emergency' });
 
     if (emergency.status !== 'ACTIVE') {
       throw new AppError('Emergency is not active', 400);
@@ -185,18 +185,14 @@ export class EmergencyService {
   // ── Point 4: Idempotent atomic resolve ──────────────────────────────────
   // Uses updateMany with status guard so concurrent requests cannot both
   // succeed — only one transitions ACTIVE → RESOLVED. The second gets 409.
-  async resolveEmergency(emergencyId: string, notes: string, respondedById: string) {
-    const existing = await prisma.emergency.findUnique({
-      where: { id: emergencyId },
+  async resolveEmergency(emergencyId: string, notes: string, respondedById: string, societyId: string) {
+    const existing = await findInSociety(prisma.emergency, emergencyId, societyId, {
+      entity: 'Emergency',
       select: { id: true, status: true, reportedById: true, societyId: true, respondedById: true, notifiedUsers: true },
     });
 
-    if (!existing) {
-      throw new AppError('Emergency not found', 404);
-    }
-
     const result = await prisma.emergency.updateMany({
-      where: { id: emergencyId, status: 'ACTIVE' },
+      where: { id: emergencyId, societyId, status: 'ACTIVE' },
       data: {
         status: 'RESOLVED',
         resolvedAt: new Date(),
@@ -230,15 +226,11 @@ export class EmergencyService {
   }
 
   // ── Point 4: Idempotent atomic false alarm ──────────────────────────────
-  async markAsFalseAlarm(emergencyId: string, notes: string, userId: string) {
-    const emergency = await prisma.emergency.findUnique({
-      where: { id: emergencyId },
+  async markAsFalseAlarm(emergencyId: string, notes: string, userId: string, societyId: string) {
+    const emergency = await findInSociety(prisma.emergency, emergencyId, societyId, {
+      entity: 'Emergency',
       select: { id: true, status: true, reportedById: true, societyId: true, type: true, notifiedUsers: true },
     });
-
-    if (!emergency) {
-      throw new AppError('Emergency not found', 404);
-    }
 
     const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
     const isReporter = emergency.reportedById === userId;
@@ -249,7 +241,7 @@ export class EmergencyService {
     }
 
     const result = await prisma.emergency.updateMany({
-      where: { id: emergencyId, status: 'ACTIVE' },
+      where: { id: emergencyId, societyId, status: 'ACTIVE' },
       data: {
         status: 'FALSE_ALARM',
         resolvedAt: new Date(),

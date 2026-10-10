@@ -112,17 +112,18 @@ router.post('/reviews', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCach
 // PARAMETERIZED ROUTES - Must come LAST
 // ============================================
 
-// Staff-specific routes (with :id or :staffId)
-router.get('/:id', cache({ ttl: 120, keyPrefix: 'staff' }), getStaffById);
-router.get('/:id/qr', cache({ ttl: 300, keyPrefix: 'staff' }), getStaffQRCode);
+// Staff-specific routes (with :id or :staffId). Cached per society so one society's
+// cached response is never served to another (the cache runs before the scoped lookup).
+router.get('/:id', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffById);
+router.get('/:id/qr', cache({ ttl: 300, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffQRCode);
 router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), updateStaff);
 router.delete('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), deleteStaff);
 router.patch('/:id/verify', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), verifyStaff);
 router.patch('/:id/availability', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), updateAvailabilityStatus);
 
 // Get specific staff's assignments and reviews
-router.get('/:staffId/assignments', cache({ ttl: 120, keyPrefix: 'staff' }), getStaffAssignments);
-router.get('/:staffId/reviews', cache({ ttl: 180, keyPrefix: 'staff' }), getStaffReviews);
+router.get('/:staffId/assignments', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffAssignments);
+router.get('/:staffId/reviews', cache({ ttl: 180, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffReviews);
 router.post('/:staffId/check-out', authorize('GUARD', 'RESIDENT'), validate({ body: staffCheckOutSchema }), clearCacheAfter(['staff:*']), checkOut);
 
 export default router;

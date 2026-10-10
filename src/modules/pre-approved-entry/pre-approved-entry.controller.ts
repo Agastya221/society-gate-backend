@@ -1,12 +1,18 @@
 import type { Request, Response } from 'express';
 import { PreApprovedEntryService } from './pre-approved-entry.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
+import { getSocietyId } from '../../utils/scope';
 import type {
   PreApprovedEntryType,
   PreApprovedEntryStatus,
 } from '../../../prisma/generated/prisma/client';
 
 const service = new PreApprovedEntryService();
+
+/** Coerced/defaulted query from validate({ query }) — Express 5 req.query is raw strings. */
+const vq = (req: Request) => (req.validatedQuery ?? {}) as Record<string, unknown>;
+const optStr = (v: unknown) => (typeof v === 'string' && v ? v : undefined);
+const optNum = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : undefined);
 
 // ============================================
 // RESIDENT HANDLERS
@@ -24,11 +30,12 @@ export const createEntry = async (req: Request, res: Response) => {
 
 export const listEntries = async (req: Request, res: Response) => {
   try {
+    const q = vq(req);
     const result = await service.list(req.user!.id, {
-      type: req.query.type as PreApprovedEntryType | undefined,
-      status: req.query.status as PreApprovedEntryStatus | undefined,
-      page: req.query.page ? Number(req.query.page) : undefined,
-      limit: req.query.limit ? Number(req.query.limit) : undefined,
+      type: optStr(q.type) as PreApprovedEntryType | undefined,
+      status: optStr(q.status) as PreApprovedEntryStatus | undefined,
+      page: optNum(q.page),
+      limit: optNum(q.limit),
     });
     res.json({ success: true, data: result });
   } catch (error: unknown) {
@@ -86,8 +93,8 @@ export const getUsageHistory = async (req: Request, res: Response) => {
     const result = await service.getUsageHistory(
       String(req.params.id),
       req.user!.id,
-      req.query.page ? Number(req.query.page) : undefined,
-      req.query.limit ? Number(req.query.limit) : undefined,
+      optNum(vq(req).page),
+      optNum(vq(req).limit),
     );
     res.json({ success: true, data: result });
   } catch (error: unknown) {
@@ -124,13 +131,14 @@ export const markEntryUsed = async (req: Request, res: Response) => {
 
 export const listForGuard = async (req: Request, res: Response) => {
   try {
-    const guard = req.user!;
-    const result = await service.listForGuard(guard.societyId!, {
-      type: req.query.type as PreApprovedEntryType | undefined,
-      flatId: req.query.flatId as string | undefined,
-      blockId: req.query.blockId as string | undefined,
-      page: req.query.page ? Number(req.query.page) : undefined,
-      limit: req.query.limit ? Number(req.query.limit) : undefined,
+    const q = vq(req);
+    // getSocietyId never yields undefined — an undefined societyId in a Prisma where means "all societies"
+    const result = await service.listForGuard(getSocietyId(req), {
+      type: optStr(q.type) as PreApprovedEntryType | undefined,
+      flatId: optStr(q.flatId),
+      blockId: optStr(q.blockId),
+      page: optNum(q.page),
+      limit: optNum(q.limit),
     });
     res.json({ success: true, data: result });
   } catch (error: unknown) {
@@ -140,10 +148,9 @@ export const listForGuard = async (req: Request, res: Response) => {
 
 export const searchForGuard = async (req: Request, res: Response) => {
   try {
-    const guard = req.user!;
     const entries = await service.searchForGuard(
-      guard.societyId!,
-      req.query.q as string,
+      getSocietyId(req),
+      String(vq(req).q ?? ''),
     );
     res.json({ success: true, data: entries });
   } catch (error: unknown) {
@@ -157,16 +164,16 @@ export const searchForGuard = async (req: Request, res: Response) => {
 
 export const listForAdmin = async (req: Request, res: Response) => {
   try {
-    const admin = req.user!;
-    const result = await service.listForAdmin(admin.societyId!, {
-      type: req.query.type as PreApprovedEntryType | undefined,
-      status: req.query.status as PreApprovedEntryStatus | undefined,
-      flatId: req.query.flatId as string | undefined,
-      blockId: req.query.blockId as string | undefined,
-      dateFrom: req.query.dateFrom as string | undefined,
-      dateTo: req.query.dateTo as string | undefined,
-      page: req.query.page ? Number(req.query.page) : undefined,
-      limit: req.query.limit ? Number(req.query.limit) : undefined,
+    const q = vq(req);
+    const result = await service.listForAdmin(getSocietyId(req), {
+      type: optStr(q.type) as PreApprovedEntryType | undefined,
+      status: optStr(q.status) as PreApprovedEntryStatus | undefined,
+      flatId: optStr(q.flatId),
+      blockId: optStr(q.blockId),
+      dateFrom: optStr(q.dateFrom),
+      dateTo: optStr(q.dateTo),
+      page: optNum(q.page),
+      limit: optNum(q.limit),
     });
     res.json({ success: true, data: result });
   } catch (error: unknown) {

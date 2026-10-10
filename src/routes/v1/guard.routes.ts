@@ -32,6 +32,7 @@ import {
   markEntryUsedSchema,
   guardPreApprovedSearchSchema,
   guardPreApprovedListQuerySchema,
+  createEntryRequestSchema,
 } from '../../schemas';
 
 const router = Router();
@@ -54,7 +55,7 @@ router.get('/entries', getEntries);
 // ============================================
 // ENTRY REQUESTS (Visitor at gate — manual approval)
 // ============================================
-router.post('/entry-requests', createEntryRequest);
+router.post('/entry-requests', validate({ body: createEntryRequestSchema }), clearCacheAfter(['entry-requests:*', 'entries:*']), createEntryRequest);
 
 // ============================================
 // QR SCANNING

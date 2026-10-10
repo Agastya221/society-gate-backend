@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { DocumentService } from './document.service';
+import { getSocietyId } from '../../utils/scope';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { DocumentCategory } from '../../types';
 
@@ -19,7 +20,7 @@ export const confirmUpload = async (req: Request, res: Response) => {
     const document = await documentService.confirmUpload(
       req.body,
       req.user!.id,
-      req.user!.societyId!
+      getSocietyId(req)
     );
     res.status(201).json({ success: true, message: 'Document saved', data: document });
   } catch (error) {
@@ -30,7 +31,7 @@ export const confirmUpload = async (req: Request, res: Response) => {
 export const getDocuments = async (req: Request, res: Response) => {
   try {
     const result = await documentService.getDocuments({
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       requestingUserId: req.user!.id,
       category: req.query.category as DocumentCategory | undefined,
       isAdminDoc: req.query.isAdminDoc === 'true' ? true : req.query.isAdminDoc === 'false' ? false : undefined,
@@ -45,7 +46,7 @@ export const getDocuments = async (req: Request, res: Response) => {
 
 export const getViewUrl = async (req: Request, res: Response) => {
   try {
-    const result = await documentService.getViewUrl(String(req.params.id), req.user!.id, req.user!.role);
+    const result = await documentService.getViewUrl(String(req.params.id), req.user!.id, req.user!.role, getSocietyId(req));
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
@@ -54,7 +55,7 @@ export const getViewUrl = async (req: Request, res: Response) => {
 
 export const deleteDocument = async (req: Request, res: Response) => {
   try {
-    const result = await documentService.deleteDocument(String(req.params.id), req.user!.id, req.user!.role);
+    const result = await documentService.deleteDocument(String(req.params.id), req.user!.id, req.user!.role, getSocietyId(req));
     res.status(200).json({ success: true, ...result });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });

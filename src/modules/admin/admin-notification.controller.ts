@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { adminNotificationService } from './admin-notification.service';
-import type { NotificationType } from '../../../prisma/generated/prisma/enums';
+import { NotificationType } from '../../../prisma/generated/prisma/enums';
+import { clampPagination } from '../../utils/scope';
 
 function getErrorMessage(e: unknown): string {
   return e instanceof Error ? e.message : 'An unexpected error occurred';
@@ -12,13 +13,18 @@ export const getAdminNotifications = async (req: Request, res: Response) => {
     const adminId = req.user!.id;
     const societyId = req.user!.societyId ?? null;
     const { page, limit, unreadOnly, type, category } = req.query;
+    const paging = clampPagination(page, limit, 20);
+    const validType =
+      typeof type === 'string' && (Object.values(NotificationType) as string[]).includes(type)
+        ? (type as NotificationType)
+        : undefined;
 
     const result = await adminNotificationService.getAdminNotifications(adminId, societyId, {
-      page: page ? parseInt(page as string, 10) : undefined,
-      limit: limit ? parseInt(limit as string, 10) : undefined,
+      page: paging.page,
+      limit: paging.limit,
       unreadOnly: unreadOnly === 'true',
-      type: type as NotificationType | undefined,
-      category: category as string | undefined,
+      type: validType,
+      category: typeof category === 'string' ? category : undefined,
     });
 
     return res.status(200).json({ success: true, data: result });

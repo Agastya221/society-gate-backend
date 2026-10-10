@@ -6,6 +6,7 @@ import { getPresignedViewUrl } from '../../utils/s3';
 import type { Prisma } from '../../types';
 import logger from '../../utils/logger';
 import { eventBus } from '../../utils/eventBus';
+import { findInSociety, clampPagination } from '../../utils/scope';
 
 export class ComplaintService {
   /**
@@ -59,6 +60,15 @@ export class ComplaintService {
 
     if (data.images && data.images.length > 5) {
       throw new AppError('Maximum 5 images allowed per complaint', 400);
+    }
+
+    // Images are S3 keys we presign on read, so they must be files this user
+    // uploaded ("<folder>/<userId>/..."), not someone else's object.
+    for (const key of data.images || []) {
+      const parts = typeof key === 'string' ? key.split('/') : [];
+      if (parts.length < 3 || parts[1] !== reportedById || key.includes('..')) {
+        throw new AppError('Invalid image reference', 400);
+      }
     }
 
     const complaint = await prisma.complaint.create({
@@ -126,17 +136,16 @@ export class ComplaintService {
         category,
         status,
         priority,
-        page = 1,
-        limit = 20,
         sortBy = 'createdAt',
-        includeImageUrls = 'false'
       } = filters;
+      const { page, limit, skip } = clampPagination(filters.page, filters.limit);
 
       const where: Prisma.ComplaintWhereInput = {};
 
       // Role-based filtering
       if (userRole === 'SUPER_ADMIN') {
-        // SUPER_ADMIN sees all complaints across all societies
+        // SUPER_ADMIN sees all societies unless a society was selected
+        if (userSocietyId) where.societyId = userSocietyId;
       } else if (userRole === 'ADMIN' || userRole === 'RESIDENT') {
         // ADMIN and RESIDENT see all complaints in their society
         if (!userSocietyId) {
@@ -185,8 +194,8 @@ export class ComplaintService {
             resolvedBy: { select: { id: true, name: true, phone: true } },
           },
           orderBy,
-          skip: (Number(page) - 1) * Number(limit),
-          take: Number(limit),
+          skip,
+          take: limit,
         }),
         prisma.complaint.count({ where }),
       ]);
@@ -224,9 +233,9 @@ export class ComplaintService {
         complaints: processedComplaints,
         pagination: {
           total,
-          page: Number(page),
-          limit: Number(limit),
-          pages: Math.ceil(total / Number(limit)),
+          page,
+          limit,
+          pages: Math.ceil(total / limit),
         },
       };
     } catch (error) {
@@ -242,41 +251,40 @@ export class ComplaintService {
     userRole: Role,
     userSocietyId: string
   ) {
-    const complaint = await prisma.complaint.findUnique({
-      where: { id: complaintId },
-      include: {
-        reportedBy: { select: { id: true, name: true, phone: true, email: true } },
-        flat: {
-          select: {
-            id: true,
-            flatNumber: true,
-            block: {
-              select: {
-                name: true,
-              },
+    if (userRole !== 'SUPER_ADMIN' && userRole !== 'ADMIN' && userRole !== 'RESIDENT') {
+      throw new AppError('Access denied.', 403);
+    }
+
+    // Society members can view any complaint in their society. SUPER_ADMIN can
+    // view any complaint.
+    const include = {
+      reportedBy: { select: { id: true, name: true, phone: true, email: true } },
+      flat: {
+        select: {
+          id: true,
+          flatNumber: true,
+          block: {
+            select: {
+              name: true,
             },
           },
         },
-        assignedTo: { select: { id: true, name: true, phone: true } },
-        resolvedBy: { select: { id: true, name: true, phone: true } },
-        society: { select: { id: true, name: true } },
       },
+      assignedTo: { select: { id: true, name: true, phone: true } },
+      resolvedBy: { select: { id: true, name: true, phone: true } },
+      society: { select: { id: true, name: true } },
+    } satisfies Prisma.ComplaintInclude;
+
+    if (userRole !== 'SUPER_ADMIN' && !userSocietyId) {
+      throw new AppError('Society context required', 403);
+    }
+    const complaint = await prisma.complaint.findFirst({
+      where: userRole === 'SUPER_ADMIN' ? { id: complaintId } : { id: complaintId, societyId: userSocietyId },
+      include,
     });
 
     if (!complaint) {
       throw new AppError('Complaint not found', 404);
-    }
-
-    // Access control - society members can view society complaints
-    if (userRole === 'SUPER_ADMIN') {
-      // Can see any complaint
-    } else if (userRole === 'ADMIN' || userRole === 'RESIDENT') {
-      // Can see any complaint in their society
-      if (complaint.societyId !== userSocietyId) {
-        throw new AppError('Access denied. Complaint not in your society.', 403);
-      }
-    } else {
-      throw new AppError('Access denied.', 403);
     }
 
     const isOwn = complaint.reportedById === userId;
@@ -306,17 +314,7 @@ export class ComplaintService {
     status: ComplaintStatus,
     adminSocietyId: string
   ) {
-    const complaint = await prisma.complaint.findUnique({
-      where: { id: complaintId },
-    });
-
-    if (!complaint) {
-      throw new AppError('Complaint not found', 404);
-    }
-
-    if (complaint.societyId !== adminSocietyId) {
-      throw new AppError('Access denied. Complaint not in your society.', 403);
-    }
+    await findInSociety(prisma.complaint, complaintId, adminSocietyId, { entity: 'Complaint', select: { id: true } });
 
     const updatedComplaint = await prisma.complaint.update({
       where: { id: complaintId },
@@ -332,29 +330,10 @@ export class ComplaintService {
     assignedToId: string,
     adminSocietyId: string
   ) {
-    const complaint = await prisma.complaint.findUnique({
-      where: { id: complaintId },
-    });
+    await findInSociety(prisma.complaint, complaintId, adminSocietyId, { entity: 'Complaint', select: { id: true } });
 
-    if (!complaint) {
-      throw new AppError('Complaint not found', 404);
-    }
-
-    if (complaint.societyId !== adminSocietyId) {
-      throw new AppError('Access denied. Complaint not in your society.', 403);
-    }
-
-    const assignee = await prisma.user.findUnique({
-      where: { id: assignedToId },
-    });
-
-    if (!assignee) {
-      throw new AppError('Assignee not found', 404);
-    }
-
-    if (assignee.societyId !== adminSocietyId) {
-      throw new AppError('Can only assign to staff in your society', 403);
-    }
+    // Assignee must be a member of the same society.
+    await findInSociety(prisma.user, assignedToId, adminSocietyId, { entity: 'Assignee', select: { id: true } });
 
     const updatedComplaint = await prisma.complaint.update({
       where: { id: complaintId },
@@ -382,17 +361,7 @@ export class ComplaintService {
       throw new AppError('Resolution is required', 400);
     }
 
-    const complaint = await prisma.complaint.findUnique({
-      where: { id: complaintId },
-    });
-
-    if (!complaint) {
-      throw new AppError('Complaint not found', 404);
-    }
-
-    if (complaint.societyId !== adminSocietyId) {
-      throw new AppError('Access denied. Complaint not in your society.', 403);
-    }
+    await findInSociety(prisma.complaint, complaintId, adminSocietyId, { entity: 'Complaint', select: { id: true } });
 
     const updatedComplaint = await prisma.complaint.update({
       where: { id: complaintId },
@@ -411,14 +380,8 @@ export class ComplaintService {
   }
 
   // Resident deletes own complaint (within 24 hours and before admin action)
-  async deleteComplaint(complaintId: string, userId: string) {
-    const complaint = await prisma.complaint.findUnique({
-      where: { id: complaintId },
-    });
-
-    if (!complaint) {
-      throw new AppError('Complaint not found', 404);
-    }
+  async deleteComplaint(complaintId: string, userId: string, societyId: string) {
+    const complaint = await findInSociety(prisma.complaint, complaintId, societyId, { entity: 'Complaint' });
 
     // Only complaint reporter can delete
     if (complaint.reportedById !== userId) {

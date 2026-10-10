@@ -1,9 +1,17 @@
 import type { Response, Request } from 'express';
-import { DomesticStaffService } from './domestic-staff.service';
+import { DomesticStaffService, type StaffCaller } from './domestic-staff.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
+import { getSocietyId, clampPagination } from '../../utils/scope';
 import type { StaffFilters, StaffBookingFilters, DomesticStaffType, StaffAvailabilityStatus, StaffBookingStatus } from '../../types';
 
 const staffService = new DomesticStaffService();
+
+/** The acting user; society is server-derived (only SUPER_ADMIN may pick one). */
+const callerOf = (req: Request): StaffCaller => ({
+  userId: req.user!.id,
+  role: req.user!.role,
+  societyId: getSocietyId(req),
+});
 
 // ============================================
 // STAFF MANAGEMENT
@@ -12,10 +20,7 @@ const staffService = new DomesticStaffService();
 export const createStaff = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const societyId = req.user!.societyId;
-    if (!societyId) {
-      throw new Error('Admin is not assigned to a society');
-    }
+    const societyId = getSocietyId(req);
     const staff = await staffService.createStaff({ ...req.body, societyId }, userId);
 
     res.status(201).json({
@@ -33,15 +38,16 @@ export const createStaff = async (req: Request, res: Response) => {
 
 export const getStaffList = async (req: Request, res: Response) => {
   try {
+    const { page, limit } = clampPagination(req.query.page, req.query.limit);
     const filters: StaffFilters & { search?: string } = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       staffType: req.query.staffType as DomesticStaffType | undefined,
       availabilityStatus: req.query.availabilityStatus as StaffAvailabilityStatus | undefined,
       isVerified: req.query.isVerified === 'true' ? true : req.query.isVerified === 'false' ? false : undefined,
       isActive: req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined,
       search: req.query.search as string | undefined,
-      page: req.query.page ? Number(req.query.page) : undefined,
-      limit: req.query.limit ? Number(req.query.limit) : undefined,
+      page,
+      limit,
     };
     const result = await staffService.getStaffList(filters);
 
@@ -60,7 +66,7 @@ export const getStaffList = async (req: Request, res: Response) => {
 export const getStaffById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.getStaffById(String(id));
+    const staff = await staffService.getStaffById(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -77,7 +83,7 @@ export const getStaffById = async (req: Request, res: Response) => {
 export const updateStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.updateStaff(String(id), req.body, req.user!.societyId!);
+    const staff = await staffService.updateStaff(String(id), req.body, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -95,7 +101,7 @@ export const updateStaff = async (req: Request, res: Response) => {
 export const deleteStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await staffService.deleteStaff(String(id), req.user!.societyId!);
+    const result = await staffService.deleteStaff(String(id), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -113,7 +119,7 @@ export const verifyStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user!.id;
-    const staff = await staffService.verifyStaff(String(id), userId);
+    const staff = await staffService.verifyStaff(String(id), userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -131,7 +137,7 @@ export const verifyStaff = async (req: Request, res: Response) => {
 export const getStaffQRCode = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.getStaffById(String(id));
+    const staff = await staffService.getStaffById(String(id), getSocietyId(req));
 
     // Return only the token — frontend renders the QR code
     // Backend generates QR image on-demand only for emails/WhatsApp/PDF
@@ -158,7 +164,7 @@ export const getStaffQRCode = async (req: Request, res: Response) => {
 
 export const assignStaffToFlat = async (req: Request, res: Response) => {
   try {
-    const assignment = await staffService.assignStaffToFlat(req.body);
+    const assignment = await staffService.assignStaffToFlat(req.body ?? {}, callerOf(req));
 
     res.status(201).json({
       success: true,
@@ -176,7 +182,7 @@ export const assignStaffToFlat = async (req: Request, res: Response) => {
 export const updateAssignment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const assignment = await staffService.updateAssignment(String(id), req.body);
+    const assignment = await staffService.updateAssignment(String(id), req.body ?? {}, callerOf(req));
 
     res.status(200).json({
       success: true,
@@ -194,7 +200,7 @@ export const updateAssignment = async (req: Request, res: Response) => {
 export const removeAssignment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await staffService.removeAssignment(String(id));
+    const result = await staffService.removeAssignment(String(id), callerOf(req));
 
     res.status(200).json({
       success: true,
@@ -211,7 +217,7 @@ export const removeAssignment = async (req: Request, res: Response) => {
 export const getStaffAssignments = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
-    const assignments = await staffService.getStaffAssignments(String(staffId));
+    const assignments = await staffService.getStaffAssignments(String(staffId), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -237,15 +243,17 @@ export const checkIn = async (req: Request, res: Response) => {
     // Body is validated by staffCheckInSchema; society always comes from the caller
     const { domesticStaffId, staffId, flatId, checkInMethod, notes } = req.body;
 
+    const caller = callerOf(req);
     const attendance = await staffService.checkIn(
       {
         domesticStaffId: domesticStaffId ?? staffId,
         flatId,
-        societyId: req.user!.societyId!,
+        societyId: caller.societyId,
         checkInMethod,
         notes,
       },
       verifiedByGuardId,
+      caller,
     );
 
     res.status(200).json({
@@ -265,7 +273,7 @@ export const checkOut = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
     const { workCompleted } = req.body;
-    const attendance = await staffService.checkOut(String(staffId), workCompleted);
+    const attendance = await staffService.checkOut(String(staffId), workCompleted, { societyId: getSocietyId(req) });
 
     res.status(200).json({
       success: true,
@@ -287,9 +295,9 @@ export const scanQRCode = async (req: Request, res: Response) => {
     const role = req.user!.role;
     const verifiedByGuardId = role === 'GUARD' ? userId : undefined;
     // ensureSameSociety already rejects a mismatching body.societyId; always use the caller's
-    const societyId = req.user!.societyId!;
+    const caller = callerOf(req);
 
-    const result = await staffService.scanQRCode(qrToken, flatId, societyId, verifiedByGuardId);
+    const result = await staffService.scanQRCode(qrToken, flatId, caller.societyId, verifiedByGuardId, caller);
 
     res.status(200).json({
       success: true,
@@ -306,8 +314,8 @@ export const scanQRCode = async (req: Request, res: Response) => {
 
 export const getAttendanceRecords = async (req: Request, res: Response) => {
   try {
+    // Society is never taken from the query (only SUPER_ADMIN may pick one, via req.societyId)
     const filters = {
-      societyId: req.query.societyId as string | undefined,
       flatId: req.query.flatId as string | undefined,
       domesticStaffId: req.query.domesticStaffId as string | undefined,
       startDate: req.query.startDate as string | undefined,
@@ -315,7 +323,7 @@ export const getAttendanceRecords = async (req: Request, res: Response) => {
       page: req.query.page ? Number(req.query.page) : undefined,
       limit: req.query.limit ? Number(req.query.limit) : undefined,
     };
-    const result = await staffService.getAttendanceRecords(filters);
+    const result = await staffService.getAttendanceRecords(filters, callerOf(req));
 
     res.status(200).json({
       success: true,
@@ -336,9 +344,9 @@ export const getAttendanceRecords = async (req: Request, res: Response) => {
 export const createBooking = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const flatId = req.user!.flatId ?? req.body.flatId;
-    const societyId = req.user!.societyId ?? req.body.societyId;
-    const booking = await staffService.createBooking({ ...req.body, flatId, societyId }, userId);
+    const caller = callerOf(req);
+    const flatId = req.user!.flatId ?? req.body?.flatId;
+    const booking = await staffService.createBooking({ ...req.body, flatId, societyId: caller.societyId }, userId, caller);
 
     res.status(201).json({
       success: true,
@@ -355,8 +363,7 @@ export const createBooking = async (req: Request, res: Response) => {
 
 export const getOpenSlots = async (req: Request, res: Response) => {
   try {
-    const societyId = req.user!.societyId;
-    if (!societyId) throw new Error('User is not assigned to a society');
+    const societyId = getSocietyId(req);
     const result = await staffService.getOpenSlots(String(req.params.id), String(req.query.date ?? ''), societyId);
     res.status(200).json({ success: true, data: result });
   } catch (error: unknown) {
@@ -375,7 +382,7 @@ export const getBookings = async (req: Request, res: Response) => {
       page: req.query.page ? Number(req.query.page) : undefined,
       limit: req.query.limit ? Number(req.query.limit) : undefined,
     };
-    const result = await staffService.getBookings(filters);
+    const result = await staffService.getBookings(filters, callerOf(req));
 
     res.status(200).json({
       success: true,
@@ -392,7 +399,7 @@ export const getBookings = async (req: Request, res: Response) => {
 export const acceptBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const booking = await staffService.acceptBooking(String(id));
+    const booking = await staffService.acceptBooking(String(id), callerOf(req));
 
     res.status(200).json({
       success: true,
@@ -410,8 +417,8 @@ export const acceptBooking = async (req: Request, res: Response) => {
 export const rejectBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { rejectionReason } = req.body;
-    const booking = await staffService.rejectBooking(String(id), rejectionReason);
+    const { rejectionReason } = req.body ?? {};
+    const booking = await staffService.rejectBooking(String(id), rejectionReason, callerOf(req));
 
     res.status(200).json({
       success: true,
@@ -429,8 +436,8 @@ export const rejectBooking = async (req: Request, res: Response) => {
 export const completeBooking = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { actualDuration, finalCost } = req.body;
-    const booking = await staffService.completeBooking(String(id), actualDuration, finalCost);
+    const { actualDuration, finalCost } = req.body ?? {};
+    const booking = await staffService.completeBooking(String(id), callerOf(req), actualDuration, finalCost);
 
     res.status(200).json({
       success: true,
@@ -452,7 +459,18 @@ export const completeBooking = async (req: Request, res: Response) => {
 export const addReview = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const review = await staffService.addReview(req.body, userId);
+    const body = req.body ?? {};
+    // The resident app sends { staffId, rating, comment }; default the flat to the caller's own
+    const review = await staffService.addReview(
+      {
+        ...body,
+        domesticStaffId: body.domesticStaffId ?? body.staffId,
+        flatId: body.flatId ?? req.user!.flatId,
+        review: body.review ?? body.comment,
+      },
+      userId,
+      callerOf(req),
+    );
 
     res.status(201).json({
       success: true,
@@ -470,7 +488,7 @@ export const addReview = async (req: Request, res: Response) => {
 export const getStaffReviews = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
-    const reviews = await staffService.getStaffReviews(String(staffId));
+    const reviews = await staffService.getStaffReviews(String(staffId), getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -491,7 +509,7 @@ export const getStaffReviews = async (req: Request, res: Response) => {
 export const getAvailableStaff = async (req: Request, res: Response) => {
   try {
     const filters = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       staffType: req.query.staffType as DomesticStaffType | undefined,
       bookingDate: req.query.bookingDate as string | undefined,
       startTime: req.query.startTime as string | undefined,
@@ -514,8 +532,8 @@ export const getAvailableStaff = async (req: Request, res: Response) => {
 export const updateAvailabilityStatus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
-    const staff = await staffService.updateAvailabilityStatus(String(id), status);
+    const { status } = req.body ?? {};
+    const staff = await staffService.updateAvailabilityStatus(String(id), status, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -532,7 +550,7 @@ export const updateAvailabilityStatus = async (req: Request, res: Response) => {
 
 export const getTypeSummary = async (req: Request, res: Response) => {
   try {
-    const societyId = req.user!.societyId!;
+    const societyId = getSocietyId(req);
     const types = await staffService.getTypeSummary(societyId);
 
     res.status(200).json({

@@ -44,7 +44,7 @@ export const getInvoiceCashfreeStatus = async (req: Request, res: Response) => {
     const result = await paymentService.getInvoiceCashfreeStatus(
       req.params.invoiceId as string,
       req.user!,
-      req.query.sync === 'true',
+      (req.validatedQuery as { sync?: string } | undefined)?.sync === 'true',
     );
 
     return res.status(200).json({ success: true, data: result });

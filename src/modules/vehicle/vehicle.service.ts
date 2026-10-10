@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety } from '../../utils/scope';
 import type { Prisma, VehicleStatus } from '../../types';
 
 export class VehicleService {
@@ -10,9 +11,9 @@ export class VehicleService {
   async registerVehicle(data: {
     vehicleNumber: string;
     vehicleType: string;
-    model?: string;
-    color?: string;
-  }, userId: string, flatId: string, societyId: string, creatorRole?: string) {
+    model?: string | null;
+    color?: string | null;
+  }, userId: string, flatId: string | null, societyId: string, creatorRole?: string) {
     const vehicleNumber = data.vehicleNumber.toUpperCase().replace(/\s/g, '');
 
     const existing = await prisma.vehicle.findUnique({
@@ -25,8 +26,10 @@ export class VehicleService {
 
     const vehicle = await prisma.vehicle.create({
       data: {
-        ...data,
         vehicleNumber,
+        vehicleType: data.vehicleType,
+        model: data.model ?? null,
+        color: data.color ?? null,
         userId,
         flatId,
         societyId,
@@ -54,25 +57,20 @@ export class VehicleService {
   }
 
   async updateVehicle(vehicleId: string, data: {
-    model?: string;
-    color?: string;
-    parkingSlot?: string;
-  }, userId: string) {
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
-
-    if (!vehicle) throw new AppError('Vehicle not found', 404);
+    model?: string | null;
+    color?: string | null;
+  }, userId: string, societyId: string) {
+    const vehicle = await findInSociety(prisma.vehicle, vehicleId, societyId, { entity: 'Vehicle' });
     if (vehicle.userId !== userId) throw new AppError('You can only update your own vehicles', 403);
 
     return prisma.vehicle.update({
       where: { id: vehicleId },
-      data,
+      data: { model: data.model, color: data.color },
     });
   }
 
-  async deleteVehicle(vehicleId: string, userId: string) {
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
-
-    if (!vehicle) throw new AppError('Vehicle not found', 404);
+  async deleteVehicle(vehicleId: string, userId: string, societyId: string) {
+    const vehicle = await findInSociety(prisma.vehicle, vehicleId, societyId, { entity: 'Vehicle' });
     if (vehicle.userId !== userId) throw new AppError('You can only remove your own vehicles', 403);
 
     await prisma.vehicle.update({
@@ -124,18 +122,20 @@ export class VehicleService {
 
   async approveVehicle(vehicleId: string, data: {
     status: 'ACTIVE' | 'REJECTED';
-    parkingSlot?: string;
-    stickerNumber?: string;
-    rejectionNote?: string;
-    reason?: string;
+    parkingSlot?: string | null;
+    stickerNumber?: string | null;
+    rejectionNote?: string | null;
+    reason?: string | null;
   }, societyId?: string | null) {
     if (data.status !== 'ACTIVE' && data.status !== 'REJECTED') {
       throw new AppError("status must be 'ACTIVE' or 'REJECTED'", 400);
     }
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
-    // societyId is null for SUPER_ADMIN (any society)
-    if (!vehicle || (societyId && vehicle.societyId !== societyId)) {
-      throw new AppError('Vehicle not found', 404);
+    // societyId is null only for a SUPER_ADMIN with no society context (any society)
+    if (societyId) {
+      await findInSociety(prisma.vehicle, vehicleId, societyId, { select: { id: true }, entity: 'Vehicle' });
+    } else {
+      const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId }, select: { id: true } });
+      if (!vehicle) throw new AppError('Vehicle not found', 404);
     }
 
     return prisma.vehicle.update({

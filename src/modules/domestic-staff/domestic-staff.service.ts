@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import { generateQRToken } from '../../utils/QrGenerate';
 import { eventBus } from '../../utils/eventBus';
 import {
@@ -97,6 +98,55 @@ export function bookingStatusWhere(status: string): Prisma.StaffBookingWhereInpu
   if (status === 'CANCELLED') return { status: 'CANCELLED', rejectedAt: null };
   return { status: status as StaffBookingStatus };
 }
+
+/** Who is acting on a domestic-staff resource. societyId is always server-derived. */
+export interface StaffCaller {
+  userId: string;
+  role: string;
+  societyId: string;
+}
+
+export const isStaffAdminRole = (role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN';
+
+/**
+ * Flats in `societyId` the user belongs to: their primary flat plus any active
+ * flat memberships. Used to restrict residents to their own flat's records.
+ */
+export async function getCallerFlatIds(userId: string, societyId: string): Promise<string[]> {
+  const [memberships, user] = await Promise.all([
+    prisma.userFlatMembership.findMany({
+      where: { userId, societyId, isActive: true, flatId: { not: null } },
+      select: { flatId: true },
+    }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { flatId: true, flat: { select: { societyId: true } } },
+    }),
+  ]);
+  const ids = memberships.map((m) => m.flatId).filter((id): id is string => Boolean(id));
+  if (user?.flatId && user.flat?.societyId === societyId) ids.push(user.flatId);
+  return [...new Set(ids)];
+}
+
+/** Non-admins may only act on records belonging to one of their own flats. */
+async function assertOwnFlat(
+  caller: StaffCaller,
+  flatId: string | null | undefined,
+  entity: string,
+  forbiddenMessage?: string,
+) {
+  if (isStaffAdminRole(caller.role)) return;
+  const flatIds = await getCallerFlatIds(caller.userId, caller.societyId);
+  if (!flatId || !flatIds.includes(flatId)) {
+    // Existing records: 404 so other flats' ids are indistinguishable from missing ones
+    if (forbiddenMessage) throw new AppError(forbiddenMessage, 403);
+    throw new AppError(`${entity} not found`, 404);
+  }
+}
+
+/** Load an active-or-inactive staff member only if they belong to the society. */
+const findStaffInSociety = (staffId: string, societyId: string, where?: object) =>
+  findInSociety(prisma.domesticStaff, staffId, societyId, { entity: 'Staff', where });
 
 // Staff still "inside" this long after check-in are assumed to have left without scanning out
 export const STALE_CHECK_IN_HOURS = 16;
@@ -242,13 +292,14 @@ export class DomesticStaffService {
     };
   }
 
-  async getStaffById(staffId: string) {
+  async getStaffById(staffId: string, societyId: string) {
     const now = new Date();
     const thirtyDaysAgo = new Date(now);
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const staff = await prisma.domesticStaff.findUnique({
-      where: { id: staffId },
+    // Society-scoped lookup (findFirst keeps the include typing)
+    const staff = await prisma.domesticStaff.findFirst({
+      where: { id: staffId, societyId },
       include: {
         addedBy: { select: { id: true, name: true, role: true } },
         assignedFlats: {
@@ -352,13 +403,7 @@ export class DomesticStaffService {
   }
 
   async updateStaff(staffId: string, data: UpdateStaffDTO, societyId: string) {
-    const staff = await prisma.domesticStaff.findUnique({
-      where: { id: staffId },
-    });
-
-    if (!staff || staff.societyId !== societyId) {
-      throw new AppError('Staff not found', 404);
-    }
+    const staff = await findStaffInSociety(staffId, societyId);
 
     const phone = data.phone ? data.phone.replace(/\D/g, '').slice(-10) : staff.phone;
     if (phone.length !== 10) {
@@ -400,13 +445,7 @@ export class DomesticStaffService {
 
   // NICE-4: Soft delete instead of hard delete for data consistency
   async deleteStaff(staffId: string, societyId: string) {
-    const staff = await prisma.domesticStaff.findUnique({
-      where: { id: staffId },
-    });
-
-    if (!staff || staff.societyId !== societyId) {
-      throw new AppError('Staff not found', 404);
-    }
+    await findStaffInSociety(staffId, societyId);
 
     await prisma.$transaction(async (tx) => {
       await tx.domesticStaff.update({
@@ -425,14 +464,8 @@ export class DomesticStaffService {
     return { message: 'Staff deactivated successfully' };
   }
 
-  async verifyStaff(staffId: string, verifiedBy: string) {
-    const staff = await prisma.domesticStaff.findUnique({
-      where: { id: staffId },
-    });
-
-    if (!staff) {
-      throw new AppError('Staff not found', 404);
-    }
+  async verifyStaff(staffId: string, verifiedBy: string, societyId: string) {
+    const staff = await findStaffInSociety(staffId, societyId);
 
     const updatedStaff = await prisma.domesticStaff.update({
       where: { id: staffId },
@@ -450,8 +483,29 @@ export class DomesticStaffService {
   // FLAT ASSIGNMENTS
   // ============================================
 
-  async assignStaffToFlat(data: CreateStaffAssignmentDTO) {
-    const { domesticStaffId, flatId } = data;
+  async assignStaffToFlat(input: CreateStaffAssignmentDTO, caller: StaffCaller) {
+    const { domesticStaffId, flatId } = input;
+    if (!domesticStaffId || !flatId) {
+      throw new AppError('domesticStaffId and flatId are required', 400);
+    }
+
+    // Both the staff member and the flat must be in the caller's society,
+    // and a resident may only assign staff to their own flat
+    await findStaffInSociety(domesticStaffId, caller.societyId);
+    await findInSociety(prisma.flat, flatId, caller.societyId, { entity: 'Flat', select: { id: true } });
+    await assertOwnFlat(caller, flatId, 'Flat', 'You can only assign staff to your own flat');
+
+    // Only known assignment fields are client-settable
+    const data: CreateStaffAssignmentDTO = {
+      domesticStaffId,
+      flatId,
+      isPrimary: input.isPrimary,
+      workingDays: input.workingDays,
+      workStartTime: input.workStartTime,
+      workEndTime: input.workEndTime,
+      agreedRate: input.agreedRate,
+      rateType: input.rateType,
+    };
 
     // Check if assignment already exists
     const existing = await prisma.staffFlatAssignment.findUnique({
@@ -478,7 +532,30 @@ export class DomesticStaffService {
     return assignment;
   }
 
-  async updateAssignment(assignmentId: string, data: UpdateStaffAssignmentDTO) {
+  /** Assignment by id, only if its flat is in the society (and, for residents, is their own flat). */
+  private async _findAssignmentForCaller(assignmentId: string, caller: StaffCaller) {
+    const assignment = await findInSociety(prisma.staffFlatAssignment, assignmentId, caller.societyId, {
+      entity: 'Assignment',
+      societyWhere: { flat: { societyId: caller.societyId } },
+    });
+    await assertOwnFlat(caller, assignment.flatId, 'Assignment');
+    return assignment;
+  }
+
+  async updateAssignment(assignmentId: string, input: UpdateStaffAssignmentDTO, caller: StaffCaller) {
+    await this._findAssignmentForCaller(assignmentId, caller);
+
+    // Only known assignment fields are client-settable (never domesticStaffId/flatId)
+    const data: UpdateStaffAssignmentDTO = {
+      isPrimary: input.isPrimary,
+      workingDays: input.workingDays,
+      workStartTime: input.workStartTime,
+      workEndTime: input.workEndTime,
+      agreedRate: input.agreedRate,
+      rateType: input.rateType,
+      isActive: input.isActive,
+    };
+
     const assignment = await prisma.staffFlatAssignment.update({
       where: { id: assignmentId },
       data,
@@ -487,7 +564,9 @@ export class DomesticStaffService {
     return assignment;
   }
 
-  async removeAssignment(assignmentId: string) {
+  async removeAssignment(assignmentId: string, caller: StaffCaller) {
+    await this._findAssignmentForCaller(assignmentId, caller);
+
     await prisma.staffFlatAssignment.delete({
       where: { id: assignmentId },
     });
@@ -495,9 +574,10 @@ export class DomesticStaffService {
     return { message: 'Assignment removed successfully' };
   }
 
-  async getStaffAssignments(staffId: string) {
+  async getStaffAssignments(staffId: string, societyId: string) {
+    await findStaffInSociety(staffId, societyId);
     const assignments = await prisma.staffFlatAssignment.findMany({
-      where: { domesticStaffId: staffId },
+      where: { domesticStaffId: staffId, flat: { societyId } },
       include: {
         flat: true,
       },
@@ -510,8 +590,13 @@ export class DomesticStaffService {
   // ATTENDANCE & CHECK-IN/OUT
   // ============================================
 
-  async checkIn(data: StaffCheckInDTO & { notes?: string }, verifiedByGuardId?: string) {
+  async checkIn(data: StaffCheckInDTO & { notes?: string }, verifiedByGuardId?: string, caller?: StaffCaller) {
     const { domesticStaffId, flatId, societyId, checkInMethod = 'QR', notes } = data;
+
+    // A resident may only check staff in to their own flat (guards: any flat in the society)
+    if (caller && caller.role === 'RESIDENT' && flatId) {
+      await assertOwnFlat(caller, flatId, 'Flat', 'You can only check staff in to your own flat');
+    }
 
     // Use transaction to prevent race conditions
     const result = await prisma.$transaction(async (tx) => {
@@ -591,16 +676,20 @@ export class DomesticStaffService {
   async checkOut(
     domesticStaffId: string,
     workCompleted?: string,
-    options: { checkOutMethod?: string; notify?: boolean } = {},
+    options: { checkOutMethod?: string; notify?: boolean; societyId?: string } = {},
   ) {
-    const { checkOutMethod = 'QR', notify = true } = options;
+    const { checkOutMethod = 'QR', notify = true, societyId } = options;
     // Use transaction to prevent race conditions
     const result = await prisma.$transaction(async (tx) => {
       const staff = await tx.domesticStaff.findUnique({
         where: { id: domesticStaffId },
       });
 
-      if (!staff || !staff.isCurrentlyWorking) {
+      // Interactive callers pass their society; staff elsewhere are reported as not found
+      if (!staff || (societyId && staff.societyId !== societyId)) {
+        throw new AppError('Staff not found', 404);
+      }
+      if (!staff.isCurrentlyWorking) {
         throw new AppError('Staff is not currently checked in', 400);
       }
 
@@ -717,9 +806,13 @@ export class DomesticStaffService {
     return { count };
   }
 
-  async scanQRCode(qrToken: string, flatId: string, societyId: string, verifiedByGuardId?: string) {
-    const staff = await prisma.domesticStaff.findUnique({
-      where: { qrToken },
+  async scanQRCode(qrToken: string, flatId: string, societyId: string, verifiedByGuardId?: string, caller?: StaffCaller) {
+    if (!qrToken || typeof qrToken !== 'string') {
+      throw new AppError('Invalid QR code', 404);
+    }
+    // A QR from another society is treated as unknown
+    const staff = await prisma.domesticStaff.findFirst({
+      where: { qrToken, societyId },
     });
 
     if (!staff) {
@@ -732,24 +825,37 @@ export class DomesticStaffService {
 
     // Check if currently working - if yes, check out; if no, check in
     if (staff.isCurrentlyWorking) {
-      return await this.checkOut(staff.id);
+      return await this.checkOut(staff.id, undefined, { societyId });
     } else {
       return await this.checkIn({
         domesticStaffId: staff.id,
         flatId,
         societyId,
         checkInMethod: 'QR',
-      }, verifiedByGuardId);
+      }, verifiedByGuardId, caller);
     }
   }
 
-  async getAttendanceRecords(filters: AttendanceFilters & { startDate?: string; endDate?: string }) {
-    const { domesticStaffId, flatId, societyId, startDate, endDate, page = 1, limit = 20 } = filters;
+  async getAttendanceRecords(
+    filters: Omit<AttendanceFilters, 'societyId'> & { startDate?: string; endDate?: string },
+    caller: StaffCaller,
+  ) {
+    const { domesticStaffId, flatId, startDate, endDate } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit);
 
-    const where: Prisma.StaffAttendanceWhereInput = {};
+    // Always pinned to the caller's society (never a client-supplied one)
+    const where: Prisma.StaffAttendanceWhereInput = { societyId: caller.societyId };
     if (domesticStaffId) where.domesticStaffId = domesticStaffId;
     if (flatId) where.flatId = flatId;
-    if (societyId) where.societyId = societyId;
+
+    // Residents see attendance at their own flats, or of staff working for their flats
+    if (caller.role === 'RESIDENT') {
+      const flatIds = await getCallerFlatIds(caller.userId, caller.societyId);
+      where.OR = [
+        { flatId: { in: flatIds } },
+        { domesticStaff: { assignedFlats: { some: { flatId: { in: flatIds }, isActive: true } } } },
+      ];
+    }
 
     if (startDate && endDate) {
       where.checkInTime = {
@@ -767,7 +873,7 @@ export class DomesticStaffService {
           verifiedByGuard: { select: { id: true, name: true } },
         },
         orderBy: { checkInTime: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.staffAttendance.count({ where }),
@@ -853,8 +959,26 @@ export class DomesticStaffService {
     return { date, workingWindow: { startTime: minutesToTime(windowStart), endTime: minutesToTime(windowEnd) }, slots };
   }
 
-  async createBooking(data: CreateStaffBookingDTO & { requirements?: string; estimatedCost?: number }, bookedById: string) {
-    const { domesticStaffId, flatId, societyId, bookingDate, startTime, endTime, durationHours, workType } = data;
+  async createBooking(
+    input: CreateStaffBookingDTO & { requirements?: string; estimatedCost?: number },
+    bookedById: string,
+    caller: StaffCaller,
+  ) {
+    // Society always comes from the caller; only known booking fields are client-settable
+    const societyId = caller.societyId;
+    const data = {
+      domesticStaffId: input.domesticStaffId,
+      flatId: input.flatId,
+      societyId,
+      bookingDate: input.bookingDate,
+      startTime: input.startTime,
+      endTime: input.endTime,
+      durationHours: input.durationHours,
+      workType: input.workType,
+      requirements: input.requirements,
+      estimatedCost: input.estimatedCost,
+    };
+    const { domesticStaffId, flatId, bookingDate, startTime, endTime, durationHours, workType } = data;
 
     // Validate required fields
     validateRequiredFields(data, ['domesticStaffId', 'flatId', 'societyId', 'bookingDate', 'startTime', 'endTime', 'durationHours', 'workType'], 'Booking');
@@ -865,22 +989,17 @@ export class DomesticStaffService {
     // Validate duration is positive
     validatePositiveNumber(durationHours, 'Duration hours');
 
-    // Check staff availability
-    const staff = await prisma.domesticStaff.findUnique({
-      where: { id: domesticStaffId },
+    // Staff and flat must both be in the caller's society; residents book only for their own flat
+    const staff = await prisma.domesticStaff.findFirst({
+      where: { id: domesticStaffId, societyId },
     });
 
     if (!staff || !staff.isActive) {
       throw new AppError('Staff not found or inactive', 404);
     }
-    if (staff.societyId !== societyId) throw new AppError('Staff does not belong to this society', 403);
 
-    const membership = await prisma.userFlatMembership.findFirst({
-      where: { userId: bookedById, flatId, isActive: true },
-      select: { id: true },
-    });
-    const bookingUser = await prisma.user.findUnique({ where: { id: bookedById }, select: { flatId: true } });
-    if (!membership && bookingUser?.flatId !== flatId) throw new AppError('You can only book staff for your own flat', 403);
+    await findInSociety(prisma.flat, flatId, societyId, { entity: 'Flat', select: { id: true } });
+    await assertOwnFlat(caller, flatId, 'Flat', 'You can only book staff for your own flat');
 
     const dateValue = bookingDate instanceof Date ? bookingDate.toISOString().slice(0, 10) : String(bookingDate).slice(0, 10);
     if (bookingDay(dateValue).getTime() < bookingDay(new Date().toISOString().slice(0, 10)).getTime()) {
@@ -953,15 +1072,25 @@ export class DomesticStaffService {
     return booking;
   }
 
-  async getBookings(filters: StaffBookingFilters & { bookingDate?: string }) {
-    const { domesticStaffId, bookedById, flatId, status, bookingDate, page = 1, limit = 20 } = filters;
+  async getBookings(filters: Omit<StaffBookingFilters, 'societyId'> & { bookingDate?: string }, caller: StaffCaller) {
+    const { domesticStaffId, bookedById, flatId, status, bookingDate } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit);
 
-    const where: Prisma.StaffBookingWhereInput = {};
+    // Always pinned to the caller's society (never a client-supplied one)
+    const where: Prisma.StaffBookingWhereInput = { societyId: caller.societyId };
     if (domesticStaffId) where.domesticStaffId = domesticStaffId;
     if (bookedById) where.bookedById = bookedById;
     if (flatId) where.flatId = flatId;
+
+    // Non-admins only see bookings for their own flats or ones they made themselves
+    const ownership: Prisma.StaffBookingWhereInput[] = [];
+    if (!isStaffAdminRole(caller.role)) {
+      const flatIds = await getCallerFlatIds(caller.userId, caller.societyId);
+      ownership.push({ OR: [{ flatId: { in: flatIds } }, { bookedById: caller.userId }] });
+    }
+
     // Unanswered requests whose day is over can't be accepted any more — keep them out of the list
-    where.AND = [notPastPendingWhere(), ...(status ? [bookingStatusWhere(status)] : [])];
+    where.AND = [notPastPendingWhere(), ...ownership, ...(status ? [bookingStatusWhere(status)] : [])];
 
     if (bookingDate) {
       const startOfDay = new Date(bookingDate);
@@ -983,7 +1112,7 @@ export class DomesticStaffService {
           flat: true,
         },
         orderBy: { bookingDate: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.staffBooking.count({ where }),
@@ -1004,14 +1133,25 @@ export class DomesticStaffService {
     };
   }
 
-  async acceptBooking(bookingId: string) {
-    const booking = await prisma.staffBooking.findUnique({
-      where: { id: bookingId },
+  /** Booking by id, only if it is in the caller's society (and, for residents, for their own flat). */
+  private async _findBookingForCaller(bookingId: string, caller: StaffCaller) {
+    const booking = await findInSociety(prisma.staffBooking, bookingId, caller.societyId, { entity: 'Booking' });
+    if (!isStaffAdminRole(caller.role) && booking.bookedById !== caller.userId) {
+      await assertOwnFlat(caller, booking.flatId, 'Booking');
+    }
+    return booking;
+  }
+
+  async acceptBooking(bookingId: string, caller: StaffCaller) {
+    const booking = await prisma.staffBooking.findFirst({
+      where: { id: bookingId, societyId: caller.societyId },
       include: { domesticStaff: { select: { name: true, staffType: true } } },
     });
-
     if (!booking) {
       throw new AppError('Booking not found', 404);
+    }
+    if (!isStaffAdminRole(caller.role) && booking.bookedById !== caller.userId) {
+      await assertOwnFlat(caller, booking.flatId, 'Booking');
     }
 
     if (booking.status !== 'PENDING') {
@@ -1042,14 +1182,8 @@ export class DomesticStaffService {
     return updatedBooking;
   }
 
-  async rejectBooking(bookingId: string, rejectionReason: string) {
-    const existing = await prisma.staffBooking.findUnique({
-      where: { id: bookingId },
-      select: { status: true, bookingDate: true, startTime: true },
-    });
-    if (!existing) {
-      throw new AppError('Booking not found', 404);
-    }
+  async rejectBooking(bookingId: string, rejectionReason: string, caller: StaffCaller) {
+    const existing = await this._findBookingForCaller(bookingId, caller);
     if (existing.status !== 'PENDING') {
       throw new AppError('Booking is not pending', 400);
     }
@@ -1070,7 +1204,9 @@ export class DomesticStaffService {
     return presentStaffBooking(booking);
   }
 
-  async completeBooking(bookingId: string, actualDuration?: number, finalCost?: number) {
+  async completeBooking(bookingId: string, caller: StaffCaller, actualDuration?: number, finalCost?: number) {
+    await this._findBookingForCaller(bookingId, caller);
+
     const booking = await prisma.staffBooking.update({
       where: { id: bookingId },
       data: {
@@ -1089,8 +1225,33 @@ export class DomesticStaffService {
   // ============================================
 
   // IMP-6: Use transaction to prevent race condition in rating calculation
-  async addReview(data: CreateStaffReviewDTO, reviewerId: string) {
-    const { domesticStaffId, rating } = data;
+  async addReview(input: CreateStaffReviewDTO, reviewerId: string, caller: StaffCaller) {
+    const { domesticStaffId, flatId } = input;
+    const rating = Number(input.rating);
+    if (!domesticStaffId || !flatId) {
+      throw new AppError('domesticStaffId and flatId are required', 400);
+    }
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      throw new AppError('Rating must be between 1 and 5', 400);
+    }
+
+    // Staff and flat must be in the caller's society; residents review from their own flat
+    await findStaffInSociety(domesticStaffId, caller.societyId);
+    await findInSociety(prisma.flat, flatId, caller.societyId, { entity: 'Flat', select: { id: true } });
+    await assertOwnFlat(caller, flatId, 'Flat', 'You can only review staff from your own flat');
+
+    // Only known review fields are client-settable
+    const data: CreateStaffReviewDTO = {
+      domesticStaffId,
+      flatId,
+      rating,
+      review: input.review,
+      workQuality: input.workQuality,
+      punctuality: input.punctuality,
+      behavior: input.behavior,
+      workType: input.workType,
+      workDate: input.workDate,
+    };
 
     const review = await prisma.$transaction(async (tx) => {
       const createdReview = await tx.staffReview.create({
@@ -1128,7 +1289,8 @@ export class DomesticStaffService {
     return review;
   }
 
-  async getStaffReviews(staffId: string) {
+  async getStaffReviews(staffId: string, societyId: string) {
+    await findStaffInSociety(staffId, societyId);
     const reviews = await prisma.staffReview.findMany({
       where: { domesticStaffId: staffId },
       include: {
@@ -1206,7 +1368,8 @@ export class DomesticStaffService {
     return staff;
   }
 
-  async updateAvailabilityStatus(staffId: string, status: StaffAvailabilityStatus) {
+  async updateAvailabilityStatus(staffId: string, status: StaffAvailabilityStatus, societyId: string) {
+    await findStaffInSociety(staffId, societyId);
     const staff = await prisma.domesticStaff.update({
       where: { id: staffId },
       data: { availabilityStatus: status },

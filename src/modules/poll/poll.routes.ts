@@ -10,7 +10,7 @@ router.use(ensureSameSociety);
 
 // All authenticated users can view polls
 router.get('/', cache({ ttl: 60, keyPrefix: 'polls', varyBy: ['societyId', 'userId'] }), getPolls);
-router.get('/:id', cache({ ttl: 60, keyPrefix: 'polls' }), getPollById);
+router.get('/:id', cache({ ttl: 60, keyPrefix: 'polls', varyBy: ['societyId', 'userId'] }), getPollById);
 
 // Residents can vote
 router.post('/:id/vote', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['polls:*']), castVote);

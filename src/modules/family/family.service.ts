@@ -214,20 +214,23 @@ export class FamilyService {
       throw new AppError('Only primary residents can remove family members', 403);
     }
 
-    const member = await prisma.user.findUnique({
-      where: { id: memberId },
+    // Without a flat, `member.flatId !== primaryResident.flatId` would be null === null and
+    // match every flat-less account (admins, guards, other societies' pending users).
+    if (!primaryResident.flatId) {
+      throw new AppError('You must be assigned to a flat to manage family members', 403);
+    }
+
+    if (memberId === primaryResidentId) {
+      throw new AppError('Primary resident cannot remove themselves', 400);
+    }
+
+    // Scope the lookup to the caller's own flat (and resident accounts only)
+    const member = await prisma.user.findFirst({
+      where: { id: memberId, flatId: primaryResident.flatId, role: 'RESIDENT' },
     });
 
     if (!member) {
       throw new AppError('Family member not found', 404);
-    }
-
-    if (member.id === primaryResidentId) {
-      throw new AppError('Primary resident cannot remove themselves', 400);
-    }
-
-    if (member.flatId !== primaryResident.flatId) {
-      throw new AppError('Can only remove family members from your own flat', 403);
     }
 
     if (member.isPrimaryResident) {
@@ -261,16 +264,17 @@ export class FamilyService {
       throw new AppError('Only primary residents can update family roles', 403);
     }
 
-    const member = await prisma.user.findUnique({
-      where: { id: memberId },
+    if (!primaryResident.flatId) {
+      throw new AppError('You must be assigned to a flat to manage family members', 403);
+    }
+
+    // Scope the lookup to the caller's own flat (and resident accounts only)
+    const member = await prisma.user.findFirst({
+      where: { id: memberId, flatId: primaryResident.flatId, role: 'RESIDENT' },
     });
 
     if (!member) {
       throw new AppError('Family member not found', 404);
-    }
-
-    if (member.flatId !== primaryResident.flatId) {
-      throw new AppError('Can only update family members from your own flat', 403);
     }
 
     if (member.isPrimaryResident) {

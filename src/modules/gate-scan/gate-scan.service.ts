@@ -41,7 +41,7 @@ export class GateScanService {
    * Universal QR scan endpoint (GatePass + DomesticStaff only).
    * InvitePass scanning is now handled by verifyCode() with passcodes.
    */
-  async scan(qrToken: string, guardId: string, gatePointId?: string): Promise<ScanResult> {
+  async scan(qrToken: string, guardId: string, societyId: string, gatePointId?: string): Promise<ScanResult> {
     // The database token is authoritative for staff passes. Looking it up
     // first also keeps already-issued passes valid if JWT signing keys rotate.
     const storedStaff = await prisma.domesticStaff.findUnique({
@@ -49,7 +49,7 @@ export class GateScanService {
       select: { id: true },
     });
     if (storedStaff) {
-      return this._scanDomesticStaff(qrToken, guardId);
+      return this._scanDomesticStaff(qrToken, guardId, societyId);
     }
 
     let payload: Record<string, unknown>;
@@ -63,7 +63,7 @@ export class GateScanService {
     // Current staff passes use type=domestic_staff. Keep staffId support for
     // older passes already issued before the payload was simplified.
     if (payload.staffId || payload.type === 'domestic_staff') {
-      return this._scanDomesticStaff(qrToken, guardId);
+      return this._scanDomesticStaff(qrToken, guardId, societyId);
     }
 
     // Pre-approved entry QR
@@ -80,7 +80,8 @@ export class GateScanService {
       };
     }
 
-    const gatePass = await prisma.gatePass.findUnique({ where: { qrToken } });
+    // Only passes issued in the guard's own society; others look like unknown codes.
+    const gatePass = await prisma.gatePass.findFirst({ where: { qrToken, societyId } });
     if (gatePass) {
       return this._processGatePass(gatePass, guardId, gatePointId);
     }
@@ -98,12 +99,14 @@ export class GateScanService {
    *     MAX_USES_REACHED / EXPIRED / NOT_STARTED / WRONG_DAY / OUTSIDE_HOURS / UNCLAIMED_SLOT)
    *  3. Allowed -> GuestEntryLog + CHECKED_IN Entry (+ one use consumed for limited passes)
    */
-  async verifyCode(code: string, guardId: string): Promise<VerifyCodeResult> {
+  async verifyCode(code: string, guardId: string, societyId: string): Promise<VerifyCodeResult> {
     const guard = await prisma.user.findUnique({
       where: { id: guardId },
       select: { societyId: true, name: true },
     });
     if (!guard?.societyId) throw new AppError('Guard not assigned to society', 400);
+    // The society comes from the authenticated session; a guard can only verify its own society's codes.
+    if (guard.societyId !== societyId) throw new AppError('Invalid code', 404);
 
     const now = new Date();
     // IST time (UTC+5:30) for day/time checks
@@ -114,8 +117,9 @@ export class GateScanService {
     const currentTime = istNow.toISOString().slice(11, 16); // "HH:MM"
 
     // --- 1. Check PartySlot ---
-    const slot = await prisma.partySlot.findUnique({
-      where: { code },
+    // Codes from another society are treated as unknown (no cross-society entry/PII leak)
+    const slot = await prisma.partySlot.findFirst({
+      where: { code, partyInvite: { societyId } },
       include: {
         partyInvite: {
           include: {
@@ -131,8 +135,8 @@ export class GateScanService {
     }
 
     // --- 2. Check GuestInvite ---
-    const guestInvite = await prisma.guestInvite.findUnique({
-      where: { passcode: code },
+    const guestInvite = await prisma.guestInvite.findFirst({
+      where: { passcode: code, societyId },
       include: {
         flat: { select: { flatNumber: true } },
         resident: { select: { name: true } },
@@ -403,36 +407,30 @@ export class GateScanService {
   // ============================================
   // PRIVATE: Domestic Staff (unchanged)
   // ============================================
-  private async _scanDomesticStaff(qrToken: string, guardId: string): Promise<ScanResult> {
-    const [guard, staff] = await Promise.all([
-      prisma.user.findUnique({
-        where: { id: guardId },
-        select: { societyId: true },
-      }),
-      prisma.domesticStaff.findUnique({
-        where: { qrToken },
-        select: {
-          id: true,
-          name: true,
-          staffType: true,
-          photoUrl: true,
-          societyId: true,
-          isActive: true,
-          isVerified: true,
-          isCurrentlyWorking: true,
-          lastCheckIn: true,
-          lastCheckOut: true,
-          assignedFlats: {
-            where: { isActive: true },
-            orderBy: [{ isPrimary: 'desc' }, { createdAt: 'asc' }],
-            take: 1,
-            select: { flatId: true },
-          },
+  private async _scanDomesticStaff(qrToken: string, guardId: string, societyId: string): Promise<ScanResult> {
+    const staff = await prisma.domesticStaff.findUnique({
+      where: { qrToken },
+      select: {
+        id: true,
+        name: true,
+        staffType: true,
+        photoUrl: true,
+        societyId: true,
+        isActive: true,
+        isVerified: true,
+        isCurrentlyWorking: true,
+        lastCheckIn: true,
+        lastCheckOut: true,
+        assignedFlats: {
+          where: { isActive: true },
+          orderBy: [{ isPrimary: 'desc' }, { createdAt: 'asc' }],
+          take: 1,
+          select: { flatId: true },
         },
-      }),
-    ]);
+      },
+    });
     if (!staff) throw new AppError('Staff QR code not found', 404);
-    if (!guard?.societyId || staff.societyId !== guard.societyId) {
+    if (staff.societyId !== societyId) {
       return { type: 'DOMESTIC_STAFF', allowed: false, reason: 'This staff member belongs to another society' };
     }
     if (!staff.isActive) {

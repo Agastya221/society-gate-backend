@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { clampPagination } from '../../utils/scope';
 import { eventBus } from '../../utils/eventBus';
 import { emitToUser, SOCKET_EVENTS } from '../../utils/socket';
 import logger from '../../utils/logger';
@@ -184,7 +185,8 @@ export class EntryRequestService {
       limit?: number;
     }
   ) {
-    const { status, flatId, page = 1, limit = 20 } = filters;
+    const { status, flatId } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -205,9 +207,7 @@ export class EntryRequestService {
 
     const where: Prisma.EntryRequestWhereInput = {};
 
-    if (user.role === 'GUARD') {
-      if (user.societyId) where.societyId = user.societyId;
-    } else if (user.role === 'RESIDENT') {
+    if (user.role === 'RESIDENT') {
       const visibleFlatIds = this.getUserFlatIds(user);
       if (visibleFlatIds.length === 0) {
         where.id = '__no_access__';
@@ -222,8 +222,11 @@ export class EntryRequestService {
           { targets: { some: { flatId: { in: visibleFlatIds } } } },
         ];
       }
-    } else if (user.role === 'ADMIN') {
-      if (user.societyId) where.societyId = user.societyId;
+    } else if (user.role === 'ADMIN' || user.role === 'GUARD') {
+      // Never fall through to an unscoped query for a society-less admin/guard
+      where.societyId = user.societyId ?? '__no_access__';
+    } else if (user.role !== 'SUPER_ADMIN') {
+      where.id = '__no_access__';
     }
 
     if (status) where.status = status;
@@ -236,7 +239,7 @@ export class EntryRequestService {
         where,
         include: this.getInclude(),
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.entryRequest.count({ where }),

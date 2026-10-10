@@ -26,6 +26,8 @@ declare global {
     interface Request {
       user?: AuthenticatedUser;
       societyId?: string;
+      /** Output of validate({ query }) — req.query itself cannot be overwritten in Express 5 */
+      validatedQuery?: Record<string, unknown>;
     }
   }
 }

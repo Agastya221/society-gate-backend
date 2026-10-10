@@ -5,6 +5,7 @@ import { notificationService } from '../notification/notification.service';
 import { societySettingsService } from '../settings/society-settings.service';
 import { OCCUPIED_FLAT_WHERE } from '../onboarding/onboarding.service';
 import { AppError } from '../../utils/ResponseHandler';
+import { clampPagination } from '../../utils/scope';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -245,8 +246,8 @@ export class BillingService {
       limit?: number;
     } = {},
   ) {
-    const { status, month, page = 1, limit = 50 } = opts;
-    const skip = (page - 1) * limit;
+    const { status, month } = opts;
+    const { page, limit, skip } = clampPagination(opts.page, opts.limit, 50);
 
     const where: {
       societyId: string;

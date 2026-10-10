@@ -52,13 +52,19 @@ export const createEntryRequest = async (req: Request, res: Response) => {
 export const getEntryRequests = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const { status, flatId, page, limit } = req.query;
+    // validate({ query: entryRequestQuerySchema }) puts the coerced values here
+    const { status, flatId, page, limit } = (req.validatedQuery ?? {}) as {
+      status?: EntryRequestStatus;
+      flatId?: string;
+      page?: number;
+      limit?: number;
+    };
 
     const result = await entryRequestService.getEntryRequests(userId, {
-      status: status as EntryRequestStatus | undefined,
-      flatId: flatId as string,
-      page: page ? parseInt(page as string, 10) : undefined,
-      limit: limit ? parseInt(limit as string, 10) : undefined,
+      status,
+      flatId,
+      page,
+      limit,
     });
 
     res.status(200).json({

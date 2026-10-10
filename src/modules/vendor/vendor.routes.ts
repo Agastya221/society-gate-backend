@@ -26,7 +26,7 @@ router.get('/categories', cache({ ttl: 300, keyPrefix: 'vendors', varyBy: ['soci
 
 // List + detail
 router.get('/', cache({ ttl: 300, keyPrefix: 'vendors', varyBy: ['societyId'] }), getVendors);
-router.get('/:id', cache({ ttl: 300, keyPrefix: 'vendors' }), getVendorById);
+router.get('/:id', cache({ ttl: 300, keyPrefix: 'vendors', varyBy: ['societyId', 'userId'] }), getVendorById);
 
 // Residents can add contacts; admins can manage all
 router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['vendors:*']), createVendor);

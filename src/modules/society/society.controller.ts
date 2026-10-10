@@ -1,12 +1,22 @@
 import { Request, Response } from 'express';
 import { SocietyService } from './society.service';
 import { asyncHandler } from '../../utils/ResponseHandler';
+import {
+  adminUpdateSocietySchema,
+  superAdminUpdateSocietySchema,
+  createSocietySchema,
+  createBlockSchema,
+  createFlatSchema,
+  updateFlatSchema,
+  listSocietiesQuerySchema,
+  parseOrThrow,
+} from './society.schemas';
 
 const societyService = new SocietyService();
 
 export class SocietyController {
   createSociety = asyncHandler(async (req: Request, res: Response) => {
-    const society = await societyService.createSociety(req.body);
+    const society = await societyService.createSociety(parseOrThrow(createSocietySchema, req.body));
 
     res.status(201).json({
       success: true,
@@ -16,7 +26,7 @@ export class SocietyController {
   });
 
   createBlock = asyncHandler(async (req: Request, res: Response) => {
-    const block = await societyService.createBlock(String(req.params.id), req.body, req.user!);
+    const block = await societyService.createBlock(String(req.params.id), parseOrThrow(createBlockSchema, req.body), req.user!);
 
     res.status(201).json({
       success: true,
@@ -26,7 +36,7 @@ export class SocietyController {
   });
 
   createFlat = asyncHandler(async (req: Request, res: Response) => {
-    const flat = await societyService.createFlat(String(req.params.id), req.body, req.user!);
+    const flat = await societyService.createFlat(String(req.params.id), parseOrThrow(createFlatSchema, req.body), req.user!);
 
     res.status(201).json({
       success: true,
@@ -36,7 +46,12 @@ export class SocietyController {
   });
 
   updateFlat = asyncHandler(async (req: Request, res: Response) => {
-    const flat = await societyService.updateFlat(String(req.params.id), String(req.params.flatId), req.body, req.user!);
+    const flat = await societyService.updateFlat(
+      String(req.params.id),
+      String(req.params.flatId),
+      parseOrThrow(updateFlatSchema, req.body),
+      req.user!
+    );
 
     res.json({
       success: true,
@@ -56,7 +71,13 @@ export class SocietyController {
   });
 
   getSocieties = asyncHandler(async (req: Request, res: Response) => {
-    const result = await societyService.getSocieties(req.query);
+    const query = parseOrThrow(listSocietiesQuerySchema, req.query);
+    const result = await societyService.getSocieties({
+      city: query.city || undefined,
+      isActive: query.isActive === undefined ? undefined : query.isActive === 'true',
+      page: query.page,
+      limit: query.limit,
+    });
 
     res.json({
       success: true,
@@ -74,7 +95,13 @@ export class SocietyController {
   });
 
   updateSociety = asyncHandler(async (req: Request, res: Response) => {
-    const society = await societyService.updateSociety(String(req.params.id), req.body);
+    // Strict allow-list: ADMIN gets profile/contact fields only; billing, status
+    // and relations are SUPER_ADMIN-only (or never editable).
+    const data =
+      req.user!.role === 'SUPER_ADMIN'
+        ? parseOrThrow(superAdminUpdateSocietySchema, req.body)
+        : parseOrThrow(adminUpdateSocietySchema, req.body);
+    const society = await societyService.updateSociety(String(req.params.id), data);
 
     res.json({
       success: true,

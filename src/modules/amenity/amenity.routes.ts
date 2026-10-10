@@ -31,7 +31,7 @@ router.patch('/bookings/:id/approve', authorize('ADMIN', 'SUPER_ADMIN'), clearCa
 router.patch('/bookings/:id/cancel', clearCacheAfter(['bookings:*']), cancelBooking);
 
 // Param routes after static
-router.get('/:id', cache({ ttl: 300, keyPrefix: 'amenities' }), getAmenityById);
+router.get('/:id', cache({ ttl: 300, keyPrefix: 'amenities', varyBy: ['societyId'] }), getAmenityById);
 router.get('/:id/slots', getSlots);
 router.post('/:id/book', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['bookings:*']), bookSlot);
 router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['amenities:*']), updateAmenity);

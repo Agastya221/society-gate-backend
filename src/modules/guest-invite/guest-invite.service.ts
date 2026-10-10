@@ -75,9 +75,9 @@ export class GuestInviteService {
    * Get single invite by ID (owner only).
    */
   async getById(id: string, userId: string) {
-    const invite = await prisma.guestInvite.findUnique({ where: { id } });
+    // Ownership is part of the lookup: another resident's invite id reads as "not found"
+    const invite = await prisma.guestInvite.findFirst({ where: { id, residentId: userId } });
     if (!invite) throw new AppError('Guest invite not found', 404);
-    if (invite.residentId !== userId) throw new AppError('Access denied', 403);
     return invite;
   }
 
@@ -85,9 +85,7 @@ export class GuestInviteService {
    * Revoke an active invite immediately.
    */
   async revoke(id: string, userId: string) {
-    const invite = await prisma.guestInvite.findUnique({ where: { id } });
-    if (!invite) throw new AppError('Guest invite not found', 404);
-    if (invite.residentId !== userId) throw new AppError('Access denied', 403);
+    const invite = await this.getById(id, userId);
     if (invite.status !== 'ACTIVE') throw new AppError('Only active invites can be revoked', 400);
 
     return prisma.guestInvite.update({
@@ -100,9 +98,7 @@ export class GuestInviteService {
    * Hard-delete an invite (only if REVOKED or EXPIRED).
    */
   async delete(id: string, userId: string) {
-    const invite = await prisma.guestInvite.findUnique({ where: { id } });
-    if (!invite) throw new AppError('Guest invite not found', 404);
-    if (invite.residentId !== userId) throw new AppError('Access denied', 403);
+    const invite = await this.getById(id, userId);
     if (invite.status === 'ACTIVE') {
       throw new AppError('Cannot delete active invites. Revoke first.', 400);
     }

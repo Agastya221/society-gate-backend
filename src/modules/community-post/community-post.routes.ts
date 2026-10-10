@@ -16,13 +16,13 @@ router.get('/', cache({ ttl: 60, keyPrefix: 'posts', varyBy: ['societyId', 'user
 router.post('/', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['posts:*']), createPost);
 
 // Post-level actions
-router.get('/:id', cache({ ttl: 60, keyPrefix: 'posts' }), getPostById);
+router.get('/:id', cache({ ttl: 60, keyPrefix: 'posts', varyBy: ['societyId', 'userId'] }), getPostById);
 router.delete('/:id', clearCacheAfter(['posts:*']), deletePost);
 router.patch('/:id/pin', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['posts:*']), togglePin);
 router.post('/:id/like', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['posts:*']), likePost);
 
 // Comments
-router.get('/:id/comments', cache({ ttl: 60, keyPrefix: 'posts' }), getComments);
+router.get('/:id/comments', cache({ ttl: 60, keyPrefix: 'posts', varyBy: ['societyId', 'userId'] }), getComments);
 router.post('/:id/comments', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['posts:*']), addComment);
 
 export default router;

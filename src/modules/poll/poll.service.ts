@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type { Prisma, PollStatus } from '../../types';
 
 export class PollService {
@@ -47,9 +48,8 @@ export class PollService {
     description?: string;
     status?: PollStatus;
     votingEndsAt?: string;
-  }) {
-    const poll = await prisma.poll.findUnique({ where: { id: pollId } });
-    if (!poll) throw new AppError('Poll not found', 404);
+  }, societyId: string) {
+    await findInSociety(prisma.poll, pollId, societyId, { entity: 'Poll' });
 
     return prisma.poll.update({
       where: { id: pollId },
@@ -61,9 +61,8 @@ export class PollService {
     });
   }
 
-  async deletePoll(pollId: string) {
-    const poll = await prisma.poll.findUnique({ where: { id: pollId } });
-    if (!poll) throw new AppError('Poll not found', 404);
+  async deletePoll(pollId: string, societyId: string) {
+    await findInSociety(prisma.poll, pollId, societyId, { entity: 'Poll' });
 
     await prisma.poll.delete({ where: { id: pollId } });
     return { message: 'Poll deleted successfully' };
@@ -80,7 +79,8 @@ export class PollService {
     page?: number;
     limit?: number;
   }) {
-    const { societyId, status, requestingUserId, page = 1, limit = 20 } = filters;
+    const { societyId, status, requestingUserId } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
     const where: Prisma.PollWhereInput = { societyId };
     if (status) where.status = status;
@@ -105,7 +105,7 @@ export class PollService {
           _count: { select: { votes: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.poll.count({ where }),
@@ -117,9 +117,9 @@ export class PollService {
     };
   }
 
-  async getPollById(pollId: string, requestingUserId: string) {
-    const poll = await prisma.poll.findUnique({
-      where: { id: pollId },
+  async getPollById(pollId: string, requestingUserId: string, societyId: string) {
+    const poll = await prisma.poll.findFirst({
+      where: { id: pollId, societyId },
       include: {
         options: true,
         votes: { where: { votedById: requestingUserId }, select: { optionId: true } },
@@ -133,9 +133,9 @@ export class PollService {
     return this._formatPoll(poll);
   }
 
-  async castVote(pollId: string, optionId: string, votedById: string) {
-    const poll = await prisma.poll.findUnique({
-      where: { id: pollId },
+  async castVote(pollId: string, optionId: string, votedById: string, societyId: string) {
+    const poll = await prisma.poll.findFirst({
+      where: { id: pollId, societyId },
       include: { options: true },
     });
 
@@ -180,7 +180,7 @@ export class PollService {
       ]);
     }
 
-    return this.getPollById(pollId, votedById);
+    return this.getPollById(pollId, votedById, societyId);
   }
 
   // ============================================

@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../utils/Client';
 import { getPresignedViewUrl } from '../../utils/s3';
+import { clampPagination } from '../../utils/scope';
 
 const resolvePhotoUrl = async (value: string | null) => {
   if (!value || /^https?:\/\//i.test(value)) return value;
@@ -132,9 +133,7 @@ export const getAdminStaffAttendance = async (req: Request, res: Response) => {
     const societyId = req.user!.societyId!;
     const { date, staffId, page, limit } = req.query as Record<string, string>;
 
-    const pageNum = page ? parseInt(page, 10) : 1;
-    const limitNum = limit ? parseInt(limit, 10) : 50;
-    const skip = (pageNum - 1) * limitNum;
+    const { page: pageNum, limit: limitNum, skip } = clampPagination(page, limit, 50);
 
     // Build date range filter
     let dateFilter: { gte?: Date; lt?: Date } | undefined;

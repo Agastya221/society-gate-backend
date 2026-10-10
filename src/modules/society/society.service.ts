@@ -2,6 +2,17 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import type { AuthenticatedUser, Prisma } from '../../types';
 import type { SubscriptionCycle } from '../../../prisma/generated/prisma/enums';
+import { clampPagination } from '../../utils/scope';
+import type { z } from 'zod';
+import type {
+  adminUpdateSocietySchema,
+  superAdminUpdateSocietySchema,
+  createSocietySchema,
+} from './society.schemas';
+
+type SocietyUpdateData =
+  | z.infer<typeof adminUpdateSocietySchema>
+  | z.infer<typeof superAdminUpdateSocietySchema>;
 
 function nextDueDateFromCycle(from: Date, cycle: SubscriptionCycle): Date {
   const d = new Date(from);
@@ -21,13 +32,13 @@ export class SocietyService {
     throw new AppError('You can manage flats only for your active society', 403);
   }
 
-  async createSociety(data: Omit<Prisma.SocietyUncheckedCreateInput, 'nextDueDate' | 'isActive'>) {
+  async createSociety(data: z.infer<typeof createSocietySchema>) {
     const cycle = (data.subscriptionCycle as SubscriptionCycle | undefined) ?? 'MONTHLY';
     const nextDueDate = nextDueDateFromCycle(new Date(), cycle);
 
     const society = await prisma.society.create({
       data: {
-        ...data,
+        ...(data as Omit<Prisma.SocietyCreateInput, 'nextDueDate' | 'isActive'>),
         nextDueDate,
         isActive: true,
       },
@@ -184,8 +195,9 @@ export class SocietyService {
     });
   }
 
-  async getSocieties(filters?: { city?: string; isActive?: boolean; page?: number; limit?: number }) {
-    const { city, isActive, page = 1, limit = 20 } = filters || {};
+  async getSocieties(filters?: { city?: string; isActive?: boolean; page?: unknown; limit?: unknown }) {
+    const { city, isActive } = filters || {};
+    const { page, limit, skip } = clampPagination(filters?.page, filters?.limit, 20);
 
     const where: Prisma.SocietyWhereInput = {};
     if (city) where.city = city;
@@ -204,7 +216,7 @@ export class SocietyService {
           },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.society.count({ where }),
@@ -243,10 +255,17 @@ export class SocietyService {
     return society;
   }
 
-  async updateSociety(societyId: string, data: Prisma.SocietyUpdateInput) {
+  async updateSociety(societyId: string, data: SocietyUpdateData) {
+    if (Object.keys(data).length === 0) {
+      throw new AppError('No valid society fields provided for update', 400);
+    }
+
+    const existing = await prisma.society.findUnique({ where: { id: societyId }, select: { id: true } });
+    if (!existing) throw new AppError('Society not found', 404);
+
     const society = await prisma.society.update({
       where: { id: societyId },
-      data,
+      data: data as Prisma.SocietyUpdateInput,
     });
 
     return society;
@@ -297,7 +316,7 @@ export class SocietyService {
       prisma.flat.count({ where: { societyId } }),
       prisma.user.count({ where: { societyId, role: 'RESIDENT' } }),
       prisma.user.count({ where: { societyId, role: 'GUARD' } }),
-      prisma.domesticStaff.count({ where: { isActive: true } }),
+      prisma.domesticStaff.count({ where: { societyId, isActive: true } }),
       prisma.entry.count({
         where: {
           societyId,

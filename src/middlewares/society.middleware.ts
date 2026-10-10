@@ -4,7 +4,7 @@ import logger from '../utils/logger';
 
 // ============================================
 // SOCIETY ISOLATION MIDDLEWARE
-// Fixes IMP-7: Now also injects societyId for GET query params
+// Sets req.societyId (never client-chosen for non-super-admins) and injects it into non-GET bodies
 // ============================================
 
 interface RequestBodyWithSociety {
@@ -24,8 +24,13 @@ export const ensureSameSociety = async (
       );
     }
 
-    // SUPER_ADMIN can access everything
-    if (req.user.role === 'SUPER_ADMIN') return next();
+    // SUPER_ADMIN can access everything; they name the target society explicitly.
+    if (req.user.role === 'SUPER_ADMIN') {
+      const body = req.body as RequestBodyWithSociety | undefined;
+      const requested = body?.societyId || (req.query.societyId as string | undefined) || req.params.societyId;
+      req.societyId = typeof requested === 'string' && requested ? requested : req.user.societyId ?? undefined;
+      return next();
+    }
 
     const userSocietyId = req.user.societyId;
     if (!userSocietyId) {
@@ -56,17 +61,15 @@ export const ensureSameSociety = async (
       );
     }
 
-    // Store computed societyId safely on request
+    // Store computed societyId safely on request. Non-super-admins always get
+    // their own society — never a client-supplied value.
+    // NOTE: Express 5 re-parses req.query on every read, so assigning to it is a
+    // no-op. Controllers must read req.societyId instead of req.query.societyId.
     req.societyId = userSocietyId;
 
     // IMP-7: Inject societyId into body for non-GET requests
-    if (body && !bodySocietyId && req.method !== 'GET') {
+    if (body && typeof body === 'object' && req.method !== 'GET') {
       body.societyId = userSocietyId;
-    }
-
-    // IMP-7: For GET requests, override query.societyId so services pick it up
-    if (req.method === 'GET' && !querySocietyId) {
-      (req.query as Record<string, string>).societyId = userSocietyId;
     }
 
     return next();

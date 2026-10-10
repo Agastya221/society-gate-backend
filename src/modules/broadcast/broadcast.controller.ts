@@ -1,16 +1,13 @@
 import type { Request, Response } from 'express';
 import { broadcastService } from './broadcast.service';
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  return 'An unexpected error occurred';
-}
+import { getSocietyId, clampPagination } from '../../utils/scope';
+import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 
 // POST /admin/broadcast
 export const sendBroadcast = async (req: Request, res: Response) => {
   try {
     const adminId = req.user!.id;
-    const societyId = req.user!.societyId!;
+    const societyId = getSocietyId(req);
     const { title, message, isEmergency, target } = req.body;
 
     const result = await broadcastService.sendBroadcast(societyId, adminId, {
@@ -26,7 +23,7 @@ export const sendBroadcast = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(getErrorStatusCode(error)).json({
       success: false,
       message: getErrorMessage(error),
     });
@@ -36,15 +33,14 @@ export const sendBroadcast = async (req: Request, res: Response) => {
 // GET /admin/broadcast
 export const getBroadcastHistory = async (req: Request, res: Response) => {
   try {
-    const societyId = req.user!.societyId!;
-    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
+    const societyId = getSocietyId(req);
+    const { page, limit } = clampPagination(req.query.page, req.query.limit, 20);
 
     const result = await broadcastService.getBroadcastHistory(societyId, page, limit);
 
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(getErrorStatusCode(error)).json({
       success: false,
       message: getErrorMessage(error),
     });

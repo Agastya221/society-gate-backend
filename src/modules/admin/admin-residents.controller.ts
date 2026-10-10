@@ -1,26 +1,32 @@
 import { Request, Response } from 'express';
 import { asyncHandler, AppError } from '../../utils/ResponseHandler';
 import { adminResidentsService } from './admin-residents.service';
+import { clampPagination } from '../../utils/scope';
 
 // ADMIN → their own society. SUPER_ADMIN must name one with ?societyId=.
 const resolveSocietyId = (req: Request): string => {
   const user = req.user!;
   if (user.role === 'SUPER_ADMIN') {
-    const societyId = typeof req.query.societyId === 'string' ? req.query.societyId : user.societyId;
+    // ensureSameSociety resolved the requested society (body/query/params) into
+    // req.societyId; only SUPER_ADMIN gets a client-chosen society.
+    const societyId = req.societyId ?? user.societyId;
     if (!societyId) throw new AppError('societyId query parameter is required', 400);
     return societyId;
   }
+  // Everyone else is pinned to their own society, whatever the client sent.
   if (!user.societyId) throw new AppError('Admin is not assigned to a society', 403);
   return user.societyId;
 };
 
 // GET /api/v1/admin/residents?search=&page=&limit=
 export const listAdminResidents = asyncHandler(async (req: Request, res: Response) => {
-  const { search, page, limit } = req.query as unknown as { search?: string; page: number; limit: number };
+  // validate({ query }) stores the parsed values on req.validatedQuery (req.query is raw).
+  const { search, page, limit } = (req.validatedQuery ?? {}) as { search?: string; page?: number; limit?: number };
+  const paging = clampPagination(page, limit, 20);
   const data = await adminResidentsService.list(resolveSocietyId(req), {
     search: search || undefined,
-    page: Number(page) || 1,
-    limit: Number(limit) || 20,
+    page: paging.page,
+    limit: paging.limit,
   });
   res.json({ success: true, data });
 });

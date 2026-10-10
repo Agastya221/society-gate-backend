@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type {
   CreateNoticeDTO,
   UpdateNoticeDTO,
@@ -28,10 +29,11 @@ function formatNotice(notice: {
 }
 
 export class NoticeService {
-  async createNotice(data: CreateNoticeDTO, createdById: string) {
+  async createNotice(data: CreateNoticeDTO, createdById: string, societyId: string) {
     const notice = await prisma.notice.create({
       data: {
         ...data,
+        societyId,
         createdById,
       },
       include: {
@@ -44,7 +46,8 @@ export class NoticeService {
   }
 
   async getNotices(filters: NoticeFilters) {
-    const { societyId, type, priority, isPinned, isActive = true, includeExpired = false, page = 1, limit = 20 } = filters;
+    const { societyId, type, priority, isPinned, isActive = true, includeExpired = false } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
     const where: Prisma.NoticeWhereInput = { societyId };
     if (type) where.type = type;
@@ -71,7 +74,7 @@ export class NoticeService {
           { isPinned: 'desc' },
           { publishAt: 'desc' },
         ],
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.notice.count({ where }),
@@ -88,9 +91,14 @@ export class NoticeService {
     };
   }
 
-  async getNoticeById(noticeId: string) {
-    const notice = await prisma.notice.findUnique({
-      where: { id: noticeId },
+  async getNoticeById(noticeId: string, societyId: string, isAdmin = false) {
+    const notice = await prisma.notice.findFirst({
+      where: {
+        id: noticeId,
+        societyId,
+        // Non-admins only see notices that are live (active and already published)
+        ...(isAdmin ? {} : { isActive: true, publishAt: { lte: new Date() } }),
+      },
       include: {
         createdBy: { select: { id: true, name: true, role: true } },
         society: { select: { id: true, name: true } },
@@ -110,14 +118,8 @@ export class NoticeService {
     return formatNotice(notice);
   }
 
-  async updateNotice(noticeId: string, data: UpdateNoticeDTO, userId: string) {
-    const notice = await prisma.notice.findUnique({
-      where: { id: noticeId },
-    });
-
-    if (!notice) {
-      throw new AppError('Notice not found', 404);
-    }
+  async updateNotice(noticeId: string, data: UpdateNoticeDTO, userId: string, societyId: string) {
+    const notice = await findInSociety(prisma.notice, noticeId, societyId, { entity: 'Notice' });
 
     if (notice.createdById !== userId) {
       throw new AppError('You can only edit your own notices', 403);
@@ -134,14 +136,8 @@ export class NoticeService {
     return updatedNotice;
   }
 
-  async deleteNotice(noticeId: string, userId: string) {
-    const notice = await prisma.notice.findUnique({
-      where: { id: noticeId },
-    });
-
-    if (!notice) {
-      throw new AppError('Notice not found', 404);
-    }
+  async deleteNotice(noticeId: string, userId: string, societyId: string) {
+    const notice = await findInSociety(prisma.notice, noticeId, societyId, { entity: 'Notice' });
 
     if (notice.createdById !== userId) {
       throw new AppError('You can only delete your own notices', 403);
@@ -154,14 +150,8 @@ export class NoticeService {
     return { message: 'Notice deleted successfully' };
   }
 
-  async togglePinNotice(noticeId: string) {
-    const notice = await prisma.notice.findUnique({
-      where: { id: noticeId },
-    });
-
-    if (!notice) {
-      throw new AppError('Notice not found', 404);
-    }
+  async togglePinNotice(noticeId: string, societyId: string) {
+    const notice = await findInSociety(prisma.notice, noticeId, societyId, { entity: 'Notice' });
 
     const updatedNotice = await prisma.notice.update({
       where: { id: noticeId },

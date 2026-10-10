@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { prisma } from '../../utils/Client';
 import logger from '../../utils/logger';
-import type { AuthenticatedUser } from '../../types';
+import type { AuthenticatedUser, Prisma } from '../../types';
 import {
   cashfreeClient,
   type CashfreeCustomerDetails,
@@ -341,8 +341,25 @@ export class PaymentService {
     user: AuthenticatedUser,
     opts: { allowPaid?: boolean; allowWaived?: boolean } = {},
   ): Promise<InvoiceForPayment> {
-    const invoice = await prisma.invoice.findUnique({
-      where: { id: invoiceId },
+    if (user.role === 'GUARD') {
+      throw new Error('Guards cannot initiate invoice payments');
+    }
+
+    // Scope in the query (not after loading) so ids from other societies / flats are
+    // indistinguishable from ids that don't exist, and status isn't leaked either.
+    const where: Prisma.InvoiceWhereInput = { id: invoiceId };
+    if (user.role !== 'SUPER_ADMIN') {
+      if (!user.societyId) throw new Error('Invoice not found');
+      where.societyId = user.societyId;
+      if (user.role !== 'ADMIN') {
+        // Residents (and any other non-admin role) may only pay their own flat's invoices
+        if (!user.flatId) throw new Error('Invoice not found');
+        where.flatId = user.flatId;
+      }
+    }
+
+    const invoice = await prisma.invoice.findFirst({
+      where,
       include: {
         flat: {
           select: {
@@ -364,20 +381,6 @@ export class PaymentService {
     if (!invoice) throw new Error('Invoice not found');
     if (!opts.allowPaid && invoice.status === 'PAID') throw new Error('Invoice is already paid');
     if (!opts.allowWaived && invoice.status === 'WAIVED') throw new Error('Invoice has been waived');
-
-    if (user.role !== 'SUPER_ADMIN') {
-      if (!user.societyId || invoice.societyId !== user.societyId) {
-        throw new Error('Invoice not found');
-      }
-
-      if (user.role === 'RESIDENT' && invoice.flatId !== user.flatId) {
-        throw new Error('Invoice not found');
-      }
-
-      if (user.role === 'GUARD') {
-        throw new Error('Guards cannot initiate invoice payments');
-      }
-    }
 
     return invoice;
   }

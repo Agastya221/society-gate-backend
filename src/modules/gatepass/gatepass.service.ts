@@ -1,11 +1,34 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { generateQRToken } from '../../utils/QrGenerate';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type {
   CreateGatePassDTO,
   GatePassFilters,
   Prisma,
 } from '../../types';
+
+/** Who is acting, and in which society. */
+export interface GatePassCaller {
+  id: string;
+  role: string;
+  flatId: string | null;
+  societyId: string;
+}
+
+/**
+ * Residents may only see passes for their own flat or ones they requested
+ * (passes carry a usable QR token). Admins and guards see the whole society.
+ */
+function residentPassScope(caller: GatePassCaller): Prisma.GatePassWhereInput {
+  if (caller.role !== 'RESIDENT') return {};
+  return {
+    OR: [
+      { requestedById: caller.id },
+      ...(caller.flatId ? [{ flatId: caller.flatId }] : []),
+    ],
+  };
+}
 
 export class GatePassService {
   async createGatePass(data: CreateGatePassDTO, requestedById: string) {
@@ -24,7 +47,8 @@ export class GatePassService {
     }
 
     const isSocietyAdmin = user.role === 'ADMIN' || user.role === 'SUPER_ADMIN';
-    const flatId = isSocietyAdmin ? data.flatId : (data.flatId || user.flatId);
+    // Residents can only raise a pass for their own flat.
+    const flatId = isSocietyAdmin ? data.flatId : user.flatId;
     const societyId = user.societyId;
 
     if (!isSocietyAdmin && !flatId) {
@@ -71,14 +95,10 @@ export class GatePassService {
     return gatePass;
   }
 
-  async approveGatePass(gatePassId: string, approvedById: string) {
-    const gatePass = await prisma.gatePass.findUnique({
-      where: { id: gatePassId },
+  async approveGatePass(gatePassId: string, approvedById: string, societyId: string) {
+    const gatePass = await findInSociety(prisma.gatePass, gatePassId, societyId, {
+      entity: 'Gate pass',
     });
-
-    if (!gatePass) {
-      throw new AppError('Gate pass not found', 404);
-    }
 
     if (gatePass.status !== 'PENDING') {
       throw new AppError('Gate pass is not pending approval', 400);
@@ -101,14 +121,10 @@ export class GatePassService {
     return updatedGatePass;
   }
 
-  async rejectGatePass(gatePassId: string, reason: string, approvedById: string) {
-    const gatePass = await prisma.gatePass.findUnique({
-      where: { id: gatePassId },
+  async rejectGatePass(gatePassId: string, reason: string, approvedById: string, societyId: string) {
+    const gatePass = await findInSociety(prisma.gatePass, gatePassId, societyId, {
+      entity: 'Gate pass',
     });
-
-    if (!gatePass) {
-      throw new AppError('Gate pass not found', 404);
-    }
 
     if (gatePass.status !== 'PENDING') {
       throw new AppError('Gate pass is not pending approval', 400);
@@ -131,9 +147,13 @@ export class GatePassService {
     return updatedGatePass;
   }
 
-  async scanGatePass(qrToken: string, guardId: string) {
-    const gatePass = await prisma.gatePass.findUnique({
-      where: { qrToken },
+  async scanGatePass(qrToken: string, guardId: string, societyId: string) {
+    if (!qrToken || typeof qrToken !== 'string') {
+      throw new AppError('Invalid QR code', 404);
+    }
+    // A guard can only admit passes issued by their own society.
+    const gatePass = await prisma.gatePass.findFirst({
+      where: { qrToken, societyId },
       include: {
         flat: true,
         requestedBy: { select: { id: true, name: true, phone: true } },
@@ -215,10 +235,11 @@ export class GatePassService {
     return updatedGatePass;
   }
 
-  async getGatePasses(filters: GatePassFilters) {
-    const { societyId, flatId, status, type, page = 1, limit = 20 } = filters;
+  async getGatePasses(filters: GatePassFilters, caller: GatePassCaller) {
+    const { flatId, status, type } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit);
 
-    const where: Prisma.GatePassWhereInput = { societyId };
+    const where: Prisma.GatePassWhereInput = { societyId: caller.societyId, ...residentPassScope(caller) };
     if (flatId) where.flatId = flatId;
     if (status) where.status = status;
     if (type) where.type = type;
@@ -232,7 +253,7 @@ export class GatePassService {
           approvedBy: { select: { id: true, name: true, phone: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.gatePass.count({ where }),
@@ -249,9 +270,10 @@ export class GatePassService {
     };
   }
 
-  async getGatePassById(gatePassId: string) {
-    const gatePass = await prisma.gatePass.findUnique({
-      where: { id: gatePassId },
+  async getGatePassById(gatePassId: string, caller: GatePassCaller) {
+    const gatePass = await findInSociety(prisma.gatePass, gatePassId, caller.societyId, {
+      entity: 'Gate pass',
+      where: residentPassScope(caller),
       include: {
         flat: true,
         requestedBy: { select: { id: true, name: true, phone: true } },
@@ -259,21 +281,14 @@ export class GatePassService {
       },
     });
 
-    if (!gatePass) {
-      throw new AppError('Gate pass not found', 404);
-    }
-
     return gatePass;
   }
 
-  async getGatePassQR(gatePassId: string) {
-    const gatePass = await prisma.gatePass.findUnique({
-      where: { id: gatePassId },
+  async getGatePassQR(gatePassId: string, caller: GatePassCaller) {
+    const gatePass = await findInSociety(prisma.gatePass, gatePassId, caller.societyId, {
+      entity: 'Gate pass',
+      where: residentPassScope(caller),
     });
-
-    if (!gatePass) {
-      throw new AppError('Gate pass not found', 404);
-    }
 
     return {
       qrToken: gatePass.qrToken,
@@ -285,14 +300,10 @@ export class GatePassService {
     };
   }
 
-  async cancelGatePass(gatePassId: string, userId: string) {
-    const gatePass = await prisma.gatePass.findUnique({
-      where: { id: gatePassId },
+  async cancelGatePass(gatePassId: string, userId: string, societyId: string) {
+    const gatePass = await findInSociety(prisma.gatePass, gatePassId, societyId, {
+      entity: 'Gate pass',
     });
-
-    if (!gatePass) {
-      throw new AppError('Gate pass not found', 404);
-    }
 
     if (gatePass.requestedById !== userId) {
       throw new AppError('You can only cancel your own gate passes', 403);

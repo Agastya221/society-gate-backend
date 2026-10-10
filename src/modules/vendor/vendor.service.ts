@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type {
   CreateVendorDTO,
   UpdateVendorDTO,
@@ -19,10 +20,11 @@ function getInitials(name: string): string {
 }
 
 export class VendorService {
-  async createVendor(data: CreateVendorDTO, addedById: string) {
+  async createVendor(data: CreateVendorDTO, addedById: string, societyId: string) {
     const vendor = await prisma.vendor.create({
       data: {
         ...data,
+        societyId,
         addedById,
       },
       include: {
@@ -35,7 +37,8 @@ export class VendorService {
   }
 
   async getVendors(filters: VendorFilters & { requestingUserId?: string }) {
-    const { societyId, category, isVerified, isActive, requestingUserId, page = 1, limit = 20 } = filters;
+    const { societyId, category, isVerified, isActive, requestingUserId } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
     const where: Prisma.VendorWhereInput = { societyId };
     if (category) where.category = category;
@@ -56,7 +59,7 @@ export class VendorService {
           { rating: 'desc' },
           { name: 'asc' },
         ],
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.vendor.count({ where }),
@@ -75,9 +78,9 @@ export class VendorService {
     };
   }
 
-  async getVendorById(vendorId: string, requestingUserId?: string) {
-    const vendor = await prisma.vendor.findUnique({
-      where: { id: vendorId },
+  async getVendorById(vendorId: string, societyId: string, requestingUserId?: string) {
+    const vendor = await prisma.vendor.findFirst({
+      where: { id: vendorId, societyId },
       include: {
         addedBy: { select: { id: true, name: true, role: true } },
         likes: requestingUserId
@@ -93,13 +96,18 @@ export class VendorService {
     return this._formatVendor(vendor, requestingUserId ?? null);
   }
 
-  async updateVendor(vendorId: string, data: UpdateVendorDTO) {
-    const vendor = await prisma.vendor.findUnique({
-      where: { id: vendorId },
-    });
+  async updateVendor(
+    vendorId: string,
+    data: UpdateVendorDTO,
+    societyId: string,
+    user: { id: string; role: string }
+  ) {
+    const vendor = await findInSociety(prisma.vendor, vendorId, societyId, { entity: 'Vendor' });
 
-    if (!vendor) {
-      throw new AppError('Vendor not found', 404);
+    // Residents may only edit contacts they added themselves; admins manage all
+    const isAdmin = user.role === 'ADMIN' || user.role === 'SUPER_ADMIN';
+    if (!isAdmin && vendor.addedById !== user.id) {
+      throw new AppError('You can only edit contacts you added', 403);
     }
 
     const updatedVendor = await prisma.vendor.update({
@@ -110,14 +118,8 @@ export class VendorService {
     return updatedVendor;
   }
 
-  async verifyVendor(vendorId: string) {
-    const vendor = await prisma.vendor.findUnique({
-      where: { id: vendorId },
-    });
-
-    if (!vendor) {
-      throw new AppError('Vendor not found', 404);
-    }
+  async verifyVendor(vendorId: string, societyId: string) {
+    const vendor = await findInSociety(prisma.vendor, vendorId, societyId, { entity: 'Vendor' });
 
     const updatedVendor = await prisma.vendor.update({
       where: { id: vendorId },
@@ -130,14 +132,8 @@ export class VendorService {
     return updatedVendor;
   }
 
-  async deleteVendor(vendorId: string) {
-    const vendor = await prisma.vendor.findUnique({
-      where: { id: vendorId },
-    });
-
-    if (!vendor) {
-      throw new AppError('Vendor not found', 404);
-    }
+  async deleteVendor(vendorId: string, societyId: string) {
+    await findInSociety(prisma.vendor, vendorId, societyId, { entity: 'Vendor' });
 
     await prisma.vendor.delete({
       where: { id: vendorId },
@@ -146,14 +142,8 @@ export class VendorService {
     return { message: 'Vendor deleted successfully' };
   }
 
-  async updateVendorRating(vendorId: string, rating: number) {
-    const vendor = await prisma.vendor.findUnique({
-      where: { id: vendorId },
-    });
-
-    if (!vendor) {
-      throw new AppError('Vendor not found', 404);
-    }
+  async updateVendorRating(vendorId: string, rating: number, societyId: string) {
+    const vendor = await findInSociety(prisma.vendor, vendorId, societyId, { entity: 'Vendor' });
 
     // Calculate new average rating
     const totalReviews = vendor.totalReviews + 1;
@@ -172,9 +162,8 @@ export class VendorService {
   }
 
   // Toggle like — returns { liked: boolean, likesCount: number }
-  async toggleLike(vendorId: string, userId: string) {
-    const vendor = await prisma.vendor.findUnique({ where: { id: vendorId } });
-    if (!vendor) throw new AppError('Vendor not found', 404);
+  async toggleLike(vendorId: string, userId: string, societyId: string) {
+    const vendor = await findInSociety(prisma.vendor, vendorId, societyId, { entity: 'Vendor' });
 
     const existing = await prisma.vendorLike.findUnique({
       where: { vendorId_userId: { vendorId, userId } },

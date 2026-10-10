@@ -1,6 +1,7 @@
 import { prisma } from '../../utils/Client';
 import { pushService } from '../../services/push.service';
 import logger from '../../utils/logger';
+import { clampPagination } from '../../utils/scope';
 
 // ============================================
 // BROADCAST SERVICE
@@ -120,8 +121,8 @@ export class BroadcastService {
   /**
    * List past broadcast notices for the admin dashboard history view.
    */
-  async getBroadcastHistory(societyId: string, page = 1, limit = 20) {
-    const skip = (page - 1) * limit;
+  async getBroadcastHistory(societyId: string, rawPage?: number, rawLimit?: number) {
+    const { page, limit, skip } = clampPagination(rawPage, rawLimit, 20);
 
     const [notices, total] = await Promise.all([
       prisma.notice.findMany({

@@ -19,7 +19,8 @@ router.use(ensureSameSociety);
 // Cached GET routes (all authenticated users)
 // varyBy role: ?includeExpired=true is honoured for admins only, so the same URL differs per role
 router.get('/', cache({ ttl: 120, keyPrefix: 'notices', varyBy: ['societyId', 'role'] }), getNotices);
-router.get('/:id', cache({ ttl: 300, keyPrefix: 'notices' }), getNoticeById);
+// varyBy societyId + role: the lookup is society-scoped and non-admins can't see unpublished notices
+router.get('/:id', cache({ ttl: 300, keyPrefix: 'notices', varyBy: ['societyId', 'role'] }), getNoticeById);
 
 // Admin only routes that invalidate cache
 router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['notices:*']), createNotice);

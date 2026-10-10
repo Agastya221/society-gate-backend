@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type {
   CreateAmenityDTO,
   UpdateAmenityDTO,
@@ -10,11 +11,20 @@ import type {
   Prisma,
 } from '../../types';
 
+/** Who is booking, so the booking can be tied to their society and flat. */
+export interface BookingCaller {
+  role: string;
+  flatId: string | null;
+  societyId: string;
+}
+
+const isSocietyAdmin = (role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN';
+
 export class AmenityService {
   // Admin: Create amenity
-  async createAmenity(data: CreateAmenityDTO) {
+  async createAmenity(data: CreateAmenityDTO, societyId: string) {
     const amenity = await prisma.amenity.create({
-      data,
+      data: { ...data, societyId },
       include: {
         society: { select: { id: true, name: true } },
       },
@@ -40,27 +50,15 @@ export class AmenityService {
   }
 
   // Get amenity by ID
-  async getAmenityById(amenityId: string) {
-    const amenity = await prisma.amenity.findUnique({
-      where: { id: amenityId },
-    });
-
-    if (!amenity) {
-      throw new AppError('Amenity not found', 404);
-    }
+  async getAmenityById(amenityId: string, societyId: string) {
+    const amenity = await findInSociety(prisma.amenity, amenityId, societyId, { entity: 'Amenity' });
 
     return amenity;
   }
 
   // Admin: Update amenity
-  async updateAmenity(amenityId: string, data: UpdateAmenityDTO) {
-    const amenity = await prisma.amenity.findUnique({
-      where: { id: amenityId },
-    });
-
-    if (!amenity) {
-      throw new AppError('Amenity not found', 404);
-    }
+  async updateAmenity(amenityId: string, data: UpdateAmenityDTO, societyId: string) {
+    await findInSociety(prisma.amenity, amenityId, societyId, { entity: 'Amenity', select: { id: true } });
 
     const updatedAmenity = await prisma.amenity.update({
       where: { id: amenityId },
@@ -71,14 +69,8 @@ export class AmenityService {
   }
 
   // Admin: Delete amenity
-  async deleteAmenity(amenityId: string) {
-    const amenity = await prisma.amenity.findUnique({
-      where: { id: amenityId },
-    });
-
-    if (!amenity) {
-      throw new AppError('Amenity not found', 404);
-    }
+  async deleteAmenity(amenityId: string, societyId: string) {
+    await findInSociety(prisma.amenity, amenityId, societyId, { entity: 'Amenity', select: { id: true } });
 
     await prisma.amenity.delete({
       where: { id: amenityId },
@@ -88,15 +80,26 @@ export class AmenityService {
   }
 
   // Create booking
-  async createBooking(data: CreateBookingDTO, userId: string) {
+  async createBooking(data: CreateBookingDTO, userId: string, caller: BookingCaller) {
     const { amenityId, bookingDate, startTime, endTime } = data;
+    const { societyId } = caller;
+
+    // Residents always book for their own flat; admins may name a flat, but it
+    // must be in their society.
+    const flatId = isSocietyAdmin(caller.role) ? (data.flatId || caller.flatId) : caller.flatId;
+    if (!flatId) {
+      throw new AppError('User must be assigned to a flat', 400);
+    }
+    if (isSocietyAdmin(caller.role)) {
+      await findInSociety(prisma.flat, flatId, societyId, { entity: 'Flat', select: { id: true } });
+    }
 
     // Use transaction to prevent double-booking race condition
     const booking = await prisma.$transaction(async (tx) => {
       // Check if amenity exists and is active
-      const amenity = await tx.amenity.findUnique({
-        where: { id: amenityId },
-      });
+      const amenity = typeof amenityId === 'string'
+        ? await tx.amenity.findFirst({ where: { id: amenityId, societyId } })
+        : null;
 
       if (!amenity || !amenity.isActive) {
         throw new AppError('Amenity not found or inactive', 404);
@@ -159,6 +162,8 @@ export class AmenityService {
         data: {
           ...data,
           userId,
+          flatId,
+          societyId,
           bookingDate: new Date(bookingDate),
           status: 'CONFIRMED',
         },
@@ -177,7 +182,8 @@ export class AmenityService {
 
   // Get bookings
   async getBookings(filters: BookingFilters) {
-    const { societyId, amenityId, userId, status, bookingDate, page = 1, limit = 20 } = filters;
+    const { societyId, amenityId, userId, status, bookingDate } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit);
 
     const where: Prisma.AmenityBookingWhereInput = { societyId };
     if (amenityId) where.amenityId = amenityId;
@@ -200,7 +206,7 @@ export class AmenityService {
           flat: true,
         },
         orderBy: { bookingDate: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.amenityBooking.count({ where }),
@@ -218,14 +224,8 @@ export class AmenityService {
   }
 
   // Approve booking (Admin)
-  async approveBooking(bookingId: string) {
-    const booking = await prisma.amenityBooking.findUnique({
-      where: { id: bookingId },
-    });
-
-    if (!booking) {
-      throw new AppError('Booking not found', 404);
-    }
+  async approveBooking(bookingId: string, societyId: string) {
+    const booking = await findInSociety(prisma.amenityBooking, bookingId, societyId, { entity: 'Booking' });
 
     if (booking.status !== 'PENDING') {
       throw new AppError('Booking is not pending', 400);
@@ -244,14 +244,8 @@ export class AmenityService {
   }
 
   // Cancel booking
-  async cancelBooking(bookingId: string, reason: string, userId: string) {
-    const booking = await prisma.amenityBooking.findUnique({
-      where: { id: bookingId },
-    });
-
-    if (!booking) {
-      throw new AppError('Booking not found', 404);
-    }
+  async cancelBooking(bookingId: string, reason: string, userId: string, societyId: string) {
+    const booking = await findInSociety(prisma.amenityBooking, bookingId, societyId, { entity: 'Booking' });
 
     if (booking.userId !== userId) {
       throw new AppError('You can only cancel your own bookings', 403);
@@ -275,9 +269,9 @@ export class AmenityService {
 
   // Get fixed slot blocks for a given date — rich availability data for UI
   // `viewer` (optional) marks slots booked by the caller's flat (or by the caller) with bookedByMe
-  async getSlots(amenityId: string, date: string, viewer?: { userId?: string; flatId?: string | null }) {
-    const amenity = await prisma.amenity.findUnique({ where: { id: amenityId } });
-    if (!amenity || !amenity.isActive) {
+  async getSlots(amenityId: string, date: string, societyId: string, viewer?: { userId?: string; flatId?: string | null }) {
+    const amenity = await findInSociety(prisma.amenity, amenityId, societyId, { entity: 'Amenity' });
+    if (!amenity.isActive) {
       throw new AppError('Amenity not found or inactive', 404);
     }
 
@@ -360,7 +354,7 @@ export class AmenityService {
   }
 
   // Book by slotId (frontend-facing)
-  async bookSlot(amenityId: string, data: BookSlotDTO, userId: string) {
+  async bookSlot(amenityId: string, data: BookSlotDTO, userId: string, caller: BookingCaller) {
     const { slotId, date, members, purpose } = data;
 
     // Derive startTime/endTime from slotId: "<amenityId>_<date>_<HH:MM>"
@@ -375,8 +369,8 @@ export class AmenityService {
     }
     const startTime = slotId.slice(prefix.length);
 
-    const amenity = await prisma.amenity.findUnique({ where: { id: amenityId } });
-    if (!amenity || !amenity.isActive) {
+    const amenity = await findInSociety(prisma.amenity, amenityId, caller.societyId, { entity: 'Amenity' });
+    if (!amenity.isActive) {
       throw new AppError('Amenity not found or inactive', 404);
     }
 
@@ -392,26 +386,23 @@ export class AmenityService {
     };
     const endTime = toTimeStr(toMinutes(startTime) + slotDurationHours * 60);
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { flatId: true, societyId: true },
-    });
-    if (!user?.flatId || !user.societyId) {
+    if (!caller.flatId) {
       throw new AppError('User must be assigned to a flat', 400);
     }
 
     return this.createBooking(
       {
         amenityId,
-        flatId: user.flatId,
-        societyId: user.societyId,
+        flatId: caller.flatId,
+        societyId: caller.societyId,
         bookingDate: new Date(date),
         startTime,
         endTime,
         guestCount: members ? members.length + 1 : 1,
         purpose,
       },
-      userId
+      userId,
+      caller
     );
   }
 }

@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety, clampPagination } from '../../utils/scope';
 import type { Prisma, PostCategory } from '../../types';
 
 export class CommunityPostService {
@@ -35,11 +36,16 @@ export class CommunityPostService {
     page?: number;
     limit?: number;
   }) {
-    const { societyId, category, authorId, requestingUserId, page = 1, limit = 20 } = filters;
+    const { societyId, category, authorId, requestingUserId } = filters;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
     const where: Prisma.CommunityPostWhereInput = { societyId, isActive: true };
     if (category) where.category = category;
-    if (authorId) where.authorId = authorId;
+    if (authorId) {
+      where.authorId = authorId;
+      // Filtering by author must not reveal who wrote anonymous posts.
+      if (authorId !== requestingUserId) where.isAnonymous = false;
+    }
 
     const [posts, total] = await Promise.all([
       prisma.communityPost.findMany({
@@ -54,7 +60,7 @@ export class CommunityPostService {
           { isPinned: 'desc' },
           { createdAt: 'desc' },
         ],
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.communityPost.count({ where }),
@@ -71,28 +77,25 @@ export class CommunityPostService {
     };
   }
 
-  async getPostById(postId: string, requestingUserId: string) {
-    const post = await prisma.communityPost.findUnique({
-      where: { id: postId },
+  async getPostById(postId: string, requestingUserId: string, societyId: string) {
+    const post = await prisma.communityPost.findFirst({
+      where: { id: postId, societyId, isActive: true },
       include: {
         author: { select: { id: true, name: true } },
         likes: { where: { userId: requestingUserId }, select: { id: true } },
       },
     });
 
-    if (!post || !post.isActive) {
-      throw new AppError('Post not found', 404);
-    }
+    if (!post) throw new AppError('Post not found', 404);
 
     return this._formatPost(post, requestingUserId);
   }
 
-  async deletePost(postId: string, userId: string, userRole: string) {
-    const post = await prisma.communityPost.findUnique({ where: { id: postId } });
-
-    if (!post || !post.isActive) {
-      throw new AppError('Post not found', 404);
-    }
+  async deletePost(postId: string, userId: string, userRole: string, societyId: string) {
+    const post = await findInSociety(prisma.communityPost, postId, societyId, {
+      entity: 'Post',
+      where: { isActive: true },
+    });
 
     const isOwner = post.authorId === userId;
     const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userRole);
@@ -109,10 +112,11 @@ export class CommunityPostService {
     return { message: 'Post deleted successfully' };
   }
 
-  async togglePin(postId: string) {
-    const post = await prisma.communityPost.findUnique({ where: { id: postId } });
-
-    if (!post) throw new AppError('Post not found', 404);
+  async togglePin(postId: string, societyId: string) {
+    const post = await findInSociety(prisma.communityPost, postId, societyId, {
+      entity: 'Post',
+      where: { isActive: true },
+    });
 
     const updated = await prisma.communityPost.update({
       where: { id: postId },
@@ -122,9 +126,11 @@ export class CommunityPostService {
     return updated;
   }
 
-  async toggleLike(postId: string, userId: string) {
-    const post = await prisma.communityPost.findUnique({ where: { id: postId } });
-    if (!post || !post.isActive) throw new AppError('Post not found', 404);
+  async toggleLike(postId: string, userId: string, societyId: string) {
+    const post = await findInSociety(prisma.communityPost, postId, societyId, {
+      entity: 'Post',
+      where: { isActive: true },
+    });
 
     const existing = await prisma.postLike.findUnique({
       where: { postId_userId: { postId, userId } },
@@ -159,8 +165,10 @@ export class CommunityPostService {
     content: string;
     isAnonymous?: boolean;
   }, authorId: string, societyId: string) {
-    const post = await prisma.communityPost.findUnique({ where: { id: postId } });
-    if (!post || !post.isActive) throw new AppError('Post not found', 404);
+    await findInSociety(prisma.communityPost, postId, societyId, {
+      entity: 'Post',
+      where: { isActive: true },
+    });
 
     const [comment] = await prisma.$transaction([
       prisma.postComment.create({
@@ -181,12 +189,21 @@ export class CommunityPostService {
       }),
     ]);
 
-    return this._formatComment(comment);
+    return this._formatComment(comment, authorId);
   }
 
-  async getComments(postId: string, page = 1, limit = 30) {
-    const post = await prisma.communityPost.findUnique({ where: { id: postId } });
-    if (!post || !post.isActive) throw new AppError('Post not found', 404);
+  async getComments(
+    postId: string,
+    societyId: string,
+    requestingUserId: string,
+    rawPage?: number,
+    rawLimit?: number,
+  ) {
+    await findInSociety(prisma.communityPost, postId, societyId, {
+      entity: 'Post',
+      where: { isActive: true },
+    });
+    const { page, limit, skip } = clampPagination(rawPage, rawLimit, 30);
 
     const [comments, total] = await Promise.all([
       prisma.postComment.findMany({
@@ -195,14 +212,14 @@ export class CommunityPostService {
           author: { select: { id: true, name: true } },
         },
         orderBy: { createdAt: 'asc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.postComment.count({ where: { postId } }),
     ]);
 
     return {
-      comments: comments.map(this._formatComment),
+      comments: comments.map((c) => this._formatComment(c, requestingUserId)),
       pagination: { total, page, limit, pages: Math.ceil(total / limit) },
     };
   }
@@ -220,9 +237,12 @@ export class CommunityPostService {
     },
     requestingUserId: string
   ) {
-    const { author, likes, ...rest } = post;
+    const { author, likes, authorId, ...rest } = post;
+    // Anonymous posts must not leak who wrote them (authorId included), except to the author.
+    const hideAuthor = post.isAnonymous && authorId !== requestingUserId;
     return {
       ...rest,
+      ...(hideAuthor ? {} : { authorId }),
       author: post.isAnonymous ? null : author,
       isLikedByMe: (likes?.length ?? 0) > 0,
     };
@@ -233,11 +253,14 @@ export class CommunityPostService {
       isAnonymous: boolean;
       author: { id: string; name: string } | null;
       [key: string]: unknown;
-    }
+    },
+    requestingUserId: string
   ) {
-    const { author, ...rest } = comment;
+    const { author, authorId, ...rest } = comment;
+    const hideAuthor = comment.isAnonymous && authorId !== requestingUserId;
     return {
       ...rest,
+      ...(hideAuthor ? {} : { authorId }),
       author: comment.isAnonymous ? null : author,
     };
   }

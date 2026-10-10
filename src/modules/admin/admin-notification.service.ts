@@ -120,12 +120,13 @@ export class AdminNotificationService {
   // 4. Mark single notification as read (ownership verified)
   // -----------------------------------------------------------------------
   async markAsRead(notificationId: string, adminId: string) {
-    const notification = await prisma.notification.findUnique({
-      where: { id: notificationId },
+    // Scoped lookup: another user's notification is indistinguishable from a missing one.
+    const notification = await prisma.notification.findFirst({
+      where: { id: notificationId, userId: adminId },
+      select: { id: true },
     });
 
     if (!notification) throw new AppError('Notification not found', 404);
-    if (notification.userId !== adminId) throw new AppError('Access denied', 403);
 
     return prisma.notification.update({
       where: { id: notificationId },
@@ -148,12 +149,13 @@ export class AdminNotificationService {
   // 6. Delete a notification (soft/hard — we do hard delete per notification)
   // -----------------------------------------------------------------------
   async deleteNotification(notificationId: string, adminId: string) {
-    const notification = await prisma.notification.findUnique({
-      where: { id: notificationId },
+    // Scoped lookup: another user's notification is indistinguishable from a missing one.
+    const notification = await prisma.notification.findFirst({
+      where: { id: notificationId, userId: adminId },
+      select: { id: true },
     });
 
     if (!notification) throw new AppError('Notification not found', 404);
-    if (notification.userId !== adminId) throw new AppError('Access denied', 403);
 
     await prisma.notification.delete({ where: { id: notificationId } });
     return { deleted: true };

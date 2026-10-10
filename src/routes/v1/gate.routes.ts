@@ -4,7 +4,7 @@ import gatepassRoutes from '../../modules/gatepass/gatepass.routes';
 import guestInviteRoutes from '../../modules/guest-invite/guest-invite.routes';
 import partyInviteRoutes from '../../modules/party-invite/party-invite.routes';
 import preApprovedRoutes from '../../modules/pre-approved-entry/pre-approved-entry.routes';
-import { authenticate, ensureSameSociety } from '../../middlewares/auth.middleware';
+import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { getEntries } from '../../modules/gate-scan/gate-scan.controller';
 import {
   lookupVehicle,
@@ -15,6 +15,7 @@ import { prisma } from '../../utils/Client';
 import { OCCUPIED_FLAT_WHERE } from '../../modules/onboarding/onboarding.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { Request, Response } from 'express';
+import { getSocietyId } from '../../utils/scope';
 
 const router = Router();
 
@@ -26,16 +27,18 @@ const router = Router();
 router.get('/entries', authenticate, ensureSameSociety, getEntries);
 
 // Parking — guard can lookup vehicles and issue violations
-router.get('/parking/lookup', authenticate, ensureSameSociety, lookupVehicle);
-router.get('/parking/violations', authenticate, ensureSameSociety, listViolations);
-router.post('/parking/violations', authenticate, ensureSameSociety, issueViolation);
-router.post('/parking/vehicles/:vehicleId/violations', authenticate, ensureSameSociety, issueViolation);
+// Residents use /resident/parking/complaints and /resident/vehicles/search instead.
+const parkingStaff = authorize('GUARD', 'ADMIN', 'SUPER_ADMIN');
+router.get('/parking/lookup', authenticate, ensureSameSociety, parkingStaff, lookupVehicle);
+router.get('/parking/violations', authenticate, ensureSameSociety, parkingStaff, listViolations);
+router.post('/parking/violations', authenticate, ensureSameSociety, parkingStaff, issueViolation);
+router.post('/parking/vehicles/:vehicleId/violations', authenticate, ensureSameSociety, parkingStaff, issueViolation);
 
 // Flat search — used by guard "New Entry" screen
 router.get('/flats/search', authenticate, ensureSameSociety, async (req: Request, res: Response) => {
   try {
-    const societyId = req.user!.societyId!;
-    const query = (req.query.query as string | undefined)?.trim() ?? '';
+    const societyId = getSocietyId(req);
+    const query = typeof req.query.query === 'string' ? req.query.query.trim().slice(0, 50) : '';
 
     if (!query) {
       return res.status(400).json({ success: false, message: 'query param is required' });

@@ -85,8 +85,9 @@ export class PartyInviteService {
    * Get party invite with only claimed slots (for resident management screen).
    */
   async getById(id: string, userId: string) {
-    const invite = await prisma.partyInvite.findUnique({
-      where: { id },
+    // Ownership is part of the lookup: another resident's invite id reads as "not found"
+    const invite = await prisma.partyInvite.findFirst({
+      where: { id, residentId: userId },
       include: {
         slots: {
           where: { phone: { not: null } },
@@ -96,7 +97,6 @@ export class PartyInviteService {
     });
 
     if (!invite) throw new AppError('Party invite not found', 404);
-    if (invite.residentId !== userId) throw new AppError('Access denied', 403);
 
     return {
       id: invite.id,
@@ -120,9 +120,7 @@ export class PartyInviteService {
    * Uses transaction to prevent race conditions.
    */
   async addGuest(partyId: string, userId: string, name: string, phone: string) {
-    const invite = await prisma.partyInvite.findUnique({ where: { id: partyId } });
-    if (!invite) throw new AppError('Party invite not found', 404);
-    if (invite.residentId !== userId) throw new AppError('Access denied', 403);
+    const invite = await this.findOwned(partyId, userId);
     if (invite.status !== 'ACTIVE') throw new AppError('Party invite is not active', 400);
 
     return prisma.$transaction(async (tx) => {
@@ -228,9 +226,7 @@ export class PartyInviteService {
    * Remove a guest (free a slot) by code.
    */
   async removeGuest(partyId: string, userId: string, code: string) {
-    const invite = await prisma.partyInvite.findUnique({ where: { id: partyId } });
-    if (!invite) throw new AppError('Party invite not found', 404);
-    if (invite.residentId !== userId) throw new AppError('Access denied', 403);
+    const invite = await this.findOwned(partyId, userId);
 
     const slot = await prisma.partySlot.findFirst({
       where: { partyInviteId: partyId, code },
@@ -257,15 +253,20 @@ export class PartyInviteService {
    * Cancel the entire party invite. All slots become invalid.
    */
   async cancel(id: string, userId: string) {
-    const invite = await prisma.partyInvite.findUnique({ where: { id } });
-    if (!invite) throw new AppError('Party invite not found', 404);
-    if (invite.residentId !== userId) throw new AppError('Access denied', 403);
+    const invite = await this.findOwned(id, userId);
     if (invite.status !== 'ACTIVE') throw new AppError('Party invite is not active', 400);
 
     return prisma.partyInvite.update({
       where: { id },
       data: { status: 'CANCELLED' },
     });
+  }
+
+  /** The caller's own party invite, or 404 (never reveals other residents' invites). */
+  private async findOwned(id: string, userId: string) {
+    const invite = await prisma.partyInvite.findFirst({ where: { id, residentId: userId } });
+    if (!invite) throw new AppError('Party invite not found', 404);
+    return invite;
   }
 
   /**

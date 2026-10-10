@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../utils/Client';
 import type { Prisma } from '../../types';
+import { clampPagination } from '../../utils/scope';
 
 type IntercomQuery = {
   societyId?: string;
@@ -49,7 +50,8 @@ function getInitials(name: string) {
 }
 
 function resolveSocietyId(req: Request): { societyId?: string; error?: { status: number; message: string } } {
-  const query = req.query as unknown as IntercomQuery;
+  // validate({ query }) stores parsed values on req.validatedQuery; req.query is raw.
+  const query = (req.validatedQuery ?? {}) as Partial<IntercomQuery>;
   const requestedSocietyId = query.societyId;
 
   if (req.user!.role === 'SUPER_ADMIN') {
@@ -97,13 +99,9 @@ export const getAdminIntercomContacts = async (req: Request, res: Response) => {
       });
     }
 
-    const {
-      search,
-      page,
-      limit,
-      includeGuards,
-      includeInactive,
-    } = req.query as unknown as IntercomQuery;
+    const query = (req.validatedQuery ?? {}) as Partial<IntercomQuery>;
+    const { search, includeGuards = true, includeInactive = false } = query;
+    const { page, limit } = clampPagination(query.page, query.limit, 100);
 
     const societyId = scoped.societyId!;
     const normalizedSearch = search?.trim();

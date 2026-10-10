@@ -1,6 +1,8 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { findInSociety } from '../../utils/scope';
 import type { Prisma } from '../../types';
+import type { ViolationType, ViolationSource, ViolationStatus } from '../../../prisma/generated/prisma/client';
 
 const VEHICLE_SELECT = {
   id: true,
@@ -61,57 +63,65 @@ export class ParkingViolationService {
   // ============================================
   // ISSUE VIOLATION — Admin & Guard (OFFICIAL)
   // ============================================
+  // Caller (controller) has already validated: type is a ViolationType, penaltyAmount is
+  // in (0, MAX_PARKING_PENALTY_INR], and addToInvoice is only set for ADMIN/SUPER_ADMIN.
   async issueViolation(data: {
     vehicleId?: string;
-    vehicleNumber: string;
-    type: string;
+    vehicleNumber?: string;
+    type: ViolationType;
     description?: string;
     penaltyAmount?: number;
     addToInvoice?: boolean;
   }, reportedById: string, societyId: string) {
-    // Resolve vehicleId from number if not provided
-    let vehicleId = data.vehicleId ?? null;
-    let resolvedUserId: string | null = null;
+    let vehicle: { id: string; userId: string; flatId: string | null; vehicleNumber: string } | null = null;
 
-    if (!vehicleId && data.vehicleNumber) {
-      const normalized = data.vehicleNumber.toUpperCase().replace(/\s/g, '');
-      const vehicle = await prisma.vehicle.findFirst({
-        where: { vehicleNumber: normalized, societyId },
+    if (data.vehicleId) {
+      // Only a vehicle of the caller's society — never by id alone
+      vehicle = await findInSociety(prisma.vehicle, data.vehicleId, societyId, {
+        select: { id: true, userId: true, flatId: true, vehicleNumber: true },
+        entity: 'Vehicle',
       });
-      if (vehicle) {
-        vehicleId = vehicle.id;
-        resolvedUserId = vehicle.userId;
-      }
-    } else if (vehicleId) {
-      const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
-      if (!vehicle) throw new AppError('Vehicle not found', 404);
-      resolvedUserId = vehicle.userId;
+    } else if (data.vehicleNumber) {
+      // Resolve vehicleId from number (society-scoped)
+      const normalized = data.vehicleNumber.toUpperCase().replace(/\s/g, '');
+      vehicle = await prisma.vehicle.findFirst({
+        where: { vehicleNumber: normalized, societyId },
+        select: { id: true, userId: true, flatId: true, vehicleNumber: true },
+      });
     }
 
+    const vehicleNumber = (vehicle?.vehicleNumber ?? data.vehicleNumber ?? '').toUpperCase().replace(/\s/g, '');
+    if (!vehicleNumber) throw new AppError('vehicleNumber is required', 400);
+
+    const resolvedUserId = vehicle?.userId ?? null;
     let invoiceId: string | null = null;
 
-    // Optionally push penalty to current month's invoice
-    if (data.penaltyAmount && data.addToInvoice && resolvedUserId) {
-      const user = await prisma.user.findUnique({
-        where: { id: resolvedUserId },
-        select: { flatId: true },
-      });
+    // Optionally push penalty to current month's invoice (admins only — enforced by controller)
+    if (data.penaltyAmount && data.addToInvoice && vehicle) {
+      let flatId = vehicle.flatId;
+      if (!flatId) {
+        const owner = await prisma.user.findUnique({
+          where: { id: vehicle.userId },
+          select: { flatId: true },
+        });
+        flatId = owner?.flatId ?? null;
+      }
 
-      if (user?.flatId) {
+      if (flatId) {
         const now = new Date();
         const month = now.toLocaleString('default', { month: 'long', year: 'numeric' });
 
         const invoice = await prisma.invoice.findFirst({
-          where: { flatId: user.flatId, societyId, month, status: { not: 'PAID' } },
+          where: { flatId, societyId, month, status: { not: 'PAID' } },
+          select: { id: true },
         });
 
         if (invoice) {
-          const newTotal = invoice.totalAmount + data.penaltyAmount;
           await prisma.invoice.update({
             where: { id: invoice.id },
             data: {
               penalty: { increment: data.penaltyAmount },
-              totalAmount: newTotal,
+              totalAmount: { increment: data.penaltyAmount },
             },
           });
           invoiceId = invoice.id;
@@ -121,9 +131,9 @@ export class ParkingViolationService {
 
     const violation = await prisma.parkingViolation.create({
       data: {
-        vehicleId,
-        vehicleNumber: data.vehicleNumber.toUpperCase().replace(/\s/g, ''),
-        type: data.type as any,
+        vehicleId: vehicle?.id ?? null,
+        vehicleNumber,
+        type: data.type,
         description: data.description,
         source: 'OFFICIAL',
         penaltyAmount: data.penaltyAmount ?? null,
@@ -147,7 +157,7 @@ export class ParkingViolationService {
   // ============================================
   async fileComplaint(data: {
     vehicleNumber: string;
-    type: string;
+    type: ViolationType;
     description?: string;
   }, reportedById: string, societyId: string) {
     const normalized = data.vehicleNumber.toUpperCase().replace(/\s/g, '');
@@ -160,7 +170,7 @@ export class ParkingViolationService {
       data: {
         vehicleId: vehicle?.id ?? null,
         vehicleNumber: normalized,
-        type: data.type as any,
+        type: data.type,
         description: data.description,
         source: 'COMPLAINT',
         reportedById,
@@ -180,8 +190,8 @@ export class ParkingViolationService {
   // ============================================
   async listViolations(filters: {
     societyId: string;
-    source?: string;
-    status?: string;
+    source?: ViolationSource;
+    status?: ViolationStatus;
     vehicleId?: string;
     reportedById?: string;  // for resident own-only scope
     page?: number;
@@ -190,8 +200,8 @@ export class ParkingViolationService {
     const { societyId, source, status, vehicleId, reportedById, page = 1, limit = 20 } = filters;
 
     const where: Prisma.ParkingViolationWhereInput = { societyId };
-    if (source) where.source = source as any;
-    if (status) where.status = status as any;
+    if (source) where.source = source;
+    if (status) where.status = status;
     if (vehicleId) where.vehicleId = vehicleId;
     if (reportedById) where.reportedById = reportedById;
 
@@ -223,12 +233,11 @@ export class ParkingViolationService {
     status: 'RESOLVED' | 'DISMISSED';
     resolutionNote?: string;
   }, resolvedById: string, societyId: string) {
-    const violation = await prisma.parkingViolation.findUnique({
-      where: { id: violationId },
+    const violation = await findInSociety(prisma.parkingViolation, violationId, societyId, {
+      select: { id: true, status: true },
+      entity: 'Violation',
     });
 
-    if (!violation) throw new AppError('Violation not found', 404);
-    if (violation.societyId !== societyId) throw new AppError('Access denied', 403);
     if (violation.status === 'RESOLVED' || violation.status === 'DISMISSED') {
       throw new AppError('Violation is already closed', 400);
     }

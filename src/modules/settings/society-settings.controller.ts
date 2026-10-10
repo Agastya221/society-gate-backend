@@ -7,10 +7,13 @@ import { societySettingsService } from './society-settings.service';
 const resolveSocietyId = (req: Request): string => {
   const user = req.user!;
   if (user.role === 'SUPER_ADMIN') {
-    const societyId = typeof req.query.societyId === 'string' ? req.query.societyId : user.societyId;
+    // ensureSameSociety resolved the requested society (body/query/params) into
+    // req.societyId; only SUPER_ADMIN gets a client-chosen society.
+    const societyId = req.societyId ?? user.societyId;
     if (!societyId) throw new AppError('societyId query parameter is required', 400);
     return societyId;
   }
+  // Everyone else is pinned to their own society, whatever the client sent.
   if (!user.societyId) throw new AppError('Admin is not assigned to a society', 403);
   return user.societyId;
 };

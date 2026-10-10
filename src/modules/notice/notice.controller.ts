@@ -1,26 +1,15 @@
 import type { Response, Request } from 'express';
 import { NoticeService } from './notice.service';
 import type { NoticeFilters, NoticeType, NoticePriority } from '../../types';
+import { getSocietyId } from '../../utils/scope';
+import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 
 const noticeService = new NoticeService();
-
-// Helper to safely get error message
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  return 'An unexpected error occurred';
-}
-
-function getErrorStatusCode(error: unknown): number {
-  if (error && typeof error === 'object' && 'statusCode' in error) {
-    return (error as { statusCode: number }).statusCode;
-  }
-  return 500;
-}
 
 export const createNotice = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const notice = await noticeService.createNotice(req.body, userId);
+    const notice = await noticeService.createNotice(req.body, userId, getSocietyId(req));
 
     res.status(201).json({
       success: true,
@@ -38,7 +27,7 @@ export const createNotice = async (req: Request, res: Response) => {
 export const getNotices = async (req: Request, res: Response) => {
   try {
     const filters: NoticeFilters = {
-      societyId: req.user!.societyId!,
+      societyId: getSocietyId(req),
       type: req.query.type as NoticeType | undefined,
       priority: req.query.priority as NoticePriority | undefined,
       isPinned: req.query.isPinned === 'true' ? true : req.query.isPinned === 'false' ? false : undefined,
@@ -67,7 +56,11 @@ export const getNotices = async (req: Request, res: Response) => {
 export const getNoticeById = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string;
-    const notice = await noticeService.getNoticeById(id);
+    const notice = await noticeService.getNoticeById(
+      id,
+      getSocietyId(req),
+      req.user!.role === 'ADMIN' || req.user!.role === 'SUPER_ADMIN'
+    );
 
     res.status(200).json({
       success: true,
@@ -85,7 +78,7 @@ export const updateNotice = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string;
     const userId = req.user!.id;
-    const notice = await noticeService.updateNotice(id, req.body, userId);
+    const notice = await noticeService.updateNotice(id, req.body, userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -104,7 +97,7 @@ export const deleteNotice = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string;
     const userId = req.user!.id;
-    const result = await noticeService.deleteNotice(id, userId);
+    const result = await noticeService.deleteNotice(id, userId, getSocietyId(req));
 
     res.status(200).json({
       success: true,
@@ -121,7 +114,7 @@ export const deleteNotice = async (req: Request, res: Response) => {
 export const togglePinNotice = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string;
-    const notice = await noticeService.togglePinNotice(id);
+    const notice = await noticeService.togglePinNotice(id, getSocietyId(req));
 
     res.status(200).json({
       success: true,

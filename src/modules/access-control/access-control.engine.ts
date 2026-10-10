@@ -356,6 +356,11 @@ export class AccessControlEngine {
       window: describeScheduleWindow(entry.schedule, entry.scheduleType, nextStart),
     });
 
+    // 0. Defence in depth: a pass from another society never validates at this gate
+    if (entry.societyId !== context.societyId) {
+      return { allowed: false, isPrivate: false, reason: 'NOT_FOUND', message: 'Pre-approved entry not found' };
+    }
+
     // 1. Check status
     if (entry.status !== 'ACTIVE') {
       const statusMessages: Record<string, string> = {

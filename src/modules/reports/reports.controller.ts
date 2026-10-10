@@ -1,13 +1,22 @@
 import type { Response, Request } from 'express';
 import { ReportsService } from './reports.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
+import { getSocietyId } from '../../utils/scope';
 
 const reportsService = new ReportsService();
 
+// The society comes from the caller (ensureSameSociety sets req.societyId):
+// ADMIN is pinned to their own society; only SUPER_ADMIN may pick one via ?societyId=.
+const MAX_REPORT_DAYS = 365;
+const clampDays = (value: unknown, fallback: number) => {
+  const n = Math.floor(Number(value));
+  return Number.isFinite(n) && n >= 1 ? Math.min(n, MAX_REPORT_DAYS) : fallback;
+};
+
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
-    const { societyId } = req.query;
-    const stats = await reportsService.getDashboardStats(societyId as string);
+    const societyId = getSocietyId(req);
+    const stats = await reportsService.getDashboardStats(societyId);
 
     res.status(200).json({
       success: true,
@@ -23,8 +32,9 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
 export const getEntryStatistics = async (req: Request, res: Response) => {
   try {
-    const { societyId, days = 7 } = req.query;
-    const stats = await reportsService.getEntryStatistics(societyId as string, Number(days));
+    const societyId = getSocietyId(req);
+    const days = clampDays(req.query.days, 7);
+    const stats = await reportsService.getEntryStatistics(societyId, days);
 
     res.status(200).json({
       success: true,
@@ -40,8 +50,9 @@ export const getEntryStatistics = async (req: Request, res: Response) => {
 
 export const getPeakHoursAnalysis = async (req: Request, res: Response) => {
   try {
-    const { societyId, days = 30 } = req.query;
-    const analysis = await reportsService.getPeakHoursAnalysis(societyId as string, Number(days));
+    const societyId = getSocietyId(req);
+    const days = clampDays(req.query.days, 30);
+    const analysis = await reportsService.getPeakHoursAnalysis(societyId, days);
 
     res.status(200).json({
       success: true,
@@ -57,8 +68,9 @@ export const getPeakHoursAnalysis = async (req: Request, res: Response) => {
 
 export const getDeliveryPatterns = async (req: Request, res: Response) => {
   try {
-    const { societyId, days = 30 } = req.query;
-    const patterns = await reportsService.getDeliveryPatterns(societyId as string, Number(days));
+    const societyId = getSocietyId(req);
+    const days = clampDays(req.query.days, 30);
+    const patterns = await reportsService.getDeliveryPatterns(societyId, days);
 
     res.status(200).json({
       success: true,
@@ -74,8 +86,8 @@ export const getDeliveryPatterns = async (req: Request, res: Response) => {
 
 export const getComplaintStatistics = async (req: Request, res: Response) => {
   try {
-    const { societyId } = req.query;
-    const stats = await reportsService.getComplaintStatistics(societyId as string);
+    const societyId = getSocietyId(req);
+    const stats = await reportsService.getComplaintStatistics(societyId);
 
     res.status(200).json({
       success: true,
@@ -91,8 +103,8 @@ export const getComplaintStatistics = async (req: Request, res: Response) => {
 
 export const getVisitorFrequencyReport = async (req: Request, res: Response) => {
   try {
-    const { societyId } = req.query;
-    const report = await reportsService.getVisitorFrequencyReport(societyId as string);
+    const societyId = getSocietyId(req);
+    const report = await reportsService.getVisitorFrequencyReport(societyId);
 
     res.status(200).json({
       success: true,
@@ -108,8 +120,8 @@ export const getVisitorFrequencyReport = async (req: Request, res: Response) => 
 
 export const getSocietyHealthScore = async (req: Request, res: Response) => {
   try {
-    const { societyId } = req.query;
-    const healthScore = await reportsService.getSocietyHealthScore(societyId as string);
+    const societyId = getSocietyId(req);
+    const healthScore = await reportsService.getSocietyHealthScore(societyId);
 
     res.status(200).json({
       success: true,

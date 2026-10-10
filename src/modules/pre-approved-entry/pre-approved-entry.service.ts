@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
+import { clampPagination } from '../../utils/scope';
 import { accessControlEngine, AccessControlEngine, formatIst } from '../access-control/access-control.engine';
 import type { Prisma, PreApprovedEntryType } from '../../../prisma/generated/prisma/client';
 import { accessControlCache } from '../access-control/access-control.cache';
@@ -191,8 +192,7 @@ export class PreApprovedEntryService {
     });
     if (!user?.flatId) throw new AppError('User must be assigned to a flat', 400);
 
-    const page = filters.page ?? 1;
-    const limit = filters.limit ?? 20;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
     const where = {
       flatId: user.flatId,
@@ -205,7 +205,7 @@ export class PreApprovedEntryService {
         where,
         include: ENTRY_WITH_USAGES,
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.preApprovedEntry.count({ where }),
@@ -224,12 +224,12 @@ export class PreApprovedEntryService {
     });
     if (!user?.flatId) throw new AppError('User must be assigned to a flat', 400);
 
-    const entry = await prisma.preApprovedEntry.findUnique({
-      where: { id },
+    // Ownership in the query itself: only passes for the caller's own flat
+    const entry = await prisma.preApprovedEntry.findFirst({
+      where: { id, flatId: user.flatId },
       include: ENTRY_WITH_USAGES,
     });
     if (!entry) throw new AppError('Pre-approved entry not found', 404);
-    if (entry.flatId !== user.flatId) throw new AppError('Access denied', 403);
 
     return entry;
   }
@@ -354,14 +354,15 @@ export class PreApprovedEntryService {
     };
   }
 
-  async getUsageHistory(entryId: string, userId: string, page = 1, limit = 20) {
-    const entry = await this.getById(entryId, userId);
+  async getUsageHistory(entryId: string, userId: string, rawPage?: number, rawLimit?: number) {
+    await this.getById(entryId, userId);
+    const { page, limit, skip } = clampPagination(rawPage, rawLimit, 20);
 
     const [usages, total] = await Promise.all([
       prisma.preApprovedUsage.findMany({
         where: { entryId },
         orderBy: { usedAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
         include: { guard: { select: { name: true } } },
       }),
@@ -664,13 +665,12 @@ export class PreApprovedEntryService {
     const context = AccessControlEngine.buildContext(guardId, guard.societyId);
 
     const result = await prisma.$transaction(async (tx) => {
-      const entry = await tx.preApprovedEntry.findUnique({
-        where: { id: entryId },
+      const entry = await tx.preApprovedEntry.findFirst({
+        where: { id: entryId, societyId: guard.societyId! },
         include: ENTRY_INCLUDE,
       });
 
       if (!entry) throw new AppError('Entry not found', 404);
-      if (entry.societyId !== guard.societyId) throw new AppError('Entry not found', 404);
       if (entry.status === 'USED') throw new AppError('This pass has already been used', 409);
       if (entry.status !== 'ACTIVE') throw new AppError(`Entry is ${entry.status.toLowerCase()}`, 400);
 
@@ -696,7 +696,7 @@ export class PreApprovedEntryService {
       //    below, so two guards can't both slip under entriesPerDay.
       const isOnce = entry.scheduleType === 'ONCE';
       const claimed = await tx.preApprovedEntry.updateMany({
-        where: { id: entryId, status: 'ACTIVE' },
+        where: { id: entryId, societyId: entry.societyId, status: 'ACTIVE' },
         data: {
           ...(isOnce ? { status: 'USED' as const } : {}),
           // Clear any legacy lock left by older builds
@@ -779,8 +779,8 @@ export class PreApprovedEntryService {
   }
 
   async listForGuard(societyId: string, filters: GuardPreApprovedFilters) {
-    const page = filters.page ?? 1;
-    const limit = filters.limit ?? 30;
+    if (!societyId) throw new AppError('Society context required', 403);
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 30);
     const byFlat = !!(filters.flatId || filters.blockId);
 
     const where: Prisma.PreApprovedEntryWhereInput = {
@@ -798,7 +798,7 @@ export class PreApprovedEntryService {
         where,
         include: LIST_INCLUDE,
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.preApprovedEntry.count({ where }),
@@ -846,6 +846,7 @@ export class PreApprovedEntryService {
   }
 
   async searchForGuard(societyId: string, query: string) {
+    if (!societyId) throw new AppError('Society context required', 403);
     const entries = await prisma.preApprovedEntry.findMany({
       where: {
         societyId,
@@ -896,8 +897,8 @@ export class PreApprovedEntryService {
   // ============================================
 
   async listForAdmin(societyId: string, filters: AdminPreApprovedFilters) {
-    const page = filters.page ?? 1;
-    const limit = filters.limit ?? 30;
+    if (!societyId) throw new AppError('Society context required', 403);
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit, 30);
 
     const where: Prisma.PreApprovedEntryWhereInput = { societyId };
     if (filters.type) where.type = filters.type;
@@ -919,7 +920,7 @@ export class PreApprovedEntryService {
           _count: { select: { usages: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
+        skip,
         take: limit,
       }),
       prisma.preApprovedEntry.count({ where }),
@@ -938,12 +939,11 @@ export class PreApprovedEntryService {
     });
     if (!admin?.societyId) throw new AppError('Admin not assigned to society', 400);
 
-    const entry = await prisma.preApprovedEntry.findUnique({
-      where: { id: entryId },
+    const entry = await prisma.preApprovedEntry.findFirst({
+      where: { id: entryId, societyId: admin.societyId },
       include: ENTRY_INCLUDE,
     });
     if (!entry) throw new AppError('Entry not found', 404);
-    if (entry.societyId !== admin.societyId) throw new AppError('Access denied', 403);
     if (entry.status !== 'ACTIVE') throw new AppError('Only active entries can be cancelled', 400);
 
     const cancelled = await prisma.preApprovedEntry.update({
