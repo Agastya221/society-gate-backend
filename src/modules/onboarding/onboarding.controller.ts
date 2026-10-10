@@ -4,6 +4,7 @@ import { asyncHandler, AppError } from '../../utils/ResponseHandler';
 import type { OnboardingStatus, ResidentType } from '../../../prisma/generated/prisma/client';
 
 const onboardingService = new OnboardingService();
+const ONBOARDING_STATUSES = ['DRAFT', 'PENDING_DOCS', 'PENDING_APPROVAL', 'RESUBMIT_REQUESTED', 'APPROVED', 'REJECTED'];
 
 export class OnboardingController {
     // ============================================
@@ -75,7 +76,7 @@ export class OnboardingController {
             blockId,
             flatId,
             residentType,
-            isLivingHere,
+            isLivingHere: typeof isLivingHere === 'boolean' ? isLivingHere : undefined,
             documents,
         });
 
@@ -153,7 +154,7 @@ export class OnboardingController {
 
         const result = await onboardingService.resubmitMyRequest(userId, String(requestId), {
             residentType,
-            isLivingHere,
+            isLivingHere: typeof isLivingHere === 'boolean' ? isLivingHere : undefined,
             documents,
         });
 
@@ -189,7 +190,7 @@ export class OnboardingController {
             blockId,
             flatId,
             residentType,
-            isLivingHere,
+            isLivingHere: typeof isLivingHere === 'boolean' ? isLivingHere : undefined,
             documents,
         });
 
@@ -213,8 +214,8 @@ export class OnboardingController {
         const { status, residentType, page, limit } = req.query;
 
         const result = await onboardingService.listPendingRequests(adminSocietyId, {
-            status: status as OnboardingStatus | undefined,
-            residentType: residentType as ResidentType | undefined,
+            status: ONBOARDING_STATUSES.includes(String(status)) ? (status as OnboardingStatus) : undefined,
+            residentType: residentType === 'OWNER' || residentType === 'TENANT' ? (residentType as ResidentType) : undefined,
             page: page ? parseInt(page as string) : undefined,
             limit: limit ? parseInt(limit as string) : undefined,
         });

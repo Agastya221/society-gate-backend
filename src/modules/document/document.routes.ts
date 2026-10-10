@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { getUploadUrl, confirmUpload, getDocuments, getViewUrl, deleteDocument } from './document.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
+import { validate } from '../../middlewares/validate.middleware';
+import { getUploadUrlSchema, confirmUploadSchema } from './document.schemas';
 
 const router = Router();
 
@@ -10,8 +12,8 @@ router.use(ensureSameSociety);
 
 // Specific routes before /:id
 router.get('/', cache({ ttl: 120, keyPrefix: 'docs', varyBy: ['societyId', 'userId'] }), getDocuments);
-router.post('/upload-url', clearCacheAfter(['docs:*']), getUploadUrl);
-router.post('/confirm', clearCacheAfter(['docs:*']), confirmUpload);
+router.post('/upload-url', validate({ body: getUploadUrlSchema }), clearCacheAfter(['docs:*']), getUploadUrl);
+router.post('/confirm', validate({ body: confirmUploadSchema }), clearCacheAfter(['docs:*']), confirmUpload);
 
 // Document actions
 router.get('/:id/view-url', getViewUrl);

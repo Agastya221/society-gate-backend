@@ -6,9 +6,15 @@ import type { DocumentCategory } from '../../types';
 
 const documentService = new DocumentService();
 
+// Only society admins may publish society-wide (admin) documents.
+const canPublish = (req: Request) => ['ADMIN', 'SUPER_ADMIN'].includes(req.user!.role);
+
 export const getUploadUrl = async (req: Request, res: Response) => {
   try {
-    const result = await documentService.getUploadUrl(req.body, req.user!.id);
+    const result = await documentService.getUploadUrl(
+      { ...req.body, isAdminDoc: canPublish(req) ? req.body.isAdminDoc : false },
+      req.user!.id
+    );
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
@@ -18,7 +24,7 @@ export const getUploadUrl = async (req: Request, res: Response) => {
 export const confirmUpload = async (req: Request, res: Response) => {
   try {
     const document = await documentService.confirmUpload(
-      req.body,
+      { ...req.body, isAdminDoc: canPublish(req) ? req.body.isAdminDoc : false },
       req.user!.id,
       getSocietyId(req)
     );

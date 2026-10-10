@@ -73,6 +73,19 @@ const authLimiter = rateLimit({
 
 app.use('/api/', apiLimiter);
 app.use('/api/v1/auth/', authLimiter);
+// /api/v1/users is an alias of the auth router, and the staff app has its own
+// OTP login — rate limit their login/refresh endpoints the same way.
+app.use(
+  [
+    '/api/v1/users/otp',
+    '/api/v1/users/admin-app/otp',
+    '/api/v1/users/guard-app/otp',
+    '/api/v1/users/refresh-token',
+    '/api/v1/users/bootstrap-superadmin',
+    '/api/v1/staff-app/auth',
+  ],
+  authLimiter
+);
 
 // Comprehensive health check
 app.get('/health', async (_req, res) => {

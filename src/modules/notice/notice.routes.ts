@@ -9,6 +9,8 @@ import {
 } from './notice.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
+import { validate } from '../../middlewares/validate.middleware';
+import { createNoticeSchema, updateNoticeSchema } from './notice.schemas';
 
 const router = Router();
 
@@ -23,8 +25,8 @@ router.get('/', cache({ ttl: 120, keyPrefix: 'notices', varyBy: ['societyId', 'r
 router.get('/:id', cache({ ttl: 300, keyPrefix: 'notices', varyBy: ['societyId', 'role'] }), getNoticeById);
 
 // Admin only routes that invalidate cache
-router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['notices:*']), createNotice);
-router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['notices:*']), updateNotice);
+router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), validate({ body: createNoticeSchema }), clearCacheAfter(['notices:*']), createNotice);
+router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), validate({ body: updateNoticeSchema }), clearCacheAfter(['notices:*']), updateNotice);
 router.delete('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['notices:*']), deleteNotice);
 router.patch('/:id/toggle-pin', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['notices:*']), togglePinNotice);
 

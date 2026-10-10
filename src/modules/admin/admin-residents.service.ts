@@ -228,7 +228,7 @@ export class AdminResidentsService {
     return formatResident(membership);
   }
 
-  async remove(societyId: string, membershipId: string, actorId: string) {
+  async remove(societyId: string, membershipId: string, actorId: string, actorRole?: string) {
     const membership = await prisma.userFlatMembership.findFirst({
       where: { id: membershipId, societyId, isActive: true, flatId: { not: null } },
       include: { user: { select: { id: true, role: true, flatId: true, societyId: true } } },
@@ -236,6 +236,14 @@ export class AdminResidentsService {
     if (!membership || !membership.flatId) throw new AppError('Resident not found', 404);
     if (membership.userId === actorId) {
       throw new AppError("You can't remove your own residency", 400);
+    }
+    // Only SUPER_ADMIN may remove an admin; an ADMIN cannot demote a co-admin,
+    // and nobody here may touch a SUPER_ADMIN account.
+    if ((membership.role === 'ADMIN' || membership.user.role === 'ADMIN') && actorRole !== 'SUPER_ADMIN') {
+      throw new AppError('Only a super admin can remove a society admin', 403);
+    }
+    if (membership.user.role === 'SUPER_ADMIN' && actorRole !== 'SUPER_ADMIN') {
+      throw new AppError('Resident not found', 404);
     }
     const flatId = membership.flatId;
 
@@ -278,7 +286,16 @@ export class AdminResidentsService {
       // If this was the user's active context, move them to another active
       // membership, or detach them (they'll go back through onboarding).
       const user = membership.user;
-      if (user.flatId === flatId && user.societyId === societyId) {
+      // Also re-derive when this was an ADMIN membership in the user's active society,
+      // so a removed admin's active role/context stops granting admin rights.
+      const lostAdminHere =
+        membership.role === 'ADMIN' &&
+        user.societyId === societyId &&
+        !(await tx.userFlatMembership.findFirst({
+          where: { userId: user.id, societyId, role: 'ADMIN', isActive: true },
+          select: { id: true },
+        }));
+      if ((user.flatId === flatId && user.societyId === societyId) || lostAdminHere) {
         const fallback = await tx.userFlatMembership.findFirst({
           where: { userId: user.id, isActive: true },
           orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }],

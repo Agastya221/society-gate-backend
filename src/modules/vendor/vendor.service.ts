@@ -1,9 +1,8 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { findInSociety, clampPagination } from '../../utils/scope';
+import type { CreateVendorInput, UpdateVendorInput } from './vendor.schemas';
 import type {
-  CreateVendorDTO,
-  UpdateVendorDTO,
   VendorFilters,
   Prisma,
   VendorCategory,
@@ -20,10 +19,23 @@ function getInitials(name: string): string {
 }
 
 export class VendorService {
-  async createVendor(data: CreateVendorDTO, addedById: string, societyId: string) {
+  async createVendor(data: CreateVendorInput, addedById: string, societyId: string) {
     const vendor = await prisma.vendor.create({
       data: {
-        ...data,
+        name: data.name,
+        category: data.category,
+        phone: data.phone,
+        email: data.email,
+        alternatePhone: data.alternatePhone,
+        companyName: data.companyName,
+        description: data.description,
+        address: data.address,
+        workingHours: data.workingHours,
+        hourlyRate: data.hourlyRate,
+        minCharge: data.minCharge,
+        idProof: data.idProof,
+        workingDays: data.workingDays ?? [],
+        photos: data.photos ?? [],
         societyId,
         addedById,
       },
@@ -98,7 +110,7 @@ export class VendorService {
 
   async updateVendor(
     vendorId: string,
-    data: UpdateVendorDTO,
+    data: UpdateVendorInput,
     societyId: string,
     user: { id: string; role: string }
   ) {
@@ -112,7 +124,24 @@ export class VendorService {
 
     const updatedVendor = await prisma.vendor.update({
       where: { id: vendorId },
-      data,
+      data: {
+        name: data.name,
+        category: data.category,
+        phone: data.phone,
+        email: data.email,
+        alternatePhone: data.alternatePhone,
+        companyName: data.companyName,
+        description: data.description,
+        address: data.address,
+        workingHours: data.workingHours,
+        hourlyRate: data.hourlyRate,
+        minCharge: data.minCharge,
+        idProof: data.idProof,
+        workingDays: data.workingDays,
+        photos: data.photos,
+        // Deactivating a listing is an admin action
+        isActive: isAdmin ? data.isActive : undefined,
+      },
     });
 
     return updatedVendor;

@@ -39,17 +39,21 @@ import {
 
   // Summary
   getTypeSummary,
+  hideSensitiveStaffFields,
 } from './domestic-staff.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { staffCheckInSchema, staffCheckOutSchema } from '../../schemas';
+import { createDomesticStaffSchema, updateDomesticStaffSchema, staffAvailabilitySchema } from './domestic-staff.schemas';
 
 const router = Router();
 
 // Apply authentication and society isolation globally
 router.use(authenticate);
 router.use(ensureSameSociety);
+// Residents never receive staff QR tokens or ID-proof details from this module
+router.use(hideSensitiveStaffFields);
 
 // ============================================
 // IMPORTANT: Specific routes MUST come before parameterized routes
@@ -61,12 +65,12 @@ router.use(ensureSameSociety);
 // ============================================
 
 // All users can view staff list and available staff (cached)
-router.get('/', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffList);
-router.get('/available', cache({ ttl: 60, keyPrefix: 'staff', varyBy: ['societyId'] }), getAvailableStaff);
+router.get('/', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId', 'role'] }), getStaffList);
+router.get('/available', cache({ ttl: 60, keyPrefix: 'staff', varyBy: ['societyId', 'role'] }), getAvailableStaff);
 router.get('/types', cache({ ttl: 300, keyPrefix: 'staff', varyBy: ['societyId'] }), getTypeSummary);
 
 // Residents can add staff
-router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), createStaff);
+router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), validate({ body: createDomesticStaffSchema }), clearCacheAfter(['staff:*']), createStaff);
 
 // ============================================
 // FLAT ASSIGNMENTS - Specific routes
@@ -96,9 +100,10 @@ router.post('/bookings', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCac
 router.get('/bookings/list', cache({ ttl: 60, keyPrefix: 'staff', varyBy: ['societyId', 'userId'] }), getBookings);
 router.get('/:id/open-slots', getOpenSlots);
 
-// Staff/Admin can accept/reject bookings (for now, admin manages)
-router.patch('/bookings/:id/accept', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), acceptBooking);
-router.patch('/bookings/:id/reject', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), rejectBooking);
+// Staff accept/decline their own requests in the staff app (/staff-app/bookings/:id/*);
+// here only admins may act for them. Residents (the requesters) may only mark complete.
+router.patch('/bookings/:id/accept', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), acceptBooking);
+router.patch('/bookings/:id/reject', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), rejectBooking);
 router.patch('/bookings/:id/complete', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), completeBooking);
 
 // ============================================
@@ -114,12 +119,13 @@ router.post('/reviews', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCach
 
 // Staff-specific routes (with :id or :staffId). Cached per society so one society's
 // cached response is never served to another (the cache runs before the scoped lookup).
-router.get('/:id', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffById);
-router.get('/:id/qr', cache({ ttl: 300, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffQRCode);
-router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), updateStaff);
+router.get('/:id', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId', 'role'] }), getStaffById);
+// Not cached: access depends on the caller's flat assignments (checked in the service)
+router.get('/:id/qr', authorize('ADMIN', 'SUPER_ADMIN', 'GUARD', 'RESIDENT'), getStaffQRCode);
+router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), validate({ body: updateDomesticStaffSchema }), clearCacheAfter(['staff:*']), updateStaff);
 router.delete('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), deleteStaff);
 router.patch('/:id/verify', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), verifyStaff);
-router.patch('/:id/availability', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), updateAvailabilityStatus);
+router.patch('/:id/availability', authorize('ADMIN', 'SUPER_ADMIN'), validate({ body: staffAvailabilitySchema }), clearCacheAfter(['staff:*']), updateAvailabilityStatus);
 
 // Get specific staff's assignments and reviews
 router.get('/:staffId/assignments', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffAssignments);

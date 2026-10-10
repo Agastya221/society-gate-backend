@@ -1,6 +1,7 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import logger from '../../utils/logger';
+import { clampPagination } from '../../utils/scope';
 import type { SubmitSocietyRegistrationDTO, SocietyRegistrationFilters } from '../../types';
 
 export class SocietyRegistrationService {
@@ -29,8 +30,10 @@ export class SocietyRegistrationService {
   }
 
   async listRequests(filters: SocietyRegistrationFilters = {}) {
-    const { status, page = 1, limit = 20 } = filters;
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = clampPagination(filters.page, filters.limit);
+    const status = filters.status && ['PENDING', 'APPROVED', 'REJECTED'].includes(filters.status)
+      ? filters.status
+      : undefined;
     const where = status ? { status } : {};
 
     const [requests, total] = await Promise.all([
@@ -90,6 +93,15 @@ export class SocietyRegistrationService {
     }
 
     const result = await prisma.$transaction(async (tx) => {
+      // Claim the request atomically so two concurrent approvals can't create two societies
+      const claimed = await tx.societyRegistrationRequest.updateMany({
+        where: { id: requestId, status: 'PENDING' },
+        data: { reviewedById: reviewerId, reviewedAt: new Date() },
+      });
+      if (claimed.count === 0) {
+        throw new AppError('Request is no longer pending', 409);
+      }
+
       const society = await tx.society.create({
         data: {
           name: request.societyName,

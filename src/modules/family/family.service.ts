@@ -88,9 +88,16 @@ export class FamilyService {
         throw new AppError('This phone number is already registered to a flat', 400);
       }
 
+      // Never re-home an account that belongs to a society (pending onboarding elsewhere,
+      // or any other society): only fully unattached resident accounts can be linked.
+      if (existingUser.societyId) {
+        throw new AppError('This phone number is already registered with a society and cannot be added as a family member', 400);
+      }
+
       // Link existing user to this flat as a family member
       const linked = await prisma.user.update({
-        where: { id: existingUser.id },
+        // Conditional on the state checked above (still a flat-less, society-less resident)
+        where: { id: existingUser.id, role: 'RESIDENT', flatId: null, societyId: null },
         data: {
           name: name || existingUser.name,
           flatId: primaryResident.flatId,

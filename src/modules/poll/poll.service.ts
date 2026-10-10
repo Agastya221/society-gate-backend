@@ -2,20 +2,14 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { findInSociety, clampPagination } from '../../utils/scope';
 import type { Prisma, PollStatus } from '../../types';
+import type { CreatePollInput, UpdatePollInput } from './poll.schemas';
 
 export class PollService {
   // ============================================
   // ADMIN — create / manage
   // ============================================
 
-  async createPoll(data: {
-    title: string;
-    description?: string;
-    isAnonymous?: boolean;
-    allowMultiple?: boolean;
-    votingEndsAt?: string;
-    options: string[]; // option texts
-  }, createdById: string, societyId: string) {
+  async createPoll(data: CreatePollInput, createdById: string, societyId: string) {
     if (!data.options || data.options.length < 2) {
       throw new AppError('Poll must have at least 2 options', 400);
     }
@@ -43,19 +37,18 @@ export class PollService {
     return poll;
   }
 
-  async updatePoll(pollId: string, data: {
-    title?: string;
-    description?: string;
-    status?: PollStatus;
-    votingEndsAt?: string;
-  }, societyId: string) {
+  async updatePoll(pollId: string, data: UpdatePollInput, societyId: string) {
     await findInSociety(prisma.poll, pollId, societyId, { entity: 'Poll' });
 
     return prisma.poll.update({
       where: { id: pollId },
+      // Explicit allow-list: never spread the request body into Prisma
       data: {
-        ...data,
-        votingEndsAt: data.votingEndsAt ? new Date(data.votingEndsAt) : undefined,
+        title: data.title,
+        description: data.description,
+        status: data.status,
+        votingEndsAt:
+          data.votingEndsAt === null ? null : data.votingEndsAt ? new Date(data.votingEndsAt) : undefined,
       },
       include: { options: true },
     });

@@ -363,7 +363,11 @@ export class SuperAdminService {
     const existing = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, isActive: true } });
     if (!existing) throw new AppError('User not found', 404);
 
-    const user = await prisma.user.update({ where: { id: userId }, data: { isActive: data.isActive } });
+    const user = await prisma.user.update({ where: { id: userId }, data: data.isActive
+        ? { isActive: true }
+        // Deactivation also kills existing sessions (same as user.service toggleUserStatus).
+        : { isActive: false, refreshToken: null, tokenVersion: { increment: 1 } },
+    });
     await this.audit(actor.id, data.isActive ? 'USER_ACTIVATED' : 'USER_DISABLED', 'User', userId, data.reason, { previousIsActive: existing.isActive, nextIsActive: data.isActive });
     return user;
   }

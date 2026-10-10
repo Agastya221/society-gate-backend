@@ -2,8 +2,8 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { generateQRToken } from '../../utils/QrGenerate';
 import { findInSociety, clampPagination } from '../../utils/scope';
+import type { CreateGatePassInput } from './gatepass.schemas';
 import type {
-  CreateGatePassDTO,
   GatePassFilters,
   Prisma,
 } from '../../types';
@@ -31,7 +31,7 @@ function residentPassScope(caller: GatePassCaller): Prisma.GatePassWhereInput {
 }
 
 export class GatePassService {
-  async createGatePass(data: CreateGatePassDTO, requestedById: string) {
+  async createGatePass(data: CreateGatePassInput, requestedById: string) {
     // Get user info to determine flatId and societyId
     const user = await prisma.user.findUnique({
       where: { id: requestedById },
@@ -78,7 +78,21 @@ export class GatePassService {
 
     const gatePass = await prisma.gatePass.create({
       data: {
-        ...data,
+        // Only allow-listed fields (see gatepass.schemas.ts); status, qrToken,
+        // approval and usage fields are server-set.
+        type: data.type,
+        title: data.title,
+        description: data.description,
+        validFrom: data.validFrom,
+        validUntil: data.validUntil,
+        attachments: data.attachments ?? [],
+        vehicleNumber: 'vehicleNumber' in data ? data.vehicleNumber : undefined,
+        driverName: 'driverName' in data ? data.driverName : undefined,
+        driverPhone: 'driverPhone' in data ? data.driverPhone : undefined,
+        itemsList: 'itemsList' in data ? (data.itemsList ?? []) : [],
+        workerName: 'workerName' in data ? data.workerName : undefined,
+        workerPhone: 'workerPhone' in data ? data.workerPhone : undefined,
+        companyName: 'companyName' in data ? data.companyName : undefined,
         flatId: flatId ?? null,
         societyId,
         requestedById,

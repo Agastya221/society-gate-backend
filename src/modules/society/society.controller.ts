@@ -10,13 +10,17 @@ import {
   updateFlatSchema,
   listSocietiesQuerySchema,
   parseOrThrow,
+  assertOwnedLogoKey,
 } from './society.schemas';
 
 const societyService = new SocietyService();
 
 export class SocietyController {
   createSociety = asyncHandler(async (req: Request, res: Response) => {
-    const society = await societyService.createSociety(parseOrThrow(createSocietySchema, req.body));
+    const input = parseOrThrow(createSocietySchema, req.body);
+    // The society doesn't exist yet, so only the caller's own uploads qualify.
+    if (input.logoKey) assertOwnedLogoKey(input.logoKey, req.user!.id, req.user!.id);
+    const society = await societyService.createSociety(input);
 
     res.status(201).json({
       success: true,
@@ -101,6 +105,7 @@ export class SocietyController {
       req.user!.role === 'SUPER_ADMIN'
         ? parseOrThrow(superAdminUpdateSocietySchema, req.body)
         : parseOrThrow(adminUpdateSocietySchema, req.body);
+    if ('logoKey' in data) assertOwnedLogoKey(data.logoKey, String(req.params.id), req.user!.id);
     const society = await societyService.updateSociety(String(req.params.id), data);
 
     res.json({

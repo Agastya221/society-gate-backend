@@ -116,7 +116,9 @@ export class UserService {
 
     if (user) {
       // Existing user — re-activate if they have a flat but are inactive
-      if (!user.isActive && user.flatId && user.primaryResidentId) {
+      // Only pending family invites (never revoked: tokenVersion 0) self-activate;
+      // an account an admin deactivated must stay inactive.
+      if (!user.isActive && user.flatId && user.primaryResidentId && user.role === 'RESIDENT' && user.tokenVersion === 0) {
         const societyId = user.societyId || (await prisma.flat.findUnique({
           where: { id: user.flatId },
           select: { societyId: true },
@@ -163,6 +165,7 @@ export class UserService {
       }
 
       user = await this.repairActiveRoleFromMembership(user);
+      user = await this.revokeStaleAdminRole(user);
 
       const accessToken = generateAccessToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
       const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
@@ -244,11 +247,12 @@ export class UserService {
     activeContext?: { role: string; flatId: string | null } | null;
   }) {
     const isActiveAdminContext =
+      input.isActive &&
       input.activeContext?.role &&
       ['ADMIN', 'SUPER_ADMIN'].includes(input.activeContext.role) &&
       !input.activeContext.flatId;
 
-    if (isActiveAdminContext || (!input.activeContext && (input.role === 'ADMIN' || input.role === 'SUPER_ADMIN'))) {
+    if (isActiveAdminContext || (input.isActive && !input.activeContext && (input.role === 'ADMIN' || input.role === 'SUPER_ADMIN'))) {
       return {
         requiresOnboarding: false,
         onboardingStatus: input.onboardingStatus,
@@ -355,6 +359,10 @@ export class UserService {
     }
 
     user = await this.repairActiveRoleFromMembership(user);
+    user = await this.revokeStaleAdminRole(user);
+    if (!user.isActive) {
+      throw new AppError('Your account is inactive. Please contact your society admin.', 403);
+    }
 
     const accessToken = generateAccessToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
     const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, user.flatId, 'RESIDENT_APP');
@@ -553,7 +561,12 @@ export class UserService {
         .map((request) => this.membershipKey(request.societyId, request.flatId))
     );
 
-    const contexts = user.flatMemberships.map((membership) => {
+    // A deactivated account must not be offered admin contexts.
+    const usableMemberships = user.isActive || user.role === 'SUPER_ADMIN'
+      ? user.flatMemberships
+      : user.flatMemberships.filter((m) => m.role !== 'ADMIN' && m.role !== 'SUPER_ADMIN');
+
+    const contexts = usableMemberships.map((membership) => {
       const blockName = membership.flat?.block?.name ?? null;
       const flatNumber = membership.flat?.flatNumber ?? null;
       const flatLabel = flatNumber
@@ -843,7 +856,11 @@ export class UserService {
   // TOGGLE USER STATUS
   // CRIT-7: Verify target user belongs to admin's society and is not SUPER_ADMIN
   // ============================================
-  async toggleUserStatus(userId: string, isActive: boolean, adminSocietyId: string) {
+  async toggleUserStatus(userId: string, isActive: boolean, adminSocietyId: string, actorId?: string) {
+    if (actorId && actorId === userId && !isActive) {
+      throw new AppError('You cannot deactivate your own account', 400);
+    }
+
     const targetUser = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!targetUser) {
@@ -858,9 +875,13 @@ export class UserService {
       throw new AppError('Access denied. User does not belong to your society.', 403);
     }
 
+    // Deactivation revokes the session: refresh token cleared (refresh fails) and
+    // tokenVersion bumped (also stops family-invite auto-reactivation on login).
     return prisma.user.update({
       where: { id: userId },
-      data: { isActive },
+      data: isActive
+        ? { isActive }
+        : { isActive, refreshToken: null, tokenVersion: { increment: 1 } },
       select: { id: true, name: true, isActive: true },
     });
   }
@@ -896,6 +917,23 @@ export class UserService {
     // Guard-app sessions stay GUARD-only (mirrors guardAppOtpVerify)
     if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
       throw new AppError('Access denied. This app is for guards only.', 403);
+    }
+
+    // Admin rights are re-derived on every refresh: a revoked admin membership
+    // demotes the session instead of re-minting ADMIN tokens.
+    if (user.role === 'ADMIN') {
+      const checked = await this.revokeStaleAdminRole(user);
+      if (!checked.isActive) {
+        throw new AppError('User not found or inactive', 401);
+      }
+      if (checked.role !== user.role || checked.societyId !== user.societyId || checked.flatId !== user.flatId) {
+        const refreshed = await prisma.user.findUnique({
+          where: { id: user.id },
+          include: { flat: true, society: true },
+        });
+        if (!refreshed) throw new AppError('User not found or inactive', 401);
+        Object.assign(user, refreshed);
+      }
     }
 
     const newAccessToken = generateAccessToken(
@@ -1092,6 +1130,56 @@ export class UserService {
         data: { role: 'RESIDENT' },
       });
     }
+  }
+
+  /**
+   * If the user's active role is ADMIN for a society whose ADMIN membership has
+   * been deactivated (and no active one remains), drop the admin role: move them
+   * to another active membership, or detach and deactivate them (mirrors
+   * admin resident removal). Users with no ADMIN membership record at all
+   * (legacy admins) are left untouched.
+   */
+  private async revokeStaleAdminRole<T extends {
+    id: string;
+    role: Role;
+    societyId: string | null;
+    flatId: string | null;
+    isActive: boolean;
+  }>(user: T): Promise<T> {
+    if (user.role !== 'ADMIN' || !user.societyId) return user;
+
+    const adminMemberships = await prisma.userFlatMembership.findMany({
+      where: { userId: user.id, societyId: user.societyId, role: 'ADMIN' },
+      select: { isActive: true },
+    });
+    if (adminMemberships.length === 0 || adminMemberships.some((m) => m.isActive)) {
+      return user;
+    }
+
+    const fallback = await prisma.userFlatMembership.findFirst({
+      where: { userId: user.id, isActive: true, role: { in: ['RESIDENT', 'GUARD'] } },
+      orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }],
+    });
+
+    if (fallback) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          role: fallback.role,
+          societyId: fallback.societyId,
+          flatId: fallback.flatId,
+          isOwner: fallback.isOwner,
+          isPrimaryResident: fallback.isPrimary,
+        },
+      });
+      return { ...user, role: fallback.role, societyId: fallback.societyId, flatId: fallback.flatId };
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { role: 'RESIDENT', societyId: null, flatId: null, isActive: false, refreshToken: null },
+    });
+    return { ...user, role: 'RESIDENT' as Role, societyId: null, flatId: null, isActive: false };
   }
 
   private async repairActiveRoleFromMembership<T extends {

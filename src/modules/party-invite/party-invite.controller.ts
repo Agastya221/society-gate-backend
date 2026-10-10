@@ -6,10 +6,16 @@ const service = new PartyInviteService();
 
 export const createPartyInvite = async (req: Request, res: Response) => {
   try {
+    // Explicit allow-list (never spread req.body into the DTO)
+    const { hostName, validFrom, validUntil, venue, maxGuests, theme, note } = req.body;
     const invite = await service.create(req.user!.id, {
-      ...req.body,
-      validFrom: new Date(req.body.validFrom),
-      validUntil: new Date(req.body.validUntil),
+      hostName,
+      validFrom: new Date(validFrom),
+      validUntil: new Date(validUntil),
+      venue,
+      maxGuests,
+      theme,
+      note,
     });
     res.status(201).json({ success: true, data: invite });
   } catch (error: unknown) {

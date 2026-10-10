@@ -8,7 +8,12 @@ const postService = new CommunityPostService();
 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const post = await postService.createPost(req.body, req.user!.id, getSocietyId(req));
+    const post = await postService.createPost(
+      req.body,
+      req.user!.id,
+      getSocietyId(req),
+      req.user!.role === 'ADMIN' || req.user!.role === 'SUPER_ADMIN'
+    );
     res.status(201).json({ success: true, message: 'Post created', data: post });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });

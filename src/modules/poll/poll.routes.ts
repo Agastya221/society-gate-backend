@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { createPoll, updatePoll, deletePoll, getPolls, getPollById, castVote } from './poll.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
+import { validate } from '../../middlewares/validate.middleware';
+import { createPollSchema, updatePollSchema, castVoteSchema } from './poll.schemas';
 
 const router = Router();
 
@@ -13,11 +15,11 @@ router.get('/', cache({ ttl: 60, keyPrefix: 'polls', varyBy: ['societyId', 'user
 router.get('/:id', cache({ ttl: 60, keyPrefix: 'polls', varyBy: ['societyId', 'userId'] }), getPollById);
 
 // Residents can vote
-router.post('/:id/vote', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['polls:*']), castVote);
+router.post('/:id/vote', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), validate({ body: castVoteSchema }), clearCacheAfter(['polls:*']), castVote);
 
 // Admin only — create, update, delete
-router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['polls:*']), createPoll);
-router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['polls:*']), updatePoll);
+router.post('/', authorize('ADMIN', 'SUPER_ADMIN'), validate({ body: createPollSchema }), clearCacheAfter(['polls:*']), createPoll);
+router.patch('/:id', authorize('ADMIN', 'SUPER_ADMIN'), validate({ body: updatePollSchema }), clearCacheAfter(['polls:*']), updatePoll);
 router.delete('/:id', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['polls:*']), deletePoll);
 
 export default router;

@@ -5,9 +5,12 @@ import { AppError } from '../../utils/ResponseHandler';
 import {
   generateS3Key,
   getPresignedUploadUrl,
+  isOwnedUploadKey,
   isValidFileType,
   ALLOWED_DOCUMENT_TYPES,
   ALLOWED_PHOTO_TYPES,
+  MAX_DOCUMENT_BYTES,
+  MAX_PHOTO_BYTES,
 } from '../../utils/s3';
 import { inviteDeliveryService } from '../../services/invite-delivery.service';
 import type { AuthenticatedUser } from '../../types';
@@ -91,8 +94,17 @@ function headerKey(header: string): string {
   return header.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+// Statuses in which an admin's own edits may (re)set DOCS_PENDING. Anything at or
+// after PENDING_VERIFICATION only moves forward via SUPER_ADMIN review.
+const PRE_VERIFICATION_STATUSES = ['LEAD', 'PROFILE_CREATED', 'DOCS_PENDING', 'REJECTED'];
+
 export class SocietyOnboardingService {
   private assertCanManage(user: AuthenticatedUser, societyId: string) {
+    // These routes run under authenticateForOnboarding (inactive users allowed);
+    // a deactivated admin/super admin must not keep management rights.
+    if (!user.isActive) {
+      throw new AppError('Your account is inactive', 403);
+    }
     if (user.role === 'SUPER_ADMIN') return;
     if (user.role === 'ADMIN' && user.societyId === societyId) return;
     throw new AppError('You can manage onboarding only for your society', 403);
@@ -279,6 +291,18 @@ export class SocietyOnboardingService {
   }, user: AuthenticatedUser) {
     this.assertCanManage(user, societyId);
 
+    const current = await prisma.society.findUnique({
+      where: { id: societyId },
+      select: { onboardingStatus: true },
+    });
+    if (!current) throw new AppError('Society not found', 404);
+    const preVerification = PRE_VERIFICATION_STATUSES.includes(current.onboardingStatus);
+
+    // Legal identity is what the SUPER_ADMIN verified; admins can't swap it afterwards.
+    if (!preVerification && user.role !== 'SUPER_ADMIN' && (data.registeredName || data.registrationNumber)) {
+      throw new AppError('Registered name/number can only be changed by S-Gate support after verification', 403);
+    }
+
     return prisma.society.update({
       where: { id: societyId },
       data: {
@@ -295,7 +319,8 @@ export class SocietyOnboardingService {
         contactPhone: data.contactPhone ? normalizePhone(trim(data.contactPhone)) : undefined,
         contactEmail: data.contactEmail === null ? null : data.contactEmail ? trim(data.contactEmail) : undefined,
         totalFlats: data.totalFlats,
-        onboardingStatus: 'DOCS_PENDING',
+        // Never move a verified/active society's status from here.
+        onboardingStatus: preVerification ? 'DOCS_PENDING' : undefined,
       },
     });
   }
@@ -311,6 +336,10 @@ export class SocietyOnboardingService {
     monthlyFee?: number;
   }, user: AuthenticatedUser) {
     this.assertCanManage(user, societyId);
+
+    if (data.monthlyFee !== undefined && user.role !== 'SUPER_ADMIN') {
+      throw new AppError('Only SUPER_ADMIN can set the platform fee', 403);
+    }
 
     return prisma.society.update({
       where: { id: societyId },
@@ -341,13 +370,14 @@ export class SocietyOnboardingService {
       throw new AppError(`Invalid file type. Allowed types: ${allowedTypes.join(', ')}`, 400);
     }
 
-    const maxSize = data.documentType === 'LOGO' ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+    const maxSize = data.documentType === 'LOGO' ? MAX_PHOTO_BYTES : MAX_DOCUMENT_BYTES;
     if (data.fileSize > maxSize) {
       throw new AppError(`File too large. Maximum size: ${maxSize / (1024 * 1024)}MB`, 400);
     }
 
-    const s3Key = generateS3Key('general', user.id, data.fileName);
-    return getPresignedUploadUrl(s3Key, data.mimeType);
+    // Key is tied to the society so addDocument/updateBranding can verify it.
+    const s3Key = generateS3Key('societies', societyId, data.fileName, data.mimeType);
+    return getPresignedUploadUrl(s3Key, data.mimeType, undefined, data.fileSize);
   }
 
   async addDocument(societyId: string, data: {
@@ -360,16 +390,23 @@ export class SocietyOnboardingService {
   }, user: AuthenticatedUser) {
     this.assertCanManage(user, societyId);
 
-    if (!data.fileUrl && !data.fileKey) {
-      throw new AppError('fileUrl or fileKey is required', 400);
+    if (!this.isSocietyUploadKey(data.fileKey, societyId, user.id)) {
+      throw new AppError('Invalid file key: upload through the documents presigned-url endpoint', 400);
     }
+
+    const current = await prisma.society.findUnique({
+      where: { id: societyId },
+      select: { onboardingStatus: true },
+    });
+    if (!current) throw new AppError('Society not found', 404);
 
     const document = await prisma.societyOnboardingDocument.create({
       data: {
         societyId,
         documentType: data.documentType,
-        fileUrl: data.fileUrl || data.fileKey!,
-        fileKey: data.fileKey || data.fileUrl!,
+        // Stored from the verified key, never a client-supplied URL.
+        fileUrl: data.fileKey!,
+        fileKey: data.fileKey!,
         fileName: trim(data.fileName),
         fileSizeMB: data.fileSizeMB ?? 0,
         fileType: trim(data.fileType),
@@ -381,22 +418,32 @@ export class SocietyOnboardingService {
       await prisma.society.update({
         where: { id: societyId },
         data: {
-          logoUrl: data.fileUrl || undefined,
-          logoKey: data.fileKey || undefined,
+          logoKey: data.fileKey,
         },
       });
     }
 
-    await prisma.society.update({
-      where: { id: societyId },
-      data: { onboardingStatus: 'DOCS_PENDING' },
-    });
+    if (PRE_VERIFICATION_STATUSES.includes(current.onboardingStatus)) {
+      await prisma.society.update({
+        where: { id: societyId },
+        data: { onboardingStatus: 'DOCS_PENDING' },
+      });
+    }
 
     return document;
   }
 
   async submitVerification(societyId: string, user: AuthenticatedUser) {
     this.assertCanManage(user, societyId);
+
+    const current = await prisma.society.findUnique({
+      where: { id: societyId },
+      select: { onboardingStatus: true },
+    });
+    if (!current) throw new AppError('Society not found', 404);
+    if (!PRE_VERIFICATION_STATUSES.includes(current.onboardingStatus) && current.onboardingStatus !== 'PENDING_VERIFICATION') {
+      throw new AppError('Society has already been verified', 409);
+    }
 
     const documents = await prisma.societyOnboardingDocument.findMany({
       where: { societyId },
@@ -538,6 +585,14 @@ export class SocietyOnboardingService {
       throw new AppError('Only a validated import batch without errors can be committed', 400);
     }
 
+    const societyState = await prisma.society.findUnique({
+      where: { id: societyId },
+      select: { onboardingStatus: true },
+    });
+    if (!societyState || !['IMPORT_PENDING', 'CONFIG_PENDING'].includes(societyState.onboardingStatus)) {
+      throw new AppError('Society must be verified before resident/unit import', 409);
+    }
+
     const rows = Array.isArray(batch.rawRows) ? (batch.rawRows as unknown as ImportRow[]) : [];
     if (rows.length === 0) throw new AppError('Import batch has no rows to commit', 400);
 
@@ -561,7 +616,7 @@ export class SocietyOnboardingService {
         let tenantId: string | null = null;
 
         if (row.ownerPhone) {
-          const owner = await this.upsertResident(tx, societyId, flat.id, {
+          const owner = await this.upsertResident(tx, societyId, flat.id, row.rowNumber, {
             name: row.ownerName || 'Owner',
             phone: row.ownerPhone,
             residentType: 'OWNER',
@@ -573,7 +628,7 @@ export class SocietyOnboardingService {
         }
 
         if (row.tenantPhone) {
-          const tenant = await this.upsertResident(tx, societyId, flat.id, {
+          const tenant = await this.upsertResident(tx, societyId, flat.id, row.rowNumber, {
             name: row.tenantName || 'Tenant',
             phone: row.tenantPhone,
             residentType: 'TENANT',
@@ -675,6 +730,13 @@ export class SocietyOnboardingService {
   }, user: AuthenticatedUser) {
     this.assertCanManage(user, societyId);
 
+    if (data.logoKey && !this.isSocietyUploadKey(data.logoKey, societyId, user.id)) {
+      throw new AppError('Invalid logo key: upload through the documents presigned-url endpoint', 400);
+    }
+    if (data.logoUrl && !/^https:\/\//i.test(data.logoUrl)) {
+      throw new AppError('logoUrl must be an https URL', 400);
+    }
+
     return prisma.society.update({
       where: { id: societyId },
       data: {
@@ -723,8 +785,10 @@ export class SocietyOnboardingService {
         gates.push(gate);
       }
 
-      await tx.society.update({
-        where: { id: societyId },
+      // Only advance a SUPER_ADMIN-verified society; never skip verification,
+      // never pull an ACTIVE society back.
+      await tx.society.updateMany({
+        where: { id: societyId, onboardingStatus: 'IMPORT_PENDING' },
         data: { onboardingStatus: 'CONFIG_PENDING' },
       });
 
@@ -747,8 +811,17 @@ export class SocietyOnboardingService {
         if (!isValidIndianPhone(phone)) throw new AppError(`Invalid guard phone number: ${guardInput.phone}`, 400);
 
         const existing = await tx.user.findUnique({ where: { phone } });
-        if (existing?.societyId && existing.societyId !== societyId) {
-          throw new AppError(`Guard phone already belongs to another society: ${phone}`, 409);
+        if (existing) {
+          // Only brand-new phones, an existing guard of this society, or a bare
+          // never-onboarded signup may become a guard. Never residents, admins or
+          // super admins, and never anyone tied to another society.
+          const isOwnGuard = existing.role === 'GUARD' && existing.societyId === societyId;
+          const isBareSignup =
+            existing.role === 'RESIDENT' && !existing.societyId && !existing.flatId &&
+            (await tx.userFlatMembership.count({ where: { userId: existing.id, isActive: true } })) === 0;
+          if (!isOwnGuard && !isBareSignup) {
+            throw new AppError(`Phone ${phone} is already registered to another account and cannot be made a guard`, 409);
+          }
         }
 
         const guard = existing
@@ -820,6 +893,15 @@ export class SocietyOnboardingService {
     if (gatesCount === 0) throw new AppError('At least one gate must be configured before activation', 400);
     if (guardsCount === 0) throw new AppError('At least one guard must be created before activation', 400);
     if (!ruleConfig) throw new AppError('Society rules must be configured before activation', 400);
+
+    // SUPER_ADMIN verification is a hard prerequisite: only approveVerification
+    // (SUPER_ADMIN-only) marks onboarding documents VERIFIED.
+    const verifiedRegistration = await prisma.societyOnboardingDocument.count({
+      where: { societyId, documentType: 'REGISTRATION_CERTIFICATE', status: 'VERIFIED', reviewedById: { not: null } },
+    });
+    if (verifiedRegistration === 0 && user.role !== 'SUPER_ADMIN') {
+      throw new AppError('Society must be verified by S-Gate before activation', 409);
+    }
 
     return prisma.society.update({
       where: { id: societyId },
@@ -969,11 +1051,35 @@ export class SocietyOnboardingService {
     });
     const existingVehicleSet = new Set(existingVehicles.map((vehicle) => normalizeVehicle(vehicle.vehicleNumber)));
 
+    // Phones belonging to accounts the import must not touch become row errors
+    const normalizedRows = rawRows.map((rawRow) => this.normalizeRawRow(rawRow));
+    const phones = Array.from(new Set(
+      normalizedRows.flatMap((r) => [r.ownerPhone, r.tenantPhone]).filter((p): p is string => !!p)
+    ));
+    const existingUsers = phones.length
+      ? await prisma.user.findMany({
+          where: { phone: { in: phones } },
+          select: { phone: true, role: true, societyId: true },
+        })
+      : [];
+    const blockedPhones = new Map<string, string>();
+    for (const existingUser of existingUsers) {
+      const reason = this.importConflict(existingUser, societyId);
+      if (reason) blockedPhones.set(existingUser.phone, reason);
+    }
+
     rawRows.forEach((rawRow, index) => {
       const rowNumber = Number(rawRow.rowNumber || index + 2);
-      const row = this.normalizeRawRow(rawRow);
+      const row = normalizedRows[index];
 
       const rowErrors: Array<{ field?: string; message: string }> = [];
+
+      if (row.ownerPhone && blockedPhones.has(row.ownerPhone)) {
+        rowErrors.push({ field: 'Owner Phone', message: blockedPhones.get(row.ownerPhone)! });
+      }
+      if (row.tenantPhone && blockedPhones.has(row.tenantPhone)) {
+        rowErrors.push({ field: 'Tenant Phone', message: blockedPhones.get(row.tenantPhone)! });
+      }
 
       if (!row.block) rowErrors.push({ field: 'Block', message: 'Block is required' });
       if (!row.flatNumber) rowErrors.push({ field: 'Flat Number', message: 'Flat Number is required' });
@@ -1111,19 +1217,40 @@ export class SocietyOnboardingService {
     });
   }
 
-  private async upsertResident(tx: TransactionClient, societyId: string, flatId: string, data: {
+  /** Why an existing account can't be imported as a resident of this society, or null. */
+  private importConflict(user: { role: string; societyId: string | null }, societyId: string): string | null {
+    if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN' || user.role === 'GUARD') {
+      return `Phone belongs to an existing ${user.role} account and cannot be imported as a resident`;
+    }
+    if (user.societyId && user.societyId !== societyId) {
+      return 'Phone belongs to a resident of another society';
+    }
+    return null;
+  }
+
+  /** Keys from the society documents presigned-url (or legacy general/<uploader>/ keys). */
+  private isSocietyUploadKey(key: unknown, societyId: string, userId: string): key is string {
+    return isOwnedUploadKey(key, societyId, ['societies']) || isOwnedUploadKey(key, userId, ['general']);
+  }
+
+  private async upsertResident(tx: TransactionClient, societyId: string, flatId: string, rowNumber: number, data: {
     name: string;
     phone: string;
     residentType: 'OWNER' | 'TENANT';
     isLivingHere: boolean;
   }) {
     const existingUser = await tx.user.findUnique({ where: { phone: data.phone } });
+    const conflict = existingUser ? this.importConflict(existingUser, societyId) : null;
+    if (conflict) {
+      // Re-checked at commit time: accounts may have changed since validation.
+      throw new AppError(`Row ${rowNumber}: ${conflict}`, 409);
+    }
     const user = existingUser
       ? await tx.user.update({
           where: { id: existingUser.id },
           data: {
             name: existingUser.name || data.name,
-            role: existingUser.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'RESIDENT',
+            role: 'RESIDENT',
             isActive: true,
             societyId: existingUser.societyId || societyId,
             flatId: existingUser.flatId || flatId,

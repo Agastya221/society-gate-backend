@@ -257,7 +257,20 @@ export class BillingService {
     if (status) where.status = status;
     if (month) where.month = month;
 
-    const [invoices, total] = await Promise.all([
+    // Mark invoices as OVERDUE once dueDate + Society Settings grace period has
+    // passed and they're still PENDING (no grace configured → legacy: due date itself).
+    // Done for the whole society BEFORE reading, so the page, the filter and the
+    // summary all see the same statuses.
+    const now = new Date();
+    const { maintenance } = await societySettingsService.getConfiguredRules(societyId);
+    const graceDays = Math.max(0, maintenance.gracePeriodDays ?? 0);
+    const overdueCutoff = new Date(now.getTime() - graceDays * 24 * 60 * 60 * 1000);
+    await prisma.invoice.updateMany({
+      where: { societyId, status: 'PENDING', dueDate: { lt: overdueCutoff } },
+      data: { status: 'OVERDUE' },
+    });
+
+    const [invoices, total, byStatus] = await Promise.all([
       prisma.invoice.findMany({
         where,
         skip,
@@ -278,27 +291,15 @@ export class BillingService {
         },
       }),
       prisma.invoice.count({ where }),
+      // Summary across the whole filtered set, not just this page
+      prisma.invoice.groupBy({
+        by: ['status'],
+        where,
+        _count: { _all: true },
+        _sum: { totalAmount: true },
+      }),
     ]);
 
-    // Mark invoices as OVERDUE once dueDate + Society Settings grace period has
-    // passed and they're still PENDING (no grace configured → legacy: due date itself)
-    const now = new Date();
-    const { maintenance } = await societySettingsService.getConfiguredRules(societyId);
-    const graceDays = maintenance.gracePeriodDays ?? 0;
-    const overdueIds = invoices
-      .filter((inv) => inv.status === 'PENDING' && isPastGrace(inv.dueDate, graceDays, now))
-      .map((inv) => inv.id);
-
-    if (overdueIds.length > 0) {
-      await prisma.invoice.updateMany({
-        where: { id: { in: overdueIds } },
-        data: { status: 'OVERDUE' },
-      });
-      overdueIds.forEach((id) => {
-        const inv = invoices.find((i) => i.id === id);
-        if (inv) inv.status = 'OVERDUE';
-      });
-    }
 
     const formatted = invoices.map((inv) => ({
       id: inv.id,
@@ -318,17 +319,17 @@ export class BillingService {
       createdAt: inv.createdAt,
     }));
 
-    // Summary totals
+    // Summary totals (whole filtered set)
+    const countOf = (st: string) => byStatus.find((g) => g.status === st)?._count._all ?? 0;
+    const sumOf = (st: string) => byStatus.find((g) => g.status === st)?._sum.totalAmount ?? 0;
     const summary = {
       totalCount: total,
-      paidCount: formatted.filter((r) => r.status === 'PAID').length,
-      pendingCount: formatted.filter((r) => r.status === 'PENDING').length,
-      overdueCount: formatted.filter((r) => r.status === 'OVERDUE').length,
-      waivedCount: formatted.filter((r) => r.status === 'WAIVED').length,
-      collectedAmount: formatted.filter((r) => r.status === 'PAID').reduce((sum, r) => sum + r.totalAmount, 0),
-      outstandingAmount: formatted
-        .filter((r) => r.status === 'PENDING' || r.status === 'OVERDUE')
-        .reduce((sum, r) => sum + r.totalAmount, 0),
+      paidCount: countOf('PAID'),
+      pendingCount: countOf('PENDING'),
+      overdueCount: countOf('OVERDUE'),
+      waivedCount: countOf('WAIVED'),
+      collectedAmount: sumOf('PAID'),
+      outstandingAmount: sumOf('PENDING') + sumOf('OVERDUE'),
     };
 
     return {

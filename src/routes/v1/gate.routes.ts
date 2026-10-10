@@ -28,14 +28,15 @@ router.get('/entries', authenticate, ensureSameSociety, getEntries);
 
 // Parking — guard can lookup vehicles and issue violations
 // Residents use /resident/parking/complaints and /resident/vehicles/search instead.
-const parkingStaff = authorize('GUARD', 'ADMIN', 'SUPER_ADMIN');
-router.get('/parking/lookup', authenticate, ensureSameSociety, parkingStaff, lookupVehicle);
-router.get('/parking/violations', authenticate, ensureSameSociety, parkingStaff, listViolations);
-router.post('/parking/violations', authenticate, ensureSameSociety, parkingStaff, issueViolation);
-router.post('/parking/vehicles/:vehicleId/violations', authenticate, ensureSameSociety, parkingStaff, issueViolation);
+const gateStaff = authorize('GUARD', 'ADMIN', 'SUPER_ADMIN');
+router.get('/parking/lookup', authenticate, ensureSameSociety, gateStaff, lookupVehicle);
+router.get('/parking/violations', authenticate, ensureSameSociety, gateStaff, listViolations);
+router.post('/parking/violations', authenticate, ensureSameSociety, gateStaff, issueViolation);
+router.post('/parking/vehicles/:vehicleId/violations', authenticate, ensureSameSociety, gateStaff, issueViolation);
 
 // Flat search — used by guard "New Entry" screen
-router.get('/flats/search', authenticate, ensureSameSociety, async (req: Request, res: Response) => {
+// Guard "New Entry"/pre-approved screens only; no resident screen uses it (it lists resident names per flat).
+router.get('/flats/search', authenticate, ensureSameSociety, gateStaff, async (req: Request, res: Response) => {
   try {
     const societyId = getSocietyId(req);
     const query = typeof req.query.query === 'string' ? req.query.query.trim().slice(0, 50) : '';

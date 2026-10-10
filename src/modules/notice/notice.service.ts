@@ -1,12 +1,8 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { findInSociety, clampPagination } from '../../utils/scope';
-import type {
-  CreateNoticeDTO,
-  UpdateNoticeDTO,
-  NoticeFilters,
-  Prisma,
-} from '../../types';
+import type { NoticeFilters, Prisma } from '../../types';
+import type { CreateNoticeInput, UpdateNoticeInput } from './notice.schemas';
 
 // Maps internal role enum to a display label shown to residents
 function roleToPostedBy(role: string): string {
@@ -29,10 +25,19 @@ function formatNotice(notice: {
 }
 
 export class NoticeService {
-  async createNotice(data: CreateNoticeDTO, createdById: string, societyId: string) {
+  async createNotice(data: CreateNoticeInput, createdById: string, societyId: string) {
     const notice = await prisma.notice.create({
       data: {
-        ...data,
+        type: data.type,
+        priority: data.priority,
+        title: data.title,
+        description: data.description,
+        images: data.images,
+        documents: data.documents,
+        isUrgent: data.isUrgent,
+        isPinned: data.isPinned,
+        publishAt: data.publishAt,
+        expiresAt: data.expiresAt,
         societyId,
         createdById,
       },
@@ -118,7 +123,7 @@ export class NoticeService {
     return formatNotice(notice);
   }
 
-  async updateNotice(noticeId: string, data: UpdateNoticeDTO, userId: string, societyId: string) {
+  async updateNotice(noticeId: string, data: UpdateNoticeInput, userId: string, societyId: string) {
     const notice = await findInSociety(prisma.notice, noticeId, societyId, { entity: 'Notice' });
 
     if (notice.createdById !== userId) {
@@ -127,7 +132,19 @@ export class NoticeService {
 
     const updatedNotice = await prisma.notice.update({
       where: { id: noticeId },
-      data,
+      data: {
+        type: data.type,
+        priority: data.priority,
+        title: data.title,
+        description: data.description,
+        images: data.images,
+        documents: data.documents,
+        isUrgent: data.isUrgent,
+        isPinned: data.isPinned,
+        publishAt: data.publishAt,
+        expiresAt: data.expiresAt,
+        isActive: data.isActive,
+      },
       include: {
         createdBy: { select: { id: true, name: true } },
       },

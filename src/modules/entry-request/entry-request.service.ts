@@ -1,6 +1,7 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { clampPagination } from '../../utils/scope';
+import { isOwnedUploadKey } from '../../utils/s3';
 import { eventBus } from '../../utils/eventBus';
 import { emitToUser, SOCKET_EVENTS } from '../../utils/socket';
 import logger from '../../utils/logger';
@@ -80,6 +81,12 @@ export class EntryRequestService {
       throw new AppError('Guard must be assigned to a society', 400);
     }
 
+    // Only a key this guard uploaded (entry-photos/<guardId>/<file>) — never another user's object
+    if (data.photoKey !== undefined && data.photoKey !== null && data.photoKey !== '' &&
+        !isOwnedUploadKey(data.photoKey, guardId, ['entry-photos'])) {
+      throw new AppError('Invalid photo key', 400);
+    }
+
     const requestedFlatIds = [
       ...new Set([
         ...(data.flatId ? [data.flatId] : []),
@@ -122,7 +129,7 @@ export class EntryRequestService {
         visitorName: data.visitorName,
         visitorPhone: data.visitorPhone,
         providerTag: data.providerTag,
-        photoKey: data.photoKey,
+        photoKey: data.photoKey || undefined,
         flatId: primaryFlat.id,
         societyId: guard.societyId,
         guardId,

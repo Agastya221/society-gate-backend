@@ -2,21 +2,22 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { findInSociety, clampPagination } from '../../utils/scope';
 import type { Prisma, PostCategory } from '../../types';
+import type { CreatePostInput, CreateCommentInput } from './community-post.schemas';
 
 export class CommunityPostService {
   // ============================================
   // POSTS
   // ============================================
 
-  async createPost(data: {
-    title: string;
-    content: string;
-    category?: PostCategory;
-    isAnonymous?: boolean;
-  }, authorId: string, societyId: string) {
+  async createPost(data: CreatePostInput, authorId: string, societyId: string, isAdmin = false) {
     const post = await prisma.communityPost.create({
       data: {
-        ...data,
+        title: data.title,
+        content: data.content,
+        category: data.category,
+        isAnonymous: data.isAnonymous ?? false,
+        // Pinning is an admin action; a resident's isPinned is ignored
+        isPinned: isAdmin ? data.isPinned ?? false : false,
         authorId,
         societyId,
       },
@@ -161,10 +162,7 @@ export class CommunityPostService {
   // COMMENTS
   // ============================================
 
-  async addComment(postId: string, data: {
-    content: string;
-    isAnonymous?: boolean;
-  }, authorId: string, societyId: string) {
+  async addComment(postId: string, data: CreateCommentInput, authorId: string, societyId: string) {
     await findInSociety(prisma.communityPost, postId, societyId, {
       entity: 'Post',
       where: { isActive: true },

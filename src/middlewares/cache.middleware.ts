@@ -27,6 +27,10 @@ export const cache = (options: CacheOptions = {}) => {
     try {
       const baseKey = `${keyPrefix}:${req.originalUrl || req.url}`;
 
+      // Responses are frequently personal (flat-, role- or user-scoped), so every
+      // authenticated cache entry is keyed by the caller. varyBy adds to this.
+      const scopeKey = req.user ? `:u=${req.user.id}:r=${req.user.role}:s=${req.user.societyId ?? 'none'}` : ':anon';
+
       let varyKey = '';
       if (varyBy.length > 0) {
         const varyValues = varyBy.map(field => {
@@ -41,7 +45,7 @@ export const cache = (options: CacheOptions = {}) => {
         varyKey = `:${varyValues.join(':')}`;
       }
 
-      const cacheKey = `${baseKey}${varyKey}`;
+      const cacheKey = `${baseKey}${scopeKey}${varyKey}`;
 
       const cachedData = await redis.get(cacheKey);
 
@@ -56,9 +60,12 @@ export const cache = (options: CacheOptions = {}) => {
       const originalJson = res.json.bind(res);
 
       res.json = ((body: unknown) => {
-        redis.setex(cacheKey, ttl, JSON.stringify(body)).catch(err => {
-          logger.error({ error: err, cacheKey }, '❌ [REDIS CACHE SET ERROR]');
-        });
+        // Only cache successful responses — never errors (403/404/500 would stick).
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          redis.setex(cacheKey, ttl, JSON.stringify(body)).catch(err => {
+            logger.error({ error: err, cacheKey }, '❌ [REDIS CACHE SET ERROR]');
+          });
+        }
         return originalJson(body);
       }) as typeof res.json;
 

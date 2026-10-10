@@ -1,15 +1,19 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { findInSociety, clampPagination } from '../../utils/scope';
+import type { z } from 'zod';
 import type {
-  CreateAmenityDTO,
-  UpdateAmenityDTO,
-  AmenityFilters,
-  CreateBookingDTO,
-  BookingFilters,
-  BookSlotDTO,
-  Prisma,
-} from '../../types';
+  createAmenitySchema,
+  updateAmenitySchema,
+  createBookingSchema,
+  bookSlotSchema,
+} from './amenity.schemas';
+import type { AmenityFilters, BookingFilters, Prisma } from '../../types';
+
+type CreateAmenityInput = z.infer<typeof createAmenitySchema>;
+type UpdateAmenityInput = z.infer<typeof updateAmenitySchema>;
+type CreateBookingInput = z.infer<typeof createBookingSchema>;
+type BookSlotInput = z.infer<typeof bookSlotSchema>;
 
 /** Who is booking, so the booking can be tied to their society and flat. */
 export interface BookingCaller {
@@ -22,7 +26,7 @@ const isSocietyAdmin = (role: string) => role === 'ADMIN' || role === 'SUPER_ADM
 
 export class AmenityService {
   // Admin: Create amenity
-  async createAmenity(data: CreateAmenityDTO, societyId: string) {
+  async createAmenity(data: CreateAmenityInput, societyId: string) {
     const amenity = await prisma.amenity.create({
       data: { ...data, societyId },
       include: {
@@ -57,7 +61,7 @@ export class AmenityService {
   }
 
   // Admin: Update amenity
-  async updateAmenity(amenityId: string, data: UpdateAmenityDTO, societyId: string) {
+  async updateAmenity(amenityId: string, data: UpdateAmenityInput, societyId: string) {
     await findInSociety(prisma.amenity, amenityId, societyId, { entity: 'Amenity', select: { id: true } });
 
     const updatedAmenity = await prisma.amenity.update({
@@ -80,7 +84,7 @@ export class AmenityService {
   }
 
   // Create booking
-  async createBooking(data: CreateBookingDTO, userId: string, caller: BookingCaller) {
+  async createBooking(data: CreateBookingInput, userId: string, caller: BookingCaller) {
     const { amenityId, bookingDate, startTime, endTime } = data;
     const { societyId } = caller;
 
@@ -157,14 +161,25 @@ export class AmenityService {
         throw new AppError(`Maximum ${amenity.maxBookingsPerUser} active bookings allowed`, 400);
       }
 
-      // Create booking atomically
+      // Price is always computed server-side from the amenity's rate.
+      const hours = (requestedEnd - requestedStart) / 60;
+      const amount = Math.round((amenity.pricePerHour ?? 0) * hours * 100) / 100;
+
+      // Create booking atomically. Only allow-listed fields; amount, isPaid and
+      // status are server-controlled.
       const newBooking = await tx.amenityBooking.create({
         data: {
-          ...data,
+          amenityId: amenity.id,
           userId,
           flatId,
           societyId,
           bookingDate: new Date(bookingDate),
+          startTime,
+          endTime,
+          guestCount: data.guestCount ?? 1,
+          purpose: data.purpose,
+          amount,
+          isPaid: false,
           status: 'CONFIRMED',
         },
         include: {
@@ -354,7 +369,7 @@ export class AmenityService {
   }
 
   // Book by slotId (frontend-facing)
-  async bookSlot(amenityId: string, data: BookSlotDTO, userId: string, caller: BookingCaller) {
+  async bookSlot(amenityId: string, data: BookSlotInput, userId: string, caller: BookingCaller) {
     const { slotId, date, members, purpose } = data;
 
     // Derive startTime/endTime from slotId: "<amenityId>_<date>_<HH:MM>"
@@ -394,7 +409,6 @@ export class AmenityService {
       {
         amenityId,
         flatId: caller.flatId,
-        societyId: caller.societyId,
         bookingDate: new Date(date),
         startTime,
         endTime,

@@ -12,7 +12,8 @@ import {
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 import { validate } from '../../middlewares/validate.middleware';
-import { createEmergencySchema, resolveEmergencySchema, idParams } from '../../schemas';
+import { resolveEmergencySchema, idParams } from '../../schemas';
+import { createEmergencySchema } from './emergency.schemas';
 
 const router = Router();
 

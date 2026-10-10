@@ -396,10 +396,14 @@ export class GateScanService {
       return { type: 'GATE_PASS', allowed: false, reason: 'Gate pass has expired', data: gatePass };
     }
 
-    await prisma.gatePass.update({
-      where: { id: gatePass.id },
+    // Atomic claim: only one concurrent scan can move the pass out of APPROVED/ACTIVE.
+    const claimed = await prisma.gatePass.updateMany({
+      where: { id: gatePass.id, status: { in: ['APPROVED', 'ACTIVE'] }, validUntil: { gte: now } },
       data: { isUsed: true, usedAt: now, usedByGuardId: guardId, status: 'USED' },
     });
+    if (claimed.count === 0) {
+      return { type: 'GATE_PASS', allowed: false, reason: 'Gate pass has already been used', data: gatePass };
+    }
 
     return { type: 'GATE_PASS', allowed: true, reason: 'Gate pass verified', data: gatePass };
   }

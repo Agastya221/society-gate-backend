@@ -6,6 +6,7 @@ import {
   getPresignedViewUrl,
   deleteFromS3,
   ALLOWED_DOCUMENT_TYPES,
+  isOwnedUploadKey,
 } from '../../utils/s3';
 import { findInSociety, clampPagination } from '../../utils/scope';
 import type { Prisma, DocumentCategory } from '../../types';
@@ -61,8 +62,7 @@ export class DocumentService {
   }, uploadedById: string, societyId: string) {
     // The key must be one we issued to this user in getUploadUrl — otherwise a
     // caller could register (and later view/delete) someone else's S3 object.
-    const ownPrefix = `general/${uploadedById}/`;
-    if (typeof data.s3Key !== 'string' || !data.s3Key.startsWith(ownPrefix) || data.s3Key.includes('..')) {
+    if (!isOwnedUploadKey(data.s3Key, uploadedById, ['general'])) {
       throw new AppError('Invalid file key', 400);
     }
 

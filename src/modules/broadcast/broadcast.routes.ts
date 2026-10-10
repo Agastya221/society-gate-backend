@@ -15,7 +15,7 @@ const broadcastSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
   message: z.string().min(1, 'Message is required').max(2000),
   isEmergency: z.boolean().optional().default(false),
-  target: z.string().optional().default('ALL'), // 'ALL' or a blockId
+  target: z.string().trim().min(1).max(64).optional().default('ALL'), // 'ALL' or a blockId
 });
 
 // POST /admin/broadcast

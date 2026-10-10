@@ -5,102 +5,95 @@ import {
   getPresignedUploadUrl,
   getPresignedViewUrl,
   deleteFromS3,
+  isOwnedUploadKey,
   isValidFileType,
   ALLOWED_DOCUMENT_TYPES,
-  ALLOWED_PHOTO_TYPES,
+  MAX_DOCUMENT_BYTES,
 } from '../../utils/s3';
-import { DocumentType } from '../../../prisma/generated/prisma/enums';
-
-type UploadContext = 'onboarding' | 'entry-photo' | 'staff-photo';
-
-interface PresignedUrlRequest {
-  context: UploadContext;
-  fileName: string;
-  mimeType: string;
-  fileSize: number;
-  documentType?: DocumentType;
-}
-
-interface ConfirmUploadRequest {
-  s3Key: string;
-  fileName: string;
-  mimeType: string;
-  fileSize: number;
-  documentType: DocumentType;
-  onboardingRequestId?: string;
-}
+import {
+  UPLOAD_CONTEXT_RULES,
+  type ConfirmUploadInput,
+  type PresignedUrlInput,
+} from './upload.schemas';
 
 export class UploadService {
   /**
-   * Get a pre-signed URL for uploading a file
+   * Get a pre-signed URL for uploading a file.
+   * The key is generated server-side under `<folder>/<userId>/`, and the declared
+   * size + type are signed into the URL so S3 rejects a different body.
    */
   async getPresignedUrl(
-    data: PresignedUrlRequest,
+    data: PresignedUrlInput,
     userId: string
   ): Promise<{ uploadUrl: string; s3Key: string }> {
     const { context, fileName, mimeType, fileSize } = data;
+    const rules = UPLOAD_CONTEXT_RULES[context];
 
-    // Validate file type based on context
-    const allowedTypes =
-      context === 'entry-photo' || context === 'staff-photo'
-        ? ALLOWED_PHOTO_TYPES
-        : ALLOWED_DOCUMENT_TYPES;
-
-    if (!isValidFileType(mimeType, allowedTypes)) {
+    if (!isValidFileType(mimeType, rules.mimeTypes)) {
       throw new AppError(
-        `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`,
+        `Invalid file type. Allowed types: ${rules.mimeTypes.join(', ')}`,
         400
       );
     }
 
-    // Validate file size (max 10MB for documents, 5MB for photos)
-    const maxSize = context === 'entry-photo' || context === 'staff-photo'
-      ? 5 * 1024 * 1024
-      : 10 * 1024 * 1024;
-    if (fileSize > maxSize) {
+    if (fileSize > rules.maxBytes) {
       throw new AppError(
-        `File too large. Maximum size: ${maxSize / (1024 * 1024)}MB`,
+        `File too large. Maximum size: ${rules.maxBytes / (1024 * 1024)}MB`,
         400
       );
     }
 
-    // Generate S3 key
     const folder = context === 'entry-photo'
       ? 'entry-photos'
       : context === 'staff-photo'
         ? 'staff-photos'
         : 'onboarding';
-    const s3Key = generateS3Key(folder, userId, fileName);
+    const s3Key = generateS3Key(folder, userId, fileName, mimeType);
 
-    // Get pre-signed upload URL
-    return getPresignedUploadUrl(s3Key, mimeType);
+    return getPresignedUploadUrl(s3Key, mimeType, undefined, fileSize);
   }
 
   /**
    * Confirm upload and save document metadata to database
    */
   async confirmUpload(
-    data: ConfirmUploadRequest,
+    data: ConfirmUploadInput,
     userId: string
   ) {
     const { s3Key, fileName, mimeType, fileSize, documentType, onboardingRequestId } =
       data;
 
-    if (!onboardingRequestId) {
-      throw new AppError('onboardingRequestId is required for document uploads', 400);
+    // Only keys we issued to this user for onboarding documents may be attached.
+    if (!isOwnedUploadKey(s3Key, userId, ['onboarding'])) {
+      throw new AppError('Invalid file key', 400);
+    }
+
+    if (!isValidFileType(mimeType, ALLOWED_DOCUMENT_TYPES)) {
+      throw new AppError(
+        `Invalid file type. Allowed types: ${ALLOWED_DOCUMENT_TYPES.join(', ')}`,
+        400
+      );
+    }
+
+    if (fileSize > MAX_DOCUMENT_BYTES) {
+      throw new AppError(
+        `File too large. Maximum size: ${MAX_DOCUMENT_BYTES / (1024 * 1024)}MB`,
+        400
+      );
     }
 
     // Verify the onboarding request exists and belongs to the user
-    const onboardingRequest = await prisma.onboardingRequest.findUnique({
-      where: { id: onboardingRequestId },
+    const onboardingRequest = await prisma.onboardingRequest.findFirst({
+      where: { id: onboardingRequestId, userId },
+      select: { id: true, status: true },
     });
 
     if (!onboardingRequest) {
       throw new AppError('Onboarding request not found', 404);
     }
 
-    if (onboardingRequest.userId !== userId) {
-      throw new AppError('You can only upload documents for your own onboarding request', 403);
+    if (onboardingRequest.status === 'APPROVED') {
+      throw new AppError('Documents cannot be added to an approved request', 400);
     }
 
     // Create the document record
@@ -141,6 +134,7 @@ export class UploadService {
     // Get the requesting user
     const requestingUser = await prisma.user.findUnique({
       where: { id: userId },
+      select: { id: true, role: true, societyId: true, isActive: true },
     });
 
     if (!requestingUser) {
@@ -181,12 +175,15 @@ export class UploadService {
       throw new AppError('User not found', 404);
     }
 
-    // Check ownership or admin access
+    // Check ownership or admin access. These routes also run under
+    // authenticateForOnboarding (inactive users allowed), so admin rights
+    // require an active account.
     const isOwner = document.onboardingRequest.userId === userId;
     const isAdmin =
+      requestingUser.isActive &&
       requestingUser.role === 'ADMIN' &&
       requestingUser.societyId === document.onboardingRequest.societyId;
-    const isSuperAdmin = requestingUser.role === 'SUPER_ADMIN';
+    const isSuperAdmin = requestingUser.isActive && requestingUser.role === 'SUPER_ADMIN';
 
     if (!isOwner && !isAdmin && !isSuperAdmin) {
       throw new AppError('Access denied', 403);
@@ -254,16 +251,21 @@ export class UploadService {
    * Check if a user can view a document
    */
   private canViewDocument(
-    user: { id: string; role: string; societyId: string | null },
+    user: { id: string; role: string; societyId: string | null; isActive: boolean },
     document: { onboardingRequest: { userId: string; societyId: string | null } }
   ): boolean {
-    // Super admin can view all
-    if (user.role === 'SUPER_ADMIN') {
+    // Owner can view their own documents
+    if (document.onboardingRequest.userId === user.id) {
       return true;
     }
 
-    // Owner can view their own documents
-    if (document.onboardingRequest.userId === user.id) {
+    // Admin rights need an active account (the onboarding route admits inactive users)
+    if (!user.isActive) {
+      return false;
+    }
+
+    // Super admin can view all
+    if (user.role === 'SUPER_ADMIN') {
       return true;
     }
 

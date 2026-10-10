@@ -328,6 +328,27 @@ export class DomesticStaffService {
     return this._formatStaffListItem(staff, now);
   }
 
+  /**
+   * Staff QR pass source. Admins and guards may fetch any staff in the society; a
+   * resident only staff assigned (active) to one of their flats.
+   */
+  async getStaffQRSource(staffId: string, caller: StaffCaller) {
+    const staff = await prisma.domesticStaff.findFirst({
+      where: { id: staffId, societyId: caller.societyId },
+      select: { id: true, name: true, staffType: true, qrToken: true },
+    });
+    if (!staff) throw new AppError('Staff not found', 404);
+    if (!isStaffAdminRole(caller.role) && caller.role !== 'GUARD') {
+      const flatIds = await getCallerFlatIds(caller.userId, caller.societyId);
+      const assigned = await prisma.staffFlatAssignment.findFirst({
+        where: { domesticStaffId: staffId, isActive: true, flatId: { in: flatIds } },
+        select: { id: true },
+      });
+      if (!assigned) throw new AppError('Staff not found', 404);
+    }
+    return staff;
+  }
+
   // Returns count of active staff per type for the society
   async getTypeSummary(societyId: string) {
     const counts = await prisma.domesticStaff.groupBy({

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AppError } from '../../utils/ResponseHandler';
+import { isOwnedUploadKey } from '../../utils/s3';
 
 // ============================================
 // SOCIETY MODULE SCHEMAS (/api/v1/admin/societies)
@@ -137,4 +138,15 @@ export function parseOrThrow<S extends z.ZodType>(schema: S, value: unknown): z.
     throw new AppError(message || 'Invalid request', 400);
   }
   return result.data;
+}
+
+/**
+ * A logoKey is only accepted if it lives under the society's own upload prefix
+ * (societies/<societyId>/...) or the caller's own general uploads.
+ */
+export function assertOwnedLogoKey(logoKey: unknown, societyId: string, actorId: string) {
+  if (logoKey === undefined || logoKey === null) return;
+  if (!isOwnedUploadKey(logoKey, societyId, ['societies']) && !isOwnedUploadKey(logoKey, actorId, ['general'])) {
+    throw new AppError('logoKey must be a file uploaded for this society', 400);
+  }
 }

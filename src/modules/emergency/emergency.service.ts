@@ -2,8 +2,8 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { eventBus } from '../../utils/eventBus';
 import { findInSociety, clampPagination } from '../../utils/scope';
+import type { CreateEmergencyInput } from './emergency.schemas';
 import type {
-  CreateEmergencyDTO,
   EmergencyFilters,
   Prisma,
 } from '../../types';
@@ -19,9 +19,9 @@ export function getEmergencySeverity(type: string): EmergencySeverity {
 }
 
 export class EmergencyService {
-  async createEmergency(data: CreateEmergencyDTO, reportedById: string, societyId: string) {
-    // Society always comes from the caller's context, never the body.
-    data.societyId = societyId;
+  async createEmergency(input: CreateEmergencyInput, reportedById: string, societyId: string) {
+    // Allow-listed fields only; society always comes from the caller's context.
+    const data = { ...input, societyId };
 
     // ── Point 1: Rate limiting ──────────────────────────────────────────────
     // Residents may not create a second emergency if they already have one
@@ -61,7 +61,11 @@ export class EmergencyService {
 
     const emergency = await prisma.emergency.create({
       data: {
-        ...data,
+        type: data.type,
+        description: data.description,
+        location: data.location,
+        flatId: data.flatId,
+        societyId,
         reportedById,
         status: 'ACTIVE',
       },

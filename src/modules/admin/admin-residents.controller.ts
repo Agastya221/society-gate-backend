@@ -43,6 +43,7 @@ export const removeAdminResident = asyncHandler(async (req: Request, res: Respon
     resolveSocietyId(req),
     String(req.params.membershipId),
     req.user!.id,
+    req.user!.role,
   );
   res.json({ success: true, message: 'Resident removed', data });
 });

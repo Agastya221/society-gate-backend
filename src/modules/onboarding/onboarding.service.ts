@@ -3,7 +3,8 @@ import { AppError } from '../../utils/ResponseHandler';
 import type { OnboardingStatus, OnboardingAction, ResidentType, DocumentType } from '../../../prisma/generated/prisma/client';
 import type { Prisma } from '../../types';
 import { eventBus } from '../../utils/eventBus';
-import { getPresignedViewUrl } from '../../utils/s3';
+import { getPresignedViewUrl, isOwnedUploadKey, MAX_DOCUMENT_BYTES } from '../../utils/s3';
+import { clampPagination } from '../../utils/scope';
 
 /**
  * Human-readable labels for onboarding DocumentType values. The enum value
@@ -249,6 +250,9 @@ export function isSelfReviewBlocked(requestUserId: string, reviewerId: string, r
   return reviewerRole !== 'SUPER_ADMIN';
 }
 
+const MAX_ONBOARDING_DOCUMENTS = 10;
+const DOCUMENT_TYPE_VALUES = new Set<string>(Object.keys(DOCUMENT_TYPE_LABELS));
+
 export class OnboardingService {
   // ============================================
   // LIST SOCIETIES
@@ -405,6 +409,14 @@ export class OnboardingService {
       throw new AppError('Selected flat was not found in this society', 404);
     }
 
+    const targetSociety = await prisma.society.findUnique({
+      where: { id: data.societyId },
+      select: { isActive: true, onboardingStatus: true },
+    });
+    if (!targetSociety?.isActive || targetSociety.onboardingStatus !== 'ACTIVE') {
+      throw new AppError('This society is not accepting resident applications yet', 400);
+    }
+
     const isLivingHere = data.residentType === 'OWNER'
       ? data.isLivingHere ?? true
       : true;
@@ -470,7 +482,7 @@ export class OnboardingService {
     }
 
     // 3. Validate documents
-    this.validateDocuments(data.documents, data.residentType);
+    this.validateDocuments(userId, data.documents, data.residentType);
 
     let activeOwnerMembership: any = null;
     if (data.residentType === 'TENANT') {
@@ -500,13 +512,7 @@ export class OnboardingService {
           status: 'PENDING_APPROVAL',
           submittedAt: new Date(),
           documents: {
-            create: data.documents.map((doc) => ({
-              documentType: doc.type,
-              documentUrl: doc.url ?? doc.s3Key ?? '',
-              fileName: doc.fileName ?? doc.s3Key?.split('/').pop() ?? 'document',
-              fileSize: doc.fileSize ?? 0,
-              mimeType: doc.mimeType ?? 'application/octet-stream',
-            })),
+            create: this.toDocumentRecords(userId, data.documents),
           },
         },
         include: {
@@ -803,7 +809,7 @@ export class OnboardingService {
       throw new AppError('Resident type cannot be changed while resubmitting. Delete this request and apply again.', 400);
     }
 
-    this.validateDocuments(data.documents, request.residentType);
+    this.validateDocuments(userId, data.documents, request.residentType);
 
     const isLivingHere = request.residentType === 'OWNER'
       ? data.isLivingHere ?? request.isLivingHere
@@ -826,13 +832,7 @@ export class OnboardingService {
           rejectionReason: null,
           resubmitReason: null,
           documents: {
-            create: data.documents.map((doc) => ({
-              documentType: doc.type,
-              documentUrl: doc.url ?? doc.s3Key ?? '',
-              fileName: doc.fileName ?? doc.s3Key?.split('/').pop() ?? 'document',
-              fileSize: doc.fileSize ?? 0,
-              mimeType: doc.mimeType ?? 'application/octet-stream',
-            })),
+            create: this.toDocumentRecords(userId, data.documents),
           },
         },
         include: {
@@ -1003,7 +1003,7 @@ export class OnboardingService {
       }
     }
 
-    this.validateDocuments(data.documents, data.residentType);
+    this.validateDocuments(userId, data.documents, data.residentType);
 
     const isLivingHere = data.residentType === 'OWNER'
       ? data.isLivingHere ?? true
@@ -1032,13 +1032,7 @@ export class OnboardingService {
           rejectionReason: null,
           resubmitReason: null,
           documents: {
-            create: data.documents.map((doc) => ({
-              documentType: doc.type,
-              documentUrl: doc.url ?? doc.s3Key ?? '',
-              fileName: doc.fileName ?? doc.s3Key?.split('/').pop() ?? 'document',
-              fileSize: doc.fileSize ?? 0,
-              mimeType: doc.mimeType ?? 'application/octet-stream',
-            })),
+            create: this.toDocumentRecords(userId, data.documents),
           },
         },
         include: {
@@ -1104,9 +1098,7 @@ export class OnboardingService {
       limit?: number;
     }
   ) {
-    const page = filters?.page || 1;
-    const limit = filters?.limit || 20;
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = clampPagination(filters?.page, filters?.limit);
 
     const where: Prisma.OnboardingRequestWhereInput = {
       societyId: adminSocietyId,
@@ -1540,8 +1532,7 @@ export class OnboardingService {
       };
     }
 
-    const page = pagination?.page || 1;
-    const limit = pagination?.limit || 20;
+    const { page, limit } = clampPagination(pagination?.page, pagination?.limit);
 
     const where = {
       flatId: { in: flatIds },
@@ -1608,6 +1599,10 @@ export class OnboardingService {
       throw new AppError('Onboarding request not found', 404);
     }
 
+    if (request.residentType !== 'TENANT') {
+      throw new AppError('Flat owners can only review tenant requests', 403);
+    }
+
     if (request.status !== 'PENDING_APPROVAL') {
       throw new AppError('Only pending requests can be approved', 400);
     }
@@ -1642,12 +1637,12 @@ export class OnboardingService {
 
       const membershipRole = 'RESIDENT';
 
-      // 2. Update user
+      // 2. Update user (an owner approval never demotes a SUPER_ADMIN)
       await tx.user.update({
         where: { id: request.userId },
         data: {
           isActive: true,
-          role: membershipRole,
+          role: request.user.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : membershipRole,
           societyId: request.societyId,
           flatId: request.flatId,
           isOwner: false,
@@ -1774,6 +1769,10 @@ export class OnboardingService {
       throw new AppError('Onboarding request not found', 404);
     }
 
+    if (request.residentType !== 'TENANT') {
+      throw new AppError('Flat owners can only review tenant requests', 403);
+    }
+
     if (request.status !== 'PENDING_APPROVAL') {
       throw new AppError('Only pending requests can be rejected', 400);
     }
@@ -1855,6 +1854,10 @@ export class OnboardingService {
       throw new AppError('Onboarding request not found', 404);
     }
 
+    if (request.residentType !== 'TENANT') {
+      throw new AppError('Flat owners can only review tenant requests', 403);
+    }
+
     if (request.status !== 'PENDING_APPROVAL') {
       throw new AppError('Only pending requests can request resubmission', 400);
     }
@@ -1924,17 +1927,33 @@ export class OnboardingService {
   // HELPER: VALIDATE DOCUMENTS
   // ============================================
   private validateDocuments(
+    userId: string,
     documents: Array<{ type: DocumentType; url?: string; s3Key?: string }>,
     residentType: 'OWNER' | 'TENANT'
   ) {
-    if (documents.length === 0) {
+    if (!Array.isArray(documents) || documents.length === 0) {
       throw new AppError('At least one document is required', 400);
+    }
+
+    if (documents.length > MAX_ONBOARDING_DOCUMENTS) {
+      throw new AppError(`At most ${MAX_ONBOARDING_DOCUMENTS} documents are allowed`, 400);
+    }
+
+    if (documents.some((doc) => !doc || typeof doc !== 'object' || !DOCUMENT_TYPE_VALUES.has(doc.type))) {
+      throw new AppError('Each document must have a valid type', 400);
     }
 
     const documentTypes = documents.map((d) => d.type);
 
     if (documents.some((doc) => !doc.url && !doc.s3Key)) {
       throw new AppError('Each document must include an uploaded file key', 400);
+    }
+
+    // The stored key is later presigned for admins/owners to view, so it must be
+    // a key we issued to this user for onboarding — never someone else's object
+    // or an arbitrary external URL.
+    if (documents.some((doc) => !isOwnedUploadKey(doc.s3Key ?? doc.url, userId, ['onboarding']))) {
+      throw new AppError('Each document must be uploaded through the onboarding upload endpoint', 400);
     }
 
     if (residentType === 'OWNER') {
@@ -1962,6 +1981,40 @@ export class OnboardingService {
     if (!hasIdProof) {
       throw new AppError('At least one ID proof is required', 400);
     }
+  }
+
+  /** Prisma create rows for validated documents — only known fields, bounded. */
+  private toDocumentRecords(
+    userId: string,
+    documents: Array<{
+      type: DocumentType;
+      url?: string;
+      s3Key?: string;
+      fileName?: string;
+      fileSize?: number;
+      mimeType?: string;
+    }>
+  ) {
+    return documents.map((doc) => {
+      const key = String(doc.s3Key ?? doc.url);
+      if (!isOwnedUploadKey(key, userId, ['onboarding'])) {
+        throw new AppError('Each document must be uploaded through the onboarding upload endpoint', 400);
+      }
+      const fileSize = Number(doc.fileSize);
+      return {
+        documentType: doc.type,
+        documentUrl: key,
+        fileName: (typeof doc.fileName === 'string' && doc.fileName.trim()
+          ? doc.fileName.trim()
+          : key.split('/').pop() ?? 'document').slice(0, 255),
+        fileSize: Number.isFinite(fileSize) && fileSize > 0
+          ? Math.min(Math.floor(fileSize), MAX_DOCUMENT_BYTES)
+          : 0,
+        mimeType: typeof doc.mimeType === 'string' && doc.mimeType.trim()
+          ? doc.mimeType.trim().slice(0, 100)
+          : 'application/octet-stream',
+      };
+    });
   }
 
   private async mapDocumentsForResponse(

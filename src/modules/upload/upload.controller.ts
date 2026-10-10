@@ -1,6 +1,7 @@
 import type { Response, Request } from 'express';
 import { UploadService } from './upload.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
+import { confirmUploadSchema, presignedUrlSchema } from './upload.schemas';
 
 const uploadService = new UploadService();
 
@@ -10,19 +11,17 @@ const uploadService = new UploadService();
 export const getPresignedUrl = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const { context, fileName, mimeType, fileSize, documentType } = req.body;
+    const parsed = presignedUrlSchema.safeParse(req.body ?? {});
 
-    if (!context || !fileName || !mimeType || !fileSize) {
+    if (!parsed.success) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields: context, fileName, mimeType, fileSize',
+        message: 'Missing or invalid fields: context, fileName, mimeType, fileSize',
+        errors: parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
       });
     }
 
-    const result = await uploadService.getPresignedUrl(
-      { context, fileName, mimeType, fileSize, documentType },
-      userId
-    );
+    const result = await uploadService.getPresignedUrl(parsed.data, userId);
 
     res.status(200).json({
       success: true,
@@ -43,21 +42,18 @@ export const getPresignedUrl = async (req: Request, res: Response) => {
 export const confirmUpload = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const { s3Key, fileName, mimeType, fileSize, documentType, onboardingRequestId } =
-      req.body;
+    const parsed = confirmUploadSchema.safeParse(req.body ?? {});
 
-    if (!s3Key || !fileName || !mimeType || !fileSize || !documentType) {
+    if (!parsed.success) {
       return res.status(400).json({
         success: false,
         message:
-          'Missing required fields: s3Key, fileName, mimeType, fileSize, documentType',
+          'Missing or invalid fields: s3Key, fileName, mimeType, fileSize, documentType, onboardingRequestId',
+        errors: parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
       });
     }
 
-    const document = await uploadService.confirmUpload(
-      { s3Key, fileName, mimeType, fileSize, documentType, onboardingRequestId },
-      userId
-    );
+    const document = await uploadService.confirmUpload(parsed.data, userId);
 
     res.status(201).json({
       success: true,

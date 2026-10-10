@@ -1,10 +1,40 @@
-import type { Response, Request } from 'express';
+import type { Response, Request, NextFunction } from 'express';
 import { DomesticStaffService, type StaffCaller } from './domestic-staff.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import { getSocietyId, clampPagination } from '../../utils/scope';
 import type { StaffFilters, StaffBookingFilters, DomesticStaffType, StaffAvailabilityStatus, StaffBookingStatus } from '../../types';
 
 const staffService = new DomesticStaffService();
+
+// Staff fields residents must never receive (QR pass token, ID-proof / Aadhaar details)
+const RESIDENT_HIDDEN_STAFF_FIELDS = new Set(['qrToken', 'idProofType', 'idProofNumber', 'idProofUrl']);
+
+function stripHiddenStaffFields(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(stripHiddenStaffFields);
+  if (value && typeof value === 'object' && !(value instanceof Date)) {
+    const out: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      if (!RESIDENT_HIDDEN_STAFF_FIELDS.has(key)) out[key] = stripHiddenStaffFields(val);
+    }
+    return out;
+  }
+  return value;
+}
+
+/**
+ * Router-level: for non-admin, non-guard callers every JSON response from this module
+ * (lists, by-id, bookings/attendance/assignment includes) has QR tokens and ID-proof
+ * details removed. Runs at send time, so cached bodies are filtered too.
+ */
+export const hideSensitiveStaffFields = (req: Request, res: Response, next: NextFunction) => {
+  const role = req.user?.role;
+  if (role === 'ADMIN' || role === 'SUPER_ADMIN' || role === 'GUARD') return next();
+  const json = res.json.bind(res);
+  // Unfiltered sender for the one route that may hand a resident a QR token (GET /:id/qr)
+  res.locals.sendUnfilteredJson = json;
+  res.json = ((body: unknown) => json(stripHiddenStaffFields(body))) as typeof res.json;
+  next();
+};
 
 /** The acting user; society is server-derived (only SUPER_ADMIN may pick one). */
 const callerOf = (req: Request): StaffCaller => ({
@@ -137,11 +167,15 @@ export const verifyStaff = async (req: Request, res: Response) => {
 export const getStaffQRCode = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const staff = await staffService.getStaffById(String(id), getSocietyId(req));
+    const caller = callerOf(req);
+    const staff = await staffService.getStaffQRSource(String(id), caller);
 
     // Return only the token — frontend renders the QR code
-    // Backend generates QR image on-demand only for emails/WhatsApp/PDF
-    res.status(200).json({
+    // Backend generates QR image on-demand only for emails/WhatsApp/PDF.
+    // Access was checked above, so bypass the resident field filter for this response.
+    const send = (res.locals.sendUnfilteredJson as Response['json'] | undefined) ?? res.json.bind(res);
+    res.status(200);
+    send({
       success: true,
       data: {
         staffId: staff.id,

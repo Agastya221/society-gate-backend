@@ -2,7 +2,7 @@ import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { validateRequiredFields } from '../../utils/validation';
 import { ComplaintCategory, ComplaintStatus, ComplaintPriority, Role } from '../../../prisma/generated/prisma/enums';
-import { getPresignedViewUrl } from '../../utils/s3';
+import { getPresignedViewUrl, isOwnedUploadKey } from '../../utils/s3';
 import type { Prisma } from '../../types';
 import logger from '../../utils/logger';
 import { eventBus } from '../../utils/eventBus';
@@ -65,8 +65,7 @@ export class ComplaintService {
     // Images are S3 keys we presign on read, so they must be files this user
     // uploaded ("<folder>/<userId>/..."), not someone else's object.
     for (const key of data.images || []) {
-      const parts = typeof key === 'string' ? key.split('/') : [];
-      if (parts.length < 3 || parts[1] !== reportedById || key.includes('..')) {
+      if (!isOwnedUploadKey(key, reportedById, ['entry-photos', 'general'])) {
         throw new AppError('Invalid image reference', 400);
       }
     }
@@ -211,6 +210,9 @@ export class ComplaintService {
 
           const reportedBy = shouldHideReporter ? null : c.reportedBy;
           const flat = shouldHideReporter ? null : c.flat;
+          // Don't leak the reporter through the raw foreign keys either.
+          const reportedById = shouldHideReporter ? null : c.reportedById;
+          const flatId = shouldHideReporter ? null : c.flatId;
 
           // Optionally include image URLs
           const limitedImages = (c.images || []).slice(0, 5);
@@ -220,7 +222,9 @@ export class ComplaintService {
           return {
             ...c,
             reportedBy,
+            reportedById,
             flat,
+            flatId,
             isOwn,
             imageCount: c.images?.length || 0,
             hasImages: (c.images?.length || 0) > 0,
@@ -302,7 +306,9 @@ export class ComplaintService {
     return {
       ...complaint,
       reportedBy,
+      reportedById: shouldHideReporter ? null : complaint.reportedById,
       flat,
+      flatId: shouldHideReporter ? null : complaint.flatId,
       isOwn,
       imageUrls,
     };

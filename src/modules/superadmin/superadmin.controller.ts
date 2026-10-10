@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { SuperAdminService } from './superadmin.service';
-import { asyncHandler } from '../../utils/ResponseHandler';
+import { asyncHandler, AppError } from '../../utils/ResponseHandler';
+import { superAdminUpdateSocietySchema, parseOrThrow, assertOwnedLogoKey } from '../society/society.schemas';
 
 const service = new SuperAdminService();
 
@@ -33,12 +34,22 @@ export class SuperAdminController {
   });
 
   updateSociety = asyncHandler(async (req: Request, res: Response) => {
-    const result = await service.updateSociety(req.user!, String(req.params.id), req.body);
+    // Strict allow-list of scalar society fields (no relations/nested writes); `reason` is audit-only.
+    const { reason, ...fields } = (req.body ?? {}) as Record<string, unknown>;
+    if (reason !== undefined && typeof reason !== 'string') throw new AppError('reason must be a string', 400);
+    const data = parseOrThrow(superAdminUpdateSocietySchema, fields);
+    assertOwnedLogoKey(data.logoKey, String(req.params.id), req.user!.id);
+    const result = await service.updateSociety(req.user!, String(req.params.id), { ...data, reason });
     res.json({ success: true, message: 'Society updated successfully', data: result });
   });
 
   setSocietyStatus = asyncHandler(async (req: Request, res: Response) => {
-    const result = await service.setSocietyStatus(req.user!, String(req.params.id), req.body);
+    const { status, isActive, reason } = (req.body ?? {}) as Record<string, unknown>;
+    const result = await service.setSocietyStatus(req.user!, String(req.params.id), {
+      status: typeof status === 'string' ? status : undefined,
+      isActive: typeof isActive === 'boolean' ? isActive : undefined,
+      reason: typeof reason === 'string' ? reason : undefined,
+    });
     res.json({ success: true, message: 'Society status updated successfully', data: result });
   });
 
@@ -58,7 +69,12 @@ export class SuperAdminController {
   });
 
   setUserStatus = asyncHandler(async (req: Request, res: Response) => {
-    const result = await service.setUserStatus(req.user!, String(req.params.id), req.body);
+    const { isActive, reason } = (req.body ?? {}) as { isActive?: unknown; reason?: unknown };
+    if (typeof isActive !== 'boolean') throw new AppError('isActive must be a boolean', 400);
+    const result = await service.setUserStatus(req.user!, String(req.params.id), {
+      isActive,
+      reason: typeof reason === 'string' ? reason : undefined,
+    });
     res.json({ success: true, message: 'User status updated successfully', data: result });
   });
 
