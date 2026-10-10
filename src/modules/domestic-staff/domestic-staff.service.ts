@@ -614,8 +614,11 @@ export class DomesticStaffService {
   async checkIn(data: StaffCheckInDTO & { notes?: string }, verifiedByGuardId?: string, caller?: StaffCaller) {
     const { domesticStaffId, flatId, societyId, checkInMethod = 'QR', notes } = data;
 
-    // A resident may only check staff in to their own flat (guards: any flat in the society)
-    if (caller && caller.role === 'RESIDENT' && flatId) {
+    // A resident must name one of their own flats (guards: any flat in the society, or none)
+    if (caller && caller.role !== 'GUARD') {
+      if (!flatId) {
+        throw new AppError('flatId is required', 400);
+      }
       await assertOwnFlat(caller, flatId, 'Flat', 'You can only check staff in to your own flat');
     }
 
@@ -697,9 +700,13 @@ export class DomesticStaffService {
   async checkOut(
     domesticStaffId: string,
     workCompleted?: string,
-    options: { checkOutMethod?: string; notify?: boolean; societyId?: string } = {},
+    options: { checkOutMethod?: string; notify?: boolean; societyId?: string; caller?: StaffCaller } = {},
   ) {
-    const { checkOutMethod = 'QR', notify = true, societyId } = options;
+    const { checkOutMethod = 'QR', notify = true, societyId, caller } = options;
+    // Residents may only check out a visit to one of their own flats (guards: society-wide)
+    const restrictToFlatIds = caller && caller.role !== 'GUARD' && !isStaffAdminRole(caller.role)
+      ? await getCallerFlatIds(caller.userId, caller.societyId)
+      : null;
     // Use transaction to prevent race conditions
     const result = await prisma.$transaction(async (tx) => {
       const staff = await tx.domesticStaff.findUnique({
@@ -725,6 +732,9 @@ export class DomesticStaffService {
 
       if (!attendance) {
         throw new AppError('No active check-in found', 404);
+      }
+      if (restrictToFlatIds && (!attendance.flatId || !restrictToFlatIds.includes(attendance.flatId))) {
+        throw new AppError('You can only check out staff working at your own flat', 403);
       }
 
       const checkOutTime = new Date();
@@ -846,7 +856,7 @@ export class DomesticStaffService {
 
     // Check if currently working - if yes, check out; if no, check in
     if (staff.isCurrentlyWorking) {
-      return await this.checkOut(staff.id, undefined, { societyId });
+      return await this.checkOut(staff.id, undefined, { societyId, caller });
     } else {
       return await this.checkIn({
         domesticStaffId: staff.id,
@@ -869,13 +879,10 @@ export class DomesticStaffService {
     if (domesticStaffId) where.domesticStaffId = domesticStaffId;
     if (flatId) where.flatId = flatId;
 
-    // Residents see attendance at their own flats, or of staff working for their flats
+    // Residents only see visits to their own flats (not their staff's attendance elsewhere)
     if (caller.role === 'RESIDENT') {
       const flatIds = await getCallerFlatIds(caller.userId, caller.societyId);
-      where.OR = [
-        { flatId: { in: flatIds } },
-        { domesticStaff: { assignedFlats: { some: { flatId: { in: flatIds }, isActive: true } } } },
-      ];
+      where.AND = [{ flatId: { in: flatIds } }];
     }
 
     if (startDate && endDate) {

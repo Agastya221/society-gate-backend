@@ -17,14 +17,12 @@ const staffFields = {
   name: z.string().trim().min(1).max(100),
   phone: z.string().min(10).max(20),
   email: z.string().email().max(255).optional(),
-  // The apps send the S3 key from /upload (staff-photos/<uploaderId>/<file>); an https URL is also accepted.
+  // The apps send the S3 key from /upload (staff-photos/<uploaderId>/<file>). That the
+  // caller uploaded it is checked in the controller (isOwnedUploadKey with req.user.id).
   photoUrl: z
     .string()
-    .max(2048)
-    .refine(
-      (v) => /^staff-photos\/[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/.test(v) || /^https:\/\//.test(v),
-      'photoUrl must be an uploaded staff photo key or an https URL'
-    ),
+    .max(512)
+    .regex(/^staff-photos\/[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/, 'photoUrl must be an uploaded staff photo key'),
   staffType: staffTypeEnum,
   experienceYears: z.number().int().min(0).max(80).optional(),
   description: z.string().max(2000).optional(),

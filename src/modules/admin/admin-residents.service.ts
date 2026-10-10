@@ -237,13 +237,20 @@ export class AdminResidentsService {
     if (membership.userId === actorId) {
       throw new AppError("You can't remove your own residency", 400);
     }
-    // Only SUPER_ADMIN may remove an admin; an ADMIN cannot demote a co-admin,
-    // and nobody here may touch a SUPER_ADMIN account.
-    if ((membership.role === 'ADMIN' || membership.user.role === 'ADMIN') && actorRole !== 'SUPER_ADMIN') {
-      throw new AppError('Only a super admin can remove a society admin', 403);
-    }
+    // Nobody but a SUPER_ADMIN may touch a SUPER_ADMIN account.
     if (membership.user.role === 'SUPER_ADMIN' && actorRole !== 'SUPER_ADMIN') {
       throw new AppError('Resident not found', 404);
+    }
+    // Only SUPER_ADMIN may remove a co-admin of THIS society. users.role is just the
+    // user's currently selected context, so admin status comes from the membership rows.
+    if (actorRole !== 'SUPER_ADMIN') {
+      const adminHere = await prisma.userFlatMembership.findFirst({
+        where: { userId: membership.userId, societyId, role: 'ADMIN', isActive: true },
+        select: { id: true },
+      });
+      if (adminHere) {
+        throw new AppError('Only a super admin can remove a society admin', 403);
+      }
     }
     const flatId = membership.flatId;
 
@@ -283,19 +290,13 @@ export class AdminResidentsService {
 
       await recomputeFlatOccupancy(tx, flatId);
 
-      // If this was the user's active context, move them to another active
+      // If this flat was the user's active context, move them to another active
       // membership, or detach them (they'll go back through onboarding).
+      // Only flat memberships are removable here and admin memberships carry no
+      // flat, so removing one never revokes an admin role by itself; the
+      // fallback below re-derives role/society/flat from what remains.
       const user = membership.user;
-      // Also re-derive when this was an ADMIN membership in the user's active society,
-      // so a removed admin's active role/context stops granting admin rights.
-      const lostAdminHere =
-        membership.role === 'ADMIN' &&
-        user.societyId === societyId &&
-        !(await tx.userFlatMembership.findFirst({
-          where: { userId: user.id, societyId, role: 'ADMIN', isActive: true },
-          select: { id: true },
-        }));
-      if ((user.flatId === flatId && user.societyId === societyId) || lostAdminHere) {
+      if (user.flatId === flatId && user.societyId === societyId) {
         const fallback = await tx.userFlatMembership.findFirst({
           where: { userId: user.id, isActive: true },
           orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }],

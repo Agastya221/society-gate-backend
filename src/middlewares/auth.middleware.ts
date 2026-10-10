@@ -39,6 +39,25 @@ export { ensureSameSociety } from './society.middleware';
 // AUTHENTICATION MIDDLEWARE
 // ============================================
 
+/**
+ * Tokens carry the app they were issued for. GUARD_APP tokens are only for GUARD
+ * users and RESIDENT_APP tokens never for GUARD users (the resident login refuses
+ * guards). The verified appType is exposed as res.locals.authAppType so the
+ * app-specific middlewares below can require it.
+ */
+const checkAppTypeMatchesRole = (appType: string, role: string): AppError | null => {
+  if (appType === 'GUARD_APP' && role !== 'GUARD') {
+    return new AppError('Access denied. This app is for guards only.', 403);
+  }
+  if (appType === 'RESIDENT_APP' && role === 'GUARD') {
+    return new AppError('Access denied. Please use the guard app.', 403);
+  }
+  if (appType !== 'GUARD_APP' && appType !== 'RESIDENT_APP') {
+    return new AppError('Invalid token', 401);
+  }
+  return null;
+};
+
 export const authenticate = async (
   req: Request,
   res: Response,
@@ -72,9 +91,9 @@ export const authenticate = async (
 
     // Guard-app sessions are only ever issued to GUARD users; if the role changed
     // since (or a token was minted elsewhere), the session must not carry over.
-    if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
-      return next(new AppError('Access denied. This app is for guards only.', 403));
-    }
+    const appTypeError = checkAppTypeMatchesRole(decoded.appType, user.role);
+    if (appTypeError) return next(appTypeError);
+    res.locals.authAppType = decoded.appType;
 
     // SUPER_ADMIN doesn't need society assignment
     if (user.role !== 'SUPER_ADMIN') {
@@ -132,6 +151,10 @@ export const authenticateForOnboarding = async (
       throw new AppError('User not found', 401);
     }
 
+    const appTypeError = checkAppTypeMatchesRole(decoded.appType, user.role);
+    if (appTypeError) throw appTypeError;
+    res.locals.authAppType = decoded.appType;
+
     // Allow inactive users for onboarding
     req.user = user;
     next();
@@ -164,7 +187,7 @@ export const authenticateResidentForOnboarding = async (
     if (!req.user) return next(new AppError('Authentication failed', 401));
 
     const allowed = ['RESIDENT', 'ADMIN', 'SUPER_ADMIN'];
-    if (!allowed.includes(req.user.role)) {
+    if (!allowed.includes(req.user.role) || res.locals.authAppType !== 'RESIDENT_APP') {
       return next(new AppError('Access denied. This endpoint is for residents only.', 403));
     }
 
@@ -186,7 +209,7 @@ export const authenticateResidentApp = async (
     if (!req.user) return next(new AppError('Authentication failed', 401));
 
     const allowedRoles = ['RESIDENT', 'ADMIN', 'SUPER_ADMIN'];
-    if (!allowedRoles.includes(req.user.role)) {
+    if (!allowedRoles.includes(req.user.role) || res.locals.authAppType !== 'RESIDENT_APP') {
       return next(new AppError('Access denied. This is for residents only.', 403));
     }
 
@@ -207,7 +230,7 @@ export const authenticateGuardApp = async (
     if (err) return next(err);
     if (!req.user) return next(new AppError('Authentication failed', 401));
 
-    if (req.user.role !== 'GUARD') {
+    if (req.user.role !== 'GUARD' || res.locals.authAppType !== 'GUARD_APP') {
       return next(new AppError('Access denied. This is for guards only.', 403));
     }
 

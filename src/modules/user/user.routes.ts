@@ -7,7 +7,6 @@ import {
   authenticateForOnboarding,
   authenticateResidentForOnboarding,
   authorize,
-  authenticate,
 } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
@@ -50,8 +49,9 @@ router.post('/guard-app/otp/verify', validate({ body: verifyWidgetTokenSchema })
 // Token Refresh
 router.post('/refresh-token', validate({ body: refreshTokenSchema }), userController.refreshToken);
 
-// Logout (requires valid access token)
-router.post('/logout', authenticate, userController.logout);
+// Logout: valid access token, or just the refresh token (body) once the access
+// token has expired — the service verifies whichever is provided.
+router.post('/logout', userController.logout);
 
 
 // ============================================

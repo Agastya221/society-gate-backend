@@ -943,6 +943,11 @@ export class OnboardingService {
       throw new AppError('Selected flat was not found in this society', 404);
     }
 
+    // Same gate as a fresh submission: the target society must be live and accepting residents
+    if (!targetFlat.society.isActive || targetFlat.society.onboardingStatus !== 'ACTIVE') {
+      throw new AppError('This society is not accepting resident applications yet', 400);
+    }
+
     const duplicateActiveRequest = await prisma.onboardingRequest.findFirst({
       where: {
         id: { not: request.id },

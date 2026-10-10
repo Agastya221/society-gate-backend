@@ -1,5 +1,12 @@
 import axios from 'axios';
-import logger from '../utils/logger';
+import logger, { maskPhone } from '../utils/logger';
+
+// Log only message + HTTP status: a raw AxiosError carries the request config,
+// including the MSG91 authkey header.
+const describeHttpError = (error: unknown) => ({
+  message: error instanceof Error ? error.message : String(error),
+  status: (error as { response?: { status?: number } } | null)?.response?.status,
+});
 
 type ResidentInvite = {
   phone: string;
@@ -53,7 +60,7 @@ export class InviteDeliveryService {
 
       return { attempted: true, delivered: true };
     } catch (error) {
-      logger.error({ error, phone: invite.phone }, 'Resident invite SMS failed');
+      logger.error({ error: describeHttpError(error), phone: maskPhone(invite.phone) }, 'Resident invite SMS failed');
       return { attempted: true, delivered: false, reason: 'MSG91 request failed' };
     }
   }
@@ -82,7 +89,7 @@ export class InviteDeliveryService {
 
       return { attempted: true, delivered: true };
     } catch (error) {
-      logger.error({ error, email: invite.email }, 'Resident invite email failed');
+      logger.error({ error: describeHttpError(error) }, 'Resident invite email failed');
       return { attempted: true, delivered: false, reason: 'Email webhook request failed' };
     }
   }

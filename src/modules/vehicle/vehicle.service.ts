@@ -159,9 +159,12 @@ export class VehicleService {
   // Accepts vehicleNumber, q, or plateNumber param.
   // Returns found:true + status for any registered vehicle,
   // found:false only when no record exists in the society.
+  // Residents only learn whether the plate is registered (number, type,
+  // status) — never the owner's name/phone or flat. Guards/admins get
+  // full details.
   // ============================================
 
-  async searchVehicle(query: string, societyId: string) {
+  async searchVehicle(query: string, societyId: string, role: string) {
     const normalized = query.toUpperCase().replace(/\s/g, '');
 
     const vehicle = await prisma.vehicle.findFirst({
@@ -180,9 +183,13 @@ export class VehicleService {
       return { found: false, vehicle: null };
     }
 
+    const isStaff = role === 'GUARD' || role === 'ADMIN' || role === 'SUPER_ADMIN';
+
     return {
       found: true,
-      vehicle,
+      vehicle: isStaff
+        ? vehicle
+        : { vehicleNumber: vehicle.vehicleNumber, vehicleType: vehicle.vehicleType },
       status: vehicle.status,
       isApproved: vehicle.status === 'ACTIVE',
     };

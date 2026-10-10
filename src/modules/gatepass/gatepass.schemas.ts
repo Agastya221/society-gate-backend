@@ -14,6 +14,8 @@ const base = {
   validFrom: z.coerce.date(),
   validUntil: z.coerce.date(),
   attachments: z.array(z.string().max(512)).max(10).optional(),
+  // Contractor / vendor / movers company — the app sends it for every pass type.
+  companyName: optText(100),
 };
 
 const vehicleFields = {
@@ -27,7 +29,6 @@ const itemsList = z.array(z.string().trim().min(1).max(200)).max(100).optional()
 const workerFields = {
   workerName: optText(100),
   workerPhone: optText(20),
-  companyName: optText(200),
 };
 
 export const createGatePassSchema = z

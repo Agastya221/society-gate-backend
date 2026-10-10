@@ -74,11 +74,13 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
     const status = err?.response?.status;
     const msg91Error = err?.response?.data?.message || err?.message;
 
+    // Only message + status: never the request config (it carries the authkey)
+    // or the widget token.
     logger.error(
       {
-        error: msg91Error,
+        error: typeof msg91Error === 'string' ? msg91Error : 'unknown error',
         httpStatus: status,
-        responseData: err?.response?.data,
+        msg91Type: err?.response?.data?.type,
       },
       'MSG91 verifyAccessToken failed'
     );
@@ -92,12 +94,18 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
 }
 
 /**
- * Normalise phone to 10-digit Indian format.
- * MSG91 returns "91XXXXXXXXXX" — we strip the "91" prefix.
+ * Normalise phone to 10-digit Indian mobile format.
+ * MSG91 returns "91XXXXXXXXXX" — we strip the "91" prefix. Anything that is not a
+ * valid Indian mobile number afterwards is rejected (never used as an identity).
  */
 function normalisePhone(phone: string): string {
-  const cleaned = phone.replace(/\D/g, '');
-  if (cleaned.startsWith('91') && cleaned.length === 12) return cleaned.slice(2);
-  if (cleaned.length === 10) return cleaned;
+  let cleaned = String(phone).replace(/\D/g, '');
+  if (cleaned.startsWith('91') && cleaned.length === 12) cleaned = cleaned.slice(2);
+  else if (cleaned.startsWith('0') && cleaned.length === 11) cleaned = cleaned.slice(1);
+
+  if (!/^[6-9]\d{9}$/.test(cleaned)) {
+    logger.warn({ length: cleaned.length }, 'MSG91 returned a phone number that is not a valid Indian mobile');
+    throw new AppError('OTP verification returned an invalid mobile number. Please try again.', 400);
+  }
   return cleaned;
 }

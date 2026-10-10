@@ -6,8 +6,9 @@ import { clearCacheAfter } from '../../middlewares/cache.middleware';
 const router = Router();
 router.post('/auth/otp/verify', controller.verifyOtp);
 router.post('/auth/refresh', controller.refresh);
-router.use(authenticateStaffApp);
+// Logout accepts an access token or (if it expired) just the refresh token
 router.post('/auth/logout', controller.logout);
+router.use(authenticateStaffApp);
 router.get('/dashboard', controller.dashboard);
 router.get('/me', controller.profile);
 router.get('/pass', controller.pass);

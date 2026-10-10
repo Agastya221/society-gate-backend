@@ -26,16 +26,18 @@ export const createNotice = async (req: Request, res: Response) => {
 
 export const getNotices = async (req: Request, res: Response) => {
   try {
+    const isAdmin = req.user!.role === 'ADMIN' || req.user!.role === 'SUPER_ADMIN';
     const filters: NoticeFilters = {
       societyId: getSocietyId(req),
       type: req.query.type as NoticeType | undefined,
       priority: req.query.priority as NoticePriority | undefined,
       isPinned: req.query.isPinned === 'true' ? true : req.query.isPinned === 'false' ? false : undefined,
-      isActive: req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined,
+      // Only admins may list deactivated notices; everyone else always gets active ones
+      isActive: isAdmin
+        ? (req.query.isActive === 'true' ? true : req.query.isActive === 'false' ? false : undefined)
+        : true,
       // Expired notices are only ever listed for admins who explicitly ask (?includeExpired=true)
-      includeExpired:
-        req.query.includeExpired === 'true' &&
-        (req.user!.role === 'ADMIN' || req.user!.role === 'SUPER_ADMIN'),
+      includeExpired: req.query.includeExpired === 'true' && isAdmin,
       page: req.query.page ? parseInt(req.query.page as string, 10) : undefined,
       limit: req.query.limit ? parseInt(req.query.limit as string, 10) : undefined,
     };

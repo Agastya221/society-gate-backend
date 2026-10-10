@@ -49,12 +49,15 @@ export class EmergencyService {
       }
     }
 
-    // Auto-attach reporter's flat if frontend didn't send one
-    if (!data.flatId && reporter?.flatId) {
+    if (reporter?.role === 'RESIDENT') {
+      // Residents can only raise an SOS for their own flat — a client flatId is ignored.
+      data.flatId = reporter.flatId ?? undefined;
+    } else if (!data.flatId && reporter?.flatId) {
+      // Staff: auto-attach own flat if frontend didn't send one
       data.flatId = reporter.flatId;
     }
 
-    // A client-supplied flat must belong to this society.
+    // Any flat (client-supplied by staff, or the reporter's own) must belong to this society.
     if (data.flatId) {
       await findInSociety(prisma.flat, data.flatId, societyId, { entity: 'Flat', select: { id: true } });
     }

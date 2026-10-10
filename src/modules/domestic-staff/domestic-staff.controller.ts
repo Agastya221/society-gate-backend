@@ -2,6 +2,8 @@ import type { Response, Request, NextFunction } from 'express';
 import { DomesticStaffService, type StaffCaller } from './domestic-staff.service';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import { getSocietyId, clampPagination } from '../../utils/scope';
+import { AppError } from '../../utils/ResponseHandler';
+import { isOwnedUploadKey } from '../../utils/s3';
 import type { StaffFilters, StaffBookingFilters, DomesticStaffType, StaffAvailabilityStatus, StaffBookingStatus } from '../../types';
 
 const staffService = new DomesticStaffService();
@@ -43,6 +45,14 @@ const callerOf = (req: Request): StaffCaller => ({
   societyId: getSocietyId(req),
 });
 
+/** A staff photo must be a staff-photos key this caller uploaded via /upload. */
+function assertOwnedStaffPhoto(photoUrl: unknown, userId: string) {
+  if (photoUrl === undefined) return;
+  if (!isOwnedUploadKey(photoUrl, userId, ['staff-photos'])) {
+    throw new AppError('photoUrl must be a staff photo you uploaded', 400);
+  }
+}
+
 // ============================================
 // STAFF MANAGEMENT
 // ============================================
@@ -51,6 +61,7 @@ export const createStaff = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     const societyId = getSocietyId(req);
+    assertOwnedStaffPhoto(req.body?.photoUrl, userId);
     const staff = await staffService.createStaff({ ...req.body, societyId }, userId);
 
     res.status(201).json({
@@ -113,6 +124,7 @@ export const getStaffById = async (req: Request, res: Response) => {
 export const updateStaff = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    assertOwnedStaffPhoto(req.body?.photoUrl, req.user!.id);
     const staff = await staffService.updateStaff(String(id), req.body, getSocietyId(req));
 
     res.status(200).json({
@@ -307,7 +319,8 @@ export const checkOut = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
     const { workCompleted } = req.body;
-    const attendance = await staffService.checkOut(String(staffId), workCompleted, { societyId: getSocietyId(req) });
+    const caller = callerOf(req);
+    const attendance = await staffService.checkOut(String(staffId), workCompleted, { societyId: caller.societyId, caller });
 
     res.status(200).json({
       success: true,

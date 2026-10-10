@@ -111,7 +111,7 @@ export const searchVehicle = async (req: Request, res: Response) => {
     if (typeof rawQuery !== 'string' || !rawQuery.trim()) {
       return res.status(400).json({ success: false, message: 'Provide vehicleNumber, q, or plateNumber as query param' });
     }
-    const result = await vehicleService.searchVehicle(rawQuery.trim().slice(0, 20), getSocietyId(req));
+    const result = await vehicleService.searchVehicle(rawQuery.trim().slice(0, 20), getSocietyId(req), req.user!.role);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });

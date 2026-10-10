@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import {
@@ -9,7 +8,10 @@ import {
   verifyRefreshToken,
   blacklistToken,
   isTokenBlacklisted,
-  extractJti,
+  hashToken,
+  refreshTokenMatches,
+  verifyAccessToken,
+  isJwtError,
 } from '../../services/token.service';
 import { verifyMSG91WidgetToken } from '../../utils/msg91';
 import {
@@ -17,7 +19,7 @@ import {
   validateRequiredFields,
   sanitizeString,
 } from '../../utils/validation';
-import logger from '../../utils/logger';
+import logger, { maskPhone } from '../../utils/logger';
 import type { Role } from '../../../prisma/generated/prisma/client';
 
 
@@ -89,11 +91,12 @@ export class UserService {
 
     await prisma.user.update({
       where: { id: superAdmin.id },
-      data: { refreshToken, lastTokenRefresh: new Date() },
+      data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date() },
     });
 
     logger.info(
-      `[BOOTSTRAP] SUPER_ADMIN created — id: ${superAdmin.id} | phone: ${superAdmin.phone}`
+      { userId: superAdmin.id, phone: maskPhone(superAdmin.phone) },
+      '[BOOTSTRAP] SUPER_ADMIN created'
     );
 
     const { password: _, refreshToken: __, ...safe } = superAdmin;
@@ -110,7 +113,7 @@ export class UserService {
 
     // 1. Verify with MSG91 — get the confirmed phone number
     const phone = await verifyMSG91WidgetToken(widgetToken);
-    logger.info({ phone }, '[residentWidgetVerify] MSG91 verified phone');
+    logger.info({ phone: maskPhone(phone) }, '[residentWidgetVerify] MSG91 verified phone');
 
     if (email) validateEmail(email);
 
@@ -118,6 +121,17 @@ export class UserService {
     logger.info({ userFound: !!user, userId: user?.id, role: user?.role }, '[residentWidgetVerify] DB lookup result');
 
     if (user) {
+      // The resident app never issues RESIDENT_APP tokens to guards — they use the guard app.
+      if (user.role === 'GUARD') {
+        throw new AppError('This number is registered as a security guard. Please use the S-Gate Guard app.', 403);
+      }
+      // An account an admin / super admin deactivated (tokenVersion bumped on
+      // deactivation) must not get a session. New and onboarding users are also
+      // inactive but have tokenVersion 0, and still need onboarding tokens.
+      if (!user.isActive && user.tokenVersion > 0) {
+        throw new AppError('Your account is inactive. Please contact your society admin.', 403);
+      }
+
       // Existing user — re-activate if they have a flat but are inactive
       // Only pending family invites (never revoked: tokenVersion 0) self-activate;
       // an account an admin deactivated must stay inactive.
@@ -175,7 +189,7 @@ export class UserService {
 
       await prisma.user.update({
         where: { id: user.id },
-        data: { refreshToken, lastTokenRefresh: new Date(), lastLogin: new Date() },
+        data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date(), lastLogin: new Date() },
       });
 
       const [onboardingRequest, societyState] = await Promise.all([
@@ -224,7 +238,7 @@ export class UserService {
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { refreshToken, lastTokenRefresh: new Date() },
+      data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date() },
     });
 
     const { password: _, refreshToken: __, ...safe } = user;
@@ -372,7 +386,7 @@ export class UserService {
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { refreshToken, lastTokenRefresh: new Date(), lastLogin: new Date() },
+      data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date(), lastLogin: new Date() },
     });
 
     const { password: _, refreshToken: __, ...safe } = user;
@@ -416,7 +430,7 @@ export class UserService {
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { refreshToken, lastTokenRefresh: new Date(), lastLogin: new Date() },
+      data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date(), lastLogin: new Date() },
     });
 
     const { password: _, refreshToken: __, ...safe } = user;
@@ -433,6 +447,8 @@ export class UserService {
     if (!/^(\+91)?0?[6-9]\d{9}$/.test(data.phone)) {
       throw new AppError('Invalid phone number format', 400);
     }
+    // Store the bare 10 digits, as logins do — "+91…" would never match a login.
+    const phone = data.phone.replace(/\D/g, '').slice(-10);
     const guardName = sanitizeString(data.name);
 
     const admin = await prisma.user.findUnique({ where: { id: adminId } });
@@ -444,13 +460,13 @@ export class UserService {
       throw new AppError('Select a society before creating guard accounts', 400);
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { phone: data.phone } });
+    const existingUser = await prisma.user.findUnique({ where: { phone } });
     if (existingUser) throw new AppError('Phone already registered', 400);
 
     const guard = await prisma.user.create({
       data: {
         name: guardName,
-        phone: data.phone,
+        phone,
         photoUrl: data.photoUrl,
         role: 'GUARD',
         societyId: admin.societyId,
@@ -704,6 +720,11 @@ export class UserService {
       throw new AppError('Society is inactive', 403);
     }
 
+    // Guard contexts belong to the guard app (GUARD_APP tokens), never RESIDENT_APP.
+    if (membership.role === 'GUARD') {
+      throw new AppError('Guard accounts must use the S-Gate Guard app.', 403);
+    }
+
     const approvedOnboardingKeys = new Set<string>();
     if (membership.flatId) {
       const approvedOnboarding = await prisma.onboardingRequest.findFirst({
@@ -766,7 +787,7 @@ export class UserService {
 
     await prisma.user.update({
       where: { id: updatedUser.id },
-      data: { refreshToken, lastTokenRefresh: new Date() },
+      data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date() },
     });
 
     await prisma.userFlatMembership.updateMany({
@@ -859,7 +880,13 @@ export class UserService {
   // TOGGLE USER STATUS
   // CRIT-7: Verify target user belongs to admin's society and is not SUPER_ADMIN
   // ============================================
-  async toggleUserStatus(userId: string, isActive: boolean, adminSocietyId: string, actorId?: string) {
+  async toggleUserStatus(
+    userId: string,
+    isActive: boolean,
+    adminSocietyId: string,
+    actorId?: string,
+    actorRole?: Role,
+  ) {
     if (actorId && actorId === userId && !isActive) {
       throw new AppError('You cannot deactivate your own account', 400);
     }
@@ -878,6 +905,32 @@ export class UserService {
       throw new AppError('Access denied. User does not belong to your society.', 403);
     }
 
+    if (actorRole !== 'SUPER_ADMIN') {
+      // A society admin cannot change another admin's status: either the active
+      // role, or an active admin membership in this society (admins switched into
+      // their flat context carry role RESIDENT).
+      const isTargetAdmin = targetUser.role === 'ADMIN' || Boolean(await prisma.userFlatMembership.findFirst({
+        where: { userId, societyId: adminSocietyId, role: 'ADMIN', isActive: true },
+        select: { id: true },
+      }));
+      if (isTargetAdmin) {
+        throw new AppError('Admins cannot change the status of another admin. Contact the platform super admin.', 403);
+      }
+
+      // Nor re-activate an account the platform super admin disabled (the latest
+      // platform audit entry for this user is USER_DISABLED).
+      if (isActive) {
+        const lastPlatformAction = await prisma.platformAuditLog.findFirst({
+          where: { targetType: 'User', targetId: userId, action: { in: ['USER_DISABLED', 'USER_ACTIVATED'] } },
+          orderBy: { createdAt: 'desc' },
+          select: { action: true },
+        });
+        if (lastPlatformAction?.action === 'USER_DISABLED') {
+          throw new AppError('This account was disabled by the platform super admin and can only be re-activated by them.', 403);
+        }
+      }
+    }
+
     // Deactivation revokes the session: refresh token cleared (refresh fails) and
     // tokenVersion bumped (also stops family-invite auto-reactivation on login).
     return prisma.user.update({
@@ -893,33 +946,57 @@ export class UserService {
   // REFRESH TOKEN
   // ============================================
   async refreshAccessToken(refreshTokenStr: string) {
-    // CRIT-3: Extract JTI properly and check blacklist
-    const { jti: refreshJti } = extractJti(refreshTokenStr);
-    if (refreshJti) {
-      const isBlacklisted = await isTokenBlacklisted(refreshJti);
-      if (isBlacklisted) {
-        throw new AppError('Refresh token has been revoked. Please login again.', 401);
+    let decoded;
+    try {
+      decoded = verifyRefreshToken(refreshTokenStr);
+    } catch (error: unknown) {
+      if (isJwtError(error) && (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError')) {
+        throw new AppError(error.message || 'Invalid refresh token', 401);
       }
+      throw error;
     }
 
-    const decoded = verifyRefreshToken(refreshTokenStr);
+    // CRIT-3: revoked (logged-out) refresh tokens are blacklisted by JTI
+    if (decoded.jti && (await isTokenBlacklisted(decoded.jti))) {
+      throw new AppError('Refresh token has been revoked. Please login again.', 401);
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       include: { flat: true, society: true },
     });
 
-    if (!user || !user.isActive) {
+    if (!user) {
       throw new AppError('User not found or inactive', 401);
     }
 
-    if (user.refreshToken !== refreshTokenStr) {
+    // Only the SHA-256 hash of the current refresh token is stored. A token that
+    // verifies cryptographically but is not the current one is an already-rotated
+    // (or revoked) token being replayed: end the session so a stolen token cannot
+    // keep it alive. Legacy plain-text rows also fail here once (user re-logs in).
+    const storedHash = user.refreshToken;
+    if (!refreshTokenMatches(refreshTokenStr, storedHash)) {
+      if (storedHash) {
+        await prisma.user.updateMany({
+          where: { id: user.id, refreshToken: storedHash },
+          data: { refreshToken: null },
+        });
+        logger.warn({ userId: user.id }, 'Refresh token reuse detected, session revoked');
+      }
       throw new AppError('Invalid refresh token. Please login again.', 401);
     }
 
-    // Guard-app sessions stay GUARD-only (mirrors guardAppOtpVerify)
+    if (!user.isActive) {
+      throw new AppError('User not found or inactive', 401);
+    }
+
+    // Guard-app sessions stay GUARD-only (mirrors guardAppOtpVerify), and
+    // resident-app sessions are never re-minted for guards.
     if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
       throw new AppError('Access denied. This app is for guards only.', 403);
+    }
+    if (decoded.appType !== 'GUARD_APP' && user.role === 'GUARD') {
+      throw new AppError('Access denied. Please use the guard app.', 403);
     }
 
     // Admin rights are re-derived on every refresh: a revoked admin membership
@@ -939,20 +1016,26 @@ export class UserService {
       }
     }
 
+    const appType = decoded.appType === 'GUARD_APP' ? 'GUARD_APP' : 'RESIDENT_APP';
     const newAccessToken = generateAccessToken(
-      user.id, user.role, user.societyId, user.flatId, decoded.appType
+      user.id, user.role, user.societyId, user.flatId, appType
     );
     const newRefreshToken = generateRefreshToken(
-      user.id, user.role, user.societyId, user.flatId, decoded.appType
+      user.id, user.role, user.societyId, user.flatId, appType
     );
 
-    await prisma.user.update({
-      where: { id: user.id },
+    // Compare-and-swap on the old hash: if a concurrent refresh already rotated
+    // this token, this one loses instead of forking the session.
+    const rotated = await prisma.user.updateMany({
+      where: { id: user.id, refreshToken: storedHash },
       data: {
-        refreshToken: newRefreshToken,
+        refreshToken: hashToken(newRefreshToken),
         lastTokenRefresh: new Date(),
       },
     });
+    if (rotated.count === 0) {
+      throw new AppError('Invalid refresh token. Please login again.', 401);
+    }
 
     const { password: _, refreshToken: __, ...userWithoutSensitiveData } = user;
 
@@ -965,46 +1048,53 @@ export class UserService {
 
   // ============================================
   // LOGOUT
-  // CRIT-2 & CRIT-3: Use JTI for blacklisting, not full token string
+  // CRIT-2 & CRIT-3: Use JTI for blacklisting, not full token string.
+  // Works with a valid access token, or (when the access token has expired)
+  // with just the refresh token, so the session is always revoked server-side.
+  // Only cryptographically verified tokens identify the user.
   // ============================================
-  async logout(accessToken: string, refreshTokenStr?: string) {
-    try {
-      const fullDecoded = jwt.decode(accessToken) as { userId?: string; jti?: string; exp?: number } | null;
+  async logout(accessToken?: string, refreshTokenStr?: string) {
+    const nowSec = Math.floor(Date.now() / 1000);
+    let userId: string | null = null;
 
-      // Clear refresh token from database
-      if (fullDecoded?.userId) {
-        await prisma.user.update({
-          where: { id: fullDecoded.userId },
-          data: { refreshToken: null },
-        }).catch(err => {
-          logger.error({ error: err }, 'Error clearing refresh token from database');
-        });
-      }
-
-      // Blacklist access token by JTI
-      if (fullDecoded?.jti && fullDecoded?.exp) {
-        const ttl = fullDecoded.exp - Math.floor(Date.now() / 1000);
-        if (ttl > 0) {
-          await blacklistToken(fullDecoded.jti, ttl);
+    if (accessToken) {
+      try {
+        const decoded = verifyAccessToken(accessToken);
+        userId = decoded.userId;
+        if (decoded.jti && decoded.exp && decoded.exp - nowSec > 0) {
+          await blacklistToken(decoded.jti, decoded.exp - nowSec);
         }
+      } catch {
+        // Expired / invalid access token: fall back to the refresh token
       }
-
-      // Blacklist refresh token by JTI
-      if (refreshTokenStr) {
-        const { jti: refreshJti, exp: refreshExp } = extractJti(refreshTokenStr);
-        if (refreshJti && refreshExp) {
-          const ttl = refreshExp - Math.floor(Date.now() / 1000);
-          if (ttl > 0) {
-            await blacklistToken(refreshJti, ttl);
-          }
-        }
-      }
-
-      return { success: true };
-    } catch (error) {
-      logger.error({ error }, 'Error during logout');
-      return { success: true };
     }
+
+    if (refreshTokenStr) {
+      try {
+        const decoded = verifyRefreshToken(refreshTokenStr);
+        if (!userId) userId = decoded.userId;
+        if (decoded.userId === userId && decoded.jti && decoded.exp && decoded.exp - nowSec > 0) {
+          await blacklistToken(decoded.jti, decoded.exp - nowSec);
+        }
+      } catch {
+        // Expired / invalid refresh token: nothing to revoke with it
+      }
+    }
+
+    if (!userId) {
+      throw new AppError('No valid access or refresh token provided', 401);
+    }
+
+    try {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: null },
+      });
+    } catch (error) {
+      logger.error({ err: error }, 'Error clearing refresh token from database');
+    }
+
+    return { success: true };
   }
 
   private membershipKey(societyId: string, flatId?: string | null) {

@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
-import { isTokenBlacklisted } from '../../services/token.service';
+import { isTokenBlacklisted, isJwtError } from '../../services/token.service';
 import { verifyStaffToken } from './staff-app.token';
 
 declare global {
@@ -30,5 +30,12 @@ export const authenticateStaffApp = async (req: Request, _res: Response, next: N
     req.staffAccount = account;
     req.societyId = account.domesticStaff.societyId;
     next();
-  } catch (error) { next(error); }
+  } catch (error) {
+    // Bad/expired/foreign (e.g. resident) tokens are a 401 so the staff app refreshes
+    // or signs out, instead of a 500.
+    if (isJwtError(error) && (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError' || error.name === 'NotBeforeError')) {
+      return next(new AppError(error.name === 'TokenExpiredError' ? 'Token expired. Please login again.' : 'Invalid token', 401));
+    }
+    next(error);
+  }
 };

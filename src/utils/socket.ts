@@ -1,7 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
-import jwt from 'jsonwebtoken';
-import { prisma } from './Client';
+import { verifyAccessTokenForUser } from '../services/token.service';
 import logger from './logger';
 
 let io: Server | null = null;
@@ -56,48 +55,36 @@ setInterval(() => {
 }, 5 * 60 * 1000);
 
 export function initializeSocketIO(httpServer: HttpServer): Server {
-  const allowedOrigins = process.env.CLIENT_URL
-    ? process.env.CLIENT_URL.split(',').map((url) => url.trim())
-    : undefined;
+  // Same allow-list as the HTTP CORS policy (CLIENT_URL / ALLOWED_ORIGINS).
+  // Native apps send no Origin and are unaffected by CORS. Without an allow-list,
+  // no browser origin is allowed — never '*' together with credentials.
+  const allowedOrigins = [process.env.CLIENT_URL, process.env.ALLOWED_ORIGINS]
+    .filter(Boolean)
+    .flatMap((value) => String(value).split(','))
+    .map((url) => url.trim())
+    .filter(Boolean);
 
   io = new Server(httpServer, {
     cors: {
-      origin: allowedOrigins || '*',
+      origin: allowedOrigins.length > 0 ? allowedOrigins : false,
       methods: ['GET', 'POST'],
-      credentials: true,
+      credentials: allowedOrigins.length > 0,
     },
   });
 
   // Authentication middleware
   io.use(async (socket: AuthenticatedSocket, next) => {
     try {
-      const token = socket.handshake.auth.token;
+      const token = socket.handshake.auth?.token;
 
-      if (!token) {
+      if (!token || typeof token !== 'string') {
         return next(new Error('Authentication required'));
       }
 
-      const JWT_SECRET = process.env.JWT_SECRET;
-      if (!JWT_SECRET) {
-        throw new Error('JWT_SECRET environment variable is not set');
-      }
-
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.userId },
-        select: {
-          id: true,
-          role: true,
-          societyId: true,
-          flatId: true,
-          isActive: true,
-        },
-      });
-
-      if (!user || !user.isActive) {
-        return next(new Error('User not found or inactive'));
-      }
+      // Same checks as the HTTP auth middleware: HS256 + user audience,
+      // type === 'access' (refresh/QR/staff tokens rejected), blacklist
+      // (logged-out tokens), user exists and is active, appType matches role.
+      const { user } = await verifyAccessTokenForUser(token);
 
       socket.user = {
         id: user.id,

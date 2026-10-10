@@ -29,14 +29,38 @@ app.use((_req, res, next) => {
   next();
 });
 
-// Middleware
-app.use(cors());
-app.use(express.json({
-  limit: '1mb',
-  verify: (req, _res, buf) => {
-    (req as express.Request & { rawBody?: Buffer }).rawBody = Buffer.from(buf);
+// CORS: the Expo apps are native clients and send no Origin header, so requests
+// without an Origin are allowed. Browser origins are allowed only when listed in
+// CLIENT_URL / ALLOWED_ORIGINS (comma-separated, both optional); any other browser
+// origin gets no CORS headers, so the browser blocks the response.
+const allowedOrigins = new Set(
+  [process.env.CLIENT_URL, process.env.ALLOWED_ORIGINS]
+    .filter(Boolean)
+    .flatMap((value) => String(value).split(','))
+    .map((origin) => origin.trim().replace(/\/+$/, ''))
+    .filter(Boolean)
+);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(null, false);
   },
-})); // Reduced from 10mb to prevent memory exhaustion
+}));
+
+// Only the payment webhook needs the exact raw bytes (signature verification);
+// don't keep a second copy of every JSON body in memory.
+const RAW_BODY_PATHS = ['/api/v1/payments/cashfree/webhook'];
+
+app.use(express.json({
+  limit: '1mb', // Reduced from 10mb to prevent memory exhaustion
+  verify: (req, _res, buf) => {
+    const url = ((req as express.Request).originalUrl || req.url || '').split('?')[0];
+    if (RAW_BODY_PATHS.includes(url)) {
+      (req as express.Request & { rawBody?: Buffer }).rawBody = Buffer.from(buf);
+    }
+  },
+}));
 app.use(express.urlencoded({ extended: true }));
 
 const useRedisRateLimit =

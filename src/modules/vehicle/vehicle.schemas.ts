@@ -23,17 +23,21 @@ export const vehicleStatusEnum = z.enum(['PENDING', 'ACTIVE', 'REJECTED']);
 const vehicleNumberField = z.string().trim().min(1).max(20);
 const optionalText = (max: number) => z.string().trim().max(max).optional().nullable();
 
-// Numeric strings ("500") are accepted; empty string / null / undefined mean "no penalty".
+// Numeric strings ("500") are accepted; empty string / null / undefined / 0 mean "no penalty".
 const penaltyField = z.preprocess(
   (v) => {
-    if (v === '' || v === null || v === undefined) return undefined;
-    if (typeof v === 'string') return Number(v);
+    if (v === null || v === undefined) return undefined;
+    if (typeof v === 'string') {
+      if (!v.trim()) return undefined;
+      v = Number(v);
+    }
+    if (v === 0) return undefined;
     return v;
   },
   z
     .number()
     .finite()
-    .positive('penaltyAmount must be greater than 0')
+    .positive('penaltyAmount cannot be negative')
     .max(MAX_PARKING_PENALTY_INR, `penaltyAmount cannot exceed ${MAX_PARKING_PENALTY_INR}`)
     .optional()
 );

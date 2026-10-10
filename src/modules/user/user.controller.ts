@@ -148,7 +148,7 @@ export class UserController {
   // Toggle User Status (Admin only)
   toggleUserStatus = asyncHandler(async (req: Request, res: Response) => {
     const { isActive } = req.body;
-    const user = await userService.toggleUserStatus(String(req.params.id), isActive, req.user!.societyId!, req.user!.id);
+    const user = await userService.toggleUserStatus(String(req.params.id), isActive, req.user!.societyId!, req.user!.id, req.user!.role);
 
     res.json({
       success: true,
@@ -188,11 +188,14 @@ export class UserController {
 
   // Logout
   logout = asyncHandler(async (req: Request, res: Response) => {
+    // Access token (Authorization header) and/or refresh token (body). Either one,
+    // if valid, revokes the session — so logout still works after the access token
+    // has expired.
     const accessToken = req.headers.authorization?.split(' ')[1];
-    const { refreshToken } = req.body;
+    const refreshToken = typeof req.body?.refreshToken === 'string' ? req.body.refreshToken : undefined;
 
-    if (!accessToken) {
-      throw new AppError('No access token provided', 400);
+    if (!accessToken && !refreshToken) {
+      throw new AppError('No access or refresh token provided', 400);
     }
 
     await userService.logout(accessToken, refreshToken);

@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import { Role } from '../../prisma/generated/prisma/enums';
 import { redis, isRedisAvailable } from '../config/redis';
 import logger from '../utils/logger';
+import { prisma } from '../utils/Client';
+import { AppError } from '../utils/ResponseHandler';
 
 // In-memory fallback for token blacklist when Redis is unavailable
 const inMemoryBlacklist = new Map<string, number>(); // jti -> expiresAt timestamp
@@ -39,6 +41,27 @@ export function isJwtError(error: unknown): error is Error & { name: string } {
   return error instanceof Error && 'name' in error;
 }
 
+// Audience claims keep user (resident/guard) tokens and staff-app tokens apart even
+// though they share signing secrets: a staff token can never pass verifyAccessToken
+// and a user token can never pass verifyStaffToken. Algorithm is pinned on verify.
+export const USER_TOKEN_AUDIENCE = 'sgate-user';
+export const STAFF_TOKEN_AUDIENCE = 'sgate-staff';
+export const JWT_ALGORITHM = 'HS256' as const;
+
+/**
+ * Refresh tokens are stored hashed (SHA-256, hex) so a DB leak does not leak live
+ * sessions. Compare with refreshTokenMatches() (constant time).
+ */
+export const hashToken = (token: string): string =>
+  crypto.createHash('sha256').update(token, 'utf8').digest('hex');
+
+export const refreshTokenMatches = (token: string, storedHash: string | null | undefined): boolean => {
+  if (!storedHash) return false;
+  const given = Buffer.from(hashToken(token), 'utf8');
+  const stored = Buffer.from(storedHash, 'utf8');
+  return given.length === stored.length && crypto.timingSafeEqual(given, stored);
+};
+
 // ============================================
 // JWT TOKEN GENERATION
 // ============================================
@@ -61,7 +84,7 @@ export const generateAccessToken = (
       jti: crypto.randomUUID(),
     },
     process.env.JWT_SECRET!,
-    { expiresIn: '1h' } // IMP-2: Reduced from 2d to 1h
+    { expiresIn: '1h', audience: USER_TOKEN_AUDIENCE, algorithm: JWT_ALGORITHM } // IMP-2: Reduced from 2d to 1h
   );
 };
 
@@ -87,7 +110,11 @@ export const generateRefreshToken = (
       jti: crypto.randomUUID(),
     },
     secret,
-    { expiresIn: appType === 'RESIDENT_APP' ? '30d' : '7d' }
+    {
+      expiresIn: appType === 'RESIDENT_APP' ? '30d' : '7d',
+      audience: USER_TOKEN_AUDIENCE,
+      algorithm: JWT_ALGORITHM,
+    }
   );
 };
 
@@ -96,14 +123,65 @@ export const generateRefreshToken = (
 // ============================================
 
 export const verifyAccessToken = (token: string): JwtPayload => {
-  const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!, {
+    algorithms: [JWT_ALGORITHM],
+    audience: USER_TOKEN_AUDIENCE,
+  }) as JwtPayload;
 
   // Strictly require type === 'access' (fixes IMP-5: no legacy tokens pass through)
   if (decoded.type !== 'access') {
     throw new jwt.JsonWebTokenError('Invalid token type');
   }
+  if (typeof decoded.userId !== 'string' || !decoded.userId) {
+    throw new jwt.JsonWebTokenError('Invalid token subject');
+  }
+  if (decoded.appType !== 'RESIDENT_APP' && decoded.appType !== 'GUARD_APP') {
+    throw new jwt.JsonWebTokenError('Invalid token app type');
+  }
 
   return decoded;
+};
+
+export type AuthenticatedAccessUser = {
+  id: string;
+  role: Role;
+  societyId: string | null;
+  flatId: string | null;
+  isActive: boolean;
+};
+
+/**
+ * Full access-token check shared by HTTP middleware and socket.io: signature,
+ * audience, type === 'access', blacklist (revocation), user exists & active, and
+ * guard-app sessions only for GUARD users. Throws AppError (401/403); JWT
+ * library errors propagate unchanged (name: JsonWebTokenError / TokenExpiredError).
+ */
+export const verifyAccessTokenForUser = async (token: string): Promise<{
+  decoded: JwtPayload;
+  user: AuthenticatedAccessUser;
+}> => {
+  const decoded = verifyAccessToken(token);
+
+  if (decoded.jti && (await isTokenBlacklisted(decoded.jti))) {
+    throw new AppError('Token has been revoked. Please login again.', 401);
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: decoded.userId },
+    select: { id: true, role: true, societyId: true, flatId: true, isActive: true },
+  });
+
+  if (!user || !user.isActive) {
+    throw new AppError('User not found or inactive', 401);
+  }
+  if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
+    throw new AppError('Access denied. This app is for guards only.', 403);
+  }
+  if (decoded.appType === 'RESIDENT_APP' && user.role === 'GUARD') {
+    throw new AppError('Access denied. Please use the guard app.', 403);
+  }
+
+  return { decoded, user };
 };
 
 export const verifyRefreshToken = (refreshToken: string): JwtPayload => {
@@ -112,10 +190,16 @@ export const verifyRefreshToken = (refreshToken: string): JwtPayload => {
     if (!secret) {
       throw new Error('JWT_REFRESH_SECRET must be set separately from JWT_SECRET');
     }
-    const decoded = jwt.verify(refreshToken, secret) as JwtPayload;
+    const decoded = jwt.verify(refreshToken, secret, {
+      algorithms: [JWT_ALGORITHM],
+      audience: USER_TOKEN_AUDIENCE,
+    }) as JwtPayload;
 
     if (decoded.type !== 'refresh') {
       throw new jwt.JsonWebTokenError('Invalid refresh token type');
+    }
+    if (typeof decoded.userId !== 'string' || !decoded.userId) {
+      throw new jwt.JsonWebTokenError('Invalid refresh token subject');
     }
 
     return decoded;

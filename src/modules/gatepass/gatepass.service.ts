@@ -92,7 +92,7 @@ export class GatePassService {
         itemsList: 'itemsList' in data ? (data.itemsList ?? []) : [],
         workerName: 'workerName' in data ? data.workerName : undefined,
         workerPhone: 'workerPhone' in data ? data.workerPhone : undefined,
-        companyName: 'companyName' in data ? data.companyName : undefined,
+        companyName: data.companyName,
         flatId: flatId ?? null,
         societyId,
         requestedById,

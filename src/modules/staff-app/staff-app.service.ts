@@ -1,7 +1,8 @@
 import { prisma } from '../../utils/Client';
 import { AppError } from '../../utils/ResponseHandler';
 import { verifyMSG91WidgetToken } from '../../utils/msg91';
-import { blacklistToken, extractJti } from '../../services/token.service';
+import { blacklistToken, extractJti, hashToken, refreshTokenMatches, isJwtError, isTokenBlacklisted } from '../../services/token.service';
+import logger from '../../utils/logger';
 import { createStaffAccessToken, createStaffRefreshToken, verifyStaffToken } from './staff-app.token';
 import { eventBus } from '../../utils/eventBus';
 import { isBookingExpired, notPastPendingWhere, presentStaffBooking, BOOKING_EXPIRED_MESSAGE } from '../domestic-staff/domestic-staff.service';
@@ -28,24 +29,61 @@ export class StaffAppService {
     });
     const accessToken = createStaffAccessToken(account.id, staff.id, staff.societyId);
     const refreshToken = createStaffRefreshToken(account.id, staff.id, staff.societyId);
-    await prisma.staffAccount.update({ where: { id: account.id }, data: { refreshToken, lastTokenRefresh: new Date() } });
+    // Only a SHA-256 hash of the refresh token is stored
+    await prisma.staffAccount.update({ where: { id: account.id }, data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date() } });
     return { accessToken, refreshToken, staff: publicStaff(staff), appType: 'STAFF_APP' };
   }
 
   async refresh(refreshToken: string) {
-    const decoded = verifyStaffToken(refreshToken, 'refresh');
+    let decoded;
+    try {
+      decoded = verifyStaffToken(refreshToken, 'refresh');
+    } catch (error) {
+      if (isJwtError(error)) throw new AppError('Invalid staff session. Please login again.', 401);
+      throw error;
+    }
+    if (await isTokenBlacklisted(decoded.jti)) throw new AppError('Invalid staff session. Please login again.', 401);
     const account = await prisma.staffAccount.findUnique({ where: { id: decoded.staffAccountId }, include: { domesticStaff: { include: { society: { select: { id: true, name: true, isActive: true } } } } } });
-    if (!account || !account.isActive || account.refreshToken !== refreshToken || !account.domesticStaff.isActive) throw new AppError('Invalid staff session. Please login again.', 401);
+    if (!account || !account.isActive || !account.domesticStaff.isActive) throw new AppError('Invalid staff session. Please login again.', 401);
+    if (!refreshTokenMatches(refreshToken, account.refreshToken)) {
+      // Signed by us but not the current token: an already-rotated token is being
+      // replayed (or the session was ended). Treat as theft — end the session.
+      if (account.refreshToken) {
+        await prisma.staffAccount.updateMany({ where: { id: account.id, refreshToken: account.refreshToken }, data: { refreshToken: null } });
+        logger.warn({ staffAccountId: account.id }, 'Staff refresh token reuse detected — session revoked');
+      }
+      throw new AppError('Invalid staff session. Please login again.', 401);
+    }
+    if (!account.domesticStaff.society.isActive) throw new AppError('Society is currently inactive.', 403);
     const accessToken = createStaffAccessToken(account.id, account.domesticStaffId, account.domesticStaff.societyId);
     const nextRefresh = createStaffRefreshToken(account.id, account.domesticStaffId, account.domesticStaff.societyId);
-    await prisma.staffAccount.update({ where: { id: account.id }, data: { refreshToken: nextRefresh, lastTokenRefresh: new Date() } });
+    // Compare-and-swap on the old hash so two concurrent refreshes can't both rotate
+    const swapped = await prisma.staffAccount.updateMany({ where: { id: account.id, refreshToken: account.refreshToken }, data: { refreshToken: hashToken(nextRefresh), lastTokenRefresh: new Date() } });
+    if (swapped.count === 0) throw new AppError('Invalid staff session. Please login again.', 401);
     return { accessToken, refreshToken: nextRefresh, staff: publicStaff(account.domesticStaff) };
   }
 
-  async logout(accountId: string, accessToken: string) {
-    const decoded = extractJti(accessToken);
-    if (decoded.jti && decoded.exp) await blacklistToken(decoded.jti, Math.max(1, decoded.exp - Math.floor(Date.now() / 1000)));
-    await prisma.staffAccount.update({ where: { id: accountId }, data: { refreshToken: null, fcmToken: null } });
+  /**
+   * Revoke the session. Works with a valid access token (accountId known) or with
+   * just the refresh token (access token expired) — either is enough to end it.
+   */
+  async logout(accountId: string | null, accessToken?: string, refreshToken?: string) {
+    if (accessToken) {
+      const decoded = extractJti(accessToken);
+      if (decoded.jti && decoded.exp) await blacklistToken(decoded.jti, Math.max(1, decoded.exp - Math.floor(Date.now() / 1000)));
+    }
+    let targetAccountId = accountId;
+    if (refreshToken) {
+      try {
+        const decoded = verifyStaffToken(refreshToken, 'refresh');
+        if (!targetAccountId) targetAccountId = decoded.staffAccountId;
+        if (decoded.exp) await blacklistToken(decoded.jti, Math.max(1, decoded.exp - Math.floor(Date.now() / 1000)));
+      } catch {
+        // Invalid/expired refresh token: nothing to revoke with it
+      }
+    }
+    if (!targetAccountId) throw new AppError('A valid access or refresh token is required to logout', 401);
+    await prisma.staffAccount.update({ where: { id: targetAccountId }, data: { refreshToken: null, fcmToken: null } });
   }
 
   async dashboard(staffId: string) {

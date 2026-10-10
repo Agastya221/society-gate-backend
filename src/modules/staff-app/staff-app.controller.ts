@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { AppError } from '../../utils/ResponseHandler';
 import { prisma } from '../../utils/Client';
 import { StaffAppService } from './staff-app.service';
+import { verifyStaffToken } from './staff-app.token';
 
 const service = new StaffAppService();
 const staffId = (req: Request) => {
@@ -18,7 +19,20 @@ export const refresh = async (req: Request, res: Response) => {
   if (!req.body.refreshToken) throw new AppError('Refresh token is required', 400);
   res.json({ success: true, data: await service.refresh(req.body.refreshToken) });
 };
-export const logout = async (req: Request, res: Response) => { await service.logout(req.staffAccount!.id, req.headers.authorization!.split(' ')[1]); res.json({ success: true, message: 'Logged out successfully' }); };
+// Logout works with a valid access token (Authorization header) or, when the access
+// token has expired, with just { refreshToken } in the body — so the server-side
+// session is still revoked.
+export const logout = async (req: Request, res: Response) => {
+  const accessToken = req.headers.authorization?.split(' ')[1];
+  const refreshToken = typeof req.body?.refreshToken === 'string' ? req.body.refreshToken : undefined;
+  let accountId: string | null = null;
+  if (accessToken) {
+    try { accountId = verifyStaffToken(accessToken, 'access').staffAccountId; } catch { /* expired/invalid — fall back to refresh token */ }
+  }
+  if (!accountId && !refreshToken) throw new AppError('No valid token provided', 401);
+  await service.logout(accountId, accountId ? accessToken : undefined, refreshToken);
+  res.json({ success: true, message: 'Logged out successfully' });
+};
 export const dashboard = async (req: Request, res: Response) => res.json({ success: true, data: await service.dashboard(staffId(req)) });
 export const profile = async (req: Request, res: Response) => res.json({ success: true, data: (await service.dashboard(staffId(req))).staff });
 export const pass = async (req: Request, res: Response) => { const staff = req.staffAccount!.domesticStaff; res.json({ success: true, data: { staffId: staff.id, name: staff.name, staffType: staff.staffType, qrToken: staff.qrToken, isVerified: staff.isVerified } }); };
