@@ -25,7 +25,15 @@ router.use('/resident', residentRoutes);      // /api/v1/resident/*
 router.use('/admin', adminRoutes);            // /api/v1/admin/*
 router.use('/guard', guardRoutes);            // /api/v1/guard/*
 router.use('/upload', uploadRoutes);          // /api/v1/upload
-router.use('/payments', paymentRoutes);       // /api/v1/payments
+// Online gateway (Cashfree) is off: residents pay the society directly by UPI/bank
+// and S-Gate never handles the money. Kept for a possible future opt-in.
+if (process.env.PAYMENT_GATEWAY_ENABLED === 'true') {
+  router.use('/payments', paymentRoutes);     // /api/v1/payments
+} else {
+  router.use('/payments', (_req, res) => {
+    res.status(503).json({ success: false, message: 'Online payments are not available. Please pay your society directly.' });
+  });
+}
 router.use('/society-registration', societyRegistrationRoutes); // /api/v1/society-registration
 router.use('/superadmin', superadminRoutes); // /api/v1/superadmin
 
