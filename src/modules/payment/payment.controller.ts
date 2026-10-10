@@ -22,8 +22,6 @@ export const createInvoiceCashfreeOrder = async (req: Request, res: Response) =>
     const result = await paymentService.createInvoiceCashfreeOrder({
       invoiceId: req.params.invoiceId as string,
       user: req.user!,
-      returnUrl: req.body.returnUrl,
-      notifyUrl: req.body.notifyUrl,
       customerPhone: req.body.customerPhone,
       customerEmail: req.body.customerEmail,
       customerName: req.body.customerName,

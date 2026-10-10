@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../utils/Client';
@@ -37,7 +38,9 @@ export class UserService {
     if (!expectedSecret) {
       throw new AppError('Bootstrap is not configured on this server.', 500);
     }
-    if (data.bootstrapSecret !== expectedSecret) {
+    const given = Buffer.from(String(data.bootstrapSecret ?? ''));
+    const expected = Buffer.from(expectedSecret);
+    if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) {
       throw new AppError('Invalid bootstrap secret.', 403);
     }
 
@@ -103,7 +106,7 @@ export class UserService {
   // Verifies MSG91 widget token, creates user if first time
   // ============================================
   async residentWidgetVerify(widgetToken: string, name?: string, email?: string) {
-    logger.info({ tokenPrefix: widgetToken?.substring(0, 20), hasName: !!name, hasEmail: !!email }, '[residentWidgetVerify] called');
+    logger.info({ hasName: !!name, hasEmail: !!email }, '[residentWidgetVerify] called');
 
     // 1. Verify with MSG91 — get the confirmed phone number
     const phone = await verifyMSG91WidgetToken(widgetToken);

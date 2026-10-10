@@ -7,3 +7,8 @@ node_modules
 /dist
 /generated/prisma
 
+
+# Local logs / credentials
+*.log
+ts_error.txt
+TEST_CREDENTIALS*.md

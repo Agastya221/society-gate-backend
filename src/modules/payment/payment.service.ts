@@ -10,8 +10,6 @@ import {
 interface CreateInvoiceOrderInput {
   invoiceId: string;
   user: AuthenticatedUser;
-  returnUrl?: string;
-  notifyUrl?: string;
   customerPhone?: string;
   customerEmail?: string;
   customerName?: string;
@@ -69,6 +67,9 @@ type InvoiceForPayment = {
   };
 };
 
+/** Max age (either direction) of a webhook's signed timestamp before it is treated as a replay. */
+const WEBHOOK_MAX_AGE_MS = 5 * 60 * 1000;
+
 export class PaymentService {
   async createInvoiceCashfreeOrder(input: CreateInvoiceOrderInput) {
     const invoice = await this.getInvoiceForPayment(input.invoiceId, input.user);
@@ -120,8 +121,9 @@ export class PaymentService {
       email: input.customerEmail,
       name: input.customerName,
     });
-    const returnUrl = resolveUrl(input.returnUrl || process.env.CASHFREE_RETURN_URL, invoice.id, cashfreeOrderId);
-    const notifyUrl = resolveUrl(input.notifyUrl || process.env.CASHFREE_NOTIFY_URL, invoice.id, cashfreeOrderId);
+    // Server config only — never from the client (open redirect / webhook hijack)
+    const returnUrl = resolveUrl(process.env.CASHFREE_RETURN_URL, invoice.id, cashfreeOrderId);
+    const notifyUrl = resolveUrl(process.env.CASHFREE_NOTIFY_URL, invoice.id, cashfreeOrderId);
     const amount = roundAmount(invoice.totalAmount);
 
     const cashfreeOrder = await cashfreeClient.createOrder({
@@ -230,11 +232,19 @@ export class PaymentService {
       throw new Error('Invalid Cashfree webhook signature');
     }
 
+    // Replay window: the timestamp is part of the signed payload, so a stale one
+    // means a captured request being re-sent. Cashfree sends epoch milliseconds.
+    const tsNum = Number(timestamp);
+    const tsMs = tsNum < 1e12 ? tsNum * 1000 : tsNum;
+    if (!Number.isFinite(tsMs) || Math.abs(Date.now() - tsMs) > WEBHOOK_MAX_AGE_MS) {
+      throw new Error('Stale Cashfree webhook signature timestamp');
+    }
+
     const payload = JSON.parse(rawBody.toString('utf8')) as PaymentWebhookPayload;
     const orderId = payload.data?.order?.order_id;
 
     if (!orderId) {
-      logger.warn({ payload }, 'Cashfree webhook ignored because order_id is missing');
+      logger.warn({ eventType: payload.type }, 'Cashfree webhook ignored because order_id is missing');
       return { processed: false, reason: 'missing_order_id' };
     }
 
@@ -249,6 +259,7 @@ export class PaymentService {
     }
 
     const status = mapCashfreePaymentStatus(payload.data?.payment?.payment_status, payload.type);
+    const paymentId = payload.data?.payment?.cf_payment_id ? String(payload.data.payment.cf_payment_id) : undefined;
     const paymentAmount = payload.data?.payment?.payment_amount ?? payload.data?.order?.order_amount;
     const paymentCurrency = payload.data?.payment?.payment_currency ?? payload.data?.order?.order_currency;
     const amountMatches =
@@ -256,25 +267,47 @@ export class PaymentService {
       (typeof paymentAmount === 'number' &&
         roundAmount(paymentAmount) >= roundAmount(transaction.amount) &&
         (paymentCurrency || transaction.currency) === transaction.currency);
-    const shouldMarkPaid = status === 'SUCCESS' && amountMatches && transaction.invoice.status !== 'PAID';
 
+    // Idempotency: the same event re-delivered (or replayed) is acknowledged but not re-applied
+    if (
+      transaction.status === 'SUCCESS' &&
+      transaction.webhookEventType === payload.type &&
+      (!paymentId || transaction.cashfreePaymentId === paymentId)
+    ) {
+      return { processed: false, reason: 'duplicate', transactionId: transaction.id, invoiceId: transaction.invoiceId, status: transaction.status };
+    }
+
+    // A payment id is unique: never attach one that already belongs to another transaction
+    if (paymentId) {
+      const owner = await prisma.paymentTransaction.findUnique({ where: { cashfreePaymentId: paymentId }, select: { id: true } });
+      if (owner && owner.id !== transaction.id) {
+        logger.warn({ orderId, eventType: payload.type }, 'Cashfree webhook payment id already recorded on another order; ignored');
+        return { processed: false, reason: 'duplicate_payment', transactionId: transaction.id, invoiceId: transaction.invoiceId };
+      }
+    }
+
+    let invoicePaid = false;
     await prisma.$transaction(async (tx) => {
+      // Never downgrade a successful transaction (late/replayed FAILED or DROPPED events)
+      const keepSuccess = transaction.status === 'SUCCESS' && status !== 'SUCCESS';
       await tx.paymentTransaction.update({
         where: { id: transaction.id },
         data: {
-          status,
-          cashfreePaymentId: payload.data?.payment?.cf_payment_id || transaction.cashfreePaymentId,
+          ...(keepSuccess ? {} : { status }),
+          cashfreePaymentId: transaction.cashfreePaymentId ?? paymentId ?? null,
           webhookEventType: payload.type,
           webhookReceivedAt: new Date(),
           rawWebhook: payload as any,
         },
       });
 
-      if (shouldMarkPaid) {
-        await tx.invoice.update({
-          where: { id: transaction.invoiceId },
+      if (status === 'SUCCESS' && amountMatches) {
+        // Conditional: only the first success flips the invoice; repeats are no-ops
+        const res = await tx.invoice.updateMany({
+          where: { id: transaction.invoiceId, status: { not: 'PAID' } },
           data: { status: 'PAID', paidAt: new Date() },
         });
+        invoicePaid = res.count > 0;
       }
     });
 
@@ -293,7 +326,7 @@ export class PaymentService {
 
     return {
       processed: true,
-      invoicePaid: shouldMarkPaid,
+      invoicePaid,
       transactionId: transaction.id,
       invoiceId: transaction.invoiceId,
       status,
@@ -320,16 +353,17 @@ export class PaymentService {
       await tx.paymentTransaction.update({
         where: { id: transaction.id },
         data: {
-          status,
+          // Never downgrade a transaction already recorded as SUCCESS
+          ...(transaction.status === 'SUCCESS' && status !== 'SUCCESS' ? {} : { status }),
           cashfreeCfOrderId: order.cf_order_id || transaction.cashfreeCfOrderId,
           paymentSessionId: order.payment_session_id || transaction.paymentSessionId,
           rawResponse: order as any,
         },
       });
 
-      if (status === 'SUCCESS' && amountMatches && transaction.invoice.status !== 'PAID') {
-        await tx.invoice.update({
-          where: { id: transaction.invoiceId },
+      if (status === 'SUCCESS' && amountMatches) {
+        await tx.invoice.updateMany({
+          where: { id: transaction.invoiceId, status: { not: 'PAID' } },
           data: { status: 'PAID', paidAt: new Date() },
         });
       }

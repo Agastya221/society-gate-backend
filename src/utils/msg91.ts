@@ -19,9 +19,6 @@ if (!MSG91_AUTH_KEY) {
   );
 }
 
-logger.info(
-  `[MSG91] Auth key loaded: ${MSG91_AUTH_KEY.substring(0, 6)}...${MSG91_AUTH_KEY.substring(MSG91_AUTH_KEY.length - 4)} (length: ${MSG91_AUTH_KEY.length})`
-);
 
 interface MSG91WidgetVerifyResponse {
   message: string;
@@ -59,7 +56,7 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
     );
 
     const data = response.data;
-    logger.info({ status: data.message, mobile: data.mobile }, 'MSG91 widget token verified');
+    logger.info('MSG91 widget token verified');
 
     // MSG91 verifyAccessToken returns phone in `message` field and status in `type` field
     // e.g. { "message": "916202923165", "type": "success" }
@@ -82,8 +79,6 @@ export async function verifyMSG91WidgetToken(widgetToken: string): Promise<strin
         error: msg91Error,
         httpStatus: status,
         responseData: err?.response?.data,
-        authKeyLength: MSG91_AUTH_KEY?.length,
-        tokenPrefix: widgetToken?.substring(0, 30),
       },
       'MSG91 verifyAccessToken failed'
     );

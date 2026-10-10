@@ -15,8 +15,8 @@ const invoiceParamsSchema = z.object({
 });
 
 const createCashfreeOrderSchema = z.object({
-  returnUrl: z.string().url('Invalid return URL').optional(),
-  notifyUrl: z.string().url('Invalid notify URL').optional(),
+  // return/notify URLs are server config only (CASHFREE_RETURN_URL / CASHFREE_NOTIFY_URL);
+  // any client-supplied value is stripped by this schema.
   customerPhone: z.string().min(10).max(20).optional(),
   customerEmail: z.string().email().optional(),
   customerName: z.string().min(3).max(100).optional(),
