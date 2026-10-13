@@ -293,6 +293,19 @@ export class UserService {
       };
     }
 
+    // An active resident with a live flat keeps using it while a request for another
+    // flat is pending, rejected or being resubmitted — that request must not lock
+    // them out of the account they already have.
+    if (input.isActive && input.societyId && input.activeContext) {
+      return {
+        requiresOnboarding: false,
+        onboardingStatus: input.onboardingStatus,
+        societyOnboardingStatus: input.societyOnboardingStatus,
+        nextAction: 'OPEN_RESIDENT_PANEL',
+        redirectTo: 'RESIDENT_PANEL',
+      };
+    }
+
     switch (input.onboardingStatus) {
       case 'PENDING_APPROVAL':
         return {
