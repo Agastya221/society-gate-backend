@@ -15,6 +15,7 @@ import {
 } from '../../../prisma/generated/prisma/enums';
 
 const EXPIRY_MINUTES = 15;
+const READY_WINDOW_MS = 60 * 60 * 1000;
 
 /** Entry types an admin can auto-approve in Society Settings → autoApproval flag. */
 const AUTO_APPROVAL_FLAG: Partial<Record<EntryType, keyof AutoApprovalSettings>> = {
@@ -38,6 +39,7 @@ interface CreateEntryRequestData {
   visitorName?: string;
   visitorPhone?: string;
   providerTag?: ProviderTag;
+  purpose?: string;
   photoKey?: string;
 }
 
@@ -53,6 +55,7 @@ export interface CreateEntryRequestResult {
 }
 
 export class EntryRequestService {
+  private static readonly GUARD_OVERRIDE_WAIT_MS = 45_000;
   // ============================================
   // MAIN: CREATE ENTRY REQUEST
   // MyGate-style tiered trust system:
@@ -97,6 +100,10 @@ export class EntryRequestService {
     if (requestedFlatIds.length === 0) {
       throw new AppError('At least one flat is required', 400);
     }
+    // One resident must never be able to approve entry for another flat.
+    if (requestedFlatIds.length > 1) {
+      throw new AppError('Create a separate entry request for each flat', 400);
+    }
 
     const flats = await prisma.flat.findMany({
       where: { id: { in: requestedFlatIds }, isActive: true },
@@ -129,6 +136,7 @@ export class EntryRequestService {
         visitorName: data.visitorName,
         visitorPhone: data.visitorPhone,
         providerTag: data.providerTag,
+        purpose: data.purpose,
         photoKey: data.photoKey || undefined,
         flatId: primaryFlat.id,
         societyId: guard.societyId,
@@ -174,6 +182,7 @@ export class EntryRequestService {
       guardId,
       visitorName: data.visitorName,
       providerTag: data.providerTag,
+      purpose: data.purpose,
       type: data.type,
     });
 
@@ -190,6 +199,9 @@ export class EntryRequestService {
       flatId?: string;
       page?: number;
       limit?: number;
+      awaitingEntry?: boolean;
+      order?: 'oldest' | 'newest';
+      since?: string;
     }
   ) {
     const { status, flatId } = filters;
@@ -237,6 +249,12 @@ export class EntryRequestService {
     }
 
     if (status) where.status = status;
+    if (filters.since) where.createdAt = { gte: new Date(filters.since) };
+    if (filters.awaitingEntry) {
+      where.status = 'APPROVED';
+      where.entryId = null;
+      where.approvedAt = { gte: new Date(Date.now() - READY_WINDOW_MS) };
+    }
     if (flatId && user.role !== 'RESIDENT') {
       where.OR = [{ flatId }, { targets: { some: { flatId } } }];
     }
@@ -245,7 +263,7 @@ export class EntryRequestService {
       prisma.entryRequest.findMany({
         where,
         include: this.getInclude(),
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: filters.order === 'oldest' ? 'asc' : 'desc' },
         skip,
         take: limit,
       }),
@@ -342,6 +360,9 @@ export class EntryRequestService {
     }
 
     const targetInfos = this.getTargetInfos(entryRequest);
+    if (targetInfos.length !== 1) {
+      throw new AppError('Each flat needs a separate approval', 400);
+    }
     // Guards may override ("Allow Anyway") — but only for requests in their own society
     const isSocietyGuard = approver.role === 'GUARD' && approver.societyId === entryRequest.societyId;
     const approverFlatIds = this.getUserFlatIds(approver);
@@ -349,62 +370,33 @@ export class EntryRequestService {
     if (!canApprove) {
       throw new AppError('Only linked flat residents or society guards can approve entry requests', 403);
     }
+    if (isSocietyGuard && !autoApproved &&
+        Date.now() - entryRequest.createdAt.getTime() < EntryRequestService.GUARD_OVERRIDE_WAIT_MS) {
+      throw new AppError('Wait 45 seconds for the resident before allowing entry yourself', 403);
+    }
 
     if (entryRequest.status !== 'PENDING') {
       throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
     }
 
     if (new Date() > entryRequest.expiresAt) {
-      await prisma.entryRequest.update({
-        where: { id: entryRequestId },
+      await prisma.entryRequest.updateMany({
+        where: { id: entryRequestId, status: 'PENDING' },
         data: { status: 'EXPIRED' },
       });
       throw new AppError('Entry request has expired', 400);
     }
 
-    const now = new Date();
-    const updatedRequest = await prisma.$transaction(async (tx) => {
-      const createdEntryIds: string[] = [];
-
-      for (const target of targetInfos) {
-        const entry = await tx.entry.create({
-          data: {
-            type: entryRequest.type,
-            visitorName: entryRequest.visitorName || 'Visitor',
-            visitorPhone: entryRequest.visitorPhone,
-            visitorPhoto: entryRequest.photoKey,
-            companyName: entryRequest.providerTag,
-            flatId: target.flatId,
-            societyId: entryRequest.societyId,
-            createdById: entryRequest.guardId,
-            approvedById: userId,
-            approvedAt: now,
-            // Approval at the gate means the visitor walks in now — the guard's
-            // Today's Entries / check-out flow expects CHECKED_IN (same as pre-approved use).
-            status: 'CHECKED_IN',
-            checkInTime: now,
-          },
-        });
-
-        createdEntryIds.push(entry.id);
-        if (target.targetId) {
-          await tx.entryRequestTarget.update({
-            where: { id: target.targetId },
-            data: { entryId: entry.id },
-          });
-        }
-      }
-
-      return tx.entryRequest.update({
-        where: { id: entryRequestId },
-        data: {
-          status: 'APPROVED',
-          approvedById: userId,
-          approvedAt: now,
-          entryId: createdEntryIds[0],
-        },
-        include: this.getInclude(),
-      });
+    // Approval grants permission. Only the guard's later admit action records
+    // physical entry. Claim PENDING atomically so two residents cannot approve
+    // the same request and emit two successful decisions.
+    const claimed = await prisma.entryRequest.updateMany({
+      where: { id: entryRequestId, status: 'PENDING', expiresAt: { gt: new Date() } },
+      data: { status: 'APPROVED', approvedById: userId, approvedAt: new Date() },
+    });
+    if (claimed.count !== 1) throw new AppError('Entry request is no longer pending', 409);
+    const updatedRequest = await prisma.entryRequest.findUniqueOrThrow({
+      where: { id: entryRequestId }, include: this.getInclude(),
     });
 
     const flatLabel = this.getFlatLabelList(targetInfos);
@@ -433,6 +425,86 @@ export class EntryRequestService {
     });
 
     return this.formatEntryRequest(updatedRequest);
+  }
+
+  /** Guard confirms that an approved person actually passed through the gate. */
+  async admitEntryRequest(entryRequestId: string, guardId: string) {
+    const guard = await prisma.user.findUnique({
+      where: { id: guardId }, select: { role: true, societyId: true },
+    });
+    if (guard?.role !== 'GUARD' || !guard.societyId) throw new AppError('Guard access required', 403);
+    const societyId = guard.societyId;
+
+    const admitted = await prisma.$transaction(async (tx) => {
+      const request = await tx.entryRequest.findFirst({
+        where: { id: entryRequestId, societyId },
+        include: this.getInclude(),
+      });
+      if (!request) throw new AppError('Entry request not found', 404);
+      if (request.status !== 'APPROVED' || request.entryId) {
+        throw new AppError('Entry has already been recorded or is not approved', 409);
+      }
+      if (!request.approvedAt || Date.now() - request.approvedAt.getTime() > READY_WINDOW_MS) {
+        throw new AppError('Approval expired. Ask the resident again.', 409);
+      }
+      const targets = this.getTargetInfos(request);
+      if (targets.length !== 1) throw new AppError('Each flat needs a separate entry request', 400);
+
+      const now = new Date();
+      const entry = await tx.entry.create({
+        data: {
+          type: request.type,
+          visitorName: request.visitorName || 'Visitor',
+          visitorPhone: request.visitorPhone,
+          visitorPhoto: request.photoKey,
+          companyName: request.providerTag,
+          purpose: request.purpose,
+          flatId: targets[0].flatId,
+          societyId: request.societyId,
+          createdById: guardId,
+          approvedById: request.approvedById,
+          approvedAt: request.approvedAt,
+          status: 'CHECKED_IN',
+          checkInTime: now,
+        },
+      });
+      const claimed = await tx.entryRequest.updateMany({
+        where: { id: entryRequestId, status: 'APPROVED', entryId: null },
+        data: { entryId: entry.id },
+      });
+      if (claimed.count !== 1) throw new AppError('Entry was recorded by another guard', 409);
+      if (targets[0].targetId) {
+        await tx.entryRequestTarget.update({
+          where: { id: targets[0].targetId }, data: { entryId: entry.id },
+        });
+      }
+      return { entry, requestId: entryRequestId };
+    });
+    eventBus.emit('entry-request.admitted', {
+      entryRequestId,
+      societyId: guard.societyId,
+      flatId: admitted.entry.flatId!,
+      guardId,
+      visitorName: admitted.entry.visitorName,
+      visitorType: admitted.entry.type,
+    });
+    return admitted;
+  }
+
+  /** Clears an approved visitor who left the gate without entering. */
+  async markNoShow(entryRequestId: string, guardId: string) {
+    const guard = await prisma.user.findUnique({
+      where: { id: guardId }, select: { role: true, societyId: true },
+    });
+    if (guard?.role !== 'GUARD' || !guard.societyId) throw new AppError('Guard access required', 403);
+    const changed = await prisma.entryRequest.updateMany({
+      where: { id: entryRequestId, societyId: guard.societyId, status: 'APPROVED', entryId: null },
+      data: { status: 'EXPIRED', rejectionReason: 'Visitor left before entering' },
+    });
+    if (changed.count !== 1) throw new AppError('Request is no longer waiting at the gate', 409);
+    return this.formatEntryRequest(await prisma.entryRequest.findUniqueOrThrow({
+      where: { id: entryRequestId }, include: this.getInclude(),
+    }));
   }
 
   // ============================================
@@ -471,6 +543,7 @@ export class EntryRequestService {
     }
 
     const targetInfos = this.getTargetInfos(entryRequest);
+    if (targetInfos.length !== 1) throw new AppError('Each flat needs a separate decision', 400);
     const isSocietyGuard = rejecter.role === 'GUARD' && rejecter.societyId === entryRequest.societyId;
     const rejecterFlatIds = this.getUserFlatIds(rejecter);
     const canReject = isSocietyGuard || targetInfos.some((target) => rejecterFlatIds.includes(target.flatId));
@@ -482,14 +555,17 @@ export class EntryRequestService {
       throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
     }
 
-    const updatedRequest = await prisma.entryRequest.update({
-      where: { id: entryRequestId },
+    const changed = await prisma.entryRequest.updateMany({
+      where: { id: entryRequestId, status: 'PENDING' },
       data: {
         status: 'REJECTED',
         rejectedAt: new Date(),
         rejectionReason: reason,
       },
-      include: this.getInclude(),
+    });
+    if (changed.count !== 1) throw new AppError('Entry request is no longer pending', 409);
+    const updatedRequest = await prisma.entryRequest.findUniqueOrThrow({
+      where: { id: entryRequestId }, include: this.getInclude(),
     });
 
     const flatLabel = this.getFlatLabelList(targetInfos);

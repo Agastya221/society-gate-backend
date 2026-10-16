@@ -16,6 +16,7 @@ export interface AppEvents {
     guardId: string;
     visitorName?: string;
     providerTag?: string;
+    purpose?: string;
     type: string;
   };
   'entry-request.approved': {
@@ -30,6 +31,14 @@ export interface AppEvents {
     approvedById: string;   // excluded from flat notification
     approvedByName: string;
     autoApproved?: boolean; // society auto-approval rule (approvedById is the guard)
+  };
+  'entry-request.admitted': {
+    entryRequestId: string;
+    societyId: string;
+    flatId: string;
+    guardId: string;
+    visitorName: string;
+    visitorType: string;
   };
   'entry-request.rejected': {
     entryRequestId: string;

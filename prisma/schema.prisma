@@ -2443,6 +2443,7 @@ model EntryRequest {
   visitorName  String?
   visitorPhone String?
   providerTag  ProviderTag? // For deliveries (Swiggy, Blinkit, etc.)
+  purpose      String? // Service category or a short reason for other visitors
 
   // Photo (S3 key - optional)
   photoKey String?

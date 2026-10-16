@@ -118,6 +118,7 @@ export const createEntryRequestSchema = z.object({
   visitorName: z.string().max(100).optional(),
   visitorPhone: phoneSchema.optional(),
   providerTag: providerTagEnum.optional(),
+  purpose: z.string().trim().max(100).optional(),
   photoKey: z.string().optional(),
 }).refine((data) => data.flatId || (data.flatIds && data.flatIds.length > 0), {
   message: 'Either flatId or flatIds is required',
@@ -127,6 +128,9 @@ export const createEntryRequestSchema = z.object({
 export const entryRequestQuerySchema = paginationQuery.extend({
   status: entryRequestStatusEnum.optional(),
   flatId: uuidSchema.optional(),
+  awaitingEntry: z.enum(['true']).optional(),
+  order: z.enum(['oldest', 'newest']).optional(),
+  since: z.string().datetime().optional(),
 });
 
 // ============================================
@@ -682,6 +686,8 @@ export const validatePreApprovedEntrySchema = z.object({
   qrToken: z.string().optional(),
   flatId: uuidSchema.optional(),
   type: preApprovedEntryTypeEnum.optional(),
+  category: helpCategoryEnum.optional(),
+  companyName: z.string().max(50).optional(),
 }).refine(
   (data) => data.vehicleLast4 || data.otp || data.qrToken || (data.flatId && data.type),
   { message: 'At least one verification method is required (vehicleLast4, otp, qrToken, or flatId+type)' },

@@ -11,13 +11,13 @@ const uploadService = new UploadService();
  * Create a new entry request (Guard)
  *
  * Returns different shapes depending on auto-approval:
- *  - autoApproved: true  → entry created immediately, resident notified after
+ *  - autoApproved: true  → ready for the guard to admit, resident notified after
  *  - autoApproved: false → PENDING request created, resident gets push to approve/reject
  */
 export const createEntryRequest = async (req: Request, res: Response) => {
   try {
     const guardId = req.user!.id;
-    const { type, flatId, flatIds, visitorName, visitorPhone, providerTag, photoKey } = req.body;
+    const { type, flatId, flatIds, visitorName, visitorPhone, providerTag, purpose, photoKey } = req.body;
 
     if (!type || (!flatId && (!Array.isArray(flatIds) || flatIds.length === 0))) {
       return res.status(400).json({
@@ -27,14 +27,14 @@ export const createEntryRequest = async (req: Request, res: Response) => {
     }
 
     const result = await entryRequestService.createEntryRequest(
-      { type, flatId, flatIds, visitorName, visitorPhone, providerTag, photoKey },
+      { type, flatId, flatIds, visitorName, visitorPhone, providerTag, purpose, photoKey },
       guardId
     );
 
     res.status(201).json({
       success: true,
       message: result.autoApproved
-        ? 'Entry auto-approved by society settings. Residents have been informed.'
+        ? 'Entry auto-approved by society settings. Guard must confirm arrival.'
         : 'Entry request created. Notification sent to residents.',
       data: { entryRequest: result.entryRequest, autoApproved: result.autoApproved },
     });
@@ -53,11 +53,14 @@ export const getEntryRequests = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     // validate({ query: entryRequestQuerySchema }) puts the coerced values here
-    const { status, flatId, page, limit } = (req.validatedQuery ?? {}) as {
+    const { status, flatId, page, limit, awaitingEntry, order, since } = (req.validatedQuery ?? {}) as {
       status?: EntryRequestStatus;
       flatId?: string;
       page?: number;
       limit?: number;
+      awaitingEntry?: 'true';
+      order?: 'oldest' | 'newest';
+      since?: string;
     };
 
     const result = await entryRequestService.getEntryRequests(userId, {
@@ -65,6 +68,9 @@ export const getEntryRequests = async (req: Request, res: Response) => {
       flatId,
       page,
       limit,
+      awaitingEntry: awaitingEntry === 'true',
+      order,
+      since,
     });
 
     res.status(200).json({
@@ -141,7 +147,7 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'Entry request approved. Visitor can enter.',
+      message: 'Entry request approved. Guard must confirm entry.',
       data: entryRequest,
     });
   } catch (error: unknown) {
@@ -149,6 +155,26 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
       success: false,
       message: getErrorMessage(error),
     });
+  }
+};
+
+/** Guard records physical admission after the resident or society rule approves. */
+export const admitEntryRequest = async (req: Request, res: Response) => {
+  try {
+    const result = await entryRequestService.admitEntryRequest(String(req.params.id), req.user!.id);
+    res.status(200).json({ success: true, message: 'Visitor checked in', data: result });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
+  }
+};
+
+/** Guard removes an approved person who left without entering. */
+export const markEntryRequestNoShow = async (req: Request, res: Response) => {
+  try {
+    const result = await entryRequestService.markNoShow(String(req.params.id), req.user!.id);
+    res.status(200).json({ success: true, message: 'Visitor marked as left', data: result });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
   }
 };
 

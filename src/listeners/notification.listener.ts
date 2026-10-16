@@ -16,8 +16,8 @@ eventBus.on('entry-request.approved', async (payload) => {
     const flatLabels = payload.flats.map((flat) => flat.flatNumber);
     const visitorLabel = `${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()})`;
     const body = autoApproved
-      ? `${visitorLabel} was let in at the gate — auto-approved by your society settings`
-      : `${payload.approvedByName} allowed ${visitorLabel} to enter`;
+      ? `${visitorLabel} was approved by your society settings and is waiting at the gate`
+      : `${payload.approvedByName} approved ${visitorLabel}; the guard will confirm entry`;
 
     await notificationService.sendToFlats(payload.flatIds, {
       type: 'ENTRY_REQUEST',
@@ -64,6 +64,27 @@ eventBus.on('entry-request.approved', async (payload) => {
     }).catch((err) => logger.error({ err }, 'Push failed: entry-request.approved (guard)'));
   } catch (error) {
     logger.error({ error, event: 'entry-request.approved', payload }, 'Failed to send approval notification');
+  }
+});
+
+eventBus.on('entry-request.admitted', async (payload) => {
+  try {
+    const body = `${payload.visitorName} entered the society`;
+    await notificationService.sendToFlats([payload.flatId], {
+      type: 'ENTRY_REQUEST',
+      title: 'Visitor entered',
+      message: body,
+      data: { entryRequestId: payload.entryRequestId, societyId: payload.societyId, status: 'CHECKED_IN' },
+      referenceId: payload.entryRequestId,
+      referenceType: 'EntryRequest',
+      societyId: payload.societyId,
+    });
+    pushService.sendToFlats([payload.flatId], {
+      title: 'Visitor entered', body,
+      data: { type: 'GATE_APPROVED', screen: 'EntryRequest', requestId: payload.entryRequestId, entryRequestId: payload.entryRequestId },
+    }).catch((err) => logger.error({ err }, 'Push failed: entry-request.admitted'));
+  } catch (error) {
+    logger.error({ error, event: 'entry-request.admitted', payload }, 'Failed to send entry notification');
   }
 });
 
@@ -152,7 +173,7 @@ const describeWaiting = (type: string, visitorName?: string | null, providerTag?
 
 eventBus.on('entry-request.created', async (payload) => {
   try {
-    const providerName = describePurpose(payload.type, payload.providerTag);
+    const providerName = payload.purpose || describePurpose(payload.type, payload.providerTag);
     const flatLabels = payload.flats.map((flat) => flat.flatNumber);
     const flatLabel = flatLabels.length > 1
       ? `${flatLabels.length} Flats`
@@ -170,7 +191,7 @@ eventBus.on('entry-request.created', async (payload) => {
         flatIds: payload.flatIds,
         flatLabels,
         visitorName: payload.visitorName,
-        purpose: payload.providerTag || payload.type, // raw value kept for clients
+        purpose: payload.purpose || payload.providerTag || payload.type,
         requestType: payload.type,
         status: 'PENDING',
       },

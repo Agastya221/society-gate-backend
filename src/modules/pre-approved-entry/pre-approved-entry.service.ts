@@ -404,7 +404,10 @@ export class PreApprovedEntryService {
 
     // Flat + type lookup (non-SAFE)
     if (dto.flatId && dto.type) {
-      return this.validateByFlat(dto.flatId, dto.type, context);
+      if (dto.type === 'HELP' && !dto.category) {
+        throw new AppError('Choose the service category to check its pass', 400);
+      }
+      return this.validateByFlat(dto.flatId, dto.type, context, dto.category, dto.companyName);
     }
 
     // QR token lookup
@@ -465,12 +468,13 @@ export class PreApprovedEntryService {
       return validMatches[0];
     }
 
-    // Multiple matches — guard must pick
+    // The flat is private for SAFE pickups; identical last-four digits cannot
+    // identify which cab is here. Require the guest's QR instead of guessing.
     return {
-      allowed: true,
+      allowed: false,
       isPrivate: true,
-      message: 'Multiple matching entries found. Please select one.',
-      matches: validMatches,
+      reason: 'AMBIGUOUS',
+      message: 'Several Safe Pickup passes use these digits. Ask for the QR code.',
     };
   }
 
@@ -478,13 +482,21 @@ export class PreApprovedEntryService {
     flatId: string,
     type: string,
     context: AccessControlContext,
+    category?: ValidatePreApprovedDTO['category'],
+    companyName?: string,
   ): Promise<PreApprovedValidationResult> {
+    const matchDetails = {
+      // A SAFE cab must be verified by vehicle digits, never by knowing a flat.
+      ...(type === 'CAB' ? { mode: { not: 'SAFE' as const } } : {}),
+      ...(type === 'HELP' && category ? { meta: { category } } : {}),
+    };
     const entries = await prisma.preApprovedEntry.findMany({
       where: {
         societyId: context.societyId,
         flatId,
         status: 'ACTIVE',
         type: type as PreApprovedEntryType,
+        ...matchDetails,
       },
       include: ENTRY_INCLUDE,
     });
@@ -495,6 +507,7 @@ export class PreApprovedEntryService {
         societyId: context.societyId,
         flatId,
         type: type as PreApprovedEntryType,
+        ...matchDetails,
       }, context);
       return this.buildDenial(
         recent,
@@ -503,7 +516,10 @@ export class PreApprovedEntryService {
       );
     }
 
-    const { valid: validMatches, denied } = await this.evaluateAll(entries, context);
+    const matchingEntries = type === 'DELIVERY' && companyName
+      ? entries.filter((entry) => !entry.meta?.companyName || entry.meta.companyName.toLowerCase() === companyName.toLowerCase())
+      : entries;
+    const { valid: validMatches, denied } = await this.evaluateAll(matchingEntries, context);
 
     if (validMatches.length === 0) {
       return this.buildDenial(

@@ -5,6 +5,8 @@ import {
   getEntryRequestById,
   getEntryRequestPhoto,
   approveEntryRequest,
+  admitEntryRequest,
+  markEntryRequestNoShow,
   rejectEntryRequest,
   cancelEntryRequest,
   getPendingCount,
@@ -33,6 +35,8 @@ router.get('/:id', validate({ params: idParams }), getEntryRequestById);
 router.get('/:id/photo', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), validate({ params: idParams }), getEntryRequestPhoto);
 // GUARD: "Allow Anyway" / "Turn Away" overrides — the service scopes guards to their own society
 router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*', 'entries:*']), approveEntryRequest);
+router.patch('/:id/admit', authorize('GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*', 'entries:*']), admitEntryRequest);
+router.patch('/:id/no-show', authorize('GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*']), markEntryRequestNoShow);
 router.patch('/:id/reject', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*']), rejectEntryRequest);
 router.patch('/:id/cancel', authorize('GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*']), cancelEntryRequest);
 

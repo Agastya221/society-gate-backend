@@ -34,7 +34,30 @@ router.get('/parking/violations', authenticate, ensureSameSociety, gateStaff, li
 router.post('/parking/violations', authenticate, ensureSameSociety, gateStaff, issueViolation);
 router.post('/parking/vehicles/:vehicleId/violations', authenticate, ensureSameSociety, gateStaff, issueViolation);
 
-// Flat search — used by guard "New Entry" screen
+// Fast flat picker for guards. Search remains available for large societies.
+router.get('/flats', authenticate, ensureSameSociety, gateStaff, async (req: Request, res: Response) => {
+  try {
+    const societyId = getSocietyId(req);
+    const page = Math.max(1, Number.parseInt(String(req.query.page ?? '1'), 10) || 1);
+    const limit = Math.min(100, Math.max(1, Number.parseInt(String(req.query.limit ?? '100'), 10) || 100));
+    const where = { societyId, isActive: true, AND: [OCCUPIED_FLAT_WHERE] };
+    const [flats, total] = await Promise.all([
+      prisma.flat.findMany({
+        where,
+        select: { id: true, flatNumber: true, block: { select: { name: true } } },
+        orderBy: [{ block: { name: 'asc' } }, { flatNumber: 'asc' }],
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.flat.count({ where }),
+    ]);
+    return res.json({ success: true, data: { flats, pagination: { page, limit, total, pages: Math.ceil(total / limit) } } });
+  } catch (error: unknown) {
+    return res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
+  }
+});
+
+// Flat search — used as a fallback for unusual flat numbers
 // Guard "New Entry"/pre-approved screens only; no resident screen uses it (it lists resident names per flat).
 router.get('/flats/search', authenticate, ensureSameSociety, gateStaff, async (req: Request, res: Response) => {
   try {

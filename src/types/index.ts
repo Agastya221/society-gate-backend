@@ -1009,6 +1009,8 @@ export interface ValidatePreApprovedDTO {
   qrToken?: string;
   flatId?: string;
   type?: PreApprovedEntryType;
+  category?: import('../../prisma/generated/prisma/client').HelpCategory;
+  companyName?: string;
 }
 
 export interface PreApprovedValidationResult {

@@ -18,6 +18,17 @@ const domesticStaffService = new DomesticStaffService();
 
 export async function expireEntryRequests() {
   try {
+    // An approval is permission to enter, not proof of arrival. Unused permission
+    // leaves the gate queue after an hour and cannot be admitted later.
+    const staleReady = await prisma.entryRequest.updateMany({
+      where: {
+        status: 'APPROVED', entryId: null,
+        approvedAt: { lt: new Date(Date.now() - 60 * 60 * 1000) },
+      },
+      data: { status: 'EXPIRED', rejectionReason: 'Approval expired before arrival' },
+    });
+    if (staleReady.count > 0) void clearCacheByPattern('entry-requests:*');
+
     const expiredRequests = await prisma.entryRequest.findMany({
       where: {
         status: 'PENDING',
@@ -40,17 +51,21 @@ export async function expireEntryRequests() {
 
     if (expiredRequests.length === 0) return;
 
-    await prisma.entryRequest.updateMany({
-      where: {
-        id: { in: expiredRequests.map((r) => r.id) },
-      },
-      data: { status: 'EXPIRED' },
-    });
+    const actuallyExpired: typeof expiredRequests = [];
+    for (const request of expiredRequests) {
+      // A resident may approve between the SELECT and UPDATE. Never replace
+      // that approval with EXPIRED or send a false missed-visitor notice.
+      const changed = await prisma.entryRequest.updateMany({
+        where: { id: request.id, status: 'PENDING', expiresAt: { lt: new Date() } },
+        data: { status: 'EXPIRED' },
+      });
+      if (changed.count === 1) actuallyExpired.push(request);
+    }
 
     // Lists are cached (20s); drop them so guards/residents see EXPIRED right away
-    void clearCacheByPattern('entry-requests:*');
+    if (actuallyExpired.length > 0) void clearCacheByPattern('entry-requests:*');
 
-    for (const request of expiredRequests) {
+    for (const request of actuallyExpired) {
       emitToUser(request.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
         id: request.id,
         status: 'EXPIRED',
@@ -83,7 +98,7 @@ export async function expireEntryRequests() {
       }).catch((err: unknown) => logger.error({ err }, 'Failed to send missed visitor notification'));
     }
 
-    logger.info({ count: expiredRequests.length }, 'Auto-expired entry requests');
+    logger.info({ count: actuallyExpired.length }, 'Auto-expired entry requests');
   } catch (error) {
     logger.error({ error }, 'Error expiring entry requests');
   }
