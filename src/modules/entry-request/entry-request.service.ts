@@ -803,7 +803,9 @@ export class EntryRequestService {
           societyId,
           status: { in: ['REJECTED', 'EXPIRED'] },
           createdAt: { gte: new Date(now.getTime() - STOPPED_WINDOW_MS) },
-          NOT: { rejectionReason: { in: GUARD_OWN_STOP_REASONS } },
+          // SQL NULL semantics: NOT IN drops rows whose reason is NULL (a resident
+          // reject with no reason, a cron-expired request), so keep NULL explicitly.
+          OR: [{ rejectionReason: null }, { rejectionReason: { notIn: GUARD_OWN_STOP_REASONS } }],
         },
         include: this.getInclude(),
         orderBy: { createdAt: 'desc' },
