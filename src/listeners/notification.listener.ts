@@ -142,6 +142,89 @@ eventBus.on('entry-request.rejected', async (payload) => {
   }
 });
 
+eventBus.on('entry-request.no-show', async (payload) => {
+  try {
+    const flatLabels = payload.flats.map((flat) => flat.flatNumber);
+    const title = 'Visitor left without entering';
+    const body = `${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()}) left the gate without entering`;
+
+    await notificationService.sendToFlats(payload.flatIds, {
+      type: 'ENTRY_REQUEST',
+      title,
+      message: body,
+      data: {
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds,
+        flatLabels,
+        visitorName: payload.visitorName,
+        status: 'EXPIRED',
+      },
+      referenceId: payload.entryRequestId,
+      referenceType: 'EntryRequest',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToFlats(payload.flatIds, {
+      title,
+      body,
+      data: {
+        type: 'GATE_DENIED',
+        screen: 'EntryRequest',
+        requestId: payload.entryRequestId,
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds.join(','),
+      },
+    }).catch((err) => logger.error({ err }, 'Push failed: entry-request.no-show'));
+  } catch (error) {
+    logger.error({ error, event: 'entry-request.no-show', payload }, 'Failed to send no-show notification');
+  }
+});
+
+// Cron-driven (expiry.job.ts): an approval sat unused past the ready window. Uses a
+// dedicated push type (GATE_EXPIRED) rather than GATE_DENIED since nobody denied
+// anything — the resident's permission simply lapsed before the visitor arrived.
+eventBus.on('entry-request.approval-expired', async (payload) => {
+  try {
+    const flatLabels = payload.flats.map((flat) => flat.flatNumber);
+    const title = 'Approval expired';
+    const body = `Your approval for ${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()}) expired — they never reached the gate`;
+
+    await notificationService.sendToFlats(payload.flatIds, {
+      type: 'ENTRY_REQUEST',
+      title,
+      message: body,
+      data: {
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds,
+        flatLabels,
+        visitorName: payload.visitorName,
+        status: 'EXPIRED',
+      },
+      referenceId: payload.entryRequestId,
+      referenceType: 'EntryRequest',
+      societyId: payload.societyId,
+    });
+
+    pushService.sendToFlats(payload.flatIds, {
+      title,
+      body,
+      data: {
+        type: 'GATE_EXPIRED',
+        screen: 'EntryRequest',
+        requestId: payload.entryRequestId,
+        entryRequestId: payload.entryRequestId,
+        societyId: payload.societyId,
+        flatIds: payload.flatIds.join(','),
+      },
+    }).catch((err) => logger.error({ err }, 'Push failed: entry-request.approval-expired'));
+  } catch (error) {
+    logger.error({ error, event: 'entry-request.approval-expired', payload }, 'Failed to send approval-expired notification');
+  }
+});
+
 // Raw enums ("VISITOR", "SWIGGY") read badly in notifications — map them to words.
 const ENTRY_TYPE_SUBJECT: Record<string, string> = {
   VISITOR: 'A visitor',

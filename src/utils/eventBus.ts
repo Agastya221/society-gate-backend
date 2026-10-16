@@ -53,6 +53,29 @@ export interface AppEvents {
     rejectedByName: string;
     reason?: string;
   };
+  // Guard cleared an approved visitor who left the gate without entering — the resident
+  // granted entry but should know nobody actually came in.
+  'entry-request.no-show': {
+    entryRequestId: string;
+    flatId: string;
+    flatIds: string[];
+    flats: { flatId: string; flatNumber: string; blockName: string | null }[];
+    societyId: string;
+    guardId: string;
+    visitorName: string;
+    visitorType: string;
+  };
+  // Cron (expiry.job.ts): an APPROVED request sat unused past READY_WINDOW_MS —
+  // the resident's permission lapsed because the visitor never arrived at the gate.
+  'entry-request.approval-expired': {
+    entryRequestId: string;
+    flatId: string;
+    flatIds: string[];
+    flats: { flatId: string; flatNumber: string; blockName: string | null }[];
+    societyId: string;
+    visitorName: string;
+    visitorType: string;
+  };
   'emergency.created': {
     emergencyId: string;
     societyId: string;

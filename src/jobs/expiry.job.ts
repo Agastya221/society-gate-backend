@@ -7,6 +7,7 @@ import { accessControlEngine, isOnceScheduleOver, isRecurringScheduleOver } from
 import { accessControlCache } from '../modules/access-control/access-control.cache';
 import { EmergencyService } from '../modules/emergency/emergency.service';
 import { DomesticStaffService } from '../modules/domestic-staff/domestic-staff.service';
+import { ENTRY_REQUEST_APPROVAL_EXPIRED_REASON } from '../modules/entry-request/entry-request.service';
 import type { PreApprovedEntryWithRelations } from '../types';
 import logger from '../utils/logger';
 import { clearCacheByPattern } from '../middlewares/cache.middleware';
@@ -20,14 +21,51 @@ export async function expireEntryRequests() {
   try {
     // An approval is permission to enter, not proof of arrival. Unused permission
     // leaves the gate queue after an hour and cannot be admitted later.
-    const staleReady = await prisma.entryRequest.updateMany({
+    const staleReadyCandidates = await prisma.entryRequest.findMany({
       where: {
         status: 'APPROVED', entryId: null,
         approvedAt: { lt: new Date(Date.now() - 60 * 60 * 1000) },
       },
-      data: { status: 'EXPIRED', rejectionReason: 'Approval expired before arrival' },
+      select: {
+        id: true,
+        guardId: true,
+        flatId: true,
+        societyId: true,
+        visitorName: true,
+        type: true,
+        flat: { select: { flatNumber: true } },
+        targets: { include: { flat: { select: { flatNumber: true } } } },
+      },
     });
-    if (staleReady.count > 0) void clearCacheByPattern('entry-requests:*');
+
+    const expiredApprovals: typeof staleReadyCandidates = [];
+    for (const request of staleReadyCandidates) {
+      const changed = await prisma.entryRequest.updateMany({
+        where: { id: request.id, status: 'APPROVED', entryId: null },
+        data: { status: 'EXPIRED', rejectionReason: ENTRY_REQUEST_APPROVAL_EXPIRED_REASON },
+      });
+      if (changed.count === 1) expiredApprovals.push(request);
+    }
+    if (expiredApprovals.length > 0) void clearCacheByPattern('entry-requests:*');
+
+    for (const request of expiredApprovals) {
+      const targetFlatIds = request.targets.length > 0
+        ? request.targets.map((target) => target.flatId)
+        : [request.flatId];
+      const targetFlats = request.targets.length > 0
+        ? request.targets.map((target) => ({ flatId: target.flatId, flatNumber: target.flat.flatNumber, blockName: null }))
+        : [{ flatId: request.flatId, flatNumber: request.flat.flatNumber, blockName: null }];
+
+      eventBus.emit('entry-request.approval-expired', {
+        entryRequestId: request.id,
+        flatId: request.flatId,
+        flatIds: targetFlatIds,
+        flats: targetFlats,
+        societyId: request.societyId,
+        visitorName: request.visitorName || 'Visitor',
+        visitorType: request.type,
+      });
+    }
 
     const expiredRequests = await prisma.entryRequest.findMany({
       where: {
