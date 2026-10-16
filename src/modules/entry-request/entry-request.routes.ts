@@ -10,6 +10,7 @@ import {
   rejectEntryRequest,
   cancelEntryRequest,
   getPendingCount,
+  getGateQueue,
 } from './entry-request.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
@@ -22,9 +23,12 @@ router.use(authenticate);
 router.use(ensureSameSociety);
 
 // Specific routes BEFORE parameterized routes
-// May auto-approve (Society Settings → autoApproval), which creates an Entry — clear entries too
+// May auto-approve (Society Settings → autoApproval), which moves status straight to
+// APPROVED (the guard still admits at the gate to create the Entry) — clear entries too
 router.post('/', authorize('GUARD'), validate({ body: createEntryRequestSchema }), clearCacheAfter(['entry-requests:*', 'entries:*']), createEntryRequest);
 router.get('/pending-count', authorize('GUARD'), cache({ ttl: 10, keyPrefix: 'entry-requests', varyBy: ['userId'] }), getPendingCount);
+// Not cached — the guard home screen polls this every 15s and needs the live queue.
+router.get('/queue', authorize('GUARD'), getGateQueue);
 router.get('/', validate({ query: entryRequestQuerySchema }), cache({ ttl: 20, keyPrefix: 'entry-requests', varyBy: ['societyId', 'userId'] }), getEntryRequests);
 
 // Parameterized routes LAST

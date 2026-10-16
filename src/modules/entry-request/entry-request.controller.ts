@@ -207,6 +207,23 @@ export const rejectEntryRequest = async (req: Request, res: Response) => {
 };
 
 /**
+ * GET /gate/entry-requests/queue
+ * One-call gate queue for the guard home screen: waiting / ready / stopped + inside count.
+ */
+export const getGateQueue = async (req: Request, res: Response) => {
+  try {
+    const guardId = req.user!.id;
+    const result = await entryRequestService.getGateQueue(guardId);
+    res.status(200).json({ success: true, data: result });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
+  }
+};
+
+/**
  * Get pending count for guard
  */
 export const getPendingCount = async (req: Request, res: Response) => {

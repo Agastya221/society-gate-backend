@@ -113,28 +113,46 @@ export const getTodayEntries = asyncHandler(async (req: Request, res: Response) 
   const societyId = getSocietyId(req);
   const { start, end } = getIndiaDayRange();
 
-  const [entries, staffAttendances] = await Promise.all([
+  const entryInclude = {
+    flat: true,
+    createdBy: { select: { id: true, name: true, role: true } },
+  } as const;
+  const staffAttendanceInclude = {
+    domesticStaff: {
+      select: { id: true, name: true, staffType: true, photoUrl: true },
+    },
+    flat: {
+      select: { flatNumber: true, block: { select: { name: true } } },
+    },
+  } as const;
+
+  const [todayEntries, todayStaffAttendances, stillInsideEntries, stillWorkingStaff] = await Promise.all([
     prisma.entry.findMany({
       where: { societyId, checkInTime: { gte: start, lt: end } },
-      include: {
-        flat: true,
-        createdBy: { select: { id: true, name: true, role: true } },
-      },
+      include: entryInclude,
       orderBy: { checkInTime: 'desc' },
     }),
     prisma.staffAttendance.findMany({
       where: { societyId, checkInTime: { gte: start, lt: end } },
-      include: {
-        domesticStaff: {
-          select: { id: true, name: true, staffType: true, photoUrl: true },
-        },
-        flat: {
-          select: { flatNumber: true, block: { select: { name: true } } },
-        },
-      },
+      include: staffAttendanceInclude,
+      orderBy: { checkInTime: 'desc' },
+    }),
+    // People who checked in before today and never checked out — they're still at the
+    // gate/society and must not disappear from the guard's view just because midnight passed.
+    prisma.entry.findMany({
+      where: { societyId, status: 'CHECKED_IN', checkInTime: { lt: start } },
+      include: entryInclude,
+      orderBy: { checkInTime: 'desc' },
+    }),
+    prisma.staffAttendance.findMany({
+      where: { societyId, checkOutTime: null, checkInTime: { lt: start } },
+      include: staffAttendanceInclude,
       orderBy: { checkInTime: 'desc' },
     }),
   ]);
+
+  const entries = [...stillInsideEntries, ...todayEntries];
+  const staffAttendances = [...stillWorkingStaff, ...todayStaffAttendances];
 
   const stats = {
     total: entries.length + staffAttendances.length,

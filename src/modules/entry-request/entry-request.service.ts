@@ -15,7 +15,12 @@ import {
 } from '../../../prisma/generated/prisma/enums';
 
 const EXPIRY_MINUTES = 15;
-const READY_WINDOW_MS = 60 * 60 * 1000;
+export const READY_WINDOW_MS = 60 * 60 * 1000;
+// A retried POST (the guard app times out after 25 s) must not create a second request
+const DUPLICATE_CREATE_WINDOW_MS = 30_000;
+// How long a resident-rejected / unanswered request stays visible in the gate queue
+const STOPPED_WINDOW_MS = 30 * 60 * 1000;
+const QUEUE_LIST_LIMIT = 50;
 
 /** Entry types an admin can auto-approve in Society Settings → autoApproval flag. */
 const AUTO_APPROVAL_FLAG: Partial<Record<EntryType, keyof AutoApprovalSettings>> = {
@@ -31,6 +36,17 @@ export function isAutoApprovedType(type: EntryType, settings: AutoApprovalSettin
 
 export const AUTO_APPROVED_BY_NAME = 'Auto-approved';
 export const ENTRY_REQUEST_CANCELLED_REASON = 'Cancelled by guard';
+export const ENTRY_REQUEST_STOPPED_REASON = 'Stopped by guard';
+export const ENTRY_REQUEST_LEFT_REASON = 'Visitor left before entering';
+export const ENTRY_REQUEST_APPROVAL_EXPIRED_REASON = 'Approval expired before arrival';
+
+/** Stops the guard made themselves — the guard already knows, so the gate queue hides them. */
+const GUARD_OWN_STOP_REASONS = [
+  ENTRY_REQUEST_CANCELLED_REASON,
+  ENTRY_REQUEST_LEFT_REASON,
+  ENTRY_REQUEST_APPROVAL_EXPIRED_REASON,
+  ENTRY_REQUEST_STOPPED_REASON,
+];
 
 interface CreateEntryRequestData {
   type: EntryType;
@@ -128,6 +144,25 @@ export class EntryRequestService {
     }
 
     const primaryFlat = orderedFlats[0];
+
+    // A retried POST (guard app timeout / double-tap) must not create a second request
+    // or fire a second resident push — return the one already in flight.
+    const duplicate = await prisma.entryRequest.findFirst({
+      where: {
+        guardId,
+        flatId: primaryFlat.id,
+        type: data.type,
+        visitorName: data.visitorName ?? null,
+        status: 'PENDING',
+        createdAt: { gte: new Date(Date.now() - DUPLICATE_CREATE_WINDOW_MS) },
+      },
+      include: this.getInclude(),
+      orderBy: { createdAt: 'desc' },
+    });
+    if (duplicate) {
+      return { entryRequest: this.formatEntryRequest(duplicate), autoApproved: false };
+    }
+
     const expiresAt = new Date(Date.now() + EXPIRY_MINUTES * 60 * 1000);
 
     const entryRequest = await prisma.entryRequest.create({
@@ -154,9 +189,10 @@ export class EntryRequestService {
     });
 
     // Society Settings auto-approval (DELIVERY / CAB / DOMESTIC_STAFF, default off):
-    // approve immediately through the normal approval path — the Entry is created
-    // CHECKED_IN and residents get an informational "let in" notification instead
-    // of an approval prompt (entry-request.created is NOT emitted).
+    // approve immediately through the normal approval path (status -> APPROVED). The
+    // guard still has to admit the visitor at the gate to create the CHECKED_IN Entry —
+    // this just skips the resident prompt. Residents get an informational "let in"
+    // notification instead of an approval prompt (entry-request.created is NOT emitted).
     let autoApprove = false;
     try {
       const { autoApproval } = await societySettingsService.getConfiguredRules(guard.societyId);
@@ -497,14 +533,33 @@ export class EntryRequestService {
       where: { id: guardId }, select: { role: true, societyId: true },
     });
     if (guard?.role !== 'GUARD' || !guard.societyId) throw new AppError('Guard access required', 403);
+    const existing = await prisma.entryRequest.findUnique({
+      where: { id: entryRequestId }, include: this.getInclude(),
+    });
     const changed = await prisma.entryRequest.updateMany({
       where: { id: entryRequestId, societyId: guard.societyId, status: 'APPROVED', entryId: null },
-      data: { status: 'EXPIRED', rejectionReason: 'Visitor left before entering' },
+      data: { status: 'EXPIRED', rejectionReason: ENTRY_REQUEST_LEFT_REASON },
     });
     if (changed.count !== 1) throw new AppError('Request is no longer waiting at the gate', 409);
-    return this.formatEntryRequest(await prisma.entryRequest.findUniqueOrThrow({
+    const updatedRequest = await prisma.entryRequest.findUniqueOrThrow({
       where: { id: entryRequestId }, include: this.getInclude(),
-    }));
+    });
+
+    if (existing) {
+      const targetInfos = this.getTargetInfos(existing);
+      eventBus.emit('entry-request.no-show', {
+        entryRequestId,
+        flatId: existing.flatId,
+        flatIds: targetInfos.map((target) => target.flatId),
+        flats: targetInfos,
+        societyId: guard.societyId,
+        guardId,
+        visitorName: existing.visitorName || 'Visitor',
+        visitorType: existing.type,
+      });
+    }
+
+    return this.formatEntryRequest(updatedRequest);
   }
 
   // ============================================
@@ -555,12 +610,16 @@ export class EntryRequestService {
       throw new AppError(`Entry request is already ${entryRequest.status.toLowerCase()}`, 400);
     }
 
+    // A guard rejecting with no reason is "stopping" the visitor at the gate, not a
+    // resident decision — store the fixed reason so the gate queue can tell the two apart.
+    const effectiveReason = reason || (isSocietyGuard ? ENTRY_REQUEST_STOPPED_REASON : reason);
+
     const changed = await prisma.entryRequest.updateMany({
       where: { id: entryRequestId, status: 'PENDING' },
       data: {
         status: 'REJECTED',
         rejectedAt: new Date(),
-        rejectionReason: reason,
+        rejectionReason: effectiveReason,
       },
     });
     if (changed.count !== 1) throw new AppError('Entry request is no longer pending', 409);
@@ -574,7 +633,7 @@ export class EntryRequestService {
       status: 'REJECTED',
       flatNumber: flatLabel,
       flatIds: targetInfos.map((target) => target.flatId),
-      reason,
+      reason: effectiveReason,
     });
 
     eventBus.emit('entry-request.rejected', {
@@ -588,7 +647,7 @@ export class EntryRequestService {
       visitorType: entryRequest.type,
       rejectedById: userId,
       rejectedByName: rejecter.name ?? 'A resident',
-      reason,
+      reason: effectiveReason,
     });
 
     return this.formatEntryRequest(updatedRequest);
@@ -705,6 +764,62 @@ export class EntryRequestService {
         expiresAt: { gt: new Date() },
       },
     });
+  }
+
+  // ============================================
+  // GATE QUEUE (Guard home screen — one call instead of three polls)
+  // ============================================
+  async getGateQueue(guardId: string) {
+    const guard = await prisma.user.findUnique({
+      where: { id: guardId },
+      select: { role: true, societyId: true },
+    });
+    if (!guard || guard.role !== 'GUARD' || !guard.societyId) {
+      throw new AppError('Guard must be assigned to a society', 403);
+    }
+    const societyId = guard.societyId;
+    const now = new Date();
+
+    const [waitingRaw, readyRaw, stoppedRaw, checkedInCount, openStaffCount] = await Promise.all([
+      prisma.entryRequest.findMany({
+        where: { societyId, status: 'PENDING', expiresAt: { gt: now } },
+        include: this.getInclude(),
+        orderBy: { createdAt: 'asc' },
+        take: QUEUE_LIST_LIMIT,
+      }),
+      prisma.entryRequest.findMany({
+        where: {
+          societyId,
+          status: 'APPROVED',
+          entryId: null,
+          approvedAt: { gte: new Date(now.getTime() - READY_WINDOW_MS) },
+        },
+        include: this.getInclude(),
+        orderBy: { createdAt: 'asc' },
+        take: QUEUE_LIST_LIMIT,
+      }),
+      prisma.entryRequest.findMany({
+        where: {
+          societyId,
+          status: { in: ['REJECTED', 'EXPIRED'] },
+          createdAt: { gte: new Date(now.getTime() - STOPPED_WINDOW_MS) },
+          NOT: { rejectionReason: { in: GUARD_OWN_STOP_REASONS } },
+        },
+        include: this.getInclude(),
+        orderBy: { createdAt: 'desc' },
+        take: QUEUE_LIST_LIMIT,
+      }),
+      prisma.entry.count({ where: { societyId, status: 'CHECKED_IN' } }),
+      prisma.staffAttendance.count({ where: { societyId, checkOutTime: null } }),
+    ]);
+
+    return {
+      waiting: waitingRaw.map((request) => this.formatEntryRequest(request)),
+      ready: readyRaw.map((request) => this.formatEntryRequest(request)),
+      stopped: stoppedRaw.map((request) => this.formatEntryRequest(request)),
+      insideCount: checkedInCount + openStaffCount,
+      serverTime: now.toISOString(),
+    };
   }
 
   private getInclude() {
