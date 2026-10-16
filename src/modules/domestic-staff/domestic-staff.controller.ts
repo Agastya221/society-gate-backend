@@ -8,8 +8,8 @@ import type { StaffFilters, StaffBookingFilters, DomesticStaffType, StaffAvailab
 
 const staffService = new DomesticStaffService();
 
-// Staff fields residents must never receive (QR pass token, ID-proof / Aadhaar details)
-const RESIDENT_HIDDEN_STAFF_FIELDS = new Set(['qrToken', 'idProofType', 'idProofNumber', 'idProofUrl']);
+// Staff fields residents must never receive (QR pass token, gate passCode, ID-proof / Aadhaar details)
+const RESIDENT_HIDDEN_STAFF_FIELDS = new Set(['qrToken', 'passCode', 'idProofType', 'idProofNumber', 'idProofUrl']);
 
 function stripHiddenStaffFields(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(stripHiddenStaffFields);

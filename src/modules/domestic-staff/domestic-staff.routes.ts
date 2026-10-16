@@ -84,9 +84,10 @@ router.delete('/assignments/:id', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'),
 // ATTENDANCE & CHECK-IN/OUT - Specific routes
 // ============================================
 
-// Guards and residents can manage check-in/out
-router.post('/check-in', authorize('GUARD', 'RESIDENT'), validate({ body: staffCheckInSchema }), clearCacheAfter(['staff:*']), checkIn);
-router.post('/scan', authorize('GUARD', 'RESIDENT'), clearCacheAfter(['staff:*']), scanQRCode);
+// Guard-only: no RESIDENT-facing screen in any of the 3 apps calls these (grepped the
+// whole frontend monorepo) — a resident token could otherwise forge a staff check-in/out.
+router.post('/check-in', authorize('GUARD'), validate({ body: staffCheckInSchema }), clearCacheAfter(['staff:*']), checkIn);
+router.post('/scan', authorize('GUARD'), clearCacheAfter(['staff:*']), scanQRCode);
 
 // View attendance records (cached)
 router.get('/attendance/records', cache({ ttl: 60, keyPrefix: 'staff', varyBy: ['societyId', 'userId'] }), getAttendanceRecords);
@@ -130,6 +131,7 @@ router.patch('/:id/availability', authorize('ADMIN', 'SUPER_ADMIN'), validate({ 
 // Get specific staff's assignments and reviews
 router.get('/:staffId/assignments', cache({ ttl: 120, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffAssignments);
 router.get('/:staffId/reviews', cache({ ttl: 180, keyPrefix: 'staff', varyBy: ['societyId'] }), getStaffReviews);
-router.post('/:staffId/check-out', authorize('GUARD', 'RESIDENT'), validate({ body: staffCheckOutSchema }), clearCacheAfter(['staff:*']), checkOut);
+// Guard-only — see the check-in/scan note above; same "no caller" finding applies here.
+router.post('/:staffId/check-out', authorize('GUARD'), validate({ body: staffCheckOutSchema }), clearCacheAfter(['staff:*']), checkOut);
 
 export default router;

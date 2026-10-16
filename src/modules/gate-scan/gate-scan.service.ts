@@ -12,6 +12,13 @@ import {
 
 const domesticStaffService = new DomesticStaffService();
 
+// A camera can double-fire the same QR within a second, and a guard can re-scan a
+// badge out of habit — don't flip the staff in/out state back and forth for that.
+const STAFF_SCAN_DEBOUNCE_MS = 20_000;
+// Same guard-app double-tap protection for unlimited guest/party passcodes (limited
+// passes are already protected by the atomic usedCount claim below).
+const PASSCODE_DEBOUNCE_MS = 20_000;
+
 interface ScanResult {
   type: 'GATE_PASS' | 'DOMESTIC_STAFF' | 'PRE_APPROVED';
   allowed: boolean;
@@ -42,6 +49,24 @@ export class GateScanService {
    * InvitePass scanning is now handled by verifyCode() with passcodes.
    */
   async scan(qrToken: string, guardId: string, societyId: string, gatePointId?: string): Promise<ScanResult> {
+    // Spoken/typed fallback code (no camera handy) — checked before any QR/JWT
+    // decoding since it's a plain 8-char code, not a token.
+    if (/^[A-Z0-9]{8}$/i.test(qrToken)) {
+      const staffByPassCode = await prisma.domesticStaff.findUnique({
+        where: { passCode: qrToken.toUpperCase() },
+        select: { id: true, societyId: true, isActive: true, qrToken: true },
+      });
+      if (staffByPassCode) {
+        if (staffByPassCode.societyId !== societyId) {
+          return { type: 'DOMESTIC_STAFF', allowed: false, reason: 'This staff member belongs to another society' };
+        }
+        if (!staffByPassCode.isActive) {
+          return { type: 'DOMESTIC_STAFF', allowed: false, reason: 'Staff account is inactive' };
+        }
+        return this._scanDomesticStaff(staffByPassCode.qrToken, guardId, societyId);
+      }
+    }
+
     // The database token is authoritative for staff passes. Looking it up
     // first also keeps already-issued passes valid if JWT signing keys rotate.
     const storedStaff = await prisma.domesticStaff.findUnique({
@@ -210,9 +235,21 @@ export class GateScanService {
       };
     }
 
-    // Allowed: audit log + a CHECKED_IN Entry so the guest shows up in the guard's
-    // Today's Entries and can be checked out (mirrors approved EntryRequests).
-    const entry = await prisma.$transaction(async (tx) => {
+    // Allowed: audit log + a CHECKED_IN Entry so the guest shows up in the guard's gate
+    // queue (via /queue insideCount) and Today's Entries, and can be checked out.
+    // Debounce: a guard-app retry/double-tap on this same code+flat within the window
+    // must not create a second Entry — hand back the one already created.
+    const recentEntry = await prisma.entry.findFirst({
+      where: {
+        societyId,
+        flatId: party.flatId,
+        remarks: `Party passcode ${code}`,
+        createdAt: { gte: new Date(now.getTime() - PASSCODE_DEBOUNCE_MS) },
+      },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    });
+    const entry = recentEntry ?? await prisma.$transaction(async (tx) => {
       await tx.guestEntryLog.create({
         data: {
           partyInviteId: party.id,
@@ -320,9 +357,21 @@ export class GateScanService {
       };
     }
 
-    // Allowed: audit log + a CHECKED_IN Entry so the guest shows up in the guard's
-    // Today's Entries and can be checked out (mirrors approved EntryRequests).
-    const entry = await prisma.$transaction(async (tx) => {
+    // Allowed: audit log + a CHECKED_IN Entry so the guest shows up in the guard's gate
+    // queue (via /queue insideCount) and Today's Entries, and can be checked out.
+    // Debounce: a guard-app retry/double-tap on this same code+flat within the window
+    // must not create a second Entry — hand back the one already created.
+    const recentEntry = await prisma.entry.findFirst({
+      where: {
+        societyId,
+        flatId: invite.flatId,
+        remarks: `Guest passcode ${code}`,
+        createdAt: { gte: new Date(now.getTime() - PASSCODE_DEBOUNCE_MS) },
+      },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    });
+    const entry = recentEntry ?? await prisma.$transaction(async (tx) => {
       await tx.guestEntryLog.create({
         data: { ...logData, status: 'ALLOWED', denyReason: null },
       });
@@ -442,6 +491,33 @@ export class GateScanService {
     }
     if (!staff.isVerified) {
       return { type: 'DOMESTIC_STAFF', allowed: false, reason: 'Staff account is not verified', data: staff };
+    }
+
+    // Debounce: ignore a repeat scan within 20s instead of toggling check-in/out again.
+    const lastEventAt = [staff.lastCheckIn, staff.lastCheckOut]
+      .filter((d): d is Date => d !== null)
+      .sort((a, b) => b.getTime() - a.getTime())[0];
+    if (lastEventAt && Date.now() - lastEventAt.getTime() < STAFF_SCAN_DEBOUNCE_MS) {
+      const latestAttendance = await prisma.staffAttendance.findFirst({
+        where: { domesticStaffId: staff.id },
+        orderBy: { checkInTime: 'desc' },
+      });
+      const previousAction = staff.isCurrentlyWorking ? 'CHECKED_IN' : 'CHECKED_OUT';
+      const { assignedFlats: _debounceAssignedFlats, ...debouncedStaff } = staff;
+      return {
+        type: 'DOMESTIC_STAFF',
+        allowed: true,
+        reason: 'Already recorded a moment ago',
+        data: {
+          ...debouncedStaff,
+          isCurrentlyWorking: previousAction === 'CHECKED_IN',
+          attendanceAction: previousAction,
+          attendanceId: latestAttendance?.id,
+          checkInTime: latestAttendance?.checkInTime,
+          checkOutTime: latestAttendance?.checkOutTime,
+          duration: latestAttendance?.duration,
+        },
+      };
     }
 
     const attendanceAction = staff.isCurrentlyWorking ? 'CHECKED_OUT' : 'CHECKED_IN';

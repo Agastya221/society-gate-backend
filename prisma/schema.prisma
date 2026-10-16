@@ -1237,6 +1237,10 @@ model DomesticStaff {
   // QR Code for attendance
   qrToken String @unique
 
+  // Spoken/typed fallback for staff with no QR handy at the gate — 8 chars from
+  // an unambiguous alphabet (no 0/O/1/I/L). Nullable: backfilled for existing staff.
+  passCode String? @unique
+
   // Current status
   isActive           Boolean @default(true)
   isCurrentlyWorking Boolean @default(false)

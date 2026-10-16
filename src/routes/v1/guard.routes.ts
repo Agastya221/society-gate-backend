@@ -60,9 +60,11 @@ router.post('/entry-requests', validate({ body: createEntryRequestSchema }), cle
 // ============================================
 // QR SCANNING
 // ============================================
-router.post('/scan', scanQR);                  // Unified QR scan (GatePass + Staff)
+// Scanning may check a staff member in/out (debounced) or create a guest/party Entry —
+// both read from caches the guard's own home/today screens rely on, so clear them.
+router.post('/scan', clearCacheAfter(['staff:*', 'entries:*']), scanQR);                  // Unified QR scan (GatePass + Staff)
 router.post('/scan/gatepass', scanGatePass);   // Legacy
-router.post('/scan/staff', scanQRCode);        // Legacy
+router.post('/scan/staff', clearCacheAfter(['staff:*', 'entries:*']), scanQRCode);        // Legacy
 // Invite usage (usedCount/status) changes on verify — drop residents' cached invite lists
 router.post('/verify-code', clearCacheAfter(['guest-invites:*', 'party-invites:*']), verifyCode);       // Passcode verification (Guest/Party invites)
 

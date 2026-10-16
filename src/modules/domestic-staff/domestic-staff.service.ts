@@ -148,6 +148,31 @@ async function assertOwnFlat(
 const findStaffInSociety = (staffId: string, societyId: string, where?: object) =>
   findInSociety(prisma.domesticStaff, staffId, societyId, { entity: 'Staff', where });
 
+// No 0/O/1/I/L — read aloud or typed at the gate, so visually/aurally ambiguous
+// characters are dropped on purpose.
+const PASS_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const PASS_CODE_LENGTH = 8;
+
+export function generatePassCodeCandidate(): string {
+  let code = '';
+  for (let i = 0; i < PASS_CODE_LENGTH; i++) {
+    code += PASS_CODE_ALPHABET[Math.floor(Math.random() * PASS_CODE_ALPHABET.length)];
+  }
+  return code;
+}
+
+/** Generates a passCode guaranteed unique in the DB, retrying on the rare collision. */
+export async function generateUniqueStaffPassCode(maxAttempts = 10): Promise<string> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const candidate = generatePassCodeCandidate();
+    const existing = await prisma.domesticStaff.findUnique({
+      where: { passCode: candidate }, select: { id: true },
+    });
+    if (!existing) return candidate;
+  }
+  throw new AppError('Could not generate a unique staff pass code', 500);
+}
+
 // Staff still "inside" this long after check-in are assumed to have left without scanning out
 export const STALE_CHECK_IN_HOURS = 16;
 
@@ -183,6 +208,8 @@ export class DomesticStaffService {
       phone,
       societyId,
     });
+    // Spoken/typed fallback for when the guard has no camera handy
+    const passCode = await generateUniqueStaffPassCode();
 
     const { flatId: _flatId, ...staffData } = data;
     const staff = await prisma.$transaction(async (tx) => {
@@ -194,6 +221,7 @@ export class DomesticStaffService {
           languages: data.languages ?? [],
           workingDays: data.workingDays ?? [],
           qrToken,
+          passCode,
           addedById,
           isActive: true,
           isVerified: true,
@@ -372,8 +400,11 @@ export class DomesticStaffService {
     assignedFlats: Array<{ flat: { id: string; flatNumber: string }; createdAt: Date }>;
     reviews: Array<{ rating: number }>;
     attendanceRecords: Array<{ id: string; checkInTime: Date }>;
+    passCode?: string | null;
   }>(staff: T, now: Date) {
-    const { phone, createdAt, assignedFlats, reviews, attendanceRecords, ...rest } = staff;
+    // passCode is a gate-only secret (lets anyone claim to be this staff member at
+    // the gate) — never let it leak into a resident/admin-facing staff list or profile.
+    const { phone, createdAt, assignedFlats, reviews, attendanceRecords, passCode: _passCode, ...rest } = staff;
 
     // Phone masking: show only last 4 digits
     const maskedPhone = phone.length > 4

@@ -35,7 +35,7 @@ export const logout = async (req: Request, res: Response) => {
 };
 export const dashboard = async (req: Request, res: Response) => res.json({ success: true, data: await service.dashboard(staffId(req)) });
 export const profile = async (req: Request, res: Response) => res.json({ success: true, data: (await service.dashboard(staffId(req))).staff });
-export const pass = async (req: Request, res: Response) => { const staff = req.staffAccount!.domesticStaff; res.json({ success: true, data: { staffId: staff.id, name: staff.name, staffType: staff.staffType, qrToken: staff.qrToken, isVerified: staff.isVerified } }); };
+export const pass = async (req: Request, res: Response) => { const staff = req.staffAccount!.domesticStaff; res.json({ success: true, data: { staffId: staff.id, name: staff.name, staffType: staff.staffType, qrToken: staff.qrToken, passCode: staff.passCode, isVerified: staff.isVerified } }); };
 export const assignments = async (req: Request, res: Response) => res.json({ success: true, data: await service.assignments(staffId(req)) });
 export const attendance = async (req: Request, res: Response) => res.json({ success: true, data: await service.attendance(staffId(req), Math.max(1, Number(req.query.page) || 1)) });
 export const bookings = async (req: Request, res: Response) => res.json({ success: true, data: await service.bookings(staffId(req)) });
