@@ -14,6 +14,12 @@ const publicStaff = (staff: any) => ({
   society: staff.society,
 });
 
+// Staff only need to know which home: never the flat's owner name/phone/email or
+// owner/tenant user ids, which a bare `include: { flat }` returns.
+const STAFF_FLAT_INCLUDE = {
+  flat: { select: { id: true, flatNumber: true, floor: true, block: { select: { name: true } } } },
+} as const;
+
 export class StaffAppService {
   async verifyOtp(widgetToken: string) {
     const phone = await verifyMSG91WidgetToken(widgetToken);
@@ -90,8 +96,8 @@ export class StaffAppService {
     const now = new Date(); const start = new Date(now); start.setHours(0, 0, 0, 0); const end = new Date(now); end.setHours(23, 59, 59, 999);
     const [staff, assignments, bookings, attendance] = await Promise.all([
       prisma.domesticStaff.findUniqueOrThrow({ where: { id: staffId }, include: { society: { select: { id: true, name: true } } } }),
-      prisma.staffFlatAssignment.findMany({ where: { domesticStaffId: staffId, isActive: true }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { workStartTime: 'asc' } }),
-      prisma.staffBooking.findMany({ where: { domesticStaffId: staffId, bookingDate: { gte: start, lte: end }, status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] } }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { startTime: 'asc' } }),
+      prisma.staffFlatAssignment.findMany({ where: { domesticStaffId: staffId, isActive: true }, include: STAFF_FLAT_INCLUDE, orderBy: { workStartTime: 'asc' } }),
+      prisma.staffBooking.findMany({ where: { domesticStaffId: staffId, bookingDate: { gte: start, lte: end }, status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] } }, include: STAFF_FLAT_INCLUDE, orderBy: { startTime: 'asc' } }),
       prisma.staffAttendance.findFirst({ where: { domesticStaffId: staffId, checkOutTime: null }, orderBy: { checkInTime: 'desc' } }),
     ]);
     // Same-day requests whose start has passed can't be accepted — keep them off the dashboard too
@@ -99,11 +105,11 @@ export class StaffAppService {
     return { staff: publicStaff(staff), assignments, bookings: activeBookings, activeAttendance: attendance };
   }
 
-  assignments(staffId: string) { return prisma.staffFlatAssignment.findMany({ where: { domesticStaffId: staffId, isActive: true }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { workStartTime: 'asc' } }); }
-  attendance(staffId: string, page: number) { return prisma.staffAttendance.findMany({ where: { domesticStaffId: staffId }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: { checkInTime: 'desc' }, skip: (page - 1) * 20, take: 20 }); }
+  assignments(staffId: string) { return prisma.staffFlatAssignment.findMany({ where: { domesticStaffId: staffId, isActive: true }, include: STAFF_FLAT_INCLUDE, orderBy: { workStartTime: 'asc' } }); }
+  attendance(staffId: string, page: number) { return prisma.staffAttendance.findMany({ where: { domesticStaffId: staffId }, include: STAFF_FLAT_INCLUDE, orderBy: { checkInTime: 'desc' }, skip: (page - 1) * 20, take: 20 }); }
   // Unanswered requests whose start has passed can't be accepted — leave them out of the list
   async bookings(staffId: string) {
-    const bookings = await prisma.staffBooking.findMany({ where: { domesticStaffId: staffId, ...notPastPendingWhere() }, include: { flat: { include: { block: { select: { name: true } } } } }, orderBy: [{ bookingDate: 'desc' }, { startTime: 'asc' }] });
+    const bookings = await prisma.staffBooking.findMany({ where: { domesticStaffId: staffId, ...notPastPendingWhere() }, include: STAFF_FLAT_INCLUDE, orderBy: [{ bookingDate: 'desc' }, { startTime: 'asc' }] });
     return bookings
       .filter((booking) => booking.status !== 'PENDING' || !isBookingExpired(booking))
       .map(presentStaffBooking);
