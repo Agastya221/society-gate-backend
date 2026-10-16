@@ -65,6 +65,12 @@ app.use(express.json({
   },
 }));
 app.use(express.urlencoded({ extended: true }));
+// Express 5 leaves req.body undefined when a request has no body (Express 4 gave {}), so every
+// `const { x } = req.body` crashed with a 500 — e.g. a resident declining a visitor without a reason.
+app.use((req, _res, next) => {
+  if (req.body === undefined) req.body = {};
+  next();
+});
 
 const useRedisRateLimit =
   process.env.NODE_ENV === 'production' &&
