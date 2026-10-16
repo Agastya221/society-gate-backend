@@ -28,7 +28,8 @@ export class ReportsService {
           checkInTime: { gte: today, lt: tomorrow },
         },
       }),
-      prisma.entry.count({ where: { societyId, status: 'PENDING' } }),
+      // A visitor waiting for a resident is a PENDING gate request (approval no longer creates a pending Entry)
+      prisma.entryRequest.count({ where: { societyId, status: 'PENDING', expiresAt: { gt: new Date() } } }),
       prisma.gatePass.count({ where: { societyId, status: 'APPROVED' } }),
       prisma.complaint.count({ where: { societyId, status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
       prisma.emergency.count({ where: { societyId, status: 'ACTIVE' } }),
@@ -252,7 +253,7 @@ export class ReportsService {
       prisma.complaint.count({ where: { societyId, status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
       prisma.complaint.count({ where: { societyId } }),
       prisma.emergency.count({ where: { societyId, status: 'ACTIVE' } }),
-      prisma.entry.count({ where: { societyId, status: 'PENDING' } }),
+      prisma.entryRequest.count({ where: { societyId, status: 'PENDING', expiresAt: { gt: new Date() } } }),
       prisma.entry.count({ where: { societyId } }),
     ]);
 

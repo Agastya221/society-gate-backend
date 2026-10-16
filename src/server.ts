@@ -1,3 +1,4 @@
+import './config/timezone';
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import app from './app';

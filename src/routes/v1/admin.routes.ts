@@ -105,7 +105,8 @@ router.get(
   '/staff',
   authenticate,
   authorize('ADMIN', 'SUPER_ADMIN'),
-  cache({ ttl: 120, keyPrefix: 'admin:staff', varyBy: ['societyId'] }),
+  // Under 'staff:' so every staff write (add/edit/remove, guard check-in/out) clears it too
+  cache({ ttl: 120, keyPrefix: 'staff:admin', varyBy: ['societyId'] }),
   getAdminStaffDirectory,
 );
 
@@ -114,7 +115,7 @@ router.get(
   '/staff/attendance',
   authenticate,
   authorize('ADMIN', 'SUPER_ADMIN'),
-  cache({ ttl: 60, keyPrefix: 'admin:attendance', varyBy: ['societyId', 'date'] }),
+  cache({ ttl: 60, keyPrefix: 'staff:admin-attendance', varyBy: ['societyId', 'date'] }),
   getAdminStaffAttendance,
 );
 

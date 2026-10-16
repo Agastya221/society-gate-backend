@@ -15,6 +15,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Indian time for "today"/"now" (also set in src/config/timezone.ts for hosts that skip Docker)
+ENV TZ=Asia/Kolkata
+
 COPY package*.json ./
 COPY prisma ./prisma/
 

@@ -22,7 +22,8 @@ const broadcastSchema = z.object({
 router.post(
   '/',
   validate({ body: broadcastSchema }),
-  clearCacheAfter(['notices:*']),
+  // History is cached too: without clearing it a just-sent broadcast is missing for 2 minutes
+  clearCacheAfter(['notices:*', 'broadcast:*']),
   sendBroadcast,
 );
 

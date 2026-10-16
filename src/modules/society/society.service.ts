@@ -325,10 +325,12 @@ export class SocietyService {
           },
         },
       }),
-      prisma.entry.count({
+      // Visitors waiting for a resident are PENDING gate requests, not Entries
+      prisma.entryRequest.count({
         where: {
           societyId,
           status: 'PENDING',
+          expiresAt: { gt: new Date() },
         },
       }),
     ]);

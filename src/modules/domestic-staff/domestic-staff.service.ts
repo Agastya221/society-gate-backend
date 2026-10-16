@@ -1264,10 +1264,22 @@ export class DomesticStaffService {
   }
 
   async completeBooking(bookingId: string, caller: StaffCaller, actualDuration?: number, finalCost?: number) {
-    await this._findBookingForCaller(bookingId, caller);
+    const existing = await this._findBookingForCaller(bookingId, caller);
 
-    const booking = await prisma.staffBooking.update({
-      where: { id: bookingId },
+    // Only work the staff accepted can be completed: a pending, declined or cancelled
+    // booking marked "completed" would put work that never happened in the staff history.
+    if (existing.status !== 'CONFIRMED') {
+      throw new AppError(
+        existing.status === 'COMPLETED'
+          ? 'This booking is already completed'
+          : `Only a confirmed booking can be completed (this one is ${String(existing.status).toLowerCase()})`,
+        400,
+      );
+    }
+
+    // Conditional update so a concurrent cancel or the auto-complete job can't be overwritten
+    const changed = await prisma.staffBooking.updateMany({
+      where: { id: bookingId, status: 'CONFIRMED' },
       data: {
         status: 'COMPLETED',
         completedAt: new Date(),
@@ -1275,8 +1287,9 @@ export class DomesticStaffService {
         finalCost,
       },
     });
+    if (changed.count !== 1) throw new AppError('This booking changed meanwhile. Refresh and try again.', 409);
 
-    return booking;
+    return prisma.staffBooking.findUniqueOrThrow({ where: { id: bookingId } });
   }
 
   // ============================================
