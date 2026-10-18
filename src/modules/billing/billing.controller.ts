@@ -1,6 +1,7 @@
 import { AppError } from '../../utils/ResponseHandler';
 import type { Request, Response } from 'express';
 import { billingService } from './billing.service';
+import { paymentSubmissionService } from './payment-submission.service';
 import { clampPagination, getSocietyId } from '../../utils/scope';
 
 function getErrorMessage(error: unknown): string {
@@ -102,5 +103,42 @@ export const sendInvoiceReminder = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
     return res.status(400).json({ success: false, message: getErrorMessage(error) });
+  }
+};
+
+// GET /admin/billing/payment-submissions?status=SUBMITTED
+export const listPaymentSubmissions = async (req: Request, res: Response) => {
+  try {
+    const societyId = getSocietyId(req);
+    const status = req.query.status as 'SUBMITTED' | 'CONFIRMED' | 'REJECTED' | undefined;
+    const data = await paymentSubmissionService.listForAdmin(societyId, status);
+    return res.status(200).json({ success: true, data });
+  } catch (error) {
+    const status = error instanceof AppError ? error.statusCode : 400;
+    return res.status(status).json({ success: false, message: getErrorMessage(error) });
+  }
+};
+
+// PATCH /admin/billing/payment-submissions/:id/confirm
+export const confirmPaymentSubmission = async (req: Request, res: Response) => {
+  try {
+    const societyId = getSocietyId(req);
+    const data = await paymentSubmissionService.confirm(societyId, req.user!.id, req.params.id as string);
+    return res.status(200).json({ success: true, message: 'Payment confirmed', data });
+  } catch (error) {
+    const status = error instanceof AppError ? error.statusCode : 400;
+    return res.status(status).json({ success: false, message: getErrorMessage(error) });
+  }
+};
+
+// PATCH /admin/billing/payment-submissions/:id/reject  { reason }
+export const rejectPaymentSubmission = async (req: Request, res: Response) => {
+  try {
+    const societyId = getSocietyId(req);
+    const data = await paymentSubmissionService.reject(societyId, req.user!.id, req.params.id as string, req.body.reason);
+    return res.status(200).json({ success: true, message: 'Payment rejected', data });
+  } catch (error) {
+    const status = error instanceof AppError ? error.statusCode : 400;
+    return res.status(status).json({ success: false, message: getErrorMessage(error) });
   }
 };

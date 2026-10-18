@@ -579,6 +579,7 @@ model Invoice {
 
   lineItems           InvoiceLineItem[]
   paymentTransactions PaymentTransaction[]
+  paymentSubmissions  PaymentSubmission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -628,6 +629,42 @@ model PaymentTransaction {
 
   @@index([invoiceId, status])
   @@index([provider, status])
+}
+
+enum PaymentSubmissionStatus {
+  SUBMITTED // Resident paid by UPI and entered the reference number; admin has not checked yet
+  CONFIRMED // Admin matched it to the bank statement; the invoice is PAID
+  REJECTED // Admin could not match it; the resident can submit again
+}
+
+// A resident's "I paid by UPI" claim for an invoice. Residents pay the society's UPI ID directly
+// (no gateway), so the app cannot know the result: the admin verifies the reference number
+// (UTR) against the society's bank statement.
+model PaymentSubmission {
+  id String @id @default(uuid())
+
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  societyId     String
+  flatId        String
+  submittedById String
+  amount        Float // the invoice total at the time
+  utr           String // UPI reference number, upper case; one use per society
+  method        String @default("UPI")
+
+  status          PaymentSubmissionStatus @default(SUBMITTED)
+  rejectionReason String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([societyId, utr])
+  @@index([societyId, status])
+  @@index([invoiceId, status])
+  @@index([submittedById])
 }
 
 model SocietyRegistrationRequest {

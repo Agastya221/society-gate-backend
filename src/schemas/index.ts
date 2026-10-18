@@ -736,6 +736,26 @@ export const adminCancelEntrySchema = z.object({
 // ADMIN SOCIETY SETTINGS (PATCH /admin/society/settings)
 // ============================================
 
+// name@bank: the part after @ is the bank's handle (okhdfcbank, ybl, paytm, upi...)
+export const UPI_ID_PATTERN = /^[a-zA-Z0-9.\-_]{2,64}@[a-zA-Z0-9]{2,32}$/;
+
+// Resident: "I paid" with the reference number shown in the UPI app (UTR, usually 12 digits)
+export const submitPaymentSchema = z.object({
+  utr: z.string().trim()
+    .transform((value) => value.replace(/\s+/g, '').toUpperCase())
+    .pipe(z.string().regex(/^[A-Z0-9]{8,22}$/, 'Enter the reference number from your UPI app (8 to 22 letters or digits)')),
+}).strict();
+
+// Admin: why a payment could not be matched
+export const rejectPaymentSchema = z.object({
+  reason: z.string().trim().min(3, 'Please say why').max(200),
+}).strict();
+
+export const adminPaymentSubmissionsQuerySchema = z.object({
+  status: z.enum(['SUBMITTED', 'CONFIRMED', 'REJECTED']).optional(),
+  societyId: uuidSchema.optional(),
+});
+
 export const updateSocietySettingsSchema = z.object({
   maintenance: z.object({
     monthlyFee: z.number().positive('monthlyFee must be greater than 0').optional(),
@@ -746,6 +766,13 @@ export const updateSocietySettingsSchema = z.object({
     domesticStaff: z.boolean().optional(),
     delivery: z.boolean().optional(),
     cab: z.boolean().optional(),
+  }).strict().optional(),
+  // Where residents pay dues: the society's UPI ID. null clears it.
+  payments: z.object({
+    upiId: z.string().trim()
+      .regex(UPI_ID_PATTERN, 'Enter a valid UPI ID, like society@okhdfcbank')
+      .nullable().optional(),
+    payeeName: z.string().trim().min(2, 'Name must be at least 2 characters').max(60).nullable().optional(),
   }).strict().optional(),
   // Injected into admin request bodies by the society middleware; the strict
   // check below would otherwise reject every save with "Unrecognized key".

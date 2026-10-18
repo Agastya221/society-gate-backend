@@ -13,6 +13,12 @@ import pollRoutes from '../../modules/poll/poll.routes';
 import amenityRoutes from '../../modules/amenity/amenity.routes';
 import { prisma } from '../../utils/Client';
 import { authenticate } from '../../middlewares/auth.middleware';
+import { validate } from '../../middlewares/validate.middleware';
+import { clearCacheAfter } from '../../middlewares/cache.middleware';
+import { submitPaymentSchema } from '../../schemas';
+import { getUpiPayee } from '../../modules/settings/society-settings.service';
+import { paymentSubmissionService } from '../../modules/billing/payment-submission.service';
+import { AppError } from '../../utils/ResponseHandler';
 import {
   fileComplaint,
   listViolations,
@@ -139,7 +145,11 @@ router.get('/dues', authenticate, async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json({ success: true, data: dues.map(formatInvoiceDue) });
+    const submissions = await paymentSubmissionService.latestByInvoice(dues.map((d) => d.id));
+    return res.status(200).json({
+      success: true,
+      data: dues.map((due) => ({ ...formatInvoiceDue(due), submission: submissions.get(due.id) ?? null })),
+    });
   } catch {
     return res.status(500).json({ success: false, message: 'Failed to fetch dues' });
   }
@@ -173,11 +183,48 @@ router.get('/dues/:id', authenticate, async (req: Request, res: Response) => {
       return res.status(404).json({ success: false, message: 'Due record not found' });
     }
 
-    return res.status(200).json({ success: true, data: formatInvoiceDue(due) });
+    const [payee, submissions] = await Promise.all([
+      getUpiPayee(societyId),
+      paymentSubmissionService.latestByInvoice([due.id]),
+    ]);
+    return res.status(200).json({
+      success: true,
+      data: {
+        ...formatInvoiceDue(due),
+        // Where to pay (null until the society admin has set up a UPI ID) and what happened to the
+        // resident's last "I paid" report for this due
+        payment: { upi: payee, submission: submissions.get(due.id) ?? null },
+      },
+    });
   } catch {
     return res.status(500).json({ success: false, message: 'Failed to fetch due details' });
   }
 });
+
+// Resident reports a UPI payment with the reference number (UTR); an admin confirms it.
+router.post(
+  '/dues/:id/payment-submissions',
+  authenticate,
+  validate({ body: submitPaymentSchema }),
+  clearCacheAfter(['billing:*']),
+  async (req: Request, res: Response) => {
+    try {
+      const { id, societyId, flatId } = req.user!;
+      if (!societyId || !flatId) throw new AppError('Due record not found', 404);
+      const submission = await paymentSubmissionService.submit(
+        { id, societyId, flatId },
+        req.params.id as string,
+        req.body.utr
+      );
+      return res.status(201).json({ success: true, message: 'Payment submitted. The admin will confirm it soon.', data: submission });
+    } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+      return res.status(500).json({ success: false, message: 'Failed to submit payment' });
+    }
+  }
+);
 
 // Society-level dues/reminders for the account itself. These are not resident
 // invoice IDs and must not be sent to the invoice Cashfree endpoint.

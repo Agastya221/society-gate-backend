@@ -21,9 +21,17 @@ export interface AutoApprovalSettings {
   cab: boolean;
 }
 
+export interface PaymentSettings {
+  /** The society's UPI ID residents pay dues to (null = not set up yet) */
+  upiId: string | null;
+  /** Name shown in the resident's UPI app; falls back to the society name */
+  payeeName: string | null;
+}
+
 export interface UpdateSocietySettingsDTO {
   maintenance?: Partial<{ monthlyFee: number; dueDayOfMonth: number; gracePeriodDays: number }>;
   autoApproval?: Partial<AutoApprovalSettings>;
+  payments?: Partial<PaymentSettings>;
 }
 
 const DEFAULT_MAINTENANCE: MaintenanceSettings = {
@@ -122,6 +130,12 @@ export class SocietySettingsService {
     if (data.autoApproval) {
       nextRules.autoApproval = { ...asObject(currentRules.autoApproval), ...data.autoApproval };
     }
+    if (data.payments) {
+      const merged: JsonObject = { ...asObject(currentRules.payments), ...data.payments };
+      // null means "clear it"
+      for (const key of Object.keys(merged)) if (merged[key] === null) delete merged[key];
+      nextRules.payments = merged;
+    }
 
     const customRules = nextRules as Prisma.InputJsonObject;
     const saved = await prisma.societyRuleConfig.upsert({
@@ -141,9 +155,14 @@ export class SocietySettingsService {
     const rules = asObject(customRules);
     const maintenance = asObject(rules.maintenance);
     const autoApproval = asObject(rules.autoApproval);
+    const payments = asObject(rules.payments);
 
     return {
       society: { name: society.name, address: society.address, city: society.city },
+      payments: {
+        upiId: typeof payments.upiId === 'string' && payments.upiId ? payments.upiId : null,
+        payeeName: typeof payments.payeeName === 'string' && payments.payeeName ? payments.payeeName : null,
+      } satisfies PaymentSettings,
       maintenance: {
         monthlyFee: numberOr(maintenance.monthlyFee, DEFAULT_MAINTENANCE.monthlyFee),
         dueDayOfMonth: numberOr(maintenance.dueDayOfMonth, DEFAULT_MAINTENANCE.dueDayOfMonth),
@@ -156,6 +175,18 @@ export class SocietySettingsService {
       } satisfies AutoApprovalSettings,
     };
   }
+}
+
+/** What a resident needs to pay: the UPI ID and the name to show. Null until the admin sets it up. */
+export async function getUpiPayee(societyId: string): Promise<{ upiId: string; payeeName: string } | null> {
+  const [society, config] = await Promise.all([
+    prisma.society.findUnique({ where: { id: societyId }, select: { name: true } }),
+    prisma.societyRuleConfig.findUnique({ where: { societyId }, select: { customRules: true } }),
+  ]);
+  const payments = asObject(asObject(config?.customRules).payments);
+  if (typeof payments.upiId !== 'string' || !payments.upiId) return null;
+  const payeeName = typeof payments.payeeName === 'string' && payments.payeeName ? payments.payeeName : (society?.name ?? 'Society');
+  return { upiId: payments.upiId, payeeName };
 }
 
 export const societySettingsService = new SocietySettingsService();

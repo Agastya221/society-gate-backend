@@ -10,7 +10,11 @@ import {
   markInvoicePaid,
   waiveInvoice,
   sendInvoiceReminder,
+  listPaymentSubmissions,
+  confirmPaymentSubmission,
+  rejectPaymentSubmission,
 } from './billing.controller';
+import { adminPaymentSubmissionsQuerySchema, rejectPaymentSchema } from '../../schemas';
 
 const router = Router();
 
@@ -73,6 +77,28 @@ router.patch(
 router.post(
   '/invoices/:id/reminder',
   sendInvoiceReminder,
+);
+
+// GET /admin/billing/payment-submissions?status=SUBMITTED — residents' "I paid" reports to check
+router.get(
+  '/payment-submissions',
+  validate({ query: adminPaymentSubmissionsQuerySchema }),
+  listPaymentSubmissions,
+);
+
+// PATCH /admin/billing/payment-submissions/:id/confirm — matched to the bank statement: invoice PAID
+router.patch(
+  '/payment-submissions/:id/confirm',
+  clearCacheAfter(['billing:*']),
+  confirmPaymentSubmission,
+);
+
+// PATCH /admin/billing/payment-submissions/:id/reject — could not match it
+router.patch(
+  '/payment-submissions/:id/reject',
+  validate({ body: rejectPaymentSchema }),
+  clearCacheAfter(['billing:*']),
+  rejectPaymentSubmission,
 );
 
 export default router;

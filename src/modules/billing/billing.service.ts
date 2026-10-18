@@ -355,10 +355,18 @@ export class BillingService {
     if (!invoice) throw new Error('Invoice not found');
     if (invoice.status === 'PAID') throw new Error('Invoice already paid');
 
-    return prisma.invoice.update({
-      where: { id: invoiceId },
-      data: { status: 'PAID', paidAt: new Date() },
-    });
+    const [updated] = await prisma.$transaction([
+      prisma.invoice.update({
+        where: { id: invoiceId },
+        data: { status: 'PAID', paidAt: new Date() },
+      }),
+      // A resident's waiting "I paid" claim is settled by this too
+      prisma.paymentSubmission.updateMany({
+        where: { invoiceId, status: 'SUBMITTED' },
+        data: { status: 'CONFIRMED', reviewedAt: new Date() },
+      }),
+    ]);
+    return updated;
   }
 
   // -----------------------------------------------------------------------
