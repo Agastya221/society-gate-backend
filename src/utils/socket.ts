@@ -1,6 +1,8 @@
 import { Server, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
-import { verifyAccessTokenForUser } from '../services/token.service';
+import { isTokenBlacklisted, verifyAccessTokenForUser } from '../services/token.service';
+import { verifyStaffToken } from '../modules/staff-app/staff-app.token';
+import { prisma } from './Client';
 import logger from './logger';
 
 let io: Server | null = null;
@@ -21,6 +23,58 @@ interface AuthenticatedSocket extends Socket {
     societyId?: string;
     flatId?: string;
   };
+  /** Set instead of `user` when the staff app (domestic staff / vendors) is connected */
+  staff?: {
+    accountId: string;
+    domesticStaffId: string;
+    societyId: string;
+  };
+}
+
+// ── Alert delivery: in-app first, push as the fallback ───────────────────────────────────────
+// Each app connects and tells us when it is open on screen ('app-state' = 'active'). An alert goes
+// to the screen only when the app confirms it actually showed it; everything else is pushed.
+export type AlertTarget = 'user' | 'staff';
+export const IN_APP_ALERT_EVENT = 'alert';
+const ALERT_ACK_TIMEOUT_MS = 2500;
+
+export interface InAppAlert {
+  title: string;
+  body: string;
+  data: Record<string, string>;
+  urgent: boolean;
+}
+
+// `${kind}:${id}` -> ids of that person's sockets whose app is open on screen right now
+const foregroundSockets = new Map<string, Set<string>>();
+
+const identityOf = (socket: AuthenticatedSocket): string | null =>
+  socket.user ? `user:${socket.user.id}` : socket.staff ? `staff:${socket.staff.accountId}` : null;
+
+function markForeground(socket: AuthenticatedSocket, active: boolean): void {
+  const key = identityOf(socket);
+  if (!key) return;
+  const sockets = foregroundSockets.get(key) ?? new Set<string>();
+  if (active) sockets.add(socket.id);
+  else sockets.delete(socket.id);
+  if (sockets.size > 0) foregroundSockets.set(key, sockets);
+  else foregroundSockets.delete(key);
+}
+
+/** True when the person's app is open on screen and confirmed it showed the alert. */
+export async function deliverInApp(kind: AlertTarget, id: string, alert: InAppAlert): Promise<boolean> {
+  if (!io) return false;
+  const open = foregroundSockets.get(`${kind}:${id}`);
+  if (!open || open.size === 0) return false;
+  const room = kind === 'user' ? `user:${id}` : `staffacct:${id}`;
+  try {
+    const acks = await io.in(room).timeout(ALERT_ACK_TIMEOUT_MS).emitWithAck(IN_APP_ALERT_EVENT, alert);
+    return acks.some((ack: { shown?: boolean } | undefined) => ack?.shown === true);
+  } catch (error) {
+    // Some of the person's sockets did not answer in time; answers that did arrive are on the error
+    const answered: Array<{ shown?: boolean } | undefined> = (error as { responses?: [] })?.responses ?? [];
+    return answered.some((ack) => ack?.shown === true);
+  }
 }
 
 // NICE-6: Per-socket rate limiting
@@ -81,16 +135,37 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
         return next(new Error('Authentication required'));
       }
 
-      // Same checks as the HTTP auth middleware: HS256 + user audience,
-      // type === 'access' (refresh/QR/staff tokens rejected), blacklist
-      // (logged-out tokens), user exists and is active, appType matches role.
-      const { user } = await verifyAccessTokenForUser(token);
+      try {
+        // Same checks as the HTTP auth middleware: HS256 + user audience,
+        // type === 'access' (refresh/QR/staff tokens rejected), blacklist
+        // (logged-out tokens), user exists and is active, appType matches role.
+        const { user } = await verifyAccessTokenForUser(token);
 
-      socket.user = {
-        id: user.id,
-        role: user.role,
-        societyId: user.societyId || undefined,
-        flatId: user.flatId || undefined,
+        socket.user = {
+          id: user.id,
+          role: user.role,
+          societyId: user.societyId || undefined,
+          flatId: user.flatId || undefined,
+        };
+        return next();
+      } catch {
+        // Not a resident/admin/guard token: it may be a staff-app token (own audience)
+      }
+
+      const decoded = verifyStaffToken(token, 'access');
+      if (await isTokenBlacklisted(decoded.jti)) throw new Error('revoked');
+      const account = await prisma.staffAccount.findUnique({
+        where: { id: decoded.staffAccountId },
+        select: { id: true, isActive: true, domesticStaffId: true, domesticStaff: { select: { isActive: true, societyId: true } } },
+      });
+      if (!account || !account.isActive || !account.domesticStaff.isActive
+        || account.domesticStaffId !== decoded.domesticStaffId) {
+        throw new Error('inactive');
+      }
+      socket.staff = {
+        accountId: account.id,
+        domesticStaffId: account.domesticStaffId,
+        societyId: account.domesticStaff.societyId,
       };
 
       next();
@@ -101,7 +176,11 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
 
   // Connection handler
   io.on('connection', (socket: AuthenticatedSocket) => {
-    logger.info({ userId: socket.user?.id, role: socket.user?.role }, 'Socket user connected');
+    logger.info({ userId: socket.user?.id ?? socket.staff?.accountId, role: socket.user?.role ?? 'STAFF' }, 'Socket user connected');
+
+    if (socket.staff) {
+      socket.join(`staffacct:${socket.staff.accountId}`);
+    }
 
     if (socket.user?.id) {
       socket.join(`user:${socket.user.id}`);
@@ -122,8 +201,12 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
       next();
     });
 
+    // The app says whether it is open on screen; only then do alerts go in-app instead of push
+    socket.on('app-state', (state: unknown) => markForeground(socket, state === 'active'));
+
     socket.on('disconnect', () => {
       logger.debug({ userId: socket.user?.id }, 'Socket user disconnected');
+      markForeground(socket, false);
       socketRateLimits.delete(socket.id);
     });
 

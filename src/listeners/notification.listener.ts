@@ -402,6 +402,7 @@ eventBus.on('emergency.created', async (payload) => {
         title,
         body: payload.description ?? 'Immediate response required',
         data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, type: payload.type, severity },
+        urgent: true, // an emergency always rings, whatever its kind
       }).catch((err) => logger.error({ err }, 'Push failed: emergency.created'));
     }
   } catch (error) {
@@ -582,7 +583,7 @@ eventBus.on('staff.booking-created', async (payload) => {
       pushService.sendToStaff(payload.staffId, {
         title: 'New work request',
         body: `${payload.staffType} work requested for ${new Date(payload.bookingDate).toLocaleDateString()}`,
-        data: { screen: 'Bookings', bookingId: payload.bookingId },
+        data: { type: 'STAFF_BOOKING', screen: 'Bookings', bookingId: payload.bookingId },
       }).catch((err) => logger.error({ err }, 'Push failed: staff.booking-created'));
   } catch (error) {
     logger.error({ error, event: 'staff.booking-created', payload }, 'Failed to send booking notification');
