@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { authenticateGuardApp } from '../../middlewares/auth.middleware';
+import { requireGuardAtGate } from '../../modules/geofence/geofence.middleware';
+import { evaluate, readingFromHeaders } from '../../modules/geofence/geofence.service';
 import {
   createEntryRequest,
   getPendingCount,
@@ -50,24 +52,24 @@ router.get('/pending-count', getPendingCount);
 // ============================================
 // ENTRY MANAGEMENT
 // ============================================
-router.patch('/entries/:id/checkout', validate({ body: checkoutEntrySchema }), checkoutEntry);
+router.patch('/entries/:id/checkout', requireGuardAtGate('Record exit'), validate({ body: checkoutEntrySchema }), checkoutEntry);
 router.get('/entries', getEntries);
 
 // ============================================
 // ENTRY REQUESTS (Visitor at gate — manual approval)
 // ============================================
-router.post('/entry-requests', validate({ body: createEntryRequestSchema }), clearCacheAfter(['entry-requests:*', 'entries:*']), createEntryRequest);
+router.post('/entry-requests', requireGuardAtGate('Raise a visitor request'), validate({ body: createEntryRequestSchema }), clearCacheAfter(['entry-requests:*', 'entries:*']), createEntryRequest);
 
 // ============================================
 // QR SCANNING
 // ============================================
 // Scanning may check a staff member in/out (debounced) or create a guest/party Entry —
 // both read from caches the guard's own home/today screens rely on, so clear them.
-router.post('/scan', clearCacheAfter(['staff:*', 'entries:*']), scanQR);                  // Unified QR scan (GatePass + Staff)
-router.post('/scan/gatepass', scanGatePass);   // Legacy
-router.post('/scan/staff', clearCacheAfter(['staff:*', 'entries:*']), scanQRCode);        // Legacy
+router.post('/scan', requireGuardAtGate('Scan a pass'), clearCacheAfter(['staff:*', 'entries:*']), scanQR);                  // Unified QR scan (GatePass + Staff)
+router.post('/scan/gatepass', requireGuardAtGate('Scan a pass'), scanGatePass);   // Legacy
+router.post('/scan/staff', requireGuardAtGate('Scan a pass'), clearCacheAfter(['staff:*', 'entries:*']), scanQRCode);        // Legacy
 // Invite usage (usedCount/status) changes on verify — drop residents' cached invite lists
-router.post('/verify-code', clearCacheAfter(['guest-invites:*', 'party-invites:*']), verifyCode);       // Passcode verification (Guest/Party invites)
+router.post('/verify-code', requireGuardAtGate('Verify a code'), clearCacheAfter(['guest-invites:*', 'party-invites:*']), verifyCode);       // Passcode verification (Guest/Party invites)
 
 // ============================================
 // ENTRY LOG
@@ -77,8 +79,8 @@ router.get('/entry-log', getEntryLog);
 // ============================================
 // PRE-APPROVED ENTRIES
 // ============================================
-router.post('/pre-approved/validate', validate({ body: validatePreApprovedEntrySchema }), validateEntry);
-router.post('/pre-approved/:id/use', validate({ params: idParams, body: markEntryUsedSchema }), markEntryUsed);
+router.post('/pre-approved/validate', requireGuardAtGate('Verify a pass'), validate({ body: validatePreApprovedEntrySchema }), validateEntry);
+router.post('/pre-approved/:id/use', requireGuardAtGate('Let a pass holder in'), validate({ params: idParams, body: markEntryUsedSchema }), markEntryUsed);
 router.get('/pre-approved', validate({ query: guardPreApprovedListQuerySchema }), listForGuard);
 router.get('/pre-approved/search', validate({ query: guardPreApprovedSearchSchema }), searchForGuard);
 
@@ -87,5 +89,11 @@ router.get('/pre-approved/search', validate({ query: guardPreApprovedSearchSchem
 // ============================================
 router.get('/emergencies/active', getActiveEmergencies);
 router.patch('/emergencies/:id/respond', respondToEmergency);
+
+// Is this phone at the gate right now? (the guard app shows it as a chip; nothing is recorded)
+router.get('/geofence/status', async (req, res) => {
+  const verdict = await evaluate(req.user!.societyId!, readingFromHeaders(req.headers));
+  res.json({ success: true, data: verdict });
+});
 
 export default router;

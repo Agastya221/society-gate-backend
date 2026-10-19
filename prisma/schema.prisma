@@ -553,6 +553,7 @@ model Society {
   @@index([paymentStatus, nextDueDate])
   @@index([onboardingStatus, isActive])
   trustedVisitors TrustedVisitor[]
+  geofenceViolations GeofenceViolation[]
 }
 
 // --------------------
@@ -715,10 +716,37 @@ model SocietyRegistrationRequest {
 // GATE POINTS (Multiple gates)
 // --------------------
 
+// A guard action that was refused because the phone was not at the gate (or location was off / faked)
+model GeofenceViolation {
+  id String @id @default(uuid())
+
+  action         String // e.g. "Admit visitor"
+  code           String // GEOFENCE_OUTSIDE, LOCATION_FAKED...
+  distanceMeters Int?
+  latitude       Float?
+  longitude      Float?
+  accuracy       Float?
+
+  guardId String
+  guard   User   @relation("GeofenceViolationGuard", fields: [guardId], references: [id], onDelete: Cascade)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([societyId, createdAt(sort: Desc)])
+}
+
 model GatePoint {
   id       String  @id @default(uuid())
   name     String // Main Gate, Back Gate
   isActive Boolean @default(true)
+
+  // Where the gate is: guard actions are only accepted from a phone near it (empty = not checked)
+  latitude     Float?
+  longitude    Float?
+  radiusMeters Int    @default(100)
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
@@ -944,6 +972,7 @@ model User {
   @@index([email])
   @@index([refreshToken])
   trustedVisitorsCreated TrustedVisitor[] @relation("TrustedVisitorCreator")
+  geofenceViolations GeofenceViolation[] @relation("GeofenceViolationGuard")
 }
 
 model PlatformAuditLog {

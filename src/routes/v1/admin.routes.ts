@@ -9,6 +9,7 @@ import pollRoutes from '../../modules/poll/poll.routes';
 import noticeRoutes from '../../modules/notice/notice.routes';
 import billingRoutes from '../../modules/billing/billing.routes';
 import broadcastRoutes from '../../modules/broadcast/broadcast.routes';
+import geofenceRoutes from '../../modules/geofence/geofence.routes';
 import adminNotificationRoutes from '../../modules/admin/admin-notification.routes';
 import {
   getAdminStaffDirectory,
@@ -77,6 +78,7 @@ router.use('/notices', noticeRoutes);     // /api/v1/admin/notices
 // ---- New modules ----
 router.use('/billing', billingRoutes);         // /api/v1/admin/billing/...
 router.use('/broadcast', broadcastRoutes);     // /api/v1/admin/broadcast
+router.use('/geofence', geofenceRoutes);       // /api/v1/admin/geofence
 router.use('/notifications', adminNotificationRoutes); // /api/v1/admin/notifications
 
 // GET /api/v1/admin/intercom/contacts
