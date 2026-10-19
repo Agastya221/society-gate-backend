@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { authenticateGuardApp } from '../../middlewares/auth.middleware';
 import { requireGuardAtGate } from '../../modules/geofence/geofence.middleware';
-import { evaluate, readingFromHeaders } from '../../modules/geofence/geofence.service';
+import { evaluate, getGateLocations, readingFromHeaders } from '../../modules/geofence/geofence.service';
+import { currentDuty, endDuty, startDuty } from '../../modules/geofence/duty.service';
 import {
   createEntryRequest,
   getPendingCount,
@@ -89,6 +90,22 @@ router.get('/pre-approved/search', validate({ query: guardPreApprovedSearchSchem
 // ============================================
 router.get('/emergencies/active', getActiveEmergencies);
 router.patch('/emergencies/:id/respond', respondToEmergency);
+
+// Shift: start (only from the gate), end, and the current state
+router.get('/duty', async (req, res) => {
+  res.json({ success: true, data: { duty: await currentDuty(req.user!.id) } });
+});
+router.post('/duty/start', requireGuardAtGate('Start duty', { needsDuty: false }), async (req, res) => {
+  const reading = readingFromHeaders(req.headers);
+  const gates = await getGateLocations(req.user!.societyId!);
+  const gate = gates.length === 1 ? gates[0] : null;
+  const duty = await startDuty(req.user!.id, req.user!.societyId!, { gatePointId: gate?.id, latitude: reading?.latitude, longitude: reading?.longitude });
+  res.status(201).json({ success: true, message: 'Duty started', data: { duty } });
+});
+router.post('/duty/end', async (req, res) => {
+  await endDuty(req.user!.id);
+  res.json({ success: true, message: 'Duty ended', data: { duty: null } });
+});
 
 // Is this phone at the gate right now? (the guard app shows it as a chip; nothing is recorded)
 router.get('/geofence/status', async (req, res) => {

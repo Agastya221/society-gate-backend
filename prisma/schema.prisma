@@ -554,6 +554,7 @@ model Society {
   @@index([onboardingStatus, isActive])
   trustedVisitors TrustedVisitor[]
   geofenceViolations GeofenceViolation[]
+  guardDuties GuardDuty[]
 }
 
 // --------------------
@@ -717,6 +718,29 @@ model SocietyRegistrationRequest {
 // --------------------
 
 // A guard action that was refused because the phone was not at the gate (or location was off / faked)
+// A guard's shift: started from the gate, ended by the guard (or automatically after 16 hours)
+model GuardDuty {
+  id String @id @default(uuid())
+
+  guardId String
+  guard   User   @relation("GuardDutyGuard", fields: [guardId], references: [id], onDelete: Cascade)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  gatePointId String?
+  gatePoint   GatePoint? @relation(fields: [gatePointId], references: [id], onDelete: SetNull)
+
+  startedAt      DateTime @default(now())
+  startLatitude  Float?
+  startLongitude Float?
+  endedAt        DateTime?
+  endedBy        String? // GUARD or AUTO
+
+  @@index([guardId, endedAt])
+  @@index([societyId, startedAt(sort: Desc)])
+}
+
 model GeofenceViolation {
   id String @id @default(uuid())
 
@@ -757,6 +781,7 @@ model GatePoint {
   createdAt DateTime @default(now())
 
   @@index([societyId, isActive])
+  duties GuardDuty[]
 }
 
 // --------------------
@@ -973,6 +998,7 @@ model User {
   @@index([refreshToken])
   trustedVisitorsCreated TrustedVisitor[] @relation("TrustedVisitorCreator")
   geofenceViolations GeofenceViolation[] @relation("GeofenceViolationGuard")
+  guardDuties GuardDuty[] @relation("GuardDutyGuard")
 }
 
 model PlatformAuditLog {

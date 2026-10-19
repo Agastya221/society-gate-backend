@@ -29,7 +29,8 @@ export type GeoCode =
   | 'LOCATION_FAKED'
   | 'LOCATION_STALE'
   | 'LOCATION_INACCURATE'
-  | 'GEOFENCE_OUTSIDE';
+  | 'GEOFENCE_OUTSIDE'
+  | 'DUTY_NOT_STARTED';
 
 export interface GeoVerdict {
   enforced: boolean;

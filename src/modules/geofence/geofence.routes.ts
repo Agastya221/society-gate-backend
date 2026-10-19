@@ -7,6 +7,7 @@ import { validate } from '../../middlewares/validate.middleware';
 import { idParams } from '../../schemas';
 import { AppError } from '../../utils/ResponseHandler';
 import { clearGateCache, DEFAULT_RADIUS_METERS } from './geofence.service';
+import { listShifts, monthlyAttendance } from './duty.service';
 
 /** Admin side: where each gate is, and who tried to act away from it. Mounted at /api/v1/admin/geofence */
 const router = Router();
@@ -96,6 +97,18 @@ router.get('/violations', async (req: Request, res: Response) => {
     },
   });
   res.json({ success: true, data: rows });
+});
+
+router.get('/duties', async (req: Request, res: Response) => {
+  const limit = Math.min(Number(req.query.limit) || 30, 100);
+  res.json({ success: true, data: await listShifts(req.user!.societyId!, limit) });
+});
+
+router.get('/attendance', async (req: Request, res: Response) => {
+  const month = typeof req.query.month === 'string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(req.query.month)
+    ? req.query.month
+    : `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  res.json({ success: true, data: await monthlyAttendance(req.user!.societyId!, month) });
 });
 
 export default router;
