@@ -599,6 +599,18 @@ eventBus.on('staff.booking-created', async (payload) => {
   }
 });
 
+eventBus.on('staff.booking-cancelled', async (payload) => {
+  try {
+    pushService.sendToStaff(payload.staffId, {
+      title: 'Work request cancelled',
+      body: `${payload.staffType} work on ${new Date(payload.bookingDate).toLocaleDateString()} was cancelled`,
+      data: { type: 'STAFF_BOOKING_CANCELLED', screen: 'Bookings', bookingId: payload.bookingId },
+    }).catch((err) => logger.error({ err }, 'Push failed: staff.booking-cancelled'));
+  } catch (error) {
+    logger.error({ error, event: 'staff.booking-cancelled', payload }, 'Failed to send booking cancelled notification');
+  }
+});
+
 eventBus.on('staff.booking-accepted', async (payload) => {
   try {
     await notificationService.sendToUser(payload.bookedById, {

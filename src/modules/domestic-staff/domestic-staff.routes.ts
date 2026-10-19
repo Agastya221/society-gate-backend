@@ -28,6 +28,7 @@ import {
   acceptBooking,
   rejectBooking,
   completeBooking,
+  cancelBooking,
 
   // Reviews
   addReview,
@@ -105,6 +106,7 @@ router.get('/:id/open-slots', getOpenSlots);
 // here only admins may act for them. Residents (the requesters) may only mark complete.
 router.patch('/bookings/:id/accept', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), acceptBooking);
 router.patch('/bookings/:id/reject', authorize('ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), rejectBooking);
+router.patch('/bookings/:id/cancel', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), clearCacheAfter(['staff:*']), cancelBooking);
 router.patch('/bookings/:id/complete', authorize('ADMIN', 'SUPER_ADMIN', 'RESIDENT'), clearCacheAfter(['staff:*']), completeBooking);
 
 // ============================================

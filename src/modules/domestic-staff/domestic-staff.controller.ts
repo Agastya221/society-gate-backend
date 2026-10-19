@@ -611,3 +611,12 @@ export const getTypeSummary = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const cancelBooking = async (req: Request, res: Response) => {
+  try {
+    const booking = await staffService.cancelBooking(String(req.params.id), callerOf(req));
+    res.status(200).json({ success: true, message: 'Booking cancelled', data: booking });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
+  }
+};

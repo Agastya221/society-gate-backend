@@ -139,6 +139,14 @@ export interface AppEvents {
     staffType: string;
     bookingDate: Date;
   };
+  'staff.booking-cancelled': {
+    bookingId: string;
+    staffId: string;
+    societyId: string;
+    staffName: string;
+    staffType: string;
+    bookingDate: Date;
+  };
   'staff.booking-accepted': {
     bookingId: string;
     bookedById: string;

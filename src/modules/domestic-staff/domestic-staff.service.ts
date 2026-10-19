@@ -1263,6 +1263,36 @@ export class DomesticStaffService {
     return presentStaffBooking(booking);
   }
 
+  /**
+   * The resident (or an admin) cancels a booking before the work is done. Stored as CANCELLED with no rejectedAt,
+   * which is how the list tells it apart from a booking the staff member declined.
+   */
+  async cancelBooking(bookingId: string, caller: StaffCaller) {
+    const existing = await this._findBookingForCaller(bookingId, caller);
+    if (existing.status !== 'PENDING' && existing.status !== 'CONFIRMED') {
+      throw new AppError(`This booking is already ${String(existing.status).toLowerCase().replace('_', ' ')} and cannot be cancelled`, 400);
+    }
+    const changed = await prisma.staffBooking.updateMany({
+      where: { id: bookingId, status: { in: ['PENDING', 'CONFIRMED'] } },
+      data: { status: 'CANCELLED', rejectionReason: 'Cancelled by the resident' },
+    });
+    if (changed.count !== 1) throw new AppError('This booking changed meanwhile. Refresh and try again.', 409);
+
+    const booking = await prisma.staffBooking.findUniqueOrThrow({
+      where: { id: bookingId },
+      include: { domesticStaff: { select: { id: true, name: true, staffType: true } } },
+    });
+    eventBus.emit('staff.booking-cancelled', {
+      bookingId: booking.id,
+      staffId: booking.domesticStaff.id,
+      societyId: booking.societyId,
+      staffName: booking.domesticStaff.name,
+      staffType: String(booking.domesticStaff.staffType),
+      bookingDate: booking.bookingDate,
+    });
+    return booking;
+  }
+
   async completeBooking(bookingId: string, caller: StaffCaller, actualDuration?: number, finalCost?: number) {
     const existing = await this._findBookingForCaller(bookingId, caller);
 
