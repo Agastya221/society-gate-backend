@@ -19,7 +19,7 @@ eventBus.on('entry-request.approved', async (payload) => {
     const group = allowed > 1 ? ` + ${allowed - 1} more` : '';
     const visitorLabel = `${payload.visitorName}${group} (${humanizeEnum(payload.visitorType).toLowerCase()})`;
     const body = autoApproved
-      ? `${visitorLabel} was approved by your society settings and is waiting at the gate`
+      ? `${visitorLabel} was let through without asking you and is waiting at the gate`
       : partial
         ? `${payload.approvedByName} allowed ${allowed} of ${payload.peopleCount} for ${payload.visitorName}; the guard will confirm entry`
         : `${payload.approvedByName} approved ${visitorLabel}; the guard will confirm entry`;
