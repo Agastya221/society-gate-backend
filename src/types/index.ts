@@ -959,6 +959,7 @@ export interface CreatePreApprovedEntryDTO {
   scheduleType?: PreApprovedScheduleType;
   visitorName?: string;
   visitorPhone?: string;
+  guestCount?: number;
   skipDuplicateCheck?: boolean;
   // ONCE schedule
   date?: string;

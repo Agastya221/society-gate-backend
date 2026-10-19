@@ -9,13 +9,14 @@ import {
   markEntryRequestNoShow,
   rejectEntryRequest,
   cancelEntryRequest,
+  moveEntryRequest,
   getPendingCount,
   getGateQueue,
 } from './entry-request.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
 import { validate } from '../../middlewares/validate.middleware';
-import { createEntryRequestSchema, entryRequestQuerySchema, idParams } from '../../schemas';
+import { approveEntryRequestSchema, createEntryRequestSchema, entryRequestQuerySchema, idParams, moveEntryRequestSchema } from '../../schemas';
 
 const router = Router();
 
@@ -38,7 +39,8 @@ router.get('/', validate({ query: entryRequestQuerySchema }), cache({ ttl: 20, k
 router.get('/:id', validate({ params: idParams }), getEntryRequestById);
 router.get('/:id/photo', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), validate({ params: idParams }), getEntryRequestPhoto);
 // GUARD: "Allow Anyway" / "Turn Away" overrides — the service scopes guards to their own society
-router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*', 'entries:*']), approveEntryRequest);
+router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'), validate({ params: idParams, body: approveEntryRequestSchema }), clearCacheAfter(['entry-requests:*', 'entries:*']), approveEntryRequest);
+router.patch('/:id/move', authorize('GUARD'), validate({ params: idParams, body: moveEntryRequestSchema }), clearCacheAfter(['entry-requests:*']), moveEntryRequest);
 router.patch('/:id/admit', authorize('GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*', 'entries:*']), admitEntryRequest);
 router.patch('/:id/no-show', authorize('GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*']), markEntryRequestNoShow);
 router.patch('/:id/reject', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*']), rejectEntryRequest);

@@ -216,6 +216,9 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
         visitorName: true,
         visitorPhone: true,
         companyName: true,
+        peopleCount: true,
+        peopleLeft: true,
+        vehicleNumber: true,
         createdAt: true,
         checkInTime: true,
         checkOutTime: true,
@@ -252,11 +255,12 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
  */
 export const checkoutEntry = asyncHandler(async (req: Request, res: Response) => {
   const id = String(req.params.id);
+  const count: number | undefined = req.body?.count;
 
   // Only entries of the guard's own society that are still inside can be checked out
   const existing = await prisma.entry.findFirst({
     where: { id, societyId: getSocietyId(req) },
-    select: { status: true },
+    select: { status: true, peopleCount: true, peopleLeft: true },
   });
   if (!existing) {
     throw new AppError('Entry not found', 404);
@@ -265,10 +269,24 @@ export const checkoutEntry = asyncHandler(async (req: Request, res: Response) =>
     throw new AppError('Visitor is already checked out', 400);
   }
 
+  // A group can leave in parts: only the last person out closes the entry
+  const stillInside = existing.peopleCount - existing.peopleLeft;
+  const leaving = count === undefined ? stillInside : Math.min(count, stillInside);
+  if (count !== undefined && count > stillInside) {
+    throw new AppError(`Only ${stillInside} still inside`, 400);
+  }
+  const allGone = leaving >= stillInside;
+
   const entry = await prisma.entry.update({
     where: { id },
-    data: { status: 'CHECKED_OUT', checkOutTime: new Date() },
+    data: allGone
+      ? { status: 'CHECKED_OUT', checkOutTime: new Date(), peopleLeft: existing.peopleCount }
+      : { peopleLeft: existing.peopleLeft + leaving },
   });
 
-  res.json({ success: true, message: 'Visitor checked out', data: entry });
+  res.json({
+    success: true,
+    message: allGone ? 'Visitor checked out' : `${leaving} left, ${stillInside - leaving} still inside`,
+    data: entry,
+  });
 });

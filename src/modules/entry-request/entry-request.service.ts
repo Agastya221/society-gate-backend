@@ -39,6 +39,7 @@ export const ENTRY_REQUEST_CANCELLED_REASON = 'Cancelled by guard';
 export const ENTRY_REQUEST_STOPPED_REASON = 'Stopped by guard';
 export const ENTRY_REQUEST_LEFT_REASON = 'Visitor left before entering';
 export const ENTRY_REQUEST_APPROVAL_EXPIRED_REASON = 'Approval expired before arrival';
+export const ENTRY_REQUEST_MOVED_REASON = 'Sent to another flat';
 
 /** Stops the guard made themselves — the guard already knows, so the gate queue hides them. */
 const GUARD_OWN_STOP_REASONS = [
@@ -57,6 +58,8 @@ interface CreateEntryRequestData {
   providerTag?: ProviderTag;
   purpose?: string;
   photoKey?: string;
+  peopleCount?: number;
+  vehicleNumber?: string;
 }
 
 interface RequestTargetInfo {
@@ -173,6 +176,8 @@ export class EntryRequestService {
         providerTag: data.providerTag,
         purpose: data.purpose,
         photoKey: data.photoKey || undefined,
+        peopleCount: data.peopleCount ?? 1,
+        vehicleNumber: data.vehicleNumber || undefined,
         flatId: primaryFlat.id,
         societyId: guard.societyId,
         guardId,
@@ -194,9 +199,16 @@ export class EntryRequestService {
     // this just skips the resident prompt. Residents get an informational "let in"
     // notification instead of an approval prompt (entry-request.created is NOT emitted).
     let autoApprove = false;
+    if (data.visitorPhone && (data.type === 'VISITOR' || data.type === 'DOMESTIC_STAFF' || data.type === 'CAB')) {
+      const trusted = await prisma.trustedVisitor.findUnique({
+        where: { flatId_phone: { flatId: primaryFlat.id, phone: data.visitorPhone } },
+        select: { id: true },
+      });
+      if (trusted) autoApprove = true;
+    }
     try {
       const { autoApproval } = await societySettingsService.getConfiguredRules(guard.societyId);
-      autoApprove = isAutoApprovedType(data.type, autoApproval);
+      autoApprove = autoApprove || isAutoApprovedType(data.type, autoApproval);
     } catch (err) {
       logger.error({ err, societyId: guard.societyId }, 'Auto-approval settings lookup failed; falling back to manual approval');
     }
@@ -220,6 +232,7 @@ export class EntryRequestService {
       providerTag: data.providerTag,
       purpose: data.purpose,
       type: data.type,
+      peopleCount: data.peopleCount ?? 1,
     });
 
     return { entryRequest: this.formatEntryRequest(entryRequest), autoApproved: false };
@@ -366,7 +379,7 @@ export class EntryRequestService {
   // ============================================
   // APPROVE ENTRY REQUEST
   // ============================================
-  async approveEntryRequest(entryRequestId: string, userId: string, opts: { autoApproved?: boolean } = {}) {
+  async approveEntryRequest(entryRequestId: string, userId: string, opts: { autoApproved?: boolean; count?: number } = {}) {
     const autoApproved = opts.autoApproved === true;
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
@@ -426,9 +439,17 @@ export class EntryRequestService {
     // Approval grants permission. Only the guard's later admit action records
     // physical entry. Claim PENDING atomically so two residents cannot approve
     // the same request and emit two successful decisions.
+    // The resident may let in fewer people than arrived; never more
+    let approvedCount: number | null = null;
+    if (opts.count !== undefined) {
+      if (opts.count > entryRequest.peopleCount) {
+        throw new AppError(`Only ${entryRequest.peopleCount} people are at the gate`, 400);
+      }
+      if (opts.count < entryRequest.peopleCount) approvedCount = opts.count;
+    }
     const claimed = await prisma.entryRequest.updateMany({
       where: { id: entryRequestId, status: 'PENDING', expiresAt: { gt: new Date() } },
-      data: { status: 'APPROVED', approvedById: userId, approvedAt: new Date() },
+      data: { status: 'APPROVED', approvedById: userId, approvedAt: new Date(), approvedCount },
     });
     if (claimed.count !== 1) throw new AppError('Entry request is no longer pending', 409);
     const updatedRequest = await prisma.entryRequest.findUniqueOrThrow({
@@ -458,6 +479,8 @@ export class EntryRequestService {
         ? AUTO_APPROVED_BY_NAME
         : updatedRequest.approvedBy?.name ?? approver.name ?? 'A resident',
       autoApproved,
+      peopleCount: entryRequest.peopleCount,
+      approvedCount,
     });
 
     return this.formatEntryRequest(updatedRequest);
@@ -495,6 +518,8 @@ export class EntryRequestService {
           visitorPhoto: request.photoKey,
           companyName: request.providerTag,
           purpose: request.purpose,
+          vehicleNumber: request.vehicleNumber,
+          peopleCount: request.approvedCount ?? request.peopleCount,
           flatId: targets[0].flatId,
           societyId: request.societyId,
           createdById: guardId,
@@ -651,6 +676,35 @@ export class EntryRequestService {
     });
 
     return this.formatEntryRequest(updatedRequest);
+  }
+
+  // ============================================
+  // MOVE ENTRY REQUEST (guard typed the wrong flat): withdraw it and raise the same
+  // request for the right flat, so the wrong flat is told and the right one is asked.
+  // ============================================
+  async moveEntryRequest(entryRequestId: string, guardId: string, flatId: string) {
+    const existing = await prisma.entryRequest.findUnique({ where: { id: entryRequestId } });
+    if (!existing) throw new AppError('Entry request not found', 404);
+    if (existing.flatId === flatId) throw new AppError('The request is already for this flat', 400);
+    const target = await prisma.flat.findFirst({ where: { id: flatId, societyId: existing.societyId, isActive: true }, select: { id: true } });
+    if (!target) throw new AppError('Flat not found in this society', 404);
+
+    await this.cancelEntryRequest(entryRequestId, guardId);
+    return this.createEntryRequest(
+      {
+        type: existing.type,
+        flatId,
+        visitorName: existing.visitorName ?? undefined,
+        visitorPhone: existing.visitorPhone ?? undefined,
+        providerTag: existing.providerTag ?? undefined,
+        purpose: existing.purpose ?? undefined,
+        // a photo key only works for the guard who uploaded it
+        photoKey: existing.guardId === guardId ? existing.photoKey ?? undefined : undefined,
+        peopleCount: existing.peopleCount,
+        vehicleNumber: existing.vehicleNumber ?? undefined,
+      },
+      guardId,
+    );
   }
 
   // ============================================

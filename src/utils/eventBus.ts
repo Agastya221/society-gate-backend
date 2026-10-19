@@ -18,6 +18,7 @@ export interface AppEvents {
     providerTag?: string;
     purpose?: string;
     type: string;
+    peopleCount?: number;
   };
   'entry-request.approved': {
     entryRequestId: string;
@@ -31,6 +32,8 @@ export interface AppEvents {
     approvedById: string;   // excluded from flat notification
     approvedByName: string;
     autoApproved?: boolean; // society auto-approval rule (approvedById is the guard)
+    peopleCount?: number;   // how many arrived
+    approvedCount?: number | null; // how many the resident allowed (null = everyone)
   };
   'entry-request.admitted': {
     entryRequestId: string;

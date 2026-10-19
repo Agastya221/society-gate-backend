@@ -17,7 +17,7 @@ const uploadService = new UploadService();
 export const createEntryRequest = async (req: Request, res: Response) => {
   try {
     const guardId = req.user!.id;
-    const { type, flatId, flatIds, visitorName, visitorPhone, providerTag, purpose, photoKey } = req.body;
+    const { type, flatId, flatIds, visitorName, visitorPhone, providerTag, purpose, photoKey, peopleCount, vehicleNumber } = req.body;
 
     if (!type || (!flatId && (!Array.isArray(flatIds) || flatIds.length === 0))) {
       return res.status(400).json({
@@ -27,7 +27,7 @@ export const createEntryRequest = async (req: Request, res: Response) => {
     }
 
     const result = await entryRequestService.createEntryRequest(
-      { type, flatId, flatIds, visitorName, visitorPhone, providerTag, purpose, photoKey },
+      { type, flatId, flatIds, visitorName, visitorPhone, providerTag, purpose, photoKey, peopleCount, vehicleNumber },
       guardId
     );
 
@@ -142,7 +142,8 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
 
     const entryRequest = await entryRequestService.approveEntryRequest(
       String(id),
-      userId
+      userId,
+      { count: req.body?.count },
     );
 
     res.status(200).json({
@@ -264,5 +265,18 @@ export const cancelEntryRequest = async (req: Request, res: Response) => {
       success: false,
       message: getErrorMessage(error),
     });
+  }
+};
+
+export const moveEntryRequest = async (req: Request, res: Response) => {
+  try {
+    const result = await entryRequestService.moveEntryRequest(String(req.params.id), req.user!.id, req.body.flatId);
+    res.status(201).json({
+      success: true,
+      message: 'Request sent to the other flat.',
+      data: { entryRequest: result.entryRequest, autoApproved: result.autoApproved },
+    });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
   }
 };

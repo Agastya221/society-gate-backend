@@ -552,6 +552,7 @@ model Society {
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
   @@index([onboardingStatus, isActive])
+  trustedVisitors TrustedVisitor[]
 }
 
 // --------------------
@@ -819,6 +820,7 @@ model Flat {
   @@index([societyId])
   @@index([blockId])
   @@index([isOccupied])
+  trustedVisitors TrustedVisitor[]
 }
 
 // --------------------
@@ -941,6 +943,7 @@ model User {
   @@index([phone])
   @@index([email])
   @@index([refreshToken])
+  trustedVisitorsCreated TrustedVisitor[] @relation("TrustedVisitorCreator")
 }
 
 model PlatformAuditLog {
@@ -1007,6 +1010,10 @@ model Entry {
   visitorPhoto  String? // Guard takes photo (optional)
   purpose       String?
   vehicleNumber String?
+
+  // Group visits: people who came in together and how many have left so far
+  peopleCount Int @default(1)
+  peopleLeft  Int @default(0)
 
   // Delivery specific
   companyName  String? // "Amazon", "Zomato", "Flipkart"
@@ -2489,6 +2496,11 @@ model EntryRequest {
   // Photo (S3 key - optional)
   photoKey String?
 
+  // Group: how many people arrived together, how many the resident allowed (null = everyone)
+  peopleCount   Int     @default(1)
+  approvedCount Int?
+  vehicleNumber String?
+
   // Target flat
   flatId String
   flat   Flat   @relation(fields: [flatId], references: [id])
@@ -2552,6 +2564,28 @@ model EntryRequestTarget {
 // PRE-APPROVED ENTRIES (Cab / Delivery / Help)
 // --------------------
 
+// A visitor the flat always lets in (tutor, relative...): arrivals with this phone skip the approval prompt
+model TrustedVisitor {
+  id String @id @default(uuid())
+
+  name  String
+  phone String
+
+  flatId String
+  flat   Flat   @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation("TrustedVisitorCreator", fields: [createdById], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([flatId, phone])
+  @@index([societyId])
+}
+
 model PreApprovedEntry {
   id           String                  @id @default(uuid())
   type         PreApprovedEntryType
@@ -2562,6 +2596,8 @@ model PreApprovedEntry {
   // Visitor/service info
   visitorName  String?
   visitorPhone String?
+  // Party size for guests (1 = just the one person)
+  guestCount   Int     @default(1)
 
   // Locking (prevent concurrent usage by multiple guards)
   isLocked        Boolean   @default(false)

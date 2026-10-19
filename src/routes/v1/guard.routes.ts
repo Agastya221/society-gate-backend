@@ -33,6 +33,7 @@ import {
   guardPreApprovedSearchSchema,
   guardPreApprovedListQuerySchema,
   createEntryRequestSchema,
+  checkoutEntrySchema,
 } from '../../schemas';
 
 const router = Router();
@@ -49,7 +50,7 @@ router.get('/pending-count', getPendingCount);
 // ============================================
 // ENTRY MANAGEMENT
 // ============================================
-router.patch('/entries/:id/checkout', checkoutEntry);
+router.patch('/entries/:id/checkout', validate({ body: checkoutEntrySchema }), checkoutEntry);
 router.get('/entries', getEntries);
 
 // ============================================

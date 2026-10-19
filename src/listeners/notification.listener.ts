@@ -14,10 +14,15 @@ eventBus.on('entry-request.approved', async (payload) => {
     const autoApproved = payload.autoApproved === true;
     const title = autoApproved ? 'Entry auto-approved' : 'Entry approved';
     const flatLabels = payload.flats.map((flat) => flat.flatNumber);
-    const visitorLabel = `${payload.visitorName} (${humanizeEnum(payload.visitorType).toLowerCase()})`;
+    const allowed = payload.approvedCount ?? payload.peopleCount ?? 1;
+    const partial = payload.peopleCount && payload.approvedCount && payload.approvedCount < payload.peopleCount;
+    const group = allowed > 1 ? ` + ${allowed - 1} more` : '';
+    const visitorLabel = `${payload.visitorName}${group} (${humanizeEnum(payload.visitorType).toLowerCase()})`;
     const body = autoApproved
       ? `${visitorLabel} was approved by your society settings and is waiting at the gate`
-      : `${payload.approvedByName} approved ${visitorLabel}; the guard will confirm entry`;
+      : partial
+        ? `${payload.approvedByName} allowed ${allowed} of ${payload.peopleCount} for ${payload.visitorName}; the guard will confirm entry`
+        : `${payload.approvedByName} approved ${visitorLabel}; the guard will confirm entry`;
 
     await notificationService.sendToFlats(payload.flatIds, {
       type: 'ENTRY_REQUEST',
@@ -59,7 +64,9 @@ eventBus.on('entry-request.approved', async (payload) => {
     // Notify the guard that entry was approved
     pushService.sendToUser(payload.guardId, {
       title: 'Entry approved',
-      body: `${payload.approvedByName} approved ${payload.visitorName}. Let them in.`,
+      body: partial
+        ? `${payload.approvedByName} allowed only ${allowed} of ${payload.peopleCount} for ${payload.visitorName}. The others wait outside.`
+        : `${payload.approvedByName} approved ${payload.visitorName}${group}. Let them in.`,
       data: { type: 'GATE_APPROVED', requestId: payload.entryRequestId, entryRequestId: payload.entryRequestId },
     }).catch((err) => logger.error({ err }, 'Push failed: entry-request.approved (guard)'));
   } catch (error) {
@@ -265,7 +272,7 @@ eventBus.on('entry-request.created', async (payload) => {
       type: 'ENTRY_REQUEST',
       title: `${payload.societyName ?? 'Society'} · ${flatLabel}`,
       message: payload.visitorName
-        ? `${payload.visitorName} requested entry. Purpose: ${providerName}`
+        ? `${payload.visitorName}${(payload.peopleCount ?? 1) > 1 ? ` + ${(payload.peopleCount ?? 1) - 1} more` : ''} requested entry. Purpose: ${providerName}`
         : describeWaiting(payload.type, null, payload.providerTag),
       data: {
         entryRequestId: payload.entryRequestId,
@@ -288,7 +295,7 @@ eventBus.on('entry-request.created', async (payload) => {
         ? `New request in ${payload.societyName}`
         : 'Visitor at gate',
       body: payload.visitorName
-        ? `${payload.visitorName} requested entry for ${flatLabels.join(', ')}`
+        ? `${payload.visitorName}${(payload.peopleCount ?? 1) > 1 ? ` + ${(payload.peopleCount ?? 1) - 1} more` : ''} requested entry for ${flatLabels.join(', ')}`
         : describeWaiting(payload.type, null, payload.providerTag),
       data: {
         type: 'GATE_REQUEST',

@@ -15,7 +15,7 @@ import { prisma } from '../../utils/Client';
 import { authenticate } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { clearCacheAfter } from '../../middlewares/cache.middleware';
-import { submitPaymentSchema } from '../../schemas';
+import { submitPaymentSchema, trustedVisitorCreateSchema, idParams } from '../../schemas';
 import { getUpiPayee } from '../../modules/settings/society-settings.service';
 import { paymentSubmissionService } from '../../modules/billing/payment-submission.service';
 import { AppError } from '../../utils/ResponseHandler';
@@ -290,3 +290,51 @@ function formatInvoiceDue(invoice: {
 }
 
 export default router;
+
+// Visitors this flat always lets in (tutor, relative...): they skip the approval prompt at the gate.
+router.get('/trusted-visitors', authenticate, async (req: Request, res: Response) => {
+  const { societyId, flatId } = req.user!;
+  if (!societyId || !flatId) return res.json({ success: true, data: [] });
+  const rows = await prisma.trustedVisitor.findMany({
+    where: { societyId, flatId },
+    select: { id: true, name: true, phone: true, createdAt: true },
+    orderBy: { createdAt: 'desc' },
+  });
+  return res.json({ success: true, data: rows });
+});
+
+// "Always allow this visitor": created from a gate request of the resident's own flat
+router.post('/trusted-visitors', authenticate, validate({ body: trustedVisitorCreateSchema }), async (req: Request, res: Response) => {
+  try {
+    const { id, societyId, flatId } = req.user!;
+    if (!societyId || !flatId) throw new AppError('No flat linked to your account', 400);
+    const request = await prisma.entryRequest.findFirst({
+      where: { id: req.body.entryRequestId, societyId, OR: [{ flatId }, { targets: { some: { flatId } } }] },
+      select: { visitorName: true, visitorPhone: true, type: true },
+    });
+    if (!request) throw new AppError('Visit not found', 404);
+    if (!request.visitorPhone) {
+      throw new AppError('This visitor has no phone number, so they cannot be remembered', 400);
+    }
+    const row = await prisma.trustedVisitor.upsert({
+      where: { flatId_phone: { flatId, phone: request.visitorPhone } },
+      update: { name: request.visitorName || 'Visitor' },
+      create: { name: request.visitorName || 'Visitor', phone: request.visitorPhone, flatId, societyId, createdById: id },
+      select: { id: true, name: true, phone: true, createdAt: true },
+    });
+    return res.status(201).json({ success: true, message: 'They will be let in without asking.', data: row });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({ success: false, message: error.message });
+    }
+    return res.status(500).json({ success: false, message: 'Failed to save visitor' });
+  }
+});
+
+router.delete('/trusted-visitors/:id', authenticate, validate({ params: idParams }), async (req: Request, res: Response) => {
+  const { societyId, flatId } = req.user!;
+  if (!societyId || !flatId) return res.status(404).json({ success: false, message: 'Visitor not found' });
+  const removed = await prisma.trustedVisitor.deleteMany({ where: { id: req.params.id as string, societyId, flatId } });
+  if (removed.count === 0) return res.status(404).json({ success: false, message: 'Visitor not found' });
+  return res.json({ success: true, message: 'Removed. They will need approval again.' });
+});

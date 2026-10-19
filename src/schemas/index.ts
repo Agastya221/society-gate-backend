@@ -120,9 +120,31 @@ export const createEntryRequestSchema = z.object({
   providerTag: providerTagEnum.optional(),
   purpose: z.string().trim().max(100).optional(),
   photoKey: z.string().optional(),
+  // People arriving together (one request, one approval)
+  peopleCount: z.number().int().min(1).max(20).optional(),
+  vehicleNumber: z.string().trim().toUpperCase().max(20).optional(),
 }).refine((data) => data.flatId || (data.flatIds && data.flatIds.length > 0), {
   message: 'Either flatId or flatIds is required',
   path: ['flatId'],
+});
+
+// The resident may let in fewer people than arrived (count must be 1..peopleCount, checked in the service)
+export const approveEntryRequestSchema = z.object({
+  count: z.number().int().min(1).max(20).optional(),
+}).default({});
+
+// The guard sends a wrongly addressed pending request to the right flat
+export const moveEntryRequestSchema = z.object({
+  flatId: uuidSchema,
+});
+
+// Part of a group leaves: how many people just left (omitted = everyone still inside)
+export const checkoutEntrySchema = z.object({
+  count: z.number().int().min(1).max(20).optional(),
+}).default({});
+
+export const trustedVisitorCreateSchema = z.object({
+  entryRequestId: uuidSchema,
 });
 
 export const entryRequestQuerySchema = paginationQuery.extend({
@@ -608,6 +630,7 @@ export const createPreApprovedEntrySchema = z.object({
   scheduleType: preApprovedScheduleTypeEnum.optional().default('ONCE'),
   visitorName: z.string().max(100).optional(),
   visitorPhone: phoneSchema.optional(),
+  guestCount: z.number().int().min(1).max(20).optional(),
   skipDuplicateCheck: z.boolean().optional(),
   // ONCE schedule
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD').optional(),
