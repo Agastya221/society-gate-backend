@@ -14,6 +14,7 @@ export interface CreateGuestInviteDTO {
   timeUntil?: string;
   isPrivate?: boolean;
   note?: string;
+  guestCount?: number;
 }
 
 export class GuestInviteService {
@@ -46,6 +47,7 @@ export class GuestInviteService {
         timeUntil: dto.timeUntil ?? null,
         isPrivate: dto.type === 'PRIVATE' ? true : (dto.isPrivate ?? false),
         note: dto.note ?? null,
+        guestCount: dto.guestCount ?? 1,
         passcode,
         maxUses,
         flatId: user.flatId,

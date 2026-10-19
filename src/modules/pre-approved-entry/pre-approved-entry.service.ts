@@ -145,6 +145,7 @@ export class PreApprovedEntryService {
           meta: {
             create: {
               vehicleLast4Digits: dto.vehicleLast4Digits ?? null,
+              vehicleNumber: dto.vehicleNumber || null,
               companyName: dto.companyName ?? null,
               isSurprise: dto.isSurprise ?? false,
               category: dto.category ?? null,
@@ -339,6 +340,7 @@ export class PreApprovedEntryService {
       visitorName: entry.visitorName,
       visitorPhone: entry.visitorPhone,
       vehicleLast4Digits: entry.meta?.vehicleLast4Digits,
+      vehicleNumber: entry.meta?.vehicleNumber,
       companyName: entry.meta?.companyName,
       isSurprise: entry.meta?.isSurprise,
       category: entry.meta?.category,
@@ -752,6 +754,7 @@ export class PreApprovedEntryService {
           status: 'CHECKED_IN',
           visitorName: entry.visitorName || accessControlEngine.getDisplayLabel(entry as PreApprovedEntryWithRelations),
           visitorPhone: entry.visitorPhone,
+          vehicleNumber: entry.meta?.vehicleNumber ?? null,
           peopleCount: entry.guestCount ?? 1,
           visitorType: entry.type === 'CAB' ? 'CAB_DRIVER' : entry.type === 'DELIVERY' ? 'DELIVERY_PERSON' : 'SERVICE_PROVIDER',
           companyName: entry.meta?.companyName,

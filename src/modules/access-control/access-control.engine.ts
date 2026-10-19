@@ -572,6 +572,7 @@ export class AccessControlEngine {
       type: entry.type,
       mode: 'SAFE',
       displayLabel: 'Cab Pickup',
+      vehicleNumber: entry.meta?.vehicleNumber ?? null,
       isPrivate: true,
     };
   }
@@ -586,6 +587,8 @@ export class AccessControlEngine {
       type: entry.type,
       mode: entry.mode,
       displayLabel: this.getDisplayLabel(entry),
+      vehicleNumber: entry.meta?.vehicleNumber ?? null,
+      guestCount: entry.guestCount ?? 1,
       isPrivate: false,
       flatId: entry.flat.id,
       flatNumber: entry.flat.flatNumber,

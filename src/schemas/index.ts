@@ -555,6 +555,7 @@ export const createGuestInviteSchema = z.object({
   timeUntil: timeFormatSchema.optional(),
   isPrivate: z.boolean().optional(),
   note: z.string().max(500).optional(),
+  guestCount: z.number().int().min(1).max(20).optional(),
 }).superRefine((data, ctx) => {
   refineInviteWindow(data, ctx);
 
@@ -648,6 +649,7 @@ export const createPreApprovedEntrySchema = z.object({
   graceAfterMinutes: z.number().int().min(0).max(120).optional(),
   // Meta
   vehicleLast4Digits: z.string().length(4).regex(/^\d{4}$/, 'Must be exactly 4 digits').optional(),
+  vehicleNumber: z.string().trim().toUpperCase().max(20).regex(/^[A-Z0-9 -]*$/, 'Letters, digits, space or dash only').optional(),
   companyName: z.string().max(100).optional(),
   isSurprise: z.boolean().optional(),
   category: helpCategoryEnum.optional(),

@@ -36,6 +36,9 @@ interface VerifyCodeResult {
   flatNumber?: string;
   residentName?: string;
   isPrivate?: boolean;
+  /** People coming on this pass (1 = just the named guest) */
+  guestCount?: number;
+  vehicleNumber?: string | null;
   validUntil?: Date;
   reason?: string;
   message?: string;
@@ -384,6 +387,7 @@ export class GateScanService {
           visitorName: invite.visitorName || 'Guest',
           visitorPhone: invite.visitorPhone,
           purpose: invite.note ?? null,
+          peopleCount: invite.guestCount ?? 1,
           wasAutoApproved: true,
           autoApprovalReason: invite.isPrivate ? 'Private guest invite passcode' : 'Guest invite passcode',
           flatId: invite.flatId,
@@ -417,6 +421,7 @@ export class GateScanService {
       inviteType: invite.type,
       visitorName: invite.visitorName,
       visitorPhone: invite.visitorPhone,
+      guestCount: invite.guestCount ?? 1,
       flatId: invite.flatId,
       flatNumber: invite.flat?.flatNumber,
       residentName: invite.resident.name,

@@ -1176,6 +1176,9 @@ model GuestInvite {
   maxUses   Int? // 1 for QUICK/PRIVATE, NULL for FREQUENT (unlimited)
   usedCount Int    @default(0)
 
+  // How many people come on this pass (1 = just the named guest)
+  guestCount Int @default(1)
+
   // Metadata
   note      String?
   isPrivate Boolean @default(false) // true for PRIVATE type (silent entry)
@@ -2738,6 +2741,7 @@ model PreApprovedMeta {
 
   // Cab-specific
   vehicleLast4Digits String? // Last 4 digits for SAFE pickup
+  vehicleNumber      String? // Full plate as the resident typed it (optional)
 
   // Delivery-specific
   companyName String?

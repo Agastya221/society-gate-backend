@@ -977,6 +977,7 @@ export interface CreatePreApprovedEntryDTO {
   graceAfterMinutes?: number;
   // Meta
   vehicleLast4Digits?: string;
+  vehicleNumber?: string;
   companyName?: string;
   isSurprise?: boolean;
   category?: HelpCategory;
@@ -1020,6 +1021,10 @@ export interface PreApprovedValidationResult {
   type?: string;
   mode?: string;
   displayLabel?: string;
+  /** Cab plate the resident typed, when they gave one */
+  vehicleNumber?: string | null;
+  /** People the pass lets in (guests); 1 when not a party */
+  guestCount?: number;
   isPrivate: boolean;
   // Only present when isPrivate = false
   flatId?: string;
