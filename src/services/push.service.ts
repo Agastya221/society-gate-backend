@@ -42,6 +42,51 @@ export const URGENT_CHANNEL_ID = 'gate-alert-v1';
 export const URGENT_SOUND = 'gate_alert';
 const URGENT_VIBRATION_MS = ['0', '700', '300', '700', '300', '700', '300', '700'];
 
+/**
+ * "Call-style" gate alerts: instead of a notification the system draws, the phone gets a data-only message and the
+ * app itself shows a full-screen incoming-visitor alert over the lock screen (with Allow / Decline). It only works
+ * with an app that has that handler, so it is off until GATE_CALL_STYLE=1 is set on the server once the updated
+ * apps are installed. Everything else, and every phone without it, keeps the normal loud notification.
+ */
+export const isCallStyleOn = () => process.env.GATE_CALL_STYLE === '1';
+
+export function buildPushMessage(
+  alert: { title: string; body: string; data: Record<string, string>; urgent: boolean },
+  tokens: string[],
+) {
+  if (alert.urgent && alert.data.type === 'GATE_REQUEST' && isCallStyleOn()) {
+    return {
+      // No `notification` block: the app receives this in the background and draws the call-style alert itself
+      data: { ...alert.data, urgent: '1', callStyle: '1', title: alert.title, body: alert.body },
+      tokens,
+      android: { priority: 'high' as const, ttl: 60_000 },
+    };
+  }
+  return {
+    notification: { title: alert.title, body: alert.body },
+    data: alert.urgent ? { ...alert.data, urgent: '1' } : alert.data,
+    tokens,
+    android: alert.urgent
+      ? {
+          // Wake the phone now and drop it if it can't be delivered within a minute: a gate
+          // request that arrives ten minutes late is worse than none.
+          priority: 'high' as const,
+          ttl: 60_000,
+          notification: {
+            channelId: URGENT_CHANNEL_ID,
+            sound: URGENT_SOUND,
+            priority: 'max' as const,
+            visibility: 'public' as const,
+            defaultSound: false,
+            defaultVibrateTimings: false,
+            vibrateTimingsMillis: URGENT_VIBRATION_MS.map(Number),
+            ...(alert.data.entryRequestId ? { tag: `gate-${alert.data.entryRequestId}` } : {}),
+          },
+        }
+      : { priority: 'high' as const },
+  };
+}
+
 class PushService {
   async sendToStaff(domesticStaffId: string, payload: PushPayload): Promise<void> {
     try {
@@ -178,29 +223,7 @@ class PushService {
     alert: { title: string; body: string; data: Record<string, string>; urgent: boolean },
     kind: AlertTarget
   ): Promise<void> {
-    const message = {
-      notification: { title: alert.title, body: alert.body },
-      data: alert.urgent ? { ...alert.data, urgent: '1' } : alert.data,
-      tokens: targets.map((t) => t.fcmToken!) as string[],
-      android: alert.urgent
-        ? {
-            // Wake the phone now and drop it if it can't be delivered within a minute: a gate
-            // request that arrives ten minutes late is worse than none.
-            priority: 'high' as const,
-            ttl: 60_000,
-            notification: {
-              channelId: URGENT_CHANNEL_ID,
-              sound: URGENT_SOUND,
-              priority: 'max' as const,
-              visibility: 'public' as const,
-              defaultSound: false,
-              defaultVibrateTimings: false,
-              vibrateTimingsMillis: URGENT_VIBRATION_MS.map(Number),
-              ...(alert.data.entryRequestId ? { tag: `gate-${alert.data.entryRequestId}` } : {}),
-            },
-          }
-        : { priority: 'high' as const },
-    };
+    const message = buildPushMessage(alert, targets.map((t) => t.fcmToken!) as string[]);
 
     try {
       const batchResponse = await getMessaging().sendEachForMulticast(message);
