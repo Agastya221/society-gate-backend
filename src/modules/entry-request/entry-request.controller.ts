@@ -280,3 +280,12 @@ export const moveEntryRequest = async (req: Request, res: Response) => {
     res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
   }
 };
+
+export const revokeEntryRequest = async (req: Request, res: Response) => {
+  try {
+    const result = await entryRequestService.revokeEntryRequest(String(req.params.id), req.user!.id);
+    res.status(200).json({ success: true, message: 'Approval withdrawn. The guard has been told.', data: result });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
+  }
+};

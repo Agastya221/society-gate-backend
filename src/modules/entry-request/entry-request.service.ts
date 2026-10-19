@@ -40,6 +40,7 @@ export const ENTRY_REQUEST_STOPPED_REASON = 'Stopped by guard';
 export const ENTRY_REQUEST_LEFT_REASON = 'Visitor left before entering';
 export const ENTRY_REQUEST_APPROVAL_EXPIRED_REASON = 'Approval expired before arrival';
 export const ENTRY_REQUEST_MOVED_REASON = 'Sent to another flat';
+export const ENTRY_REQUEST_REVOKED_REASON = 'Approval withdrawn by resident';
 
 /** Stops the guard made themselves — the guard already knows, so the gate queue hides them. */
 const GUARD_OWN_STOP_REASONS = [
@@ -676,6 +677,58 @@ export class EntryRequestService {
     });
 
     return this.formatEntryRequest(updatedRequest);
+  }
+
+  // ============================================
+  // REVOKE (undo) an approval: the resident changed their mind before the guard let the visitor in.
+  // Only while the request is APPROVED and not yet admitted; the guard is told at once.
+  // ============================================
+  async revokeEntryRequest(entryRequestId: string, userId: string) {
+    const entryRequest = await prisma.entryRequest.findUnique({ where: { id: entryRequestId }, include: this.getInclude() });
+    if (!entryRequest) throw new AppError('Entry request not found', 404);
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, role: true, societyId: true, flatId: true, flatMemberships: { where: { isActive: true, flatId: { not: null } }, select: { flatId: true } } },
+    });
+    if (!user) throw new AppError('User not found', 404);
+    const targetInfos = this.getTargetInfos(entryRequest);
+    const flatIds = this.getUserFlatIds(user);
+    if (!targetInfos.some((target) => flatIds.includes(target.flatId))) {
+      throw new AppError('Only residents of this flat can withdraw an approval', 403);
+    }
+    if (entryRequest.status !== 'APPROVED' || entryRequest.entryId) {
+      throw new AppError('This visitor has already been let in, or the request is closed', 409);
+    }
+
+    const changed = await prisma.entryRequest.updateMany({
+      where: { id: entryRequestId, status: 'APPROVED', entryId: null },
+      data: { status: 'REJECTED', rejectedAt: new Date(), rejectionReason: ENTRY_REQUEST_REVOKED_REASON },
+    });
+    if (changed.count !== 1) throw new AppError('This visitor has already been let in, or the request is closed', 409);
+    const updated = await prisma.entryRequest.findUniqueOrThrow({ where: { id: entryRequestId }, include: this.getInclude() });
+
+    emitToUser(entryRequest.guardId, SOCKET_EVENTS.ENTRY_REQUEST_STATUS, {
+      id: entryRequestId,
+      status: 'REJECTED',
+      flatNumber: this.getFlatLabelList(targetInfos),
+      flatIds: targetInfos.map((target) => target.flatId),
+      reason: ENTRY_REQUEST_REVOKED_REASON,
+    });
+    eventBus.emit('entry-request.rejected', {
+      entryRequestId,
+      flatId: entryRequest.flatId,
+      flatIds: targetInfos.map((target) => target.flatId),
+      flats: targetInfos,
+      societyId: entryRequest.societyId,
+      guardId: entryRequest.guardId,
+      visitorName: entryRequest.visitorName || 'Visitor',
+      visitorType: entryRequest.type,
+      rejectedById: userId,
+      rejectedByName: user.name ?? 'A resident',
+      reason: ENTRY_REQUEST_REVOKED_REASON,
+    });
+    return this.formatEntryRequest(updated);
   }
 
   // ============================================

@@ -10,6 +10,7 @@ import {
   rejectEntryRequest,
   cancelEntryRequest,
   moveEntryRequest,
+  revokeEntryRequest,
   getPendingCount,
   getGateQueue,
 } from './entry-request.controller';
@@ -41,6 +42,7 @@ router.get('/:id', validate({ params: idParams }), getEntryRequestById);
 router.get('/:id/photo', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), validate({ params: idParams }), getEntryRequestPhoto);
 // GUARD: "Allow Anyway" / "Turn Away" overrides — the service scopes guards to their own society
 router.patch('/:id/approve', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'), requireGuardAtGate('Approve a visitor yourself'), validate({ params: idParams, body: approveEntryRequestSchema }), clearCacheAfter(['entry-requests:*', 'entries:*']), approveEntryRequest);
+router.patch('/:id/revoke', authorize('RESIDENT', 'ADMIN', 'SUPER_ADMIN'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*', 'entries:*']), revokeEntryRequest);
 router.patch('/:id/move', authorize('GUARD'), requireGuardAtGate('Send a request to another flat'), validate({ params: idParams, body: moveEntryRequestSchema }), clearCacheAfter(['entry-requests:*']), moveEntryRequest);
 router.patch('/:id/admit', authorize('GUARD'), requireGuardAtGate('Let a visitor in'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*', 'entries:*']), admitEntryRequest);
 router.patch('/:id/no-show', authorize('GUARD'), requireGuardAtGate('Clear a visitor who left'), validate({ params: idParams }), clearCacheAfter(['entry-requests:*']), markEntryRequestNoShow);
