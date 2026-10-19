@@ -555,6 +555,7 @@ model Society {
   trustedVisitors TrustedVisitor[]
   geofenceViolations GeofenceViolation[]
   guardDuties GuardDuty[]
+  guardShifts GuardShift[]
 }
 
 // --------------------
@@ -718,6 +719,25 @@ model SocietyRegistrationRequest {
 // --------------------
 
 // A guard action that was refused because the phone was not at the gate (or location was off / faked)
+// A shift the admin defines (e.g. Morning 06:00-14:00); guards are assigned to one, and attendance flags late arrival / early leave
+model GuardShift {
+  id String @id @default(uuid())
+
+  name         String
+  startTime    String // HH:MM, 24 hour
+  endTime      String // HH:MM; earlier than startTime means the shift ends the next morning
+  graceMinutes Int    @default(15)
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  guards User[] @relation("GuardShiftGuards")
+
+  createdAt DateTime @default(now())
+
+  @@index([societyId])
+}
+
 // A guard's shift: started from the gate, ended by the guard (or automatically after 16 hours)
 model GuardDuty {
   id String @id @default(uuid())
@@ -999,6 +1019,8 @@ model User {
   trustedVisitorsCreated TrustedVisitor[] @relation("TrustedVisitorCreator")
   geofenceViolations GeofenceViolation[] @relation("GeofenceViolationGuard")
   guardDuties GuardDuty[] @relation("GuardDutyGuard")
+  guardShiftId String?
+  guardShift   GuardShift? @relation("GuardShiftGuards", fields: [guardShiftId], references: [id], onDelete: SetNull)
 }
 
 model PlatformAuditLog {

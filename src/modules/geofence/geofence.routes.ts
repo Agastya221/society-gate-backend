@@ -111,4 +111,62 @@ router.get('/attendance', async (req: Request, res: Response) => {
   res.json({ success: true, data: await monthlyAttendance(req.user!.societyId!, month) });
 });
 
+// ---- Shift times (set by the admin) ----
+const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Use HH:MM, for example 06:00');
+const shiftBody = z.object({
+  name: z.string().trim().min(1).max(40),
+  startTime: hhmm,
+  endTime: hhmm,
+  graceMinutes: z.number().int().min(0).max(120).optional(),
+});
+const shiftSelect = {
+  id: true, name: true, startTime: true, endTime: true, graceMinutes: true,
+  guards: { select: { id: true, name: true } },
+} as const;
+
+router.get('/shifts', async (req: Request, res: Response) => {
+  const societyId = req.user!.societyId!;
+  const shifts = await prisma.guardShift.findMany({ where: { societyId }, orderBy: { startTime: 'asc' }, select: shiftSelect });
+  const guards = await prisma.user.findMany({
+    where: { societyId, role: 'GUARD', isActive: true }, select: { id: true, name: true, guardShiftId: true }, orderBy: { name: 'asc' },
+  });
+  res.json({ success: true, data: { shifts, guards } });
+});
+
+router.post('/shifts', validate({ body: shiftBody }), async (req: Request, res: Response) => {
+  const created = await prisma.guardShift.create({
+    data: { societyId: req.user!.societyId!, name: req.body.name, startTime: req.body.startTime, endTime: req.body.endTime, graceMinutes: req.body.graceMinutes ?? 15 },
+    select: shiftSelect,
+  });
+  res.status(201).json({ success: true, message: 'Shift saved', data: created });
+});
+
+router.put('/shifts/:id', validate({ params: idParams, body: shiftBody }), async (req: Request, res: Response) => {
+  const done = await prisma.guardShift.updateMany({
+    where: { id: req.params.id as string, societyId: req.user!.societyId! },
+    data: { name: req.body.name, startTime: req.body.startTime, endTime: req.body.endTime, ...(req.body.graceMinutes !== undefined ? { graceMinutes: req.body.graceMinutes } : {}) },
+  });
+  if (done.count === 0) return res.status(404).json({ success: false, message: 'Shift not found' });
+  return res.json({ success: true, message: 'Shift saved' });
+});
+
+router.delete('/shifts/:id', validate({ params: idParams }), async (req: Request, res: Response) => {
+  const done = await prisma.guardShift.deleteMany({ where: { id: req.params.id as string, societyId: req.user!.societyId! } });
+  if (done.count === 0) return res.status(404).json({ success: false, message: 'Shift not found' });
+  return res.json({ success: true, message: 'Shift removed. Its guards have no scheduled shift now.' });
+});
+
+// Exactly these guards work this shift (a guard has one shift at a time)
+router.put('/shifts/:id/guards', validate({ params: idParams, body: z.object({ guardIds: z.array(z.string().uuid()).max(100) }) }), async (req: Request, res: Response) => {
+  const societyId = req.user!.societyId!;
+  const shift = await prisma.guardShift.findFirst({ where: { id: req.params.id as string, societyId }, select: { id: true } });
+  if (!shift) return res.status(404).json({ success: false, message: 'Shift not found' });
+  const guardIds: string[] = req.body.guardIds;
+  await prisma.$transaction([
+    prisma.user.updateMany({ where: { societyId, role: 'GUARD', guardShiftId: shift.id, id: { notIn: guardIds } }, data: { guardShiftId: null } }),
+    prisma.user.updateMany({ where: { societyId, role: 'GUARD', id: { in: guardIds } }, data: { guardShiftId: shift.id } }),
+  ]);
+  return res.json({ success: true, message: 'Guards updated' });
+});
+
 export default router;

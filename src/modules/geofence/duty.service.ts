@@ -71,6 +71,49 @@ export async function listShifts(societyId: string, limit = 30) {
   }));
 }
 
+export interface ShiftSchedule {
+  name: string;
+  startTime: string;
+  endTime: string;
+  graceMinutes: number;
+}
+
+const toMinutes = (hhmm: string) => {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h * 60 + m;
+};
+
+/**
+ * Compares one real shift with the guard's scheduled shift. The scheduled start is the one closest to when the
+ * guard actually started (today's, yesterday's or tomorrow's), and only counts when it is within 6 hours: a guard who
+ * works at some other time is simply not flagged. Late / early only count beyond the grace minutes.
+ */
+export function compareWithSchedule(startedAt: Date, endedAt: Date | null, endedBy: string | null, schedule: ShiftSchedule | null) {
+  if (!schedule) return { scheduledStart: null, scheduledEnd: null, lateMinutes: 0, earlyMinutes: 0 };
+  const startMinutes = toMinutes(schedule.startTime);
+  let length = toMinutes(schedule.endTime) - startMinutes;
+  if (length <= 0) length += 24 * 60;
+
+  let best: Date | null = null;
+  for (const dayShift of [-1, 0, 1]) {
+    const candidate = new Date(startedAt.getFullYear(), startedAt.getMonth(), startedAt.getDate() + dayShift, 0, startMinutes);
+    if (!best || Math.abs(candidate.getTime() - startedAt.getTime()) < Math.abs(best.getTime() - startedAt.getTime())) best = candidate;
+  }
+  if (!best || Math.abs(best.getTime() - startedAt.getTime()) > 6 * 3_600_000) {
+    return { scheduledStart: null, scheduledEnd: null, lateMinutes: 0, earlyMinutes: 0 };
+  }
+  const scheduledEnd = new Date(best.getTime() + length * 60_000);
+  const lateBy = Math.round((startedAt.getTime() - best.getTime()) / 60_000);
+  // An auto-closed shift is not "left early": the guard just forgot to end it
+  const earlyBy = endedAt && endedBy === 'GUARD' ? Math.round((scheduledEnd.getTime() - endedAt.getTime()) / 60_000) : 0;
+  return {
+    scheduledStart: best,
+    scheduledEnd,
+    lateMinutes: lateBy > schedule.graceMinutes ? lateBy : 0,
+    earlyMinutes: earlyBy > schedule.graceMinutes ? earlyBy : 0,
+  };
+}
+
 const pad = (n: number) => String(n).padStart(2, '0');
 const dayKey = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
@@ -88,7 +131,7 @@ export async function monthlyAttendance(societyId: string, month: string) {
   const [guards, shifts] = await Promise.all([
     prisma.user.findMany({
       where: { societyId, role: 'GUARD', isActive: true },
-      select: { id: true, name: true, phone: true },
+      select: { id: true, name: true, phone: true, guardShift: { select: { name: true, startTime: true, endTime: true, graceMinutes: true } } },
       orderBy: { name: 'asc' },
     }),
     prisma.guardDuty.findMany({
@@ -102,16 +145,21 @@ export async function monthlyAttendance(societyId: string, month: string) {
   return {
     month,
     guards: guards.map((guard) => {
-      const mine = shifts.filter((s) => s.guardId === guard.id).map((s) => ({
-        id: s.id,
-        date: dayKey(s.startedAt),
-        startedAt: s.startedAt,
-        endedAt: s.endedAt,
-        endedBy: s.endedBy,
-        gate: s.gatePoint?.name ?? null,
-        minutes: Math.max(0, Math.round(((s.endedAt?.getTime() ?? now) - s.startedAt.getTime()) / 60000)),
-        onDuty: s.endedAt === null,
-      }));
+      const mine = shifts.filter((s) => s.guardId === guard.id).map((s) => {
+        const flags = compareWithSchedule(s.startedAt, s.endedAt, s.endedBy, guard.guardShift);
+        return {
+          id: s.id,
+          date: dayKey(s.startedAt),
+          startedAt: s.startedAt,
+          endedAt: s.endedAt,
+          endedBy: s.endedBy,
+          gate: s.gatePoint?.name ?? null,
+          minutes: Math.max(0, Math.round(((s.endedAt?.getTime() ?? now) - s.startedAt.getTime()) / 60000)),
+          onDuty: s.endedAt === null,
+          lateMinutes: flags.lateMinutes,
+          earlyMinutes: flags.earlyMinutes,
+        };
+      });
       return {
         guardId: guard.id,
         name: guard.name,
@@ -119,6 +167,9 @@ export async function monthlyAttendance(societyId: string, month: string) {
         daysPresent: new Set(mine.map((s) => s.date)).size,
         totalMinutes: mine.reduce((sum, s) => sum + s.minutes, 0),
         shiftCount: mine.length,
+        scheduledShift: guard.guardShift ? { name: guard.guardShift.name, startTime: guard.guardShift.startTime, endTime: guard.guardShift.endTime } : null,
+        lateCount: mine.filter((x) => x.lateMinutes > 0).length,
+        earlyCount: mine.filter((x) => x.earlyMinutes > 0).length,
         onDutyNow: mine.some((s) => s.onDuty),
         shifts: mine,
       };
