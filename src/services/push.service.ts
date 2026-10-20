@@ -42,10 +42,26 @@ export const URGENT_CHANNEL_ID = 'gate-alert-v1';
 export const URGENT_SOUND = 'gate_alert';
 const URGENT_VIBRATION_MS = ['0', '700', '300', '700', '300', '700', '300', '700'];
 
+/**
+ * "Call-style" gate alerts: instead of a notification the system draws, the phone gets a data-only message and the
+ * app itself shows a full-screen incoming-visitor alert over the lock screen (with Allow / Decline). It only works
+ * with an app that has that handler, so it is off until GATE_CALL_STYLE=1 is set on the server once the updated
+ * apps are installed. Everything else, and every phone without it, keeps the normal loud notification.
+ */
+export const isCallStyleOn = () => process.env.GATE_CALL_STYLE === '1';
+
 export function buildPushMessage(
   alert: { title: string; body: string; data: Record<string, string>; urgent: boolean },
   tokens: string[],
 ) {
+  if (alert.urgent && alert.data.type === 'GATE_REQUEST' && isCallStyleOn()) {
+    return {
+      // No `notification` block: the app receives this in the background and draws the call-style alert itself
+      data: { ...alert.data, urgent: '1', callStyle: '1', title: alert.title, body: alert.body },
+      tokens,
+      android: { priority: 'high' as const, ttl: 60_000 },
+    };
+  }
   return {
     notification: { title: alert.title, body: alert.body },
     data: alert.urgent ? { ...alert.data, urgent: '1' } : alert.data,
