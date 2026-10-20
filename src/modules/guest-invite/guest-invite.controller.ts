@@ -9,7 +9,7 @@ export const createGuestInvite = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     // Explicit allow-list (never spread req.body into the DTO)
-    const { type, visitorName, visitorPhone, validFrom, validUntil, allowedDays, timeFrom, timeUntil, isPrivate, note } = req.body;
+    const { type, visitorName, visitorPhone, validFrom, validUntil, allowedDays, timeFrom, timeUntil, isPrivate, note, guestCount } = req.body;
     const invite = await service.create(userId, {
       type,
       visitorName,
@@ -21,6 +21,7 @@ export const createGuestInvite = async (req: Request, res: Response) => {
       timeUntil,
       isPrivate,
       note,
+      guestCount,
     });
 
     res.status(201).json({ success: true, data: invite });
