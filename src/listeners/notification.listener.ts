@@ -306,6 +306,7 @@ eventBus.on('entry-request.created', async (payload) => {
         flatIds: payload.flatIds.join(','),
         visitorName: payload.visitorName ?? '',
         peopleCount: String(payload.peopleCount ?? 1),
+        requestType: payload.type,
       },
     }).catch((err) => logger.error({ err }, 'Push failed: entry-request.created'));
   } catch (error) {
