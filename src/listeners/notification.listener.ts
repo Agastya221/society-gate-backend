@@ -44,6 +44,7 @@ eventBus.on('entry-request.approved', async (payload) => {
     }, { excludeUserIds: [payload.approvedById] });
 
     pushService.sendToFlats(payload.flatIds, {
+      urgent: false, // an update for the resident: quiet default notification, not the loud ring
       title,
       body,
       data: {
@@ -87,6 +88,7 @@ eventBus.on('entry-request.admitted', async (payload) => {
       societyId: payload.societyId,
     });
     pushService.sendToFlats([payload.flatId], {
+      urgent: false, // an update for the resident: quiet default notification, not the loud ring
       title: 'Visitor entered', body,
       data: { type: 'GATE_APPROVED', screen: 'EntryRequest', requestId: payload.entryRequestId, entryRequestId: payload.entryRequestId },
     }).catch((err) => logger.error({ err }, 'Push failed: entry-request.admitted'));
@@ -123,6 +125,7 @@ eventBus.on('entry-request.rejected', async (payload) => {
     }, { excludeUserIds: [payload.rejectedById] });
 
     pushService.sendToFlats(payload.flatIds, {
+      urgent: false, // an update for the resident: quiet default notification, not the loud ring
       title,
       body,
       data: {
@@ -173,6 +176,7 @@ eventBus.on('entry-request.no-show', async (payload) => {
     });
 
     pushService.sendToFlats(payload.flatIds, {
+      urgent: false, // an update for the resident: quiet default notification, not the loud ring
       title,
       body,
       data: {
@@ -216,6 +220,7 @@ eventBus.on('entry-request.approval-expired', async (payload) => {
     });
 
     pushService.sendToFlats(payload.flatIds, {
+      urgent: false, // an update for the resident: quiet default notification, not the loud ring
       title,
       body,
       data: {
