@@ -386,6 +386,8 @@ export class OnboardingService {
       flatId: string;
       residentType: 'OWNER' | 'TENANT';
       isLivingHere?: boolean;
+      /** Fills the account's name when it has none yet (never renames an account that has one) */
+      name?: string;
       documents: Array<{
         type: DocumentType;
         url?: string;
@@ -501,6 +503,10 @@ export class OnboardingService {
 
     // 4. Create onboarding request with documents
     const request = await prisma.$transaction(async (tx: TransactionClient) => {
+      if (data.name) {
+        await tx.user.updateMany({ where: { id: userId, name: '' }, data: { name: data.name } });
+      }
+
       const onboardingRequest = await tx.onboardingRequest.create({
         data: {
           userId,

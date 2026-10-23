@@ -63,6 +63,16 @@ export class OnboardingController {
             throw new AppError('Missing required fields', 400);
         }
 
+        // Optional: the app asks for it when the account has no name yet, so the admin can see who is applying
+        let name: string | undefined;
+        if (req.body.name !== undefined && req.body.name !== null && req.body.name !== '') {
+            const typed: string = typeof req.body.name === 'string' ? req.body.name.trim() : '';
+            if (typed.length < 2 || typed.length > 80) {
+                throw new AppError('Name must be between 2 and 80 characters', 400);
+            }
+            name = typed;
+        }
+
         if (!['OWNER', 'TENANT'].includes(residentType)) {
             throw new AppError('Invalid resident type. Must be OWNER or TENANT', 400);
         }
@@ -77,6 +87,7 @@ export class OnboardingController {
             flatId,
             residentType,
             isLivingHere: typeof isLivingHere === 'boolean' ? isLivingHere : undefined,
+            name,
             documents,
         });
 
