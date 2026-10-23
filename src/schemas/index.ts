@@ -825,6 +825,13 @@ export const adminCreateResidentSchema = z.object({
   residentType: z.enum(['OWNER', 'TENANT', 'FAMILY']),
 });
 
+export const adminHandoffSchema = z.object({
+  phone: z.string().trim()
+    .regex(/^(\+91|91|0)?[6-9]\d{9}$/, 'Enter a valid 10-digit Indian mobile number')
+    .transform((value) => value.slice(-10)),
+  name: z.string().trim().min(2, 'Name must be at least 2 characters').max(80, 'Name must be at most 80 characters'),
+});
+
 export const adminResidentMembershipParams = z.object({ membershipId: uuidSchema });
 
 export { idParams, paginationQuery, uuidSchema, phoneSchema };

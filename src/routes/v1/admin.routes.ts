@@ -21,6 +21,7 @@ import {
   createAdminResident,
   removeAdminResident,
 } from '../../modules/admin/admin-residents.controller';
+import { handoffAdmin } from '../../modules/admin/admin-handoff.controller';
 import {
   listForAdmin,
   adminCancelEntry,
@@ -43,6 +44,7 @@ import {
   adminResidentsQuerySchema,
   adminCreateResidentSchema,
   adminResidentMembershipParams,
+  adminHandoffSchema,
 } from '../../schemas';
 
 const router = Router();
@@ -188,6 +190,17 @@ router.delete(
   validate({ params: adminResidentMembershipParams }),
   clearCacheAfter(RESIDENT_CACHE_PATTERNS),
   removeAdminResident,
+);
+
+// ---- Hand the admin role to another number (the society admin himself, no super admin) ----
+// POST /api/v1/admin/handoff { phone, name }
+router.post(
+  '/handoff',
+  authenticate,
+  authorize('ADMIN'),
+  validate({ body: adminHandoffSchema }),
+  clearCacheAfter([...RESIDENT_CACHE_PATTERNS, 'user:*']),
+  handoffAdmin,
 );
 
 // ---- Pre-approved entry oversight ----
