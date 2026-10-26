@@ -19,7 +19,8 @@ export function getEmergencySeverity(type: string): EmergencySeverity {
 }
 
 export class EmergencyService {
-  async createEmergency(input: CreateEmergencyInput, reportedById: string, societyId: string) {
+  /** actingAs: set to 'GUARD' by the guard app, so a guard who also lives here is not treated as a resident. */
+  async createEmergency(input: CreateEmergencyInput, reportedById: string, societyId: string, actingAs?: 'GUARD') {
     // Allow-listed fields only; society always comes from the caller's context.
     const data = { ...input, societyId };
 
@@ -31,7 +32,9 @@ export class EmergencyService {
       select: { flatId: true, role: true },
     });
 
-    if (reporter?.role === 'RESIDENT') {
+    const reporterRole = actingAs ?? reporter?.role;
+
+    if (reporterRole === 'RESIDENT') {
       const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
       const recentActive = await prisma.emergency.findFirst({
         where: {
@@ -49,11 +52,11 @@ export class EmergencyService {
       }
     }
 
-    if (reporter?.role === 'RESIDENT') {
+    if (reporterRole === 'RESIDENT') {
       // Residents can only raise an SOS for their own flat — a client flatId is ignored.
-      data.flatId = reporter.flatId ?? undefined;
-    } else if (!data.flatId && reporter?.flatId) {
-      // Staff: auto-attach own flat if frontend didn't send one
+      data.flatId = reporter?.flatId ?? undefined;
+    } else if (!data.flatId && reporter?.flatId && reporterRole !== 'GUARD') {
+      // Staff: auto-attach own flat if frontend didn't send one (never for a guard, who may live here too)
       data.flatId = reporter.flatId;
     }
 
@@ -79,7 +82,10 @@ export class EmergencyService {
       },
     });
 
-    const severity = getEmergencySeverity(emergency.type);
+    // An emergency raised by the gate or the admin goes to everyone, whatever its kind: there is no "own block"
+    // to limit it to, and the guard's screen promises that every resident is told.
+    const staffRaised = reporterRole === 'GUARD' || reporterRole === 'ADMIN' || reporterRole === 'SUPER_ADMIN';
+    const severity = staffRaised ? 'CRITICAL' : getEmergencySeverity(emergency.type);
 
     // ARCH-3: Emit event — listener handles notifications, socket broadcast, alert tracking
     eventBus.emit('emergency.created', {

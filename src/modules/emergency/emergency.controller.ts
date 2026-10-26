@@ -9,7 +9,8 @@ const emergencyService = new EmergencyService();
 export const createEmergency = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const emergency = await emergencyService.createEmergency(req.body, userId, getSocietyId(req));
+    const actingAs = res.locals.authAppType === 'GUARD_APP' && req.user!.role === 'GUARD' ? 'GUARD' : undefined;
+    const emergency = await emergencyService.createEmergency(req.body, userId, getSocietyId(req), actingAs);
 
     res.status(201).json({
       success: true,
