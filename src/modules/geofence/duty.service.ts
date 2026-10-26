@@ -177,3 +177,31 @@ export async function monthlyAttendance(societyId: string, month: string) {
     }),
   };
 }
+
+/**
+ * One guard's own month, for the guard app: the same numbers the admin sees (it reuses monthlyAttendance), plus the
+ * scheduled shift so the guard can see what time they are expected. Always answers, even with no shifts yet.
+ */
+export async function myAttendance(guardId: string, societyId: string, month: string) {
+  const report = await monthlyAttendance(societyId, month);
+  const mine = report.guards.find((g) => g.guardId === guardId);
+  if (mine) {
+    const { guardId: _guardId, name: _name, phone: _phone, ...rest } = mine;
+    return { month, ...rest };
+  }
+  const guard = await prisma.user.findUnique({
+    where: { id: guardId },
+    select: { guardShift: { select: { name: true, startTime: true, endTime: true } } },
+  });
+  return {
+    month,
+    daysPresent: 0,
+    totalMinutes: 0,
+    shiftCount: 0,
+    scheduledShift: guard?.guardShift ?? null,
+    lateCount: 0,
+    earlyCount: 0,
+    onDutyNow: false,
+    shifts: [] as Array<never>,
+  };
+}

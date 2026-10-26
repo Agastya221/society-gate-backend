@@ -9,6 +9,7 @@ import { UserService } from '../src/modules/user/user.service';
 import { generateAccessToken, generateRefreshToken, hashToken, verifyAccessTokenForUser } from '../src/services/token.service';
 import { findGuardPost, guardUsersWhere, societyStaffWhere, withGuardPost } from '../src/utils/guard-access';
 import { adminResidentsService } from '../src/modules/admin/admin-residents.service';
+import { myAttendance } from '../src/modules/geofence/duty.service';
 
 const users = new UserService();
 let failed = 0;
@@ -109,8 +110,19 @@ const [ADMIN_PHONE, RESIDENT_PHONE, OLD_GUARD_PHONE, OUTSIDER_PHONE] = PHONES;
     check('the guard app still lets them in as a GUARD', (await verifyAccessTokenForUser(generateAccessToken(plain.id, 'GUARD', societyId, null, 'GUARD_APP'))).user.role === 'GUARD');
     check('the resident app works for them as a RESIDENT', (await verifyAccessTokenForUser(generateAccessToken(plain.id, 'RESIDENT', societyId, flat2.id, 'RESIDENT_APP'))).user.role === 'RESIDENT');
     check('they are still on the guard list', (await users.getGuards(societyId)).some((x) => x.id === plain.id));
+
+    // ---- 8. the guard's own shift and attendance ----
+    const today = new Date();
+    const monthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+    await prisma.guardDuty.create({ data: { guardId: resident.id, societyId, startedAt: new Date(today.getTime() - 60_000), endedAt: null } });
+    const mine = await myAttendance(resident.id, societyId, monthKey);
+    check('my attendance shows my own shift and that I am on duty', mine.shiftCount === 1 && mine.daysPresent === 1 && mine.onDutyNow === true && mine.shifts.length === 1);
+    const nobody = await myAttendance(plain.id, societyId, monthKey);
+    check('a guard with no shifts yet still gets an empty month, not an error', nobody.shiftCount === 0 && nobody.daysPresent === 0 && nobody.shifts.length === 0);
+    check('it only lists my own shifts', mine.shifts.every((x: { id: string }) => !!x.id) && nobody.shifts.length === 0);
   } finally {
     const ids = (await prisma.user.findMany({ where: { phone: { in: PHONES } }, select: { id: true } })).map((u) => u.id);
+    await prisma.guardDuty.deleteMany({ where: { societyId } });
     await prisma.userFlatMembership.deleteMany({ where: { OR: [{ userId: { in: ids } }, { societyId }] } });
     await prisma.user.updateMany({ where: { id: { in: ids } }, data: { flatId: null } });
     await prisma.flat.deleteMany({ where: { societyId } });

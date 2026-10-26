@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authenticateGuardApp } from '../../middlewares/auth.middleware';
 import { requireGuardAtGate } from '../../modules/geofence/geofence.middleware';
 import { evaluate, getGateLocations, readingFromHeaders } from '../../modules/geofence/geofence.service';
-import { currentDuty, endDuty, startDuty } from '../../modules/geofence/duty.service';
+import { currentDuty, endDuty, myAttendance, startDuty } from '../../modules/geofence/duty.service';
 import {
   createEntryRequest,
   getPendingCount,
@@ -105,6 +105,15 @@ router.post('/duty/start', requireGuardAtGate('Start duty', { needsDuty: false }
 router.post('/duty/end', async (req, res) => {
   await endDuty(req.user!.id);
   res.json({ success: true, message: 'Duty ended', data: { duty: null } });
+});
+
+// The guard's own month: days on duty, hours, late / early flags and every shift (?month=YYYY-MM, default this month)
+router.get('/attendance/me', async (req, res) => {
+  const now = new Date();
+  const fallback = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const asked = typeof req.query.month === 'string' ? req.query.month : fallback;
+  const month = /^\d{4}-(0[1-9]|1[0-2])$/.test(asked) ? asked : fallback;
+  res.json({ success: true, data: await myAttendance(req.user!.id, req.user!.societyId!, month) });
 });
 
 // Is this phone at the gate right now? (the guard app shows it as a chip; nothing is recorded)
