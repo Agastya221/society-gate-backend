@@ -11,6 +11,7 @@ import { ENTRY_REQUEST_APPROVAL_EXPIRED_REASON } from '../modules/entry-request/
 import type { PreApprovedEntryWithRelations } from '../types';
 import logger from '../utils/logger';
 import { clearCacheByPattern } from '../middlewares/cache.middleware';
+import { remindOverstayingDeliveries } from '../modules/gate-scan/overstay.service';
 
 const emergencyService = new EmergencyService();
 const domesticStaffService = new DomesticStaffService();
@@ -442,6 +443,7 @@ cron.schedule('*/5 * * * *', expirePreApprovedEntries);
 cron.schedule('* * * * *', releaseStaleEntryLocks);
 cron.schedule('*/10 * * * *', notifyExpiringEntries);
 cron.schedule('*/30 * * * *', autoCheckoutStaleStaff);
+cron.schedule('* * * * *', () => { void remindOverstayingDeliveries(); });
 cron.schedule('*/15 * * * *', completePastStaffBookings);
 cron.schedule('*/15 * * * *', async () => {
   try {

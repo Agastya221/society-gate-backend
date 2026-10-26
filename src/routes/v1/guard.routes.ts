@@ -3,6 +3,7 @@ import { authenticateGuardApp } from '../../middlewares/auth.middleware';
 import { requireGuardAtGate } from '../../modules/geofence/geofence.middleware';
 import { evaluate, getGateLocations, readingFromHeaders } from '../../modules/geofence/geofence.service';
 import { currentDuty, endDuty, myAttendance, startDuty } from '../../modules/geofence/duty.service';
+import { flatContact, nudgeFlat } from '../../modules/gate-scan/overstay.service';
 import {
   createEntryRequest,
   getPendingCount,
@@ -53,6 +54,22 @@ router.get('/pending-count', getPendingCount);
 // ============================================
 // ENTRY MANAGEMENT
 // ============================================
+// Delivery watch: poke the flat about someone who has been inside a while, or get who to call
+router.post('/entries/:id/nudge', validate({ params: idParams }), async (req, res, next) => {
+  try {
+    const data = await nudgeFlat(String(req.params.id), req.user!.societyId!);
+    res.json({ success: true, message: 'Flat poked', data });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get('/entries/:id/contact', validate({ params: idParams }), async (req, res, next) => {
+  try {
+    res.json({ success: true, data: await flatContact(String(req.params.id), req.user!.societyId!, req.user!.id) });
+  } catch (error) {
+    next(error);
+  }
+});
 router.patch('/entries/:id/checkout', requireGuardAtGate('Record exit'), validate({ body: checkoutEntrySchema }), checkoutEntry);
 router.get('/entries', getEntries);
 

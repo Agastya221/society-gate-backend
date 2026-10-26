@@ -1138,6 +1138,10 @@ model Entry {
   remarks         String?
   rejectionReason String?
 
+  // Delivery watch: when the guards were last reminded that this person has been inside too long, and when the flat was last poked
+  overstayAlertedAt DateTime?
+  lastNudgeAt       DateTime?
+
   // Entry Request reference (if created from EntryRequest approval)
   entryRequest        EntryRequest?
   entryRequestTargets EntryRequestTarget[]
