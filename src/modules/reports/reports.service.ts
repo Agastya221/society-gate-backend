@@ -1,4 +1,5 @@
 import { prisma } from '../../utils/Client';
+import { guardUsersWhere } from '../../utils/guard-access';
 
 export class ReportsService {
   // Dashboard overview stats
@@ -21,7 +22,7 @@ export class ReportsService {
     ] = await Promise.all([
       prisma.user.count({ where: { societyId, role: 'RESIDENT', isActive: true } }),
       prisma.flat.count({ where: { societyId } }),
-      prisma.user.count({ where: { societyId, role: 'GUARD', isActive: true } }),
+      prisma.user.count({ where: { ...guardUsersWhere(societyId), isActive: true } }),
       prisma.entry.count({
         where: {
           societyId,

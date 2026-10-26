@@ -1,4 +1,5 @@
 import { prisma } from '../../utils/Client';
+import { societyStaffWhere } from '../../utils/guard-access';
 import { AppError } from '../../utils/ResponseHandler';
 import { clampPagination } from '../../utils/scope';
 import { emitToUser, emitToUsers, SOCKET_EVENTS } from '../../utils/socket';
@@ -127,11 +128,7 @@ export class NotificationService {
   ) {
     // Get all active staff with specified roles
     const staff = await prisma.user.findMany({
-      where: {
-        societyId,
-        isActive: true,
-        role: { in: roles },
-      },
+      where: societyStaffWhere(societyId, roles),
       select: { id: true },
     });
 

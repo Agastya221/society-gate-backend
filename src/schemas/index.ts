@@ -85,6 +85,8 @@ export const updateProfileSchema = z.object({
 
 export const toggleUserStatusSchema = z.object({
   isActive: z.boolean(),
+  /** 'guard': change only the person's guard role (the guards screen), never their resident account */
+  scope: z.enum(['guard']).optional(),
 });
 
 export const updateFcmTokenSchema = z.object({

@@ -4,6 +4,7 @@ import { Role } from '../../prisma/generated/prisma/enums';
 import { redis, isRedisAvailable } from '../config/redis';
 import logger from '../utils/logger';
 import { prisma } from '../utils/Client';
+import { findGuardPost } from '../utils/guard-access';
 import { AppError } from '../utils/ResponseHandler';
 
 // In-memory fallback for token blacklist when Redis is unavailable
@@ -175,7 +176,12 @@ export const verifyAccessTokenForUser = async (token: string): Promise<{
     throw new AppError('User not found or inactive', 401);
   }
   if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
-    throw new AppError('Access denied. This app is for guards only.', 403);
+    // A guard who also lives in the society has users.role = RESIDENT: their guard post comes from the guard membership
+    const post = await findGuardPost(user.id);
+    if (!post) {
+      throw new AppError('Access denied. This app is for guards only.', 403);
+    }
+    return { decoded, user: { ...user, role: 'GUARD', societyId: post.societyId, flatId: null } };
   }
   if (decoded.appType === 'RESIDENT_APP' && user.role === 'GUARD') {
     throw new AppError('Access denied. Please use the guard app.', 403);

@@ -1,4 +1,5 @@
 import { prisma } from '../../utils/Client';
+import { guardUsersWhere } from '../../utils/guard-access';
 
 /**
  * A guard's shift. "Start duty" is only accepted from the gate (the geofence check runs on the route), and where a
@@ -130,7 +131,7 @@ export async function monthlyAttendance(societyId: string, month: string) {
 
   const [guards, shifts] = await Promise.all([
     prisma.user.findMany({
-      where: { societyId, role: 'GUARD', isActive: true },
+      where: { ...guardUsersWhere(societyId), isActive: true },
       select: { id: true, name: true, phone: true, guardShift: { select: { name: true, startTime: true, endTime: true, graceMinutes: true } } },
       orderBy: { name: 'asc' },
     }),

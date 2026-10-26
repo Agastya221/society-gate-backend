@@ -71,7 +71,7 @@ export const getEntryRequests = async (req: Request, res: Response) => {
       awaitingEntry: awaitingEntry === 'true',
       order,
       since,
-    });
+    }, res.locals.authAppType === 'GUARD_APP');
 
     res.status(200).json({
       success: true,
@@ -95,7 +95,8 @@ export const getEntryRequestById = async (req: Request, res: Response) => {
 
     const entryRequest = await entryRequestService.getEntryRequestById(
       String(id),
-      userId
+      userId,
+      res.locals.authAppType === 'GUARD_APP',
     );
 
     res.status(200).json({
@@ -144,6 +145,7 @@ export const approveEntryRequest = async (req: Request, res: Response) => {
       String(id),
       userId,
       { count: req.body?.count },
+      res.locals.authAppType === 'GUARD_APP',
     );
 
     res.status(200).json({
@@ -191,7 +193,8 @@ export const rejectEntryRequest = async (req: Request, res: Response) => {
     const entryRequest = await entryRequestService.rejectEntryRequest(
       String(id),
       userId,
-      reason
+      reason,
+      res.locals.authAppType === 'GUARD_APP',
     );
 
     res.status(200).json({

@@ -3,6 +3,7 @@ import { notificationService } from '../modules/notification/notification.servic
 import { pushService } from '../services/push.service';
 import { emitToSociety, SOCKET_EVENTS } from '../utils/socket';
 import { prisma } from '../utils/Client';
+import { societyStaffWhere } from '../utils/guard-access';
 import logger from '../utils/logger';
 import { getEmergencySeverity } from '../modules/emergency/emergency.service';
 
@@ -332,14 +333,14 @@ eventBus.on('emergency.created', async (payload) => {
 
     if (severity === 'CRITICAL') {
       const users = await prisma.user.findMany({
-        where: { societyId: payload.societyId, isActive: true, role: { in: ['RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD'] } },
+        where: societyStaffWhere(payload.societyId, ['RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD']),
         select: { id: true },
       });
       targetUserIds = users.map((u) => u.id);
     } else {
       // Staff always gets it
       const staff = await prisma.user.findMany({
-        where: { societyId: payload.societyId, isActive: true, role: { in: ['ADMIN', 'SUPER_ADMIN', 'GUARD'] } },
+        where: societyStaffWhere(payload.societyId, ['ADMIN', 'SUPER_ADMIN', 'GUARD']),
         select: { id: true },
       });
       // Same-block residents (if blockId is known), otherwise no residents

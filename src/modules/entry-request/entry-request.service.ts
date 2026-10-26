@@ -1,4 +1,5 @@
 import { prisma } from '../../utils/Client';
+import { withGuardPost } from '../../utils/guard-access';
 import { AppError } from '../../utils/ResponseHandler';
 import { clampPagination } from '../../utils/scope';
 import { isOwnedUploadKey } from '../../utils/s3';
@@ -86,14 +87,14 @@ export class EntryRequestService {
     data: CreateEntryRequestData,
     guardId: string
   ): Promise<{ entryRequest: object; autoApproved: boolean }> {
-    const guard = await prisma.user.findUnique({
+    const guard = await withGuardPost(await prisma.user.findUnique({
       where: { id: guardId },
       select: {
         societyId: true,
         role: true,
         society: { select: { name: true } },
       },
-    });
+    }), guardId);
 
     if (!guard || guard.role !== 'GUARD') {
       throw new AppError('Only guards can create entry requests', 403);
@@ -251,12 +252,13 @@ export class EntryRequestService {
       awaitingEntry?: boolean;
       order?: 'oldest' | 'newest';
       since?: string;
-    }
+    },
+    asGuard = false,
   ) {
     const { status, flatId } = filters;
     const { page, limit, skip } = clampPagination(filters.page, filters.limit, 20);
 
-    const user = await prisma.user.findUnique({
+    const loaded = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         role: true,
@@ -268,6 +270,7 @@ export class EntryRequestService {
         },
       },
     });
+    const user = asGuard ? await withGuardPost(loaded, userId) : loaded;
 
     if (!user) {
       throw new AppError('User not found', 404);
@@ -333,7 +336,7 @@ export class EntryRequestService {
   // ============================================
   // GET SINGLE ENTRY REQUEST
   // ============================================
-  async getEntryRequestById(entryRequestId: string, userId: string) {
+  async getEntryRequestById(entryRequestId: string, userId: string, asGuard = false) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
       include: this.getInclude(),
@@ -343,7 +346,7 @@ export class EntryRequestService {
       throw new AppError('Entry request not found', 404);
     }
 
-    const user = await prisma.user.findUnique({
+    const loadedUser = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         role: true,
@@ -355,6 +358,7 @@ export class EntryRequestService {
         },
       },
     });
+    const user = asGuard ? await withGuardPost(loadedUser, userId) : loadedUser;
 
     if (!user) {
       throw new AppError('User not found', 404);
@@ -379,7 +383,7 @@ export class EntryRequestService {
   // ============================================
   // APPROVE ENTRY REQUEST
   // ============================================
-  async approveEntryRequest(entryRequestId: string, userId: string, opts: { autoApproved?: boolean; count?: number } = {}) {
+  async approveEntryRequest(entryRequestId: string, userId: string, opts: { autoApproved?: boolean; count?: number } = {}, asGuard = false) {
     const autoApproved = opts.autoApproved === true;
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
@@ -390,7 +394,7 @@ export class EntryRequestService {
       throw new AppError('Entry request not found', 404);
     }
 
-    const approver = await prisma.user.findUnique({
+    const loadedApprover = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         name: true,
@@ -403,6 +407,7 @@ export class EntryRequestService {
         },
       },
     });
+    const approver = asGuard ? await withGuardPost(loadedApprover, userId) : loadedApprover;
 
     if (!approver) {
       throw new AppError('User not found', 404);
@@ -488,9 +493,9 @@ export class EntryRequestService {
 
   /** Guard confirms that an approved person actually passed through the gate. */
   async admitEntryRequest(entryRequestId: string, guardId: string) {
-    const guard = await prisma.user.findUnique({
+    const guard = await withGuardPost(await prisma.user.findUnique({
       where: { id: guardId }, select: { role: true, societyId: true },
-    });
+    }), guardId);
     if (guard?.role !== 'GUARD' || !guard.societyId) throw new AppError('Guard access required', 403);
     const societyId = guard.societyId;
 
@@ -554,9 +559,9 @@ export class EntryRequestService {
 
   /** Clears an approved visitor who left the gate without entering. */
   async markNoShow(entryRequestId: string, guardId: string) {
-    const guard = await prisma.user.findUnique({
+    const guard = await withGuardPost(await prisma.user.findUnique({
       where: { id: guardId }, select: { role: true, societyId: true },
-    });
+    }), guardId);
     if (guard?.role !== 'GUARD' || !guard.societyId) throw new AppError('Guard access required', 403);
     const existing = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId }, include: this.getInclude(),
@@ -593,7 +598,8 @@ export class EntryRequestService {
   async rejectEntryRequest(
     entryRequestId: string,
     userId: string,
-    reason?: string
+    reason?: string,
+    asGuard = false,
   ) {
     const entryRequest = await prisma.entryRequest.findUnique({
       where: { id: entryRequestId },
@@ -604,7 +610,7 @@ export class EntryRequestService {
       throw new AppError('Entry request not found', 404);
     }
 
-    const rejecter = await prisma.user.findUnique({
+    const loadedRejecter = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         name: true,
@@ -617,6 +623,7 @@ export class EntryRequestService {
         },
       },
     });
+    const rejecter = asGuard ? await withGuardPost(loadedRejecter, userId) : loadedRejecter;
 
     if (!rejecter) {
       throw new AppError('User not found', 404);
@@ -723,10 +730,10 @@ export class EntryRequestService {
       throw new AppError('Entry request not found', 404);
     }
 
-    const guard = await prisma.user.findUnique({
+    const guard = await withGuardPost(await prisma.user.findUnique({
       where: { id: guardId },
       select: { role: true, societyId: true },
-    });
+    }), guardId);
 
     if (!guard || guard.role !== 'GUARD' || guard.societyId !== entryRequest.societyId) {
       throw new AppError('Only guards of this society can cancel entry requests', 403);
@@ -824,10 +831,10 @@ export class EntryRequestService {
   // GATE QUEUE (Guard home screen — one call instead of three polls)
   // ============================================
   async getGateQueue(guardId: string) {
-    const guard = await prisma.user.findUnique({
+    const guard = await withGuardPost(await prisma.user.findUnique({
       where: { id: guardId },
       select: { role: true, societyId: true },
-    });
+    }), guardId);
     if (!guard || guard.role !== 'GUARD' || !guard.societyId) {
       throw new AppError('Guard must be assigned to a society', 403);
     }

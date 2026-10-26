@@ -20,6 +20,7 @@ import {
   sanitizeString,
 } from '../../utils/validation';
 import logger, { maskPhone } from '../../utils/logger';
+import { findGuardPost, guardUsersWhere } from '../../utils/guard-access';
 import type { Role } from '../../../prisma/generated/prisma/client';
 
 
@@ -426,7 +427,10 @@ export class UserService {
       throw new AppError('No guard account found for this number. Please contact your admin.', 404);
     }
 
-    if (user.role !== 'GUARD') {
+    // Someone who is a guard AND lives here has users.role = RESIDENT, so guard access is also read from the
+    // active guard membership (what "Add guard" creates).
+    const post = user.role === 'GUARD' ? null : await findGuardPost(user.id);
+    if (user.role !== 'GUARD' && !post) {
       throw new AppError('Access denied. This app is for guards only.', 403);
     }
 
@@ -434,20 +438,28 @@ export class UserService {
       throw new AppError('Your account is inactive. Please contact your society admin.', 403);
     }
 
-    if (!user.society?.isActive) {
+    const guardSociety = post?.society ?? user.society;
+    if (!guardSociety?.isActive) {
       throw new AppError('Society is currently inactive.', 403);
     }
+    const guardSocietyId = post?.societyId ?? user.societyId;
 
-    const accessToken = generateAccessToken(user.id, user.role, user.societyId, null, 'GUARD_APP');
-    const refreshToken = generateRefreshToken(user.id, user.role, user.societyId, null, 'GUARD_APP');
+    const accessToken = generateAccessToken(user.id, 'GUARD', guardSocietyId, null, 'GUARD_APP');
+    const refreshToken = generateRefreshToken(user.id, 'GUARD', guardSocietyId, null, 'GUARD_APP');
 
+    // The guard app keeps its own session slot so signing in to the resident app (same number) never signs it out
     await prisma.user.update({
       where: { id: user.id },
-      data: { refreshToken: hashToken(refreshToken), lastTokenRefresh: new Date(), lastLogin: new Date() },
+      data: { guardRefreshToken: hashToken(refreshToken), lastTokenRefresh: new Date(), lastLogin: new Date() },
     });
 
-    const { password: _, refreshToken: __, ...safe } = user;
-    return { accessToken, refreshToken, user: safe, appType: 'GUARD_APP' };
+    const { password: _, refreshToken: __, guardRefreshToken: ___, ...safe } = user;
+    return {
+      accessToken,
+      refreshToken,
+      user: { ...safe, role: 'GUARD', societyId: guardSocietyId, flatId: null, society: guardSociety },
+      appType: 'GUARD_APP',
+    };
   }
 
   // ============================================
@@ -474,7 +486,31 @@ export class UserService {
     }
 
     const existingUser = await prisma.user.findUnique({ where: { phone } });
-    if (existingUser) throw new AppError('Phone already registered', 400);
+    if (existingUser) {
+      // A guard can live in the society too: add the guard role to the existing person (their resident account stays)
+      if (existingUser.role === 'GUARD' || existingUser.role === 'SUPER_ADMIN') {
+        throw new AppError('Phone already registered', 400);
+      }
+      if (!existingUser.isActive || existingUser.societyId !== admin.societyId) {
+        throw new AppError(
+          'This number is registered, but not as an active resident of this society. Ask the person to finish joining as a resident first, or use another number.',
+          409,
+        );
+      }
+      const hasGuardRole = await prisma.userFlatMembership.findFirst({
+        where: { userId: existingUser.id, societyId: admin.societyId, role: 'GUARD' },
+        select: { id: true },
+      });
+      if (hasGuardRole) {
+        await prisma.userFlatMembership.update({ where: { id: hasGuardRole.id }, data: { isActive: true, isDefault: false } });
+      } else {
+        await prisma.userFlatMembership.create({
+          data: { userId: existingUser.id, societyId: admin.societyId, role: 'GUARD', isActive: true, isDefault: false },
+        });
+      }
+      const { password: _p, ...existingSafe } = existingUser;
+      return { ...existingSafe, alsoResident: true };
+    }
 
     const guard = await prisma.user.create({
       data: {
@@ -859,7 +895,7 @@ export class UserService {
   // ============================================
   async getGuards(societyId: string) {
     return prisma.user.findMany({
-      where: { societyId, role: 'GUARD' },
+      where: guardUsersWhere(societyId),
       select: {
         id: true,
         name: true,
@@ -899,6 +935,7 @@ export class UserService {
     adminSocietyId: string,
     actorId?: string,
     actorRole?: Role,
+    scope?: 'guard',
   ) {
     if (actorId && actorId === userId && !isActive) {
       throw new AppError('You cannot deactivate your own account', 400);
@@ -944,6 +981,19 @@ export class UserService {
       }
     }
 
+    // A guard who also lives here: the guards screen switches only the guard role, so the resident account stays
+    if (scope === 'guard' && targetUser.role !== 'GUARD') {
+      const changed = await prisma.userFlatMembership.updateMany({
+        where: { userId, societyId: adminSocietyId, role: 'GUARD' },
+        data: { isActive, isDefault: false },
+      });
+      if (changed.count === 0) throw new AppError('Guard not found', 404);
+      if (!isActive) {
+        await prisma.user.update({ where: { id: userId }, data: { guardRefreshToken: null, guardShiftId: null } });
+      }
+      return { id: targetUser.id, name: targetUser.name, isActive };
+    }
+
     // Deactivation revokes the session: refresh token cleared (refresh fails) and
     // tokenVersion bumped (also stops family-invite auto-reactivation on login).
     return prisma.user.update({
@@ -987,12 +1037,17 @@ export class UserService {
     // verifies cryptographically but is not the current one is an already-rotated
     // (or revoked) token being replayed: end the session so a stolen token cannot
     // keep it alive. Legacy plain-text rows also fail here once (user re-logs in).
-    const storedHash = user.refreshToken;
+    const isGuardApp = decoded.appType === 'GUARD_APP';
+    // Guard sessions signed in before the guard app got its own slot still hold their token in refreshToken
+    const legacyGuardSlot = isGuardApp && !user.guardRefreshToken && user.role === 'GUARD';
+    const slot = isGuardApp ? 'guardRefreshToken' : 'refreshToken';
+    const storedHash = legacyGuardSlot ? user.refreshToken : isGuardApp ? user.guardRefreshToken : user.refreshToken;
+    const slotWhere = (hash: string | null) => (legacyGuardSlot ? { refreshToken: hash } : { [slot]: hash });
     if (!refreshTokenMatches(refreshTokenStr, storedHash)) {
       if (storedHash) {
         await prisma.user.updateMany({
-          where: { id: user.id, refreshToken: storedHash },
-          data: { refreshToken: null },
+          where: { id: user.id, ...slotWhere(storedHash) },
+          data: { [slot]: null, ...(legacyGuardSlot ? { refreshToken: null } : {}) },
         });
         logger.warn({ userId: user.id }, 'Refresh token reuse detected, session revoked');
       }
@@ -1005,10 +1060,11 @@ export class UserService {
 
     // Guard-app sessions stay GUARD-only (mirrors guardAppOtpVerify), and
     // resident-app sessions are never re-minted for guards.
-    if (decoded.appType === 'GUARD_APP' && user.role !== 'GUARD') {
+    const guardPost = isGuardApp && user.role !== 'GUARD' ? await findGuardPost(user.id) : null;
+    if (isGuardApp && user.role !== 'GUARD' && !guardPost) {
       throw new AppError('Access denied. This app is for guards only.', 403);
     }
-    if (decoded.appType !== 'GUARD_APP' && user.role === 'GUARD') {
+    if (!isGuardApp && user.role === 'GUARD') {
       throw new AppError('Access denied. Please use the guard app.', 403);
     }
 
@@ -1029,20 +1085,24 @@ export class UserService {
       }
     }
 
-    const appType = decoded.appType === 'GUARD_APP' ? 'GUARD_APP' : 'RESIDENT_APP';
+    const appType = isGuardApp ? 'GUARD_APP' : 'RESIDENT_APP';
+    const tokenRole = isGuardApp ? 'GUARD' : user.role;
+    const tokenSocietyId = guardPost ? guardPost.societyId : user.societyId;
+    const tokenFlatId = guardPost ? null : user.flatId;
     const newAccessToken = generateAccessToken(
-      user.id, user.role, user.societyId, user.flatId, appType
+      user.id, tokenRole, tokenSocietyId, tokenFlatId, appType
     );
     const newRefreshToken = generateRefreshToken(
-      user.id, user.role, user.societyId, user.flatId, appType
+      user.id, tokenRole, tokenSocietyId, tokenFlatId, appType
     );
 
     // Compare-and-swap on the old hash: if a concurrent refresh already rotated
     // this token, this one loses instead of forking the session.
     const rotated = await prisma.user.updateMany({
-      where: { id: user.id, refreshToken: storedHash },
+      where: { id: user.id, ...slotWhere(storedHash) },
       data: {
-        refreshToken: hashToken(newRefreshToken),
+        [slot]: hashToken(newRefreshToken),
+        ...(legacyGuardSlot ? { refreshToken: null } : {}),
         lastTokenRefresh: new Date(),
       },
     });
@@ -1050,12 +1110,14 @@ export class UserService {
       throw new AppError('Invalid refresh token. Please login again.', 401);
     }
 
-    const { password: _, refreshToken: __, ...userWithoutSensitiveData } = user;
+    const { password: _, refreshToken: __, guardRefreshToken: ___, ...userWithoutSensitiveData } = user;
 
     return {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
-      user: userWithoutSensitiveData,
+      user: guardPost
+        ? { ...userWithoutSensitiveData, role: 'GUARD', societyId: guardPost.societyId, flatId: null, society: guardPost.society }
+        : userWithoutSensitiveData,
     };
   }
 
@@ -1069,11 +1131,13 @@ export class UserService {
   async logout(accessToken?: string, refreshTokenStr?: string) {
     const nowSec = Math.floor(Date.now() / 1000);
     let userId: string | null = null;
+    let signedOutOfGuardApp = false;
 
     if (accessToken) {
       try {
         const decoded = verifyAccessToken(accessToken);
         userId = decoded.userId;
+        signedOutOfGuardApp = decoded.appType === 'GUARD_APP';
         if (decoded.jti && decoded.exp && decoded.exp - nowSec > 0) {
           await blacklistToken(decoded.jti, decoded.exp - nowSec);
         }
@@ -1085,7 +1149,10 @@ export class UserService {
     if (refreshTokenStr) {
       try {
         const decoded = verifyRefreshToken(refreshTokenStr);
-        if (!userId) userId = decoded.userId;
+        if (!userId) {
+          userId = decoded.userId;
+          signedOutOfGuardApp = decoded.appType === 'GUARD_APP';
+        }
         if (decoded.userId === userId && decoded.jti && decoded.exp && decoded.exp - nowSec > 0) {
           await blacklistToken(decoded.jti, decoded.exp - nowSec);
         }
@@ -1099,10 +1166,13 @@ export class UserService {
     }
 
     try {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { refreshToken: null },
-      });
+      if (signedOutOfGuardApp) {
+        await prisma.user.update({ where: { id: userId }, data: { guardRefreshToken: null } });
+        // Guards who never used the resident app still hold their session in the old slot
+        await prisma.user.updateMany({ where: { id: userId, role: 'GUARD' }, data: { refreshToken: null } });
+      } else {
+        await prisma.user.update({ where: { id: userId }, data: { refreshToken: null } });
+      }
     } catch (error) {
       logger.error({ err: error }, 'Error clearing refresh token from database');
     }

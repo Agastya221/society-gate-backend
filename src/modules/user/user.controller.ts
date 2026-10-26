@@ -98,9 +98,12 @@ export class UserController {
   getProfile = asyncHandler(async (req: Request, res: Response) => {
     const user = await userService.getProfile(req.user!.id);
 
+    // In the guard app a guard who also lives in the society is shown as the guard they are there
+    const asGuard = res.locals.authAppType === 'GUARD_APP' && req.user!.role === 'GUARD' && user.role !== 'GUARD';
+
     res.json({
       success: true,
-      data: user,
+      data: asGuard ? { ...user, role: 'GUARD', societyId: req.user!.societyId, flatId: null } : user,
     });
   });
 
@@ -147,8 +150,8 @@ export class UserController {
 
   // Toggle User Status (Admin only)
   toggleUserStatus = asyncHandler(async (req: Request, res: Response) => {
-    const { isActive } = req.body;
-    const user = await userService.toggleUserStatus(String(req.params.id), isActive, req.user!.societyId!, req.user!.id, req.user!.role);
+    const { isActive, scope } = req.body;
+    const user = await userService.toggleUserStatus(String(req.params.id), isActive, req.user!.societyId!, req.user!.id, req.user!.role, scope);
 
     res.json({
       success: true,

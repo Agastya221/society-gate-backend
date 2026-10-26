@@ -1,6 +1,7 @@
 import ExcelJS from 'exceljs';
 import { Readable } from 'stream';
 import { prisma, TransactionClient } from '../../utils/Client';
+import { guardUsersWhere } from '../../utils/guard-access';
 import { AppError } from '../../utils/ResponseHandler';
 import {
   generateS3Key,
@@ -881,7 +882,7 @@ export class SocietyOnboardingService {
       prisma.society.findUnique({ where: { id: societyId } }),
       prisma.flat.count({ where: { societyId, isActive: true, block: { name: { not: 'Admin' } } } }),
       prisma.gatePoint.count({ where: { societyId, isActive: true } }),
-      prisma.user.count({ where: { societyId, role: 'GUARD', isActive: true } }),
+      prisma.user.count({ where: { ...guardUsersWhere(societyId), isActive: true } }),
       prisma.societyRuleConfig.findUnique({ where: { societyId } }),
     ]);
 

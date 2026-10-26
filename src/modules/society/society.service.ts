@@ -1,4 +1,5 @@
 import { prisma } from '../../utils/Client';
+import { guardUsersWhere } from '../../utils/guard-access';
 import { AppError } from '../../utils/ResponseHandler';
 import type { AuthenticatedUser, Prisma } from '../../types';
 import type { SubscriptionCycle } from '../../../prisma/generated/prisma/enums';
@@ -315,7 +316,7 @@ export class SocietyService {
     ] = await Promise.all([
       prisma.flat.count({ where: { societyId } }),
       prisma.user.count({ where: { societyId, role: 'RESIDENT' } }),
-      prisma.user.count({ where: { societyId, role: 'GUARD' } }),
+      prisma.user.count({ where: guardUsersWhere(societyId) }),
       prisma.domesticStaff.count({ where: { societyId, isActive: true } }),
       prisma.entry.count({
         where: {

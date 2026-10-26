@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../../utils/Client';
+import { guardUsersWhere } from '../../utils/guard-access';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { validate } from '../../middlewares/validate.middleware';
 import { idParams } from '../../schemas';
@@ -128,7 +129,7 @@ router.get('/shifts', async (req: Request, res: Response) => {
   const societyId = req.user!.societyId!;
   const shifts = await prisma.guardShift.findMany({ where: { societyId }, orderBy: { startTime: 'asc' }, select: shiftSelect });
   const guards = await prisma.user.findMany({
-    where: { societyId, role: 'GUARD', isActive: true }, select: { id: true, name: true, guardShiftId: true }, orderBy: { name: 'asc' },
+    where: { ...guardUsersWhere(societyId), isActive: true }, select: { id: true, name: true, guardShiftId: true }, orderBy: { name: 'asc' },
   });
   res.json({ success: true, data: { shifts, guards } });
 });
@@ -163,8 +164,8 @@ router.put('/shifts/:id/guards', validate({ params: idParams, body: z.object({ g
   if (!shift) return res.status(404).json({ success: false, message: 'Shift not found' });
   const guardIds: string[] = req.body.guardIds;
   await prisma.$transaction([
-    prisma.user.updateMany({ where: { societyId, role: 'GUARD', guardShiftId: shift.id, id: { notIn: guardIds } }, data: { guardShiftId: null } }),
-    prisma.user.updateMany({ where: { societyId, role: 'GUARD', id: { in: guardIds } }, data: { guardShiftId: shift.id } }),
+    prisma.user.updateMany({ where: { ...guardUsersWhere(societyId), guardShiftId: shift.id, id: { notIn: guardIds } }, data: { guardShiftId: null } }),
+    prisma.user.updateMany({ where: { ...guardUsersWhere(societyId), id: { in: guardIds } }, data: { guardShiftId: shift.id } }),
   ]);
   return res.json({ success: true, message: 'Guards updated' });
 });

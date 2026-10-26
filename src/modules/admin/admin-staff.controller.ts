@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../utils/Client';
+import { guardUsersWhere } from '../../utils/guard-access';
 import { getPresignedViewUrl } from '../../utils/s3';
 import { clampPagination } from '../../utils/scope';
 
@@ -28,7 +29,7 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
 
     // Fetch Guards from User table
     const guards = await prisma.user.findMany({
-      where: { societyId, role: 'GUARD' },
+      where: guardUsersWhere(societyId),
       select: {
         id: true,
         name: true,

@@ -1,4 +1,5 @@
 import { prisma } from '../utils/Client';
+import { societyStaffWhere } from '../utils/guard-access';
 import { isFirebaseAvailable, getMessaging } from '../config/firebase';
 import { deliverInApp, type AlertTarget } from '../utils/socket';
 import logger from '../utils/logger';
@@ -175,7 +176,7 @@ class PushService {
   ): Promise<void> {
     try {
       const staff = await prisma.user.findMany({
-        where: { societyId, isActive: true, role: { in: roles } },
+        where: societyStaffWhere(societyId, roles),
         select: { id: true, fcmToken: true },
       });
       if (staff.length === 0) return;

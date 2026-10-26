@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../utils/Client';
+import { findGuardPost } from '../utils/guard-access';
 import { AppError } from '../utils/ResponseHandler';
 import { Role } from '../../prisma/generated/prisma/enums';
 import type { AuthenticatedUser } from '../types';
@@ -80,13 +81,24 @@ export const authenticate = async (
       }
     }
 
-    const user = await prisma.user.findUnique({
+    const stored = await prisma.user.findUnique({
       where: { id: decoded.userId },
       include: { flat: true, society: true },
     });
 
-    if (!user || !user.isActive) {
+    if (!stored || !stored.isActive) {
       return next(new AppError('User not found or inactive', 401));
+    }
+
+    // A guard who also lives in the society has users.role = RESIDENT. In the guard app they act as a GUARD of the
+    // society they guard (from the guard membership); everywhere else they are the resident they are.
+    let user = stored;
+    if (decoded.appType === 'GUARD_APP' && stored.role !== 'GUARD') {
+      const post = await findGuardPost(stored.id);
+      if (post) {
+        const society = await prisma.society.findUnique({ where: { id: post.societyId } });
+        user = { ...stored, role: 'GUARD', societyId: post.societyId, flatId: null, flat: null, society };
+      }
     }
 
     // Guard-app sessions are only ever issued to GUARD users; if the role changed

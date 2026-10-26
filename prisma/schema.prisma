@@ -1006,6 +1006,7 @@ model User {
   // Auth & Tokens
   lastLogin        DateTime?
   refreshToken     String?   @db.Text // Store current refresh token
+  guardRefreshToken String?  @db.Text // Guard-app session: a guard who is also a resident uses two apps, so two sessions
   tokenVersion     Int       @default(0) // Increment to invalidate all tokens
   lastTokenRefresh DateTime? // Track when token was last refreshed
 

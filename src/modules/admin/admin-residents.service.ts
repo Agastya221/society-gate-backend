@@ -145,7 +145,25 @@ export class AdminResidentsService {
 
     if (existingUser) {
       if (existingUser.role === 'GUARD') {
-        throw new AppError('This phone number belongs to a guard account', 409);
+        // A guard of THIS society may live here too. Guard access is kept by their guard membership; the person
+        // becomes a resident as well (users.role moves to RESIDENT when the flat is granted below).
+        if (!existingUser.isActive) {
+          throw new AppError('This guard account is switched off. Switch it on before adding the person as a resident.', 409);
+        }
+        if (existingUser.societyId !== societyId) {
+          throw new AppError('This phone number belongs to a guard of another society', 409);
+        }
+        const hasGuardPost = await prisma.userFlatMembership.findFirst({
+          where: { userId: existingUser.id, societyId, role: 'GUARD' },
+          select: { id: true },
+        });
+        if (!hasGuardPost) {
+          await prisma.userFlatMembership.create({
+            data: { userId: existingUser.id, societyId, role: 'GUARD', isActive: true, isDefault: false },
+          });
+        } else {
+          await prisma.userFlatMembership.update({ where: { id: hasGuardPost.id }, data: { isActive: true } });
+        }
       }
       const alreadyMember = await prisma.userFlatMembership.findFirst({
         where: { userId: existingUser.id, flatId: flat.id, isActive: true },
