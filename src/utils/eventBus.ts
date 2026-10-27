@@ -83,11 +83,15 @@ export interface AppEvents {
     emergencyId: string;
     societyId: string;
     type: string;
-    severity: 'CRITICAL' | 'STANDARD';
-    blockId: string | null;   // for STANDARD tier — notify same-block residents
+    severity: 'CRITICAL' | 'STANDARD' | 'PRIVATE';
+    blockId: string | null;   // where it is happening — notify the residents of that block (STANDARD, PRIVATE)
+    blockName?: string | null;
     location?: string;
     description?: string;
     reporterName: string;
+    reporterId: string;
+    latitude?: number | null;  // staff only
+    longitude?: number | null; // staff only
   };
   'emergency.responded': {
     emergencyId: string;

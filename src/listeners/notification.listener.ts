@@ -325,102 +325,122 @@ eventBus.on('emergency.created', async (payload) => {
     const locationInfo = payload.location ? ` at ${payload.location}` : '';
     const descriptionInfo = payload.description ? ` - ${payload.description}` : '';
     const severity = payload.severity ?? getEmergencySeverity(payload.type);
+    const isPrivate = severity === 'PRIVATE';
+    const label = payload.type === 'HARASSMENT' ? 'Harassment or abuse' : payload.type;
 
-    // ── Point 2: Severity-tiered audience ──────────────────────────────────
-    // CRITICAL → all active society users
-    // STANDARD → staff (ADMIN/SUPER_ADMIN/GUARD) + same-block residents only
-    let targetUserIds: string[];
+    // ── Who is told ────────────────────────────────────────────────────────
+    // CRITICAL → every active person in the society
+    // STANDARD → the staff + the residents of the block where it is happening
+    // PRIVATE  → the staff (every detail) + the residents of that block (an anonymous "look out"); the person
+    //            who raised it is left out so that her phone stays silent
+    const staffIds = (await prisma.user.findMany({
+      where: societyStaffWhere(payload.societyId, ['ADMIN', 'SUPER_ADMIN', 'GUARD']),
+      select: { id: true },
+    })).map((u) => u.id);
 
+    let residentIds: string[] = [];
     if (severity === 'CRITICAL') {
-      const users = await prisma.user.findMany({
-        where: societyStaffWhere(payload.societyId, ['RESIDENT', 'ADMIN', 'SUPER_ADMIN', 'GUARD']),
+      residentIds = (await prisma.user.findMany({
+        where: { societyId: payload.societyId, isActive: true, role: 'RESIDENT' },
         select: { id: true },
-      });
-      targetUserIds = users.map((u) => u.id);
-    } else {
-      // Staff always gets it
-      const staff = await prisma.user.findMany({
-        where: societyStaffWhere(payload.societyId, ['ADMIN', 'SUPER_ADMIN', 'GUARD']),
+      })).map((u) => u.id);
+    } else if (payload.blockId) {
+      residentIds = (await prisma.user.findMany({
+        where: { societyId: payload.societyId, isActive: true, role: 'RESIDENT', flat: { blockId: payload.blockId } },
         select: { id: true },
-      });
-      // Same-block residents (if blockId is known), otherwise no residents
-      const blockResidents = payload.blockId
-        ? await prisma.user.findMany({
-            where: {
-              societyId: payload.societyId,
-              isActive: true,
-              role: 'RESIDENT',
-              flat: { blockId: payload.blockId },
-            },
-            select: { id: true },
-          })
-        : [];
-      const staffIds = new Set(staff.map((u) => u.id));
-      targetUserIds = [
-        ...staff.map((u) => u.id),
-        ...blockResidents.filter((u) => !staffIds.has(u.id)).map((u) => u.id),
-      ];
+      })).map((u) => u.id);
     }
 
-    const title = `🚨 Emergency: ${payload.type}`;
-    const message = `${payload.reporterName} reported a ${payload.type} emergency${locationInfo}${descriptionInfo}`;
-    const notifPayload = {
-      type: 'EMERGENCY_ALERT' as const,
-      title,
-      message,
-      data: {
-        emergencyId: payload.emergencyId,
-        type: payload.type,
-        severity,
-        location: payload.location,
-        reportedBy: payload.reporterName,
-      },
-      referenceId: payload.emergencyId,
-      referenceType: 'Emergency',
-      societyId: payload.societyId,
-    };
+    const silent = isPrivate ? payload.reporterId : null;
+    const staffSet = new Set(staffIds.filter((id) => id !== silent));
+    const residentSet = new Set(residentIds.filter((id) => !staffSet.has(id) && id !== silent));
+    const targetUserIds = [...staffSet, ...residentSet];
 
-    // ── Point 5: Batched in-app notification insert ────────────────────────
-    // One DB round-trip for all users instead of N individual inserts.
-    if (targetUserIds.length > 0) {
-      await prisma.notification.createMany({
-        data: targetUserIds.map((userId) => ({
-          userId,
-          societyId: payload.societyId,
-          type: notifPayload.type,
-          title: notifPayload.title,
-          message: notifPayload.message,
-          data: notifPayload.data as object,
-          referenceId: notifPayload.referenceId,
-          referenceType: notifPayload.referenceType,
-        })),
-        skipDuplicates: true,
-      });
+    const coords: Record<string, string> = {};
+    if (payload.latitude != null && payload.longitude != null) {
+      coords.latitude = String(payload.latitude);
+      coords.longitude = String(payload.longitude);
     }
 
-    emitToSociety(payload.societyId, SOCKET_EVENTS.EMERGENCY_ALERT, {
-      id: payload.emergencyId,
+    // What the staff read: every detail
+    const staffTitle = `🚨 Emergency: ${label}`;
+    const staffMessage = isPrivate
+      ? `${payload.reporterName} needs help: ${label}${locationInfo}${descriptionInfo}`
+      : `${payload.reporterName} reported a ${label} emergency${locationInfo}${descriptionInfo}`;
+    const staffData = {
+      emergencyId: payload.emergencyId,
       type: payload.type,
       severity,
       location: payload.location,
       reportedBy: payload.reporterName,
-    });
+      ...coords,
+    };
+    // What the residents read: for a private alarm nobody is named, no flat, no coordinates
+    const residentTitle = isPrivate ? '🚨 Someone nearby needs help' : staffTitle;
+    const where = [payload.blockName, payload.location].filter(Boolean).join(', ');
+    const residentMessage = isPrivate
+      ? `Please look out${where ? ` near ${where}` : ''}. Security has been alerted.`
+      : staffMessage;
+    const residentData = isPrivate
+      ? { emergencyId: payload.emergencyId, type: payload.type, severity }
+      : { emergencyId: payload.emergencyId, type: payload.type, severity, location: payload.location, reportedBy: payload.reporterName };
+
+    const rows = (ids: Iterable<string>, title: string, message: string, data: object) =>
+      [...ids].map((userId) => ({
+        userId,
+        societyId: payload.societyId,
+        type: 'EMERGENCY_ALERT' as const,
+        title,
+        message,
+        data: data as object,
+        referenceId: payload.emergencyId,
+        referenceType: 'Emergency',
+      }));
+
+    // ── Point 5: Batched in-app notification insert ────────────────────────
+    const notificationRows = [
+      ...rows(staffSet, staffTitle, staffMessage, staffData),
+      ...rows(residentSet, residentTitle, residentMessage, residentData),
+    ];
+    if (notificationRows.length > 0) {
+      await prisma.notification.createMany({ data: notificationRows, skipDuplicates: true });
+    }
+
+    // The society-wide socket broadcast is only for the "tell everyone" emergencies
+    if (severity === 'CRITICAL') {
+      emitToSociety(payload.societyId, SOCKET_EVENTS.EMERGENCY_ALERT, {
+        id: payload.emergencyId,
+        type: payload.type,
+        severity,
+        location: payload.location,
+        reportedBy: payload.reporterName,
+      });
+    }
 
     // Store notified user IDs so all-clear reaches the exact same audience
+    // (the person who raised a private alarm is not alerted, but still gets the all-clear)
     await prisma.emergency.update({
       where: { id: payload.emergencyId },
-      data: { alertsSent: true, notifiedUsers: targetUserIds },
+      data: { alertsSent: true, notifiedUsers: isPrivate ? [...targetUserIds, payload.reporterId] : targetUserIds },
     });
 
     // FCM push — best-effort, chunked in batches of 500 by sendToUsers
-    if (targetUserIds.length > 0) {
-      pushService.sendToUsers(targetUserIds, {
+    const push = (ids: Iterable<string>, title: string, body: string, data: Record<string, string>) => {
+      const list = [...ids];
+      if (list.length === 0) return;
+      pushService.sendToUsers(list, {
         title,
-        body: payload.description ?? 'Immediate response required',
-        data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, type: payload.type, severity },
+        body,
+        data: { screen: 'EmergencyDetail', ...data },
         urgent: true, // an emergency always rings, whatever its kind
       }).catch((err) => logger.error({ err }, 'Push failed: emergency.created'));
-    }
+    };
+    push(staffSet, staffTitle, payload.description ?? 'Immediate response required', {
+      emergencyId: payload.emergencyId, type: payload.type, severity, ...coords,
+    });
+    push(residentSet, residentTitle, isPrivate ? residentMessage : payload.description ?? 'Immediate response required', {
+      emergencyId: payload.emergencyId, type: payload.type, severity,
+    });
   } catch (error) {
     logger.error({ error, event: 'emergency.created', payload }, 'Failed to send emergency notification');
   }

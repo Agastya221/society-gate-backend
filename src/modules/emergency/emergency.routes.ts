@@ -8,6 +8,7 @@ import {
   resolveEmergency,
   markAsFalseAlarm,
   getActiveEmergencies,
+  getEmergencyPlaces,
 } from './emergency.controller';
 import { authenticate, authorize, ensureSameSociety } from '../../middlewares/auth.middleware';
 import { cache, clearCacheAfter } from '../../middlewares/cache.middleware';
@@ -22,6 +23,7 @@ router.use(ensureSameSociety);
 
 // Specific routes BEFORE parameterized routes
 router.post('/', validate({ body: createEmergencySchema }), clearCacheAfter(['emergencies:*']), createEmergency);
+router.get('/places', cache({ ttl: 300, keyPrefix: 'emergencies', varyBy: ['societyId'] }), getEmergencyPlaces);
 router.get('/my', cache({ ttl: 30, keyPrefix: 'emergencies', varyBy: ['userId'] }), getMyEmergencies);
 
 // Read-only: residents, admins, guards all see society emergencies

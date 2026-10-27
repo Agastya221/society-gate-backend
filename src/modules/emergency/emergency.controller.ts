@@ -1,5 +1,6 @@
 import type { Response, Request } from 'express';
-import { EmergencyService } from './emergency.service';
+import { prisma } from '../../utils/Client';
+import { COMMON_AREAS, EmergencyService, redactForViewer } from './emergency.service';
 import { getSocietyId } from '../../utils/scope';
 import { getErrorMessage, getErrorStatusCode } from '../../utils/errorHandler';
 import type { EmergencyFilters, EmergencyStatus, EmergencyType } from '../../types';
@@ -25,6 +26,23 @@ export const createEmergency = async (req: Request, res: Response) => {
   }
 };
 
+const viewerOf = (req: Request) => ({ id: req.user!.id, role: req.user!.role });
+
+/** The places a person can pick when raising an emergency: the society's towers, and the common areas. */
+export const getEmergencyPlaces = async (req: Request, res: Response) => {
+  try {
+    const societyId = getSocietyId(req);
+    const blocks = await prisma.block.findMany({
+      where: { societyId, isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    });
+    res.status(200).json({ success: true, data: { blocks, commonAreas: COMMON_AREAS } });
+  } catch (error: unknown) {
+    res.status(getErrorStatusCode(error)).json({ success: false, message: getErrorMessage(error) });
+  }
+};
+
 export const getEmergencies = async (req: Request, res: Response) => {
   try {
     const filters: EmergencyFilters = {
@@ -35,10 +53,11 @@ export const getEmergencies = async (req: Request, res: Response) => {
       limit: req.query.limit ? Number(req.query.limit) : undefined,
     };
     const result = await emergencyService.getEmergencies(filters);
+    const viewer = viewerOf(req);
 
     res.status(200).json({
       success: true,
-      data: result,
+      data: { ...result, emergencies: result.emergencies.map((e) => redactForViewer(e, viewer)) },
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({
@@ -72,7 +91,7 @@ export const getEmergencyById = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      data: emergency,
+      data: redactForViewer(emergency as Record<string, any>, viewerOf(req)),
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({
@@ -145,10 +164,11 @@ export const getActiveEmergencies = async (req: Request, res: Response) => {
   try {
     const societyId = getSocietyId(req);
     const emergencies = await emergencyService.getActiveEmergencies(societyId);
+    const viewer = viewerOf(req);
 
     res.status(200).json({
       success: true,
-      data: emergencies,
+      data: emergencies.map((e) => redactForViewer(e, viewer)),
     });
   } catch (error: unknown) {
     res.status(getErrorStatusCode(error)).json({

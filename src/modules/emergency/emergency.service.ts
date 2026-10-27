@@ -10,12 +10,32 @@ import type {
 
 // ─── Severity Tiers ────────────────────────────────────────────────────────
 // CRITICAL → broadcast to ALL users in the society (residents + staff)
-// STANDARD → staff (ADMIN/GUARD) + reporter's block residents only
+// STANDARD → staff (ADMIN/GUARD) + the residents of the block where it is happening
+// PRIVATE  → harassment: staff get every detail, the residents of that block only an anonymous "look out" alert
 const CRITICAL_TYPES = ['FIRE', 'MEDICAL', 'SECURITY', 'VIOLENCE'] as const;
-export type EmergencySeverity = 'CRITICAL' | 'STANDARD';
+export type EmergencySeverity = 'CRITICAL' | 'STANDARD' | 'PRIVATE';
 
 export function getEmergencySeverity(type: string): EmergencySeverity {
+  if (type === 'HARASSMENT') return 'PRIVATE';
   return (CRITICAL_TYPES as readonly string[]).includes(type) ? 'CRITICAL' : 'STANDARD';
+}
+
+/** Places a person can pick besides a tower. They are sent as the emergency's `location` text; only guards and admins are alerted. */
+export const COMMON_AREAS = ['Main gate', 'Parking', 'Park / playground', 'Clubhouse', 'Lift lobby', 'Terrace', 'Other common area'] as const;
+
+const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'GUARD'];
+
+/**
+ * What a viewer may see. Guards, admins and the person who raised it see everything. Everybody else never sees
+ * coordinates, and for a harassment alarm never sees who raised it, their flat or what they wrote.
+ */
+export function redactForViewer<T extends Record<string, any>>(emergency: T, viewer: { id: string; role: string }): T {
+  if (STAFF_ROLES.includes(viewer.role) || emergency.reportedById === viewer.id) return emergency;
+  const redacted: Record<string, any> = { ...emergency, latitude: null, longitude: null };
+  if (emergency.type === 'HARASSMENT') {
+    Object.assign(redacted, { reportedBy: null, reportedById: null, flat: null, flatId: null, description: null });
+  }
+  return redacted as T;
 }
 
 export class EmergencyService {
@@ -64,6 +84,10 @@ export class EmergencyService {
     if (data.flatId) {
       await findInSociety(prisma.flat, data.flatId, societyId, { entity: 'Flat', select: { id: true } });
     }
+    // The block where it is happening must belong to this society too
+    if (data.blockId) {
+      await findInSociety(prisma.block, data.blockId, societyId, { entity: 'Block', select: { id: true } });
+    }
 
     const emergency = await prisma.emergency.create({
       data: {
@@ -71,6 +95,9 @@ export class EmergencyService {
         description: data.description,
         location: data.location,
         flatId: data.flatId,
+        blockId: data.blockId,
+        latitude: data.latitude,
+        longitude: data.longitude,
         societyId,
         reportedById,
         status: 'ACTIVE',
@@ -78,14 +105,16 @@ export class EmergencyService {
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
         flat: { include: { block: { select: { id: true, name: true } } } },
+        block: { select: { id: true, name: true } },
         society: { select: { id: true, name: true } },
       },
     });
 
     // An emergency raised by the gate or the admin goes to everyone, whatever its kind: there is no "own block"
     // to limit it to, and the guard's screen promises that every resident is told.
+    // (A harassment alarm is the exception: it stays private whoever raises it.)
     const staffRaised = reporterRole === 'GUARD' || reporterRole === 'ADMIN' || reporterRole === 'SUPER_ADMIN';
-    const severity = staffRaised ? 'CRITICAL' : getEmergencySeverity(emergency.type);
+    const severity: EmergencySeverity = staffRaised && emergency.type !== 'HARASSMENT' ? 'CRITICAL' : getEmergencySeverity(emergency.type);
 
     // ARCH-3: Emit event — listener handles notifications, socket broadcast, alert tracking
     eventBus.emit('emergency.created', {
@@ -93,10 +122,15 @@ export class EmergencyService {
       societyId: data.societyId,
       type: emergency.type,
       severity,
-      blockId: emergency.flat?.block?.id ?? null,
+      // The place picked when raising it; otherwise the reporter's own block
+      blockId: emergency.block?.id ?? emergency.flat?.block?.id ?? null,
+      blockName: emergency.block?.name ?? emergency.flat?.block?.name ?? null,
       location: emergency.location ?? undefined,
       description: emergency.description ?? undefined,
       reporterName: emergency.reportedBy?.name || 'A resident',
+      reporterId: reportedById,
+      latitude: emergency.latitude,
+      longitude: emergency.longitude,
     });
 
     return emergency;
@@ -116,6 +150,7 @@ export class EmergencyService {
         include: {
           reportedBy: { select: { id: true, name: true, phone: true } },
           flat: true,
+          block: { select: { id: true, name: true } },
           respondedBy: { select: { id: true, name: true, phone: true } },
         },
         orderBy: { createdAt: 'desc' },
@@ -158,6 +193,7 @@ export class EmergencyService {
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
         flat: true,
+        block: { select: { id: true, name: true } },
         respondedBy: { select: { id: true, name: true, phone: true } },
       },
     });
@@ -286,6 +322,7 @@ export class EmergencyService {
       include: {
         reportedBy: { select: { id: true, name: true, phone: true } },
         flat: true,
+        block: { select: { id: true, name: true } },
       },
       orderBy: { createdAt: 'desc' },
     });

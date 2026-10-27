@@ -165,6 +165,7 @@ enum ComplaintPriority {
 }
 
 enum EmergencyType {
+  HARASSMENT // a woman being harassed or abused: private alert, see emergency.listener
   MEDICAL
   FIRE
   SECURITY
@@ -827,6 +828,7 @@ model Block {
   // Relations
   flats              Flat[]
   onboardingRequests OnboardingRequest[]
+  emergencies        Emergency[]
 
   @@unique([societyId, name])
   @@index([societyId, isActive])
@@ -2010,7 +2012,14 @@ model Emergency {
 
   // Details
   description String?
-  location    String? // Where in the society
+  location    String? // Where in the society (a common area, or free text)
+
+  // The place picked when raising it: decides which residents are told. Coordinates are one reading taken at
+  // the moment of raising (never tracked) and are only shown to the guards and admins.
+  blockId   String?
+  block     Block?  @relation(fields: [blockId], references: [id], onDelete: SetNull)
+  latitude  Float?
+  longitude Float?
 
   // Reporter
   reportedById String
