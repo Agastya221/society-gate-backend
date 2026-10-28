@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../utils/Client';
 import { guardUsersWhere } from '../../utils/guard-access';
+import { dutyNowByGuard } from '../geofence/duty.service';
 import { getPresignedViewUrl } from '../../utils/s3';
 import { clampPagination } from '../../utils/scope';
 
@@ -34,11 +35,16 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
         id: true,
         name: true,
         phone: true,
+        email: true,
         photoUrl: true,
         isActive: true,
         createdAt: true,
+        lastLogin: true,
+        guardShift: { select: { name: true, startTime: true, endTime: true, graceMinutes: true } },
       },
     });
+    // Who is on duty now, and at which gate
+    const onDuty = await dutyNowByGuard(societyId, guards.map((g) => g.id));
 
     // Fetch Domestic staff (maids, cooks, etc.)
     const domesticStaff = await prisma.domesticStaff.findMany({
@@ -55,6 +61,10 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
         workStartTime: true,
         workEndTime: true,
         isVerified: true,
+        email: true,
+        isCurrentlyWorking: true,
+        lastCheckIn: true,
+        workingDays: true,
         assignedFlats: {
           where: { isActive: true },
           select: {
@@ -73,13 +83,20 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
       role: 'GUARD',
       status: g.isActive ? 'ACTIVE' : 'INACTIVE',
       salary: null,
-      shiftStart: null,
-      shiftEnd: null,
+      shiftStart: g.guardShift?.startTime ?? null,
+      shiftEnd: g.guardShift?.endTime ?? null,
       assignedFlats: ['SOCIETY'],
       photoUrl: await resolvePhotoUrl(g.photoUrl),
       agencyName: null,
       source: 'USER',
       createdAt: g.createdAt,
+      // The guard's profile: email, the shift they work, whether they are on duty now and at which gate, last sign-in
+      email: g.email ?? null,
+      lastLogin: g.lastLogin,
+      shift: g.guardShift
+        ? { name: g.guardShift.name, startTime: g.guardShift.startTime, endTime: g.guardShift.endTime, graceMinutes: g.guardShift.graceMinutes }
+        : null,
+      dutyNow: onDuty.has(g.id) ? { since: onDuty.get(g.id)!.since, gate: onDuty.get(g.id)!.gate } : null,
     })));
 
     // Normalize Domestic Staff records into StaffMember shape
@@ -105,6 +122,11 @@ export const getAdminStaffDirectory = async (req: Request, res: Response) => {
       isVerified: s.isVerified,
       source: 'DOMESTIC',
       createdAt: s.createdAt,
+      // The staff member's profile: email, which days they work, and whether they are inside the society now
+      email: s.email ?? null,
+      workingDays: s.workingDays,
+      insideNow: s.isCurrentlyWorking,
+      lastCheckIn: s.lastCheckIn,
     })));
 
     const allStaff = [...normalizedGuards, ...normalizedDomesticStaff].sort(

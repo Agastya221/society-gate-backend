@@ -1,5 +1,6 @@
 import { prisma } from '../../utils/Client';
 import { guardUsersWhere } from '../../utils/guard-access';
+import { distanceMeters, getGateLocations } from './geofence.service';
 
 /**
  * A guard's shift. "Start duty" is only accepted from the gate (the geofence check runs on the route), and where a
@@ -204,4 +205,33 @@ export async function myAttendance(guardId: string, societyId: string, month: st
     onDutyNow: false,
     shifts: [] as Array<never>,
   };
+}
+
+/**
+ * Who is on duty right now, and at which gate. The gate is the one recorded when the shift started; where that was
+ * not recorded (a society with several gates), it is the gate nearest to where the guard started, if within its radius.
+ */
+export async function dutyNowByGuard(societyId: string, guardIds: string[]) {
+  const result = new Map<string, { since: Date; gate: string | null }>();
+  if (guardIds.length === 0) return result;
+  const open = await prisma.guardDuty.findMany({
+    where: { societyId, guardId: { in: guardIds }, endedAt: null, startedAt: { gte: new Date(Date.now() - MAX_SHIFT_MS) } },
+    orderBy: { startedAt: 'desc' },
+    select: { guardId: true, startedAt: true, startLatitude: true, startLongitude: true, gatePoint: { select: { name: true } } },
+  });
+  const gates = await getGateLocations(societyId);
+  for (const duty of open) {
+    if (result.has(duty.guardId)) continue;
+    let gate = duty.gatePoint?.name ?? null;
+    if (!gate && duty.startLatitude != null && duty.startLongitude != null) {
+      let best: { name: string; meters: number } | null = null;
+      for (const g of gates) {
+        const meters = distanceMeters(duty.startLatitude, duty.startLongitude, g.latitude, g.longitude);
+        if (meters <= g.radiusMeters && (!best || meters < best.meters)) best = { name: g.name, meters };
+      }
+      gate = best?.name ?? null;
+    }
+    result.set(duty.guardId, { since: duty.startedAt, gate });
+  }
+  return result;
 }
