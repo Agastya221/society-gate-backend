@@ -89,6 +89,21 @@ export function buildPushMessage(
 }
 
 class PushService {
+  /** Many members of the domestic staff app at once (maids, cooks, drivers...): one query, one delivery. */
+  async sendToStaffMembers(domesticStaffIds: string[], payload: PushPayload): Promise<void> {
+    try {
+      if (domesticStaffIds.length === 0) return;
+      const accounts = await prisma.staffAccount.findMany({
+        where: { domesticStaffId: { in: domesticStaffIds }, isActive: true },
+        select: { id: true, fcmToken: true },
+      });
+      if (accounts.length === 0) return;
+      await this.deliver(accounts.map((a) => ({ id: a.id, fcmToken: a.fcmToken })), payload, 'staff');
+    } catch (error) {
+      logger.error({ error }, 'Alert sendToStaffMembers failed');
+    }
+  }
+
   async sendToStaff(domesticStaffId: string, payload: PushPayload): Promise<void> {
     try {
       const account = await prisma.staffAccount.findUnique({

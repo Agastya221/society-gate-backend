@@ -320,6 +320,34 @@ eventBus.on('entry-request.created', async (payload) => {
   }
 });
 
+/** The domestic staff of a society (maids, cooks, drivers...) who use the staff app. */
+const societyStaffAppIds = async (societyId: string): Promise<string[]> =>
+  (await prisma.domesticStaff.findMany({ where: { societyId, isActive: true }, select: { id: true } })).map((s) => s.id);
+
+/**
+ * The staff app hears only about the "tell everyone" emergencies, with no names and no flats, and never about a
+ * harassment alarm. When it is over they hear that too, so nobody keeps running from something that has ended.
+ */
+async function notifyStaffAppAllClear(societyId: string, emergencyId: string, title: string, body: string) {
+  try {
+    const emergency = await prisma.emergency.findUnique({
+      where: { id: emergencyId },
+      select: { type: true, reportedBy: { select: { role: true } } },
+    });
+    if (!emergency || emergency.type === 'HARASSMENT') return;
+    const raisedByStaff = ['GUARD', 'ADMIN', 'SUPER_ADMIN'].includes(emergency.reportedBy.role);
+    if (getEmergencySeverity(emergency.type) !== 'CRITICAL' && !raisedByStaff) return;
+    await pushService.sendToStaffMembers(await societyStaffAppIds(societyId), {
+      title,
+      body,
+      data: { type: 'EMERGENCY_ALL_CLEAR', emergencyId },
+      urgent: false,
+    });
+  } catch (error) {
+    logger.error({ error, emergencyId }, 'Failed to send the staff app all-clear');
+  }
+}
+
 eventBus.on('emergency.created', async (payload) => {
   try {
     const locationInfo = payload.location ? ` at ${payload.location}` : '';
@@ -441,6 +469,17 @@ eventBus.on('emergency.created', async (payload) => {
     push(residentSet, residentTitle, isPrivate ? residentMessage : payload.description ?? 'Immediate response required', {
       emergencyId: payload.emergencyId, type: payload.type, severity,
     });
+
+    // The staff app (maids, cooks, drivers): only the "tell everyone" emergencies, with no names and no flats
+    if (severity === 'CRITICAL') {
+      const staffAppIds = await societyStaffAppIds(payload.societyId);
+      pushService.sendToStaffMembers(staffAppIds, {
+        title: staffTitle,
+        body: `A ${label.toLowerCase()} emergency was reported${payload.blockName ? ` near ${payload.blockName}` : ''}. Stay safe and follow the instructions of security.`,
+        data: { type: 'EMERGENCY_ALERT', emergencyId: payload.emergencyId, severity },
+        urgent: true,
+      }).catch((err) => logger.error({ err }, 'Push failed: emergency.created (staff app)'));
+    }
   } catch (error) {
     logger.error({ error, event: 'emergency.created', payload }, 'Failed to send emergency notification');
   }
@@ -502,6 +541,8 @@ eventBus.on('emergency.resolved', async (payload) => {
       body: `The emergency has been ${resolverLabel}.`,
       data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, status: 'RESOLVED' },
     }).catch((err) => logger.error({ err }, 'Push failed: emergency.resolved'));
+
+    void notifyStaffAppAllClear(payload.societyId, payload.emergencyId, '✅ Emergency resolved', `The emergency has been ${resolverLabel}.`);
   } catch (error) {
     logger.error({ error, event: 'emergency.resolved', payload }, 'Failed to send emergency resolved notification');
   }
@@ -536,6 +577,8 @@ eventBus.on('emergency.false-alarm', async (payload) => {
         data: { screen: 'EmergencyDetail', emergencyId: payload.emergencyId, status: 'FALSE_ALARM' },
       }).catch((err) => logger.error({ err }, 'Push failed: emergency.false-alarm'));
     }
+
+    void notifyStaffAppAllClear(payload.societyId, payload.emergencyId, 'False alarm: all clear', `The ${payload.type} alert was a false alarm. No action needed.`);
   } catch (error) {
     logger.error({ error, event: 'emergency.false-alarm', payload }, 'Failed to send false alarm notification');
   }
