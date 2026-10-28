@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { authenticateStaffApp } from './staff-app.middleware';
 import * as controller from './staff-app.controller';
 import { clearCacheAfter } from '../../middlewares/cache.middleware';
+import { acceptMyTask, finishMyTask, myTasks } from '../staff-task/staff-task.controller';
 
 const router = Router();
 router.post('/auth/otp/verify', controller.verifyOtp);
@@ -18,6 +19,10 @@ router.get('/bookings', controller.bookings);
 // Resident-side booking lists are cached under the 'staff' prefix — refresh them on accept/decline
 router.patch('/bookings/:id/accept', clearCacheAfter(['staff:*']), controller.acceptBooking);
 router.patch('/bookings/:id/reject', clearCacheAfter(['staff:*']), controller.rejectBooking);
+// Tasks given by a guard or the admin (clean the lobby...)
+router.get('/tasks', myTasks);
+router.patch('/tasks/:id/accept', acceptMyTask);
+router.patch('/tasks/:id/done', finishMyTask);
 router.patch('/availability', controller.availability);
 router.patch('/fcm-token', controller.fcmToken);
 export default router;

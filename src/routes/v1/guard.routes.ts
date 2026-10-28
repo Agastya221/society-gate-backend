@@ -1,9 +1,11 @@
 import { Router } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { authenticateGuardApp } from '../../middlewares/auth.middleware';
 import { requireGuardAtGate } from '../../modules/geofence/geofence.middleware';
 import { evaluate, getGateLocations, readingFromHeaders } from '../../modules/geofence/geofence.service';
 import { currentDuty, endDuty, myAttendance, startDuty } from '../../modules/geofence/duty.service';
 import { flatContact, nudgeFlat } from '../../modules/gate-scan/overstay.service';
+import { assignableStaff, cancelTask, createStaffTaskSchema, createTask, listTasks } from '../../modules/staff-task/staff-task.controller';
 import {
   createEntryRequest,
   getPendingCount,
@@ -41,6 +43,7 @@ import {
 } from '../../schemas';
 
 const router = Router();
+const asyncRoute = (fn: (req: Request, res: Response) => Promise<unknown>) => (req: Request, res: Response, next: NextFunction) => { fn(req, res).catch(next); };
 
 // All guard routes require guard authentication
 router.use(authenticateGuardApp);
@@ -54,6 +57,12 @@ router.get('/pending-count', getPendingCount);
 // ============================================
 // ENTRY MANAGEMENT
 // ============================================
+// Tasks for staff: give a job (clean the lobby...) to a sweeper or gardener of the staff app, and see where it stands
+router.get('/staff-tasks/staff', asyncRoute(assignableStaff));
+router.get('/staff-tasks', asyncRoute(listTasks));
+router.post('/staff-tasks', validate({ body: createStaffTaskSchema }), asyncRoute(createTask));
+router.patch('/staff-tasks/:id/cancel', validate({ params: idParams }), asyncRoute(cancelTask));
+
 // Delivery watch: poke the flat about someone who has been inside a while, or get who to call
 router.post('/entries/:id/nudge', validate({ params: idParams }), async (req, res, next) => {
   try {

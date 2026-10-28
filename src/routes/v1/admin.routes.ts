@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import societyRoutes from '../../modules/society/society.routes';
 import societyOnboardingRoutes from '../../modules/society-onboarding/society-onboarding.routes';
@@ -22,6 +23,7 @@ import {
   removeAdminResident,
 } from '../../modules/admin/admin-residents.controller';
 import { handoffAdmin } from '../../modules/admin/admin-handoff.controller';
+import { assignableStaff, cancelTask, createStaffTaskSchema, createTask, listTasks } from '../../modules/staff-task/staff-task.controller';
 import {
   listForAdmin,
   adminCancelEntry,
@@ -48,6 +50,7 @@ import {
 } from '../../schemas';
 
 const router = Router();
+const asyncRoute = (fn: (req: Request, res: Response) => Promise<unknown>) => (req: Request, res: Response, next: NextFunction) => { fn(req, res).catch(next); };
 
 const queryBoolean = z.preprocess((value) => {
   if (typeof value !== 'string') return value;
@@ -202,6 +205,12 @@ router.post(
   clearCacheAfter([...RESIDENT_CACHE_PATTERNS, 'user:*']),
   handoffAdmin,
 );
+
+// ---- Tasks for staff (the admin gives a job to a staff member of the staff app, like a guard can) ----
+router.get('/staff-tasks/staff', authenticate, authorize('ADMIN'), asyncRoute(assignableStaff));
+router.get('/staff-tasks', authenticate, authorize('ADMIN'), asyncRoute(listTasks));
+router.post('/staff-tasks', authenticate, authorize('ADMIN'), validate({ body: createStaffTaskSchema }), asyncRoute(createTask));
+router.patch('/staff-tasks/:id/cancel', authenticate, authorize('ADMIN'), validate({ params: idParams }), asyncRoute(cancelTask));
 
 // ---- Pre-approved entry oversight ----
 router.get('/pre-approved', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), validate({ query: adminPreApprovedQuerySchema }), listForAdmin);

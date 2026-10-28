@@ -549,14 +549,15 @@ model Society {
   importBatches       SocietyImportBatch[]
   ruleConfig          SocietyRuleConfig?
   gateDevices         GateDevice[]
+  trustedVisitors     TrustedVisitor[]
+  geofenceViolations  GeofenceViolation[]
+  guardDuties         GuardDuty[]
+  guardShifts         GuardShift[]
+  staffTasks          StaffTask[]
 
   @@index([city, isActive])
   @@index([paymentStatus, nextDueDate])
   @@index([onboardingStatus, isActive])
-  trustedVisitors TrustedVisitor[]
-  geofenceViolations GeofenceViolation[]
-  guardDuties GuardDuty[]
-  guardShifts GuardShift[]
 }
 
 // --------------------
@@ -752,7 +753,7 @@ model GuardDuty {
   gatePointId String?
   gatePoint   GatePoint? @relation(fields: [gatePointId], references: [id], onDelete: SetNull)
 
-  startedAt      DateTime @default(now())
+  startedAt      DateTime  @default(now())
   startLatitude  Float?
   startLongitude Float?
   endedAt        DateTime?
@@ -799,10 +800,10 @@ model GatePoint {
   entries Entry[]
   devices GateDevice[]
 
-  createdAt DateTime @default(now())
+  createdAt DateTime    @default(now())
+  duties    GuardDuty[]
 
   @@index([societyId, isActive])
-  duties GuardDuty[]
 }
 
 // --------------------
@@ -829,6 +830,7 @@ model Block {
   flats              Flat[]
   onboardingRequests OnboardingRequest[]
   emergencies        Emergency[]
+  staffTasks         StaffTask[]
 
   @@unique([societyId, name])
   @@index([societyId, isActive])
@@ -890,12 +892,12 @@ model Flat {
   preApprovedEntries   PreApprovedEntry[]
   invoices             Invoice[]
   userMemberships      UserFlatMembership[]
+  trustedVisitors      TrustedVisitor[]
 
   @@unique([societyId, flatNumber])
   @@index([societyId])
   @@index([blockId])
   @@index([isOccupied])
-  trustedVisitors TrustedVisitor[]
 }
 
 // --------------------
@@ -979,7 +981,7 @@ model User {
   societyRegistrationReviews  SocietyRegistrationRequest[] @relation("SocietyRegistrationReviews")
   flatMemberships             UserFlatMembership[]
   invitedGateDevices          GateDevice[]                 @relation("GateDeviceCreator")
-  platformAuditLogs           PlatformAuditLog[]            @relation("PlatformAuditActor")
+  platformAuditLogs           PlatformAuditLog[]           @relation("PlatformAuditActor")
 
   // Notification relations
   notifications Notification[]
@@ -1006,24 +1008,25 @@ model User {
   deviceType String? // "android" | "ios"
 
   // Auth & Tokens
-  lastLogin        DateTime?
-  refreshToken     String?   @db.Text // Store current refresh token
-  guardRefreshToken String?  @db.Text // Guard-app session: a guard who is also a resident uses two apps, so two sessions
-  tokenVersion     Int       @default(0) // Increment to invalidate all tokens
-  lastTokenRefresh DateTime? // Track when token was last refreshed
+  lastLogin         DateTime?
+  refreshToken      String?   @db.Text // Store current refresh token
+  guardRefreshToken String?   @db.Text // Guard-app session: a guard who is also a resident uses two apps, so two sessions
+  tokenVersion      Int       @default(0) // Increment to invalidate all tokens
+  lastTokenRefresh  DateTime? // Track when token was last refreshed
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  trustedVisitorsCreated TrustedVisitor[]    @relation("TrustedVisitorCreator")
+  geofenceViolations     GeofenceViolation[] @relation("GeofenceViolationGuard")
+  guardDuties            GuardDuty[]         @relation("GuardDutyGuard")
+  guardShiftId           String?
+  guardShift             GuardShift?         @relation("GuardShiftGuards", fields: [guardShiftId], references: [id], onDelete: SetNull)
+  createdStaffTasks      StaffTask[]         @relation("StaffTaskCreator")
 
   @@index([societyId, role])
   @@index([phone])
   @@index([email])
   @@index([refreshToken])
-  trustedVisitorsCreated TrustedVisitor[] @relation("TrustedVisitorCreator")
-  geofenceViolations GeofenceViolation[] @relation("GeofenceViolationGuard")
-  guardDuties GuardDuty[] @relation("GuardDutyGuard")
-  guardShiftId String?
-  guardShift   GuardShift? @relation("GuardShiftGuards", fields: [guardShiftId], references: [id], onDelete: SetNull)
 }
 
 model PlatformAuditLog {
@@ -1044,6 +1047,7 @@ model PlatformAuditLog {
   @@index([targetType, targetId])
   @@index([action, createdAt(sort: Desc)])
 }
+
 model UserFlatMembership {
   id String @id @default(uuid())
 
@@ -1387,6 +1391,7 @@ model DomesticStaff {
   bookings          StaffBooking[]
   reviews           StaffReview[]
   account           StaffAccount?
+  tasks             StaffTask[]
 
   // Added by
   addedById String
@@ -1406,22 +1411,65 @@ model DomesticStaff {
 // Authentication identity for the standalone staff app. Keeping this separate
 // from User prevents domestic staff from inheriting resident/admin permissions.
 model StaffAccount {
-  id              String @id @default(uuid())
-  domesticStaffId String @unique
+  id              String        @id @default(uuid())
+  domesticStaffId String        @unique
   domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
 
-  phone            String @unique
-  refreshToken     String? @db.Text
+  phone            String    @unique
+  refreshToken     String?   @db.Text
   fcmToken         String?
   deviceType       String?
-  isActive         Boolean @default(true)
+  isActive         Boolean   @default(true)
   lastLogin        DateTime?
   lastTokenRefresh DateTime?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@index([phone])
   @@index([refreshToken])
+}
+
+// --------------------
+// TASKS FOR STAFF
+// A guard or the admin gives a job (clean the lobby...) to a staff member who uses the staff app.
+// --------------------
+
+enum StaffTaskStatus {
+  ASSIGNED
+  ACCEPTED
+  DONE
+  CANCELLED
+}
+
+model StaffTask {
+  id String @id @default(uuid())
+
+  societyId String
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  domesticStaffId String
+  domesticStaff   DomesticStaff @relation(fields: [domesticStaffId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation("StaffTaskCreator", fields: [createdById], references: [id])
+
+  title    String
+  note     String?
+  blockId  String?
+  block    Block?  @relation(fields: [blockId], references: [id], onDelete: SetNull)
+  location String? // a common area, or free text
+
+  status      StaffTaskStatus @default(ASSIGNED)
+  acceptedAt  DateTime?
+  doneAt      DateTime?
+  cancelledAt DateTime?
+  remindedAt  DateTime? // when the one who gave it was told nobody accepted it
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([societyId, status, createdAt(sort: Desc)])
+  @@index([domesticStaffId, status])
 }
 
 // --------------------
@@ -1469,7 +1517,7 @@ model StaffAttendance {
 
   // Society-level staff may not belong to one resident flat.
   flatId String?
-  flat   Flat?  @relation(fields: [flatId], references: [id])
+  flat   Flat?   @relation(fields: [flatId], references: [id])
 
   societyId String
   society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
@@ -2797,5 +2845,3 @@ model PreApprovedUsage {
   @@index([entryId, usedAt(sort: Desc)])
   @@index([guardId])
 }
-
-
